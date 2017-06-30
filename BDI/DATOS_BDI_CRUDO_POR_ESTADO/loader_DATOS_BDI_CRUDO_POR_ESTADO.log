@@ -1,0 +1,154 @@
+
+SQL*Loader: Release 11.2.0.2.0 - Production on Tue Jun 27 10:58:23 2017
+
+Copyright (c) 1982, 2009, Oracle and/or its affiliates.  All rights reserved.
+
+Control File:   loader_DATOS_BDI_CRUDO_POR_ESTADO.ctl
+Data File:      crudo_por_estado.csv
+  Bad File:     crudo_por_estado.bad
+  Discard File:  none specified
+ 
+ (Allow all discards)
+
+Number to load: ALL
+Number to skip: 0
+Errors allowed: 50
+Bind array:     64 rows, maximum of 256000 bytes
+Continuation:    none specified
+Path used:      Conventional
+
+Table DATOS_BDI_CRUDO_POR_ESTADO, loaded from every logical record.
+Insert option in effect for this table: INSERT
+
+   Column Name                  Position   Len  Term Encl Datatype
+------------------------------ ---------- ----- ---- ---- ---------------------
+FECHA                               FIRST     *   ,       DATE yyyy/mm/dd      
+E                                    NEXT     *   ,       CHARACTER            
+ESTADO                               NEXT     *   ,       CHARACTER            
+MBD                                  NEXT     *   ,       CHARACTER            
+
+Record 1165: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1166: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1167: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1168: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1169: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1170: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1171: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1172: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1173: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1174: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1175: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1176: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1177: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1178: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1179: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1180: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1181: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1182: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1183: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1184: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1185: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1186: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1187: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1188: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1189: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1190: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1191: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1192: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1193: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1194: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1195: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1196: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1197: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1198: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1199: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1200: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1201: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1202: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1203: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1204: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1205: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1206: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1207: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1208: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1209: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1210: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1211: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1212: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1213: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1214: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+Record 1215: Rejected - Error on table DATOS_BDI_CRUDO_POR_ESTADO, column MBD.
+Column not found before end of logical record (use TRAILING NULLCOLS)
+
+MAXIMUM ERROR COUNT EXCEEDED - Above statistics reflect partial run.
+
+Table DATOS_BDI_CRUDO_POR_ESTADO:
+  1164 Rows successfully loaded.
+  51 Rows not loaded due to data errors.
+  0 Rows not loaded because all WHEN clauses were failed.
+  0 Rows not loaded because all fields were null.
+
+
+Space allocated for bind array:                  66048 bytes(64 rows)
+Read   buffer bytes: 1048576
+
+Total logical records skipped:          0
+Total logical records read:          1215
+Total logical records rejected:        51
+Total logical records discarded:        0
+
+Run began on Tue Jun 27 10:58:23 2017
+Run ended on Tue Jun 27 10:58:24 2017
+
+Elapsed time was:     00:00:00.56
+CPU time was:         00:00:00.02
