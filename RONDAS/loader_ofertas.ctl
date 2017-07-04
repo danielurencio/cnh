@@ -1,0 +1,5 @@
+load data
+  infile 'RONDAS_ofertas.csv'
+  into table RONDAS_OFERTAS
+  fields terminated by ";"
+  (ID_OFERTAS,ID,RONDA,LIC,BLOQUE,NUM,EMPRESA,MODALIDAD,CONTRATO,VAR_ADJ1,VAR_ADJ2,VPO,BONO,GANADOR,OPERADOR)

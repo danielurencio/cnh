@@ -14,45 +14,45 @@ class Rondas:
 	self.skip_rows = self.skipRows()
 	self.df = self.read_excel()
         self.regex1 = [
-	 (", S.A. DE C.V.|, S.A. de C.V."," S.A. de C.V."),
-	 (", S.A."," S.A."),
-	 ("S.A de","S.A. de"),
-	 (", S. DE R.L. DE C.V.|, S. de R.L. de C.V."," S. de R.L. de C.V."),
-	 ("[.]&",". &"),
-	 (", L.P."," L.P."),
-	 (", Ltd."," Ltd."),
-	 (", Inc."," Inc."),
-	 (", LLC"," LLC"),
-	 (", B.V."," B.V."),
-	 ("S.A.P.I de","S.A.P.I. de"),
-	 ("Mitsui & Co. Ltd","Mitsui&Co. Ltd"),
-	 ("Japan Oil, Gas","Japan Oil; Gas"),
-	 ("Sanchez Oil & Gas","Sanchez Oil&Gas"),
-	 ("PTT Exploration & ","PTT Exploration&"),
-	 ("Sierra Oil & Gas","Sierra Oil&Gas"),
-	 ("Upstream Delta 2","Upstream Delta 1"),
-	 ("Energy LLC y Petrobal Upstream","Energy LLC & Petrobal Upstream"),
-         (", Servicios Integrales & Mercado de Arenas"," & Mercado de Arenas"),
-	 ("HoldingsLimited","Holdings Limited"),
-("Sinopec International Petroleum Exploration & Production Corporation","Sinopec International Petroleum Exploration&Production Corporation"),
-	 ("xico[.]","xico"),
-	 (", ",","),
-	 ("LUKOIL","Lukoil"),
-	 ("ENI I","Eni I"),
-#	 ("BP Exploration México","BP Exploration México S.A. de C.V.")
+         (", S.A. DE C.V.|, S.A. DE C.V."," S.A. DE C.V."),
+         (", S.A."," S.A."),
+         ("S.A DE","S.A. DE"),
+         (", S. DE R.L. DE C.V.|, S. DE R.L. DE C.V."," S. DE R.L. DE C.V."),
+         ("[.]&",". &"),
+         (", L.P."," L.P."),
+         (", LTD."," LTD."),
+         (", INC."," INC."),
+         (", LLC"," LLC"),
+         (", B.V."," B.V."),
+         ("S.A.P.I DE","S.A.P.I. DE"),
+         ("MITSUI & CO. LTD","MITSUI&CO. LTD"),
+         ("JAPAN OIL, GAS","JAPAN OIL; GAS"),
+         ("SANCHEZ OIL & GAS","SANCHEZ OIL&GAS"),
+         ("PTT EXPLORATION & ","PTT EXPLORATION&"),
+         ("SIERRA OIL & GAS","SIERRA OIL&GAS"),
+         ("UPSTREAM DELTA 2","UPSTREAM DELTA 1"),
+         ("ENERGY LLC Y PETROBAL UPSTREAM","ENERGY LLC & PETROBAL UPSTREAM"),
+         (", SERVICIOS INTEGRALES & MERCADO DE ARENAS"," & MERCADO DE ARENAS"),
+         ("HOLDINGSLIMITED","HOLDINGS LIMITED"),
+("SINOPEC INTERNATIONAL PETROLEUM EXPLORATION & PRODUCTION CORPORATION","SINOPEC INTERNATIONAL PETROLEUM EXPLORATION&PRODUCTION CORPORATION"),
+         ("XICO[.]","XICO"),
+         (", ",","),
+         ("LUKOIL","LUKOIL"),
+         ("ENI I","ENI I"),
+#        ("BP EXPLORATION MéXICO","BP EXPLORATION MéXICO S.A. DE C.V.")
         ]
         self.regex2 = [
-	 ("^  *",""),
-	 ("S[.]A[.]de ","S.A. de "),
-	 (";",","),
-#	 ("Mitsui&Co.","Mitsui & Co."),
-	 ("Sanchez Oil&Gas","Sanchez Oil & Gas"),
-	 ("PTT Exploration&Production PCL","PTT Exploration & Production PCL"),
-	 ("Sierra Oil&Gas","Sierra Oil & Gas"),
-	 (u'\xa0',""),
-	 (" *$",""),
-#         ("BP Exploration México","BP Exploration México S.A. de C.V.")
-#	 ("xicoS","xico")
+         ("^  *",""),
+         ("S[.]A[.]DE ","S.A. DE "),
+         (";",","),
+#        ("MITSUI&CO.","MITSUI & CO."),
+         ("SANCHEZ OIL&GAS","SANCHEZ OIL & GAS"),
+         ("PTT EXPLORATION&PRODUCTION PCL","PTT EXPLORATION & PRODUCTION PCL"),
+         ("SIERRA OIL&GAS","SIERRA OIL & GAS"),
+         (U'\xa0',""),
+         ("  *$",""),
+#         ("BP EXPLORATION MéXICO","BP EXPLORATION MéXICO S.A. DE C.V.")
+#        ("XICOS","XICO")
         ]
 
     def Tipo(self):
@@ -198,7 +198,7 @@ class Rondas:
 	    arr3 = []
 #	    paises = self.df["COUNTRY"].map(lambda x: x.split("/"))\
 #		.values.tolist()
-	    licitantes= self.df["EMPRESA"]
+	    licitantes= a["EMPRESA"]#self.df["EMPRESA"]
 	    for consorcio in licitantes:
 		for r1 in self.regex1:
 		    if( bool(re.search(r1[0],consorcio)) ):
@@ -221,7 +221,7 @@ class Rondas:
 #	    b = self.dictPaises()
 	    for i,l in enumerate(arr2):
 		for e in l:
-	#	  print e
+		  print str(e)
 		  if(e!="CNOOC International Limited"):
 		    ind = b[b['EMPRESA'] == e].index[0]
 		    #print ind
@@ -248,23 +248,18 @@ def test_JOIN():
             indices.append( (i,ind) )    
     return np.array(indices)
 
-
 def importar():
    b.to_csv("empresas.csv",header=None)
    a.to_csv("licitantes.csv",header=None)
    print("ARCHIVOS IMPORTADOS")
 
 
-def buscar(string):
-    dd = b[b["EMPRESA"].str.contains(string) == 1]
-    print dd
-
 if(__name__ == "__main__"):
     empresas = Rondas("DATOS_RONDAS_empresas.xlsx","EMPRESA")
     b = empresas.dictPaises()
     b["EMPRESA"] = b["EMPRESA"].map(lambda x: x.upper())
     b["PAIS"] = b["PAIS"].map(lambda x: x.upper())
-    b.drop_duplicates("EMPRESA",inplace=True)
+    #b.drop_duplicates("EMPRESA",inplace=True)
     b.reset_index(inplace=True)
     b.drop("index",axis=1,inplace=True)
     licitantes = Rondas("DATOS_RONDAS_ofertas.xlsx","EMPRESA")
