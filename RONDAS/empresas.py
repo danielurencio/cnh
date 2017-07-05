@@ -235,15 +235,10 @@ class Rondas:
 	    print("Archivo de tabla intermedia creado.")
 
 
-def importar():
-   b.to_csv("RONDAS_empresas.csv",header=None,sep=";",encoding="latin1")
-   a.to_csv("RONDAS_licitantes.csv",header=None,sep=";",encoding="latin1")
-   print("ARCHIVOS IMPORTADOS")
-
-
 def buscar(string):
     dd = b[b["EMPRESA"].str.contains(string) == 1]
     print dd
+
 
 def idLIC():
     emps = empresas.df["EMPRESA"].map(lambda x: x.upper())
@@ -298,7 +293,7 @@ def regexIDs(var,columna):
 
 def empresasNT():
     arr = []
-    ee = empresas.df;
+    ee = empresas.df.copy();
     ee["EMPRESA"] = emps["EMPRESA"]
     inxs = emps["EMPRESA"].drop_duplicates().sort_values().reset_index().drop("index",axis=1)
     ee["ID_LICITANTE"] = np.zeros(ee.shape[0])
@@ -308,14 +303,53 @@ def empresasNT():
 	for j in indices:
 	    ee.ix[j,"ID_LICITANTE"] = i
     ee["ID_LICITANTE"] = ee["ID_LICITANTE"].map(lambda x: int(x))
-    ee.drop(["WIN"],axis=1,inplace=True)
+    ee.drop(["WIN","COUNTRY"],axis=1,inplace=True)
     for i in ["MOD","PREQUAL","PROP"]:
 	ee[i] = ee[i].fillna("PENDIENTE")
 	ee[i] = ee[i].map(lambda x: x.upper())
     ee["DATA_ROOM"] = ee["DATA_ROOM"]\
 	.map(lambda x: 0 if "No Accede al Cuarto de Datos" else 1)
-    return ee
-    
+    ee = ee[["ID_LICITANTE","MOD","EMPRESA","ID_R","RONDA","LIC","DATA_ROOM","PREQUAL","PROP"]]
+    return ee,inxs
+
+def ofertasNT():
+    arr = []
+    ofertas = licitantes.df
+    ofertas["EMPRESA"] = lics["EMPRESA"]
+    ofertas["ID_LICITANTE"] = np.zeros(ofertas.shape[0])
+    for i,d in enumerate(ll.ix[:,"EMPRESA"]):
+	indices = ofertas[ofertas["EMPRESA"] == ll["EMPRESA"][i]].index.tolist()
+	for j in indices:
+	    ofertas.ix[j,"ID_LICITANTE"] = i
+    ofertas["ID_LICITANTE"] = ofertas["ID_LICITANTE"].map(lambda x: int(x))
+    return ofertas
+
+def Empresas_Licitantes():
+    arr = []
+    for i,d in enumerate(ee.ix[:,"EMPRESA"]):
+	ind = []
+        lic = d.split(",")
+        for l in lic:
+	    for j,e in enumerate(b.ix[:,"EMPRESA"]):
+	        if( e == l ):
+		 #   ind.append(j)
+	            arr.append((ee.ix[i,"ID_LICITANTE"],j))
+#	arr.append((i,ind))
+    arr = np.array(arr)
+    arr = pd.DataFrame({ "ID_LICITANTE":arr[:,0], "ID_EMPRESA":arr[:,1] })
+    arr = arr[["ID_LICITANTE","ID_EMPRESA"]]
+    arr.sort_values("ID_LICITANTE",inplace=True)
+    arr.drop_duplicates(inplace=True)
+    return arr
+
+	
+def importar():
+   b.to_csv("RONDAS_empresas.csv",header=None,sep=",",encoding="latin1")
+   ll.to_csv("RONDAS_licitantes.csv",header=None,sep=";",encoding="latin1")
+   emp_lic.to_csv("empresas_licitantes.csv",header=None,index=False)
+   ofertas.to_csv("RONDAS_ofertas.csv",header=None,index=False,encoding="latin1")
+   print("ARCHIVOS IMPORTADOS")
+
 
 if(__name__ == "__main__"):
     empresas = Rondas("DATOS_RONDAS_empresas.xlsx","EMPRESA")
@@ -327,16 +361,17 @@ if(__name__ == "__main__"):
     b.drop("index",axis=1,inplace=True)
     b["EMPRESA"] = b["EMPRESA"].map(lambda x: re.sub(" & ","&",x))
     licitantes = Rondas("DATOS_RONDAS_ofertas.xlsx","EMPRESA")
-    a = licitantes.df[["EMPRESA","OPERADOR"]]
-    a = a.sort_values("EMPRESA",ascending=False)
-    a = a.fillna("PENDIENTE")
-    a["EMPRESA"] = a["EMPRESA"].map(lambda x: x.upper())
-    a["OPERADOR"] = a["OPERADOR"].map(lambda x: x.upper())
-    a.sort_values("EMPRESA",ascending=1, inplace=True)
-    a.drop_duplicates("EMPRESA", inplace=True)
-    a.reset_index(inplace=True);
-    a.drop("index",axis=1,inplace=True)
-#    LIC = licitantes.df["EMPRESA"].map(lambda x: x.upper()).unique()
-#    LIC = pd.DataFrame({ "LICITANTES": LIC })
+#    a = licitantes.df[["EMPRESA","OPERADOR"]]
+#    a = a.sort_values("EMPRESA",ascending=False)
+#    a = a.fillna("PENDIENTE")
+#    a["EMPRESA"] = a["EMPRESA"].map(lambda x: x.upper())
+#    a["OPERADOR"] = a["OPERADOR"].map(lambda x: x.upper())
+#    a.sort_values("EMPRESA",ascending=1, inplace=True)
+#    a.drop_duplicates("EMPRESA", inplace=True)
+#    a.reset_index(inplace=True);
+#    a.drop("index",axis=1,inplace=True)
     emps = regexIDs(empresas,"EMPRESA")
     lics = regexIDs(licitantes,"EMPRESA")
+    ee,ll = empresasNT()
+    ofertas = ofertasNT()
+    emp_lic = Empresas_Licitantes();
