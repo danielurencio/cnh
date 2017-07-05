@@ -44,7 +44,7 @@ class Rondas:
         self.regex2 = [
 	 ("^  *",""),
 	 ("S[.]A[.]de ","S.A. de "),
-	 (";",","),
+#	 (";",","),
 #	 ("Mitsui&Co.","Mitsui & Co."),
 	 ("Sanchez Oil&Gas","Sanchez Oil & Gas"),
 	 ("PTT Exploration&Production PCL","PTT Exploration & Production PCL"),
@@ -235,29 +235,87 @@ class Rondas:
 	    print("Archivo de tabla intermedia creado.")
 
 
-
-
-def test_JOIN():
-    indices = []
-    for i,l in enumerate(a):
-        for e in l:
-#	  print e
-	  if(e!="CNOOC International Limited"):
-            ind = b[b['EMPRESA'] == e].index[0]
-	    #print ind
-            indices.append( (i,ind) )    
-    return np.array(indices)
-
-
 def importar():
-   b.to_csv("empresas.csv",header=None)
-   a.to_csv("licitantes.csv",header=None)
+   b.to_csv("RONDAS_empresas.csv",header=None,sep=";",encoding="latin1")
+   a.to_csv("RONDAS_licitantes.csv",header=None,sep=";",encoding="latin1")
    print("ARCHIVOS IMPORTADOS")
 
 
 def buscar(string):
     dd = b[b["EMPRESA"].str.contains(string) == 1]
     print dd
+
+def idLIC():
+    emps = empresas.df["EMPRESA"].map(lambda x: x.upper())
+    E = pd.DataFrame({ "EMPRESA":emps, "ID":np.full([emps.shape[0],],"na") })
+    for i in range(E.shape[0]):
+      for j in range(a.shape[0]):
+	if( E.loc[i]["EMPRESA"] == a.loc[j]["EMPRESA"] ):
+	  E.ix[i,"ID"] = int(j)
+    sobran = E[E["ID"] == "na"]
+    noPrecalif = empresas.df[empresas.df["PREQUAL"] == "No Precalifica"]["EMPRESA"].drop_duplicates().map(lambda x: x.upper())
+    for i in sobran.index:
+	if( sobran.ix[i,"EMPRESA"] in noPrecalif.tolist() ):
+	    E.ix[i,"ID"] = "NP"
+    return E
+
+
+def regexIDs(var,columna):
+    emps = var.df["EMPRESA"].map(lambda x: x.upper())#.drop_duplicates()\
+#	.sort_values().reset_index().drop("index",axis=1)
+    emps = pd.DataFrame({ "EMPRESA":emps })
+    for i,d in enumerate(emps.ix[:,0]):
+      for r in empresas.regex1:
+	if( bool(re.search(r[0].upper(),d) ) ):
+	  emps.ix[i,0] = re.sub(r[0].upper(),r[1].upper(),d)
+    for i,d in enumerate(emps.ix[:,0]):
+      for r in empresas.regex2:
+	if ( bool(re.search(r[0].upper(),d)) ):
+	  emps.ix[i,0] = re.sub(r[0].upper(),r[1].upper(),d)
+#    return pd.DataFrame({"EMPRESA":emps.values})
+    emps[columna] = emps[columna].map(lambda x: re.sub(",S[.]A"," S.A",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub(", S[.]A[.]"," S.A.",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub(",S[.] DE R"," S. DE R",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub(",L[.]P"," L.P",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub(", L[.]P"," L.P",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub(",B[.]V"," B.V",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub(" ,",",",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub(", ",",",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub("II,LL","II LL",x)) 
+    emps[columna] = emps[columna].map(lambda x: re.sub("OIL,GAS","OIL; GAS",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub("CO[.],LTD","CO. LTD",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub("WORLDWIDE,INC[.]","WORLDWIDE INC.",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub("OIL & GAS","OIL&GAS",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub(" \xa0","",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub("\xa0","",x)) 
+    emps[columna] = emps[columna].map(lambda x: re.sub("HOLDINGS,LLC","HOLDINGS LLC",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub(" & ",",",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub("V[.]& ","V.,",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub("S[.]A[.]P[.]I ","S.A.P.I. ",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub("S[.]A D","S.A. D",x))
+    return emps
+    
+
+def empresasNT():
+    arr = []
+    ee = empresas.df;
+    ee["EMPRESA"] = emps["EMPRESA"]
+    inxs = emps["EMPRESA"].drop_duplicates().sort_values().reset_index().drop("index",axis=1)
+    ee["ID_LICITANTE"] = np.zeros(ee.shape[0])
+    for i,d in enumerate(inxs.ix[:,"EMPRESA"]):
+	indices = ee[ee["EMPRESA"] == inxs["EMPRESA"][i]].index.tolist()
+	arr.append((indices,i))
+	for j in indices:
+	    ee.ix[j,"ID_LICITANTE"] = i
+    ee["ID_LICITANTE"] = ee["ID_LICITANTE"].map(lambda x: int(x))
+    ee.drop(["WIN"],axis=1,inplace=True)
+    for i in ["MOD","PREQUAL","PROP"]:
+	ee[i] = ee[i].fillna("PENDIENTE")
+	ee[i] = ee[i].map(lambda x: x.upper())
+    ee["DATA_ROOM"] = ee["DATA_ROOM"]\
+	.map(lambda x: 0 if "No Accede al Cuarto de Datos" else 1)
+    return ee
+    
 
 if(__name__ == "__main__"):
     empresas = Rondas("DATOS_RONDAS_empresas.xlsx","EMPRESA")
@@ -267,15 +325,18 @@ if(__name__ == "__main__"):
     b.drop_duplicates("EMPRESA",inplace=True)
     b.reset_index(inplace=True)
     b.drop("index",axis=1,inplace=True)
+    b["EMPRESA"] = b["EMPRESA"].map(lambda x: re.sub(" & ","&",x))
     licitantes = Rondas("DATOS_RONDAS_ofertas.xlsx","EMPRESA")
     a = licitantes.df[["EMPRESA","OPERADOR"]]
     a = a.sort_values("EMPRESA",ascending=False)
-    a = a.fillna("NA")
+    a = a.fillna("PENDIENTE")
     a["EMPRESA"] = a["EMPRESA"].map(lambda x: x.upper())
     a["OPERADOR"] = a["OPERADOR"].map(lambda x: x.upper())
     a.sort_values("EMPRESA",ascending=1, inplace=True)
     a.drop_duplicates("EMPRESA", inplace=True)
     a.reset_index(inplace=True);
     a.drop("index",axis=1,inplace=True)
-    LIC = licitantes.df["EMPRESA"].map(lambda x: x.upper()).unique()
-    LIC = pd.DataFrame({ "LICITANTES": LIC })
+#    LIC = licitantes.df["EMPRESA"].map(lambda x: x.upper()).unique()
+#    LIC = pd.DataFrame({ "LICITANTES": LIC })
+    emps = regexIDs(empresas,"EMPRESA")
+    lics = regexIDs(licitantes,"EMPRESA")

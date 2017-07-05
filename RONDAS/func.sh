@@ -7,7 +7,7 @@ CreateLICITANTES() {
 }
 
 TruncateLICITANTES() {
-  echo "TRUNCATE TABLE RONDAS_LICITANTES;" | sqlplus cmde_raw/raw17
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_LICITANTES;" | sqlplus cmde_raw/raw17
 }
 
 LoadLICITANTES() {
@@ -25,7 +25,7 @@ CreateEMPRESAS() {
 }
 
 TruncateEMPRESAS() {
-  echo "TRUNCATE TABLE RONDAS_EMPRESAS;" | sqlplus cmde_raw/raw17
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_EMPRESAS;" | sqlplus cmde_raw/raw17
 }
 
 LoadEMPRESAS() {
@@ -43,7 +43,7 @@ CreateINTERMEDIA() {
 }
 
 TruncateINTERMEDIA() {
-  echo "TRUNCATE TABLE RONDAS_INTERMEDIA;" | sqlplus cmde_raw/raw17
+  echo "TRUNCATE TABLE DATOS_EMPRESAS_LICITANTES;" | sqlplus cmde_raw/raw17
 }
 
 LoadINTERMEDIA() {

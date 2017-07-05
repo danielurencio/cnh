@@ -6,7 +6,7 @@ CreatePRECIOS() {
 }
 
 TruncatePRECIOS() {
-  echo "TRUNCATE TABLE PRECIOS;" | sqlplus cmde_raw/raw17
+  echo "TRUNCATE DATOS_TABLE PRECIOS;" | sqlplus cmde_raw/raw17
 }
 
 LoadPRECIOS() {
