@@ -3,6 +3,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding("UTF-8")
 import re
+import math
 import pandas as pd
 import numpy as np
 
@@ -256,7 +257,7 @@ def idLIC():
 
 
 def regexIDs(var,columna):
-    copia = var.df.copy()
+    copia = var.copy()
 #    copia[columna] = copia[columna].map(lambda x: str(x)) 
     emps = copia[columna].map(lambda x: x.upper())#.drop_duplicates()\
 #	.sort_values().reset_index().drop("index",axis=1)
@@ -277,6 +278,7 @@ def regexIDs(var,columna):
     emps[columna] = emps[columna].map(lambda x: re.sub(",S[.] DE R"," S. DE R",x))
     emps[columna] = emps[columna].map(lambda x: re.sub(",L[.]P"," L.P",x))
     emps[columna] = emps[columna].map(lambda x: re.sub(", L[.]P"," L.P",x))
+    emps[columna] = emps[columna].map(lambda x: re.sub(", S[.]L"," S.L",x))
     emps[columna] = emps[columna].map(lambda x: re.sub(",B[.]V"," B.V",x))
     emps[columna] = emps[columna].map(lambda x: re.sub(" ,",",",x))
     emps[columna] = emps[columna].map(lambda x: re.sub(", ",",",x))
@@ -308,45 +310,62 @@ def empresasNT():
 	    ee.ix[j,"ID_LICITANTE"] = i
     ee["ID_LICITANTE"] = ee["ID_LICITANTE"].map(lambda x: int(x))
     ee.drop(["WIN","COUNTRY"],axis=1,inplace=True)
-    for i in ["MOD","PREQUAL","PROP"]:
-	ee[i] = ee[i].fillna("PENDIENTE")
-	ee[i] = ee[i].map(lambda x: x.upper())
+#    for i in ["MOD","PREQUAL","PROP"]:
+#	#ee[i] = ee[i].fillna("PENDIENTE")
+#    ee["PREQUAL"] = ee["PREQUAL"].map(lambda x: x.upper())
+    ee["PREQUAL"] = ee["PREQUAL"].map(lambda x: 0 if x == "No Precalifica" else 1)
+    ee["PREQUAL"] = ee["PREQUAL"].replace("NAN",np.nan)
     ee["DATA_ROOM"] = ee["DATA_ROOM"]\
-	.map(lambda x: 0 if "No Accede al Cuarto de Datos" else 1)
+	.map(lambda x: 0 if x=="No Accede al Cuarto de Datos" else 1)
     ee = ee[["ID_LICITANTE","MOD","EMPRESA","ID_R","RONDA","LIC","DATA_ROOM","PREQUAL","PROP"]]
+    inxs["MOD"] = np.zeros(inxs.shape[0])
+    for i,d in enumerate(inxs.ix[:,0]):
+	lic = d.split(",")
+	if( len(lic) > 1 ):
+	    inxs.ix[i,"MOD"] = "CONSORCIO"
+	else:
+	    inxs.ix[i,"MOD"] = "INDIVIDUAL"
+    for i in ["ID_R","RONDA","LIC"]:
+	ee[i] = ee[i].map(lambda x: str(x).upper())
     return ee,inxs
 
+
 def ofertasNT():
-    arr = []
     ofertas = licitantes.df.copy()
-#    ofertas["GANADOR"] = regexIDs(licitantes,"GANADOR")
     ofertas["EMPRESA"] = lics["EMPRESA"]
     ofertas["ID_LICITANTE"] = np.zeros(ofertas.shape[0])
-#    ofertas["GG"] = np.zeros(ofertas.shape[0])
     for i,d in enumerate(ll.ix[:,"EMPRESA"]):
-#	indicesG = ofertas[ofertas["GANADOR"] == ll["EMPRESA"][i]].index.tolist()
 	indicesE = ofertas[ofertas["EMPRESA"] == ll["EMPRESA"][i]].index.tolist()
 	for j in indicesE:
 	    ofertas.ix[j,"ID_LICITANTE"] = i
-#	for j in indicesG:
-#	    ofertas.ix[j,"GG"] = i
     ofertas["ID_LICITANTE"] = ofertas["ID_LICITANTE"].map(lambda x: int(x))
+    operadores = ofertas["OPERADOR"].dropna().drop_duplicates().sort_values()\
+      .reset_index().drop("index",axis=1)
+    operadores["OPERADOR"] = operadores["OPERADOR"].map(lambda x: str(x).upper())
+#    ofertas[np.isnan(ofertas["OPERADOR"])==0]["OPERADOR"] = ofertas[np.isnan(ofertas["OPERADOR"])==0]["OPERADOR"].map(lambda x: x.upper())
+    ofertas["OPERADOR"] = ofertas["OPERADOR"].map(lambda x: str(x).upper())
+    for r in [(", S[.]"," S."),("OIL & GAS","OIL&GAS"),("WORLDWIDE, INC","WORLDWIDE INC"),(", ",";"),(" & ",";")]:
+        ofertas["OPERADOR"] = ofertas["OPERADOR"].map(lambda x: re.sub(r[0],r[1],x))
+        operadores["OPERADOR"] = operadores["OPERADOR"].map(lambda x: re.sub(r[0],r[1],x))
     ofertas.drop(["GANADOR","2L","ADJ"],axis=1,inplace=True)
-    return ofertas
+    for i,d in enumerate(operadores.ix[:,"OPERADOR"]):
+        for j,e in enumerate(ofertas.ix[:,"OPERADOR"]):
+	    if( d == e ):
+		ofertas.ix[j,"OPERADOR"] = i
+    ofertas["OPERADOR"] = ofertas["OPERADOR"].replace("NAN",np.nan)
+    return ofertas,operadores
+
 
 def ganadores():
     nArr = [-1] * ofertas.shape[0]
+    nArr = np.full([ofertas.shape[0],],np.nan)
     ofertas["GANADOR"] = np.array(nArr)
     ofertas["SEGUNDO_LUGAR"] = np.array(nArr)
     ofertas["ADJ"] = np.array(nArr)
     for i in ofertas[["RONDA","LIC","BLOQUE"]].drop_duplicates().values:
 	match = ofertas[(ofertas["RONDA"] == i[0]) & (ofertas["LIC"] == i[1]) & (ofertas["BLOQUE"] == i[2])]
 	indices = match.index.tolist()
-#	print match[["EMPRESA","ID_LICITANTE"]]
         result = match[["VPO","ID_LICITANTE","EMPRESA"]].values
-#	result = result[result[:,0].argsort()[::-1]]
-#	print result[0][2],indices
-#	print result.shape
 	if( result[0][0] != 0 ):
 	    for j in indices:
 		ofertas.ix[j,"GANADOR"] = result[0][1]
@@ -357,6 +376,8 @@ def ganadores():
 	    ofertas.ix[i,"ADJ"] = ofertas.ix[i,"GANADOR"]
 	elif( d == 2 ):
 	    ofertas.ix[i,"ADJ"] = ofertas.ix[i,"SEGUNDO_LUGAR"]
+    for i in ["GANADOR","SEGUNDO_LUGAR","ADJ"]:
+	ofertas[i] = ofertas[i].map(lambda x: int(x) if not math.isnan(x) else None)
 
 
 def Empresas_Licitantes():
@@ -381,10 +402,14 @@ def Empresas_Licitantes():
 def importar():
    ganadores()
    b.to_csv("RONDAS_empresas.csv",header=None,sep=",",encoding="latin1")
-   ll.to_csv("RONDAS_licitantes.csv",header=None,sep=";",encoding="latin1")
+   ll["EMPRESA"] = ll["EMPRESA"].map(lambda x: re.sub(",",";",x))
+   ll.to_csv("RONDAS_licitantes.csv",header=None,sep=",",encoding="latin1")
    emp_lic.to_csv("empresas_licitantes.csv",header=None,index=False)
-   ofertas.to_csv("RONDAS_ofertas.csv",header=None,index=False,encoding="latin1")
-   ee.drop("EMPRESA",axis=1).to_csv("RONDAS_procesos_de_licitacion.csv",header=None,index=False,encoding="latin1")
+   ofertas1 = ofertas[["ID_LICITANTE","ID","RONDA","LIC","BLOQUE","NUM","CONTRATO","VAR_ADJ1","VAR_ADJ2","VPO","BONO","OPERADOR","GANADOR","SEGUNDO_LUGAR","ID_ADJ","ADJ"]].copy()
+   ofertas1["CONTRATO"] = ofertas1["CONTRATO"].map(lambda x: 1 if x == "LICENCIA" else 2)
+   ofertas1.to_csv("RONDAS_ofertas.csv",header=None,index=False,encoding="latin1")
+   ee.drop(["EMPRESA","PROP","MOD"],axis=1).to_csv("RONDAS_procesos_de_licitacion.csv",header=None,index=None,encoding="latin1")
+   operadores.to_csv("operadores.csv",header=None,encoding="latin1")
    print("ARCHIVOS IMPORTADOS")
 
 
@@ -404,11 +429,11 @@ if(__name__ == "__main__"):
     b["EMPRESA"] = b["EMPRESA"].map(lambda x: re.sub(" & ","&",x))
     licitantes = Rondas("DATOS_RONDAS_ofertas.xlsx","EMPRESA")
 #    licitantes.df.fillna("PENDIENTE",inplace=True)
-    for i in ["OPERADOR","MODALIDAD"]:
-        licitantes.df[i].fillna("PENDIENTE",inplace=True)
+#    for i in ["OPERADOR","MODALIDAD"]:
+#        licitantes.df[i].fillna("PENDIENTE",inplace=True)
     for i in ["VAR_ADJ2","VPO","BONO"]:
 	licitantes.df[i].fillna(0,inplace=True)
-    for i in ["ID","RONDA","LIC","BLOQUE","NUM","MODALIDAD","CONTRATO","GANADOR","OPERADOR"]:
+    for i in ["ID","RONDA","LIC","BLOQUE","NUM","MODALIDAD","CONTRATO","GANADOR"]:
 	licitantes.df[i] = licitantes.df[i].map(lambda x: str(x).upper())
 #    a = licitantes.df[["EMPRESA","OPERADOR"]]
 #    a = a.sort_values("EMPRESA",ascending=False)
@@ -419,8 +444,8 @@ if(__name__ == "__main__"):
 #    a.drop_duplicates("EMPRESA", inplace=True)
 #    a.reset_index(inplace=True);
 #    a.drop("index",axis=1,inplace=True)
-    emps = regexIDs(empresas,"EMPRESA")
-    lics = regexIDs(licitantes,"EMPRESA")
+    emps = regexIDs(empresas.df,"EMPRESA")
+    lics = regexIDs(licitantes.df,"EMPRESA")
     ee,ll = empresasNT()
-    ofertas = ofertasNT()
+    ofertas,operadores = ofertasNT()
     emp_lic = Empresas_Licitantes();
