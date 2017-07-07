@@ -313,7 +313,12 @@ def empresasNT():
 #    for i in ["MOD","PREQUAL","PROP"]:
 #	#ee[i] = ee[i].fillna("PENDIENTE")
 #    ee["PREQUAL"] = ee["PREQUAL"].map(lambda x: x.upper())
-    ee["PREQUAL"] = ee["PREQUAL"].map(lambda x: 0 if x == "No Precalifica" else 1)
+    def precal(x):
+	if(x == "No Precalifica"): return 0
+	elif(x == "Precalificado"): return 1
+	else: None
+    ee["PREQUAL"] = ee["PREQUAL"].map(precal)
+#    ee["PREQUAL"] = ee["PREQUAL"].map(lambda x: 0 if x == "No Precalifica" else 1)
     ee["PREQUAL"] = ee["PREQUAL"].replace("NAN",np.nan)
     ee["DATA_ROOM"] = ee["DATA_ROOM"]\
 	.map(lambda x: 0 if x=="No Accede al Cuarto de Datos" else 1)
@@ -352,7 +357,8 @@ def ofertasNT():
         for j,e in enumerate(ofertas.ix[:,"OPERADOR"]):
 	    if( d == e ):
 		ofertas.ix[j,"OPERADOR"] = i
-    ofertas["OPERADOR"] = ofertas["OPERADOR"].replace("NAN",np.nan)
+    for i in ["OPERADOR","NUM"]:
+        ofertas[i] = ofertas[i].replace("NAN",np.nan)
     return ofertas,operadores
 
 

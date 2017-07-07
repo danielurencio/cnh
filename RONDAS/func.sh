@@ -97,6 +97,7 @@ LoadOFERTAS() {
   sed -i 's/í/Í/g' ofertas.csv
   sed -i 's/ó/Ó/g' ofertas.csv
   sed -i 's/ú/Ú/g' ofertas.csv
+  sed -i 's/ñ/Ñ/g' ofertas.csv
   iconv -f utf-8 -t latin1 ofertas.csv > RONDAS_ofertas.csv
   rm ofertas.csv
   sqlldr cmde_raw/raw17 control=loader_ofertas.ctl
@@ -140,6 +141,19 @@ DropTODO() {
   done
 }
 
+
+CreateTODO() {
+ for i in LICITANTES EMPRESAS INTERMEDIA OPERADORES OFERTAS PROCESOS; do
+  Create${i}
+ done
+}
+
+
+CargarTODO() {
+ for i in LICITANTES EMPRESAS INTERMEDIA OPERADORES OFERTAS PROCESOS; do
+  Load${i}
+ done
+}
 
 PrintTABLAS() {
   echo "select table_name from user_tables;" | sqlplus cmde_raw/raw17
