@@ -118,6 +118,7 @@ TruncatePROCESOS() {
 }
 
 LoadPROCESOS() {
+  sed -i 's/[.]0$//g' RONDAS_procesos_de_licitacion.csv
   sqlldr cmde_raw/raw17 control=loader_procesos.ctl
 }
 
