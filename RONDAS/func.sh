@@ -7,19 +7,19 @@ archivos() {
   python -c 'execfile("bloques.py"); importar();'
 
   sep=":"
-  for i in *.csv; do
-    sed -i "s/ S[.]A/$sep S.A/g" $i
-    sed -i "s/ S[.] DE R/$sep S. DE R/g" $i
-    sed -i "s/ L[.]P/$sep L.P/g" $i
-    sed -i "s/ S[.]L/$sep S.L/g" $i
-    sed -i "s/ B[.]V/$sep B.V/g" $i
-    sed -i "s/II LL/II$sep LL/g" $i
+#  for i in *.csv; do
+#    sed -i "s/ S[.]A/$sep S.A/g" $i
+#    sed -i "s/ S[.] DE R/$sep S. DE R/g" $i
+#    sed -i "s/ L[.]P/$sep L.P/g" $i
+#    sed -i "s/ S[.]L/$sep S.L/g" $i
+#    sed -i "s/ B[.]V/$sep B.V/g" $i
+#    sed -i "s/II LL/II$sep LL/g" $i
 #    sed -i "s/OIL[;] GAS/OIL, GAS/g" $i
-    sed -i "s/CO[.] LTD/CO.$sep LTD/g" $i
-    sed -i "s/WORLDWIDE INC/WORLDWIDE$sep INC/g" $i
-    sed -i "s/OIL[&]GAS/OIL \& GAS/g" $i
-    sed -i "s/HOLDINGS LLC/HOLDINGS$sep LLC/g" $i
-  done
+#    sed -i "s/CO[.] LTD/CO.$sep LTD/g" $i
+#    sed -i "s/WORLDWIDE INC/WORLDWIDE$sep INC/g" $i
+#    sed -i "s/OIL[&]GAS/OIL \& GAS/g" $i
+#    sed -i "s/HOLDINGS LLC/HOLDINGS$sep LLC/g" $i
+#  done
 
   for i in *.csv; do
     file=${i%.*}

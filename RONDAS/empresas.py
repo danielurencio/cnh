@@ -406,20 +406,44 @@ def Empresas_Licitantes():
     arr.drop_duplicates(inplace=True)
     return arr
 
+
+def apellidos(x):
+    regex = [
+  (" S[.]A",", S.A"),
+  (" S[.] DE R",", S. DE R"),
+  (" L[.]P",", L.P"),
+#  (" S[.]L",", S.L"),
+  ("XICO B[.]V","XICO, B.V"),
+  ("II LL","II, LL"),
+  ("CO[.] LTD","CO., LTD"),
+  ("WORLDWIDE INC","WORLDWIDE, INC"),
+  ("OIL[&]GAS","OIL " + r'&' +" GAS"),
+  ("HOLDINGS LLC","HOLDINGS, LLC"),
+  ("JAPAN OIL;","JAPAN OIL,"),
+  ("EXPLORATION&PRODUCTION","EXPLORATION " + r'&' + " PRODUCTION"),
+  (", S[.]A[.]S[.]"," S.A.S."),
+#  ("SIPETROL, S","SIPETROL S"),
+  ("MITSUI&CO., LTD","MITSUI "+ r'&' + " CO. LTD"),
+  (", S[.]A[.]R[.]L[.]"," S.A.R.L.")
+    ]
+    for r1,r2 in regex:
+	x = re.sub(r1,r2,x)
+    return x
+
 	
 def importar():
    HEAD = True
    ganadores()
    ## DATOS_LICITACIONES_EMPRESAS
    EMPRESAS = b.copy()
-   EMPRESAS["EMPRESA"] = EMPRESAS["EMPRESA"].map(lambda x: re.sub("JAPAN OIL;","JAPAN OIL,",x))
+   EMPRESAS["EMPRESA"] = EMPRESAS["EMPRESA"].map(apellidos)#lambda x: re.sub("JAPAN OIL;","JAPAN OIL,",x))
    EMPRESAS.index += 1
    EMPRESAS.index.rename("ID_EMPRESA",inplace=True)
    EMPRESAS.to_csv("DATOS_LICITACIONES_empresas.csv",header=HEAD,sep=",",encoding="latin1")
    ## DATOS_LICITACIONES_LICITANTES
    LICITANTES = ll.copy()
    LICITANTES["EMPRESA"] = LICITANTES["EMPRESA"].map(lambda x: re.sub(",",";",x))
-   LICITANTES["EMPRESA"] = LICITANTES["EMPRESA"].map(lambda x: re.sub("JAPAN OIL;","JAPAN OIL,",x))
+   LICITANTES["EMPRESA"] = LICITANTES["EMPRESA"].map(apellidos)#lambda x: re.sub("JAPAN OIL;","JAPAN OIL,",x))
  
    LICITANTES.index +=1
    LICITANTES.index.rename("ID_LICITANTE",inplace=True)
