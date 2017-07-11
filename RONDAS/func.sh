@@ -1,3 +1,47 @@
+##############################################################
+## GENERAR ARCHIVOS Y PREPROCESAMIENTO ADICIONAL
+############################################################
+##########################################################
+archivos() {
+  python -c 'execfile("empresas.py"); importar();'
+  python -c 'execfile("bloques.py"); importar();'
+
+  sep=":"
+  for i in *.csv; do
+    sed -i "s/ S[.]A/$sep S.A/g" $i
+    sed -i "s/ S[.] DE R/$sep S. DE R/g" $i
+    sed -i "s/ L[.]P/$sep L.P/g" $i
+    sed -i "s/ S[.]L/$sep S.L/g" $i
+    sed -i "s/ B[.]V/$sep B.V/g" $i
+    sed -i "s/II LL/II$sep LL/g" $i
+#    sed -i "s/OIL[;] GAS/OIL, GAS/g" $i
+    sed -i "s/CO[.] LTD/CO.$sep LTD/g" $i
+    sed -i "s/WORLDWIDE INC/WORLDWIDE$sep INC/g" $i
+    sed -i "s/OIL[&]GAS/OIL \& GAS/g" $i
+    sed -i "s/HOLDINGS LLC/HOLDINGS$sep LLC/g" $i
+  done
+
+  for i in *.csv; do
+    file=${i%.*}
+    iconv -f latin1 -t UTF-8 $i > ${file}_1.csv
+    rm $i
+    sed -i "s/á/Á/g" ${file}_1.csv
+    sed -i "s/é/É/g" ${file}_1.csv
+    sed -i "s/í/Í/g" ${file}_1.csv
+    sed -i "s/ó/Ó/g" ${file}_1.csv
+    sed -i "s/ú/Ú/g" ${file}_1.csv
+    sed -i "s/ñ/Ñ/g" ${file}_1.csv
+    iconv -f UTF-8 -t latin1 ${file}_1.csv > ${file}.csv
+    rm ${file}_1.csv
+  done
+
+  sed -i 's/, /;/g' DATOS_LICITACIONES_bloques.csv
+  sed -i 's/\([A-Z]\) Y \([A-Z]\)/\1;\2/g' DATOS_LICITACIONES_bloques.csv
+
+  aa=$(ls *.csv)
+  ssconvert --merge-to=TABLAS.xls $aa
+}
+
 ##########################################################
 ########## LICITANTES ###################################
 ########################################################

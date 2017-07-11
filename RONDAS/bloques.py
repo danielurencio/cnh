@@ -67,6 +67,7 @@ def cambiarCol(x):
     return x
 
 bloques.columns = bloques.columns.map(cambiarCol)
+bloques['PMT_ACTIVIDADES'] = bloques.PMT_ACTIVIDADES.map(lambda x: re.sub("[.]$","",x) if(not pd.isnull(x)) else x)
 campos.columns = campos.columns.map(cambiarCol)
 
 for i in ["IDENTIFICADOR","CAMPOS"]:
@@ -77,7 +78,7 @@ campos.index.rename("ID_BLOQUE",inplace=True)
 bloques.index.rename("ID_BLOQUE",inplace=True)
 
 def importar():
-    bloques.to_csv("BLOQUES.csv")
-    campos.to_csv("CAMPOS.csv")
+    bloques.to_csv("DATOS_LICITACIONES_bloques.csv",encoding="latin1")
+    campos.to_csv("DATOS_LICITACIONES_campos.csv",encoding="latin1")
     print("ARCHIVOS IMPORTADOS.")
 

@@ -332,6 +332,8 @@ def empresasNT():
 	    inxs.ix[i,"MOD"] = "INDIVIDUAL"
     for i in ["ID_R","RONDA","LIC"]:
 	ee[i] = ee[i].map(lambda x: str(x).upper())
+    ee["EMPRESA"] = ee["EMPRESA"].map(lambda x: re.sub("JAPAN OIL;","JAPAN OIL,",x))
+    inxs["EMPRESA"] = inxs["EMPRESA"].map(lambda x: re.sub("JAPAN OIL;","JAPAN OIL,",x))
     return ee,inxs
 
 
@@ -406,16 +408,42 @@ def Empresas_Licitantes():
 
 	
 def importar():
+   HEAD = True
    ganadores()
-   b.to_csv("RONDAS_empresas.csv",header=None,sep=",",encoding="latin1")
-   ll["EMPRESA"] = ll["EMPRESA"].map(lambda x: re.sub(",",";",x))
-   ll.to_csv("RONDAS_licitantes.csv",header=None,sep=",",encoding="latin1")
-   emp_lic.to_csv("empresas_licitantes.csv",header=None,index=False)
-   ofertas1 = ofertas[["ID_LICITANTE","ID","RONDA","LIC","BLOQUE","NUM","CONTRATO","VAR_ADJ1","VAR_ADJ2","VPO","BONO","OPERADOR","GANADOR","SEGUNDO_LUGAR","ID_ADJ","ADJ"]].copy()
-   ofertas1["CONTRATO"] = ofertas1["CONTRATO"].map(lambda x: 1 if x == "LICENCIA" else 2)
-   ofertas1.to_csv("RONDAS_ofertas.csv",header=None,index=False,encoding="latin1")
-   ee.drop(["EMPRESA","PROP","MOD"],axis=1).to_csv("RONDAS_procesos_de_licitacion.csv",header=None,index=None,encoding="latin1")
-   operadores.to_csv("operadores.csv",header=None,encoding="latin1")
+   ## DATOS_LICITACIONES_EMPRESAS
+   EMPRESAS = b.copy()
+   EMPRESAS["EMPRESA"] = EMPRESAS["EMPRESA"].map(lambda x: re.sub("JAPAN OIL;","JAPAN OIL,",x))
+   EMPRESAS.index += 1
+   EMPRESAS.index.rename("ID_EMPRESA",inplace=True)
+   EMPRESAS.to_csv("DATOS_LICITACIONES_empresas.csv",header=HEAD,sep=",",encoding="latin1")
+   ## DATOS_LICITACIONES_LICITANTES
+   LICITANTES = ll.copy()
+   LICITANTES["EMPRESA"] = LICITANTES["EMPRESA"].map(lambda x: re.sub(",",";",x))
+   LICITANTES["EMPRESA"] = LICITANTES["EMPRESA"].map(lambda x: re.sub("JAPAN OIL;","JAPAN OIL,",x))
+ 
+   LICITANTES.index +=1
+   LICITANTES.index.rename("ID_LICITANTE",inplace=True)
+   LICITANTES.columns = ["LICITANTE","MODALIDAD"]
+   LICITANTES.to_csv("DATOS_LICITACIONES_licitantes.csv",header=HEAD,sep=",",encoding="latin1")
+   ## DATOS_LICITACIONES_LICITANTES_EMPRESAS
+   EMP_LIC = emp_lic.copy()
+   EMP_LIC["ID_LICITANTE"] += 1; EMP_LIC["ID_EMPRESA"] += 1;
+   EMP_LIC.to_csv("DATOS_LICITACIONES_licitantes_empresas.csv",header=HEAD,index=False)
+   ## DATOS_LICITACIONES_OFERTAS
+   ofertas1 = ofertas[["ID_LICITANTE","ID","VAR_ADJ1","VAR_ADJ2","VPO","BONO","OPERADOR","GANADOR","SEGUNDO_LUGAR","ID_ADJ","ADJ"]].copy()
+   for i in ["ID_LICITANTE","OPERADOR","GANADOR","SEGUNDO_LUGAR","ADJ"]:
+       ofertas1[i] += 1
+   ofertas1.columns = ["ID_LICITANTE_OFERTA","ID_BLOQUE","VAR_ADJ1","VAR_ADJ2","VPO","BONO","ID_OPERADOR","GANADOR","SEGUNDO_LUGAR","ID_ADJ","ID_LICITANTE_ADJ"]
+   ofertas1.to_csv("DATOS_LICITACIONES_ofertas.csv",header=HEAD,index=False,encoding="latin1")
+   ## DATOS_LICITACIONES_PROCESOS
+   PROCESOS = ee.copy()
+   PROCESOS["ID_LICITANTE"] += 1
+   PROCESOS.drop(["EMPRESA","PROP","MOD","ID_R"],axis=1).to_csv("DATOS_LICITACIONES_procesos.csv",header=HEAD,index=None,encoding="latin1")
+   ## DATOS_LICITACIONES_OPERADORES
+   OPERADORES = operadores.copy()
+   OPERADORES.index += 1
+   OPERADORES.index.rename("ID_OPERADOR",inplace=True)
+   OPERADORES.to_csv("DATOS_LICITACIONES_operadores.csv",header=HEAD,encoding="latin1")
    print("ARCHIVOS IMPORTADOS")
 
 
@@ -455,3 +483,5 @@ if(__name__ == "__main__"):
     ee,ll = empresasNT()
     ofertas,operadores = ofertasNT()
     emp_lic = Empresas_Licitantes();
+#    ee.index += 1; ll.index +=1; b.index += 1;
+#    emp_lic["ID_LICITANTE"] += 1; emp_lic['ID_EMPRESA'] += 1
