@@ -7,17 +7,21 @@ var svg = d3.select("body").append("svg")
 
 var datos;
 
-d3.csv("reportes.csv", function(err,data) {
+d3.queue()
+.defer(d3.csv,"reportes.csv")
+.defer(d3.csv,"lista_reportes.csv")
+.await(function(err,data,lista) {
   var xTextOffset = 270;
   var yTextOffset = 50;
-  datos = data;
+//  datos = data;
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// FUENTES ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
+  var fuentes = svg.append("g").attr("class","fuentes");
 
-  svg.selectAll("rect").data(data)
+  fuentes.selectAll("rect").data(data)
      .enter().append("rect")
     .attr({
       "id": function(d) { return d.FUENTE; },
@@ -34,7 +38,6 @@ d3.csv("reportes.csv", function(err,data) {
       },
       "width": 240,
       "height": 20,
-//      "fill": "transparent",
       "stroke": function(d) {
 	if(d.TRANSPONEDOR != "") return null;
 	else return "black";
@@ -48,7 +51,7 @@ d3.csv("reportes.csv", function(err,data) {
     });
 
 
-  svg.selectAll("text").data(data)
+  fuentes.selectAll("text").data(data)
      .enter().append("text")
     .attr({
       "y": function(d,i) {
@@ -72,8 +75,111 @@ d3.csv("reportes.csv", function(err,data) {
     })
     .text(function(d) { return d.FUENTE; });
 
+  fuentes.attr("transform","translate(" + width*.6 + ",0)");
 
-////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////// REPORTES ////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+var reportes = svg.append("g").attr("class","reportes");
+
+var categorias = lista
+	.filter(function(d) { return d.CLASE; })
+	.map(function(d) { return d.CLASE; })
+	.reduce(function(a,b) {
+	    if(a.indexOf(b) < 0) { a.push(b); };
+	    return a;
+	},[]);
+
+
+ var boxWidth = 0.33 
+ reportes.selectAll("g").data(categorias)
+      .enter().append("g")
+    .attr("class","reporte")
+    .attr("id", function(d) {
+	var str = d.split(" ")
+	.reduce(function sum(a,b) { return a + "_" + b; });
+	return str;
+    })
+    .append("rect")
+    .attr({
+      "width": (width*boxWidth) / 2,
+      "height": height/4,
+      "x":function(d,i) {
+	if( (i+1)%2 == 0 ) { return (width*boxWidth)/2; }
+	else return 0;
+      },
+      "y":function(d,i) {
+	var Y;
+	if( (i+1) > 0 ) { Y = 0; };
+	if( (i+1) > 2 ) { Y = height/4; };
+	if( (i+1) > 4 ) { Y = 2*(height/4) };
+	if( (i+1) > 6 ) { Y = 3*(height/4) };
+	return Y;
+      },
+      "stroke":"white",
+      "rx":5,
+      "fill":"rgba(0,0,0,0.5)"
+    })
+    .style("stroke-width",2);
+
+
+ var BOXES = d3.selectAll("g.reporte");
+
+ for( var i in categorias ) {
+   var str = categorias[i].split(" ").reduce(function(a,b) {
+	return a + "_" + b;
+   });
+
+   var sel = d3.select("#"+str)
+   var reportes = lista.filter(function(d) { return d.CLASE == categorias[i]; })
+//   console.log(reportes)
+
+   sel.selectAll("text").data(reportes)
+     .enter().append("text")
+    .attr({
+      "x": function(d) { return sel.node().getBBox().x; },
+      "y": function(d,i) {
+	var Y = sel.node().getBBox().y
+	return Y + (i+0);
+      }
+    }).text(function(d) { return d.REPORTE; })
+ }
+
+/*
+ BOXES.selectAll("text").data(lista)
+       .enter().append("text")
+    .attr({
+      "x": function(d,i) {
+	var str = d.CLASE.split(" ")
+	  .reduce(function sum(a,b) { return a + "_" + b; });
+	var X = d3.select("g#"+str).node().getBBox().x;
+	console.log(d3.select(this).node().parentNode.id);
+	return X;
+      },
+      "y": function(d,i) {
+	var str = d.CLASE.split(" ")
+	  .reduce(function sum(a,b) { return a + "_" + b; });
+	var Y = d3.select("g#" + str + ">rect").node().getBBox().y;
+	return Y + (i*15);
+      }
+    })
+    .text(function(d) {
+	var texto;
+	var str = d.CLASE.split(" ")
+	  .reduce(function sum(a,b) { return a + "_" + b; });
+
+        var sel = d3.select(this).node().parentNode.id;
+	if( str == sel ) texto = d.REPORTE;
+	else texto = null;
+
+	return texto;
+    });
+*/
+
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////// TRANSPONEDORES //////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -88,8 +194,7 @@ d3.csv("reportes.csv", function(err,data) {
 		; return a; },[]);
 
 
-  var transXoffset = 550; console.log(transXoffset);
-  
+  var transXoffset = 550;
 
   transConteiner.selectAll("rect").data(transponedores)
      .enter().append("rect")
@@ -129,35 +234,6 @@ d3.csv("reportes.csv", function(err,data) {
       "font-weight": 700
     })
     .text(function(d) { return d; });
-
-/*
-   transConteiner.attr("transform", function(d) {
-	var HH = transConteiner.node().getBBox().height;
-	return "translate(0," + (height/2 - HH/2 - 20) +")"
-   });
-*/
-
-  svg.selectAll("line").data(data)
-    .enter().append("line")
-    .attr({
-      "x1":function(d) {
-	var x = d3.select("rect#" + d.FUENTE).node().getBBox().x;
-//	console.log(d)
-	if(x) return x;
-      },
-      "y1":function(d) {
-	var y = d3.select("rect#" + d.FUENTE).node().getBBox().y;
-	if(y) return y;
-      },
-      "x2":function(d) {
-	var x = d3.select("rect#" + d.TRANSPONEDOR.split('.')[0]).node().getBBox().x;
-	if(x) return x;
-      },
-      "y2":function(d) {
-	var y = d3.select("rect#" + d.TRANSPONEDOR.split('.')[0]).node().getBBox().y;
-	if(y) return y;
-      }
-    });
 
 });
 
