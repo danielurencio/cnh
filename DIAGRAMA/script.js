@@ -353,7 +353,7 @@ var categorias = lista
 
   var transXoffset = 550;
 
-  transConteiner.selectAll("rect").data(transponedores)
+  transConteiner.selectAll("g").data(transponedores)
      .enter().append("g")
 	.attr("id",function(d) { return d.split(".")[0]; })
      .each(function(d,i) {
@@ -398,12 +398,9 @@ var categorias = lista
 	    .text(function() { return d; });
 	  })
 	  .on("mouseover", function(d) {
-	    
-	  })
-	  .on("mousout", function(d) {
-
+	    var dato = data.filter(function(e) { return e.TRANSPONEDOR == d; });
+	    console.log(dato);
 	  });
-
 
 });
 

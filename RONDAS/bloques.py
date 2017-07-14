@@ -76,9 +76,13 @@ for i in ["IDENTIFICADOR","CAMPOS"]:
 campos.set_index("IDENTIFICADOR",inplace=True)
 campos.index.rename("ID_BLOQUE",inplace=True)
 bloques.index.rename("ID_BLOQUE",inplace=True)
+HEAD = None
+
+for i in ["PLAYS_YACIMIENTO","LITOLOGIA"]:
+  bloques[i] = bloques[i].map(lambda x: re.sub("\n","",str(x)))
 
 def importar():
-    bloques.to_csv("DATOS_LICITACIONES_bloques.csv",encoding="latin1")
-    campos.to_csv("DATOS_LICITACIONES_campos.csv",encoding="latin1")
+    bloques.to_csv("DATOS_LICITACIONES_bloques.csv",encoding="latin1",header=HEAD)
+    campos.to_csv("DATOS_LICITACIONES_campos.csv",encoding="latin1",header=HEAD)
     print("ARCHIVOS IMPORTADOS.")
 

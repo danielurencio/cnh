@@ -432,7 +432,7 @@ def apellidos(x):
 
 	
 def importar():
-   HEAD = True
+   HEAD = None
    ganadores()
    ## DATOS_LICITACIONES_EMPRESAS
    EMPRESAS = b.copy()
@@ -467,6 +467,7 @@ def importar():
    OPERADORES = operadores.copy()
    OPERADORES.index += 1
    OPERADORES.index.rename("ID_OPERADOR",inplace=True)
+   OPERADORES["OPERADOR"] = OPERADORES["OPERADOR"].map(apellidos)
    OPERADORES.to_csv("DATOS_LICITACIONES_operadores.csv",header=HEAD,encoding="latin1")
    print("ARCHIVOS IMPORTADOS")
 

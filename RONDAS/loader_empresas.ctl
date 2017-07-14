@@ -1,5 +1,5 @@
 load data
-  infile 'RONDAS_empresas.csv'
+  infile 'DATOS_LICITACIONES_empresas.csv'
   into table DATOS_LICITACIONES_EMPRESAS
-  fields terminated by ","
+  fields terminated by ',' optionally enclosed by '"'
   (ID_EMPRESA,EMPRESA,PAIS)
