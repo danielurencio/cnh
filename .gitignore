@@ -2,3 +2,5 @@
 /**/*.xls*
 /**/*.log
 /**/*.bad
+
+!/DIAGRAMA/*.csv
