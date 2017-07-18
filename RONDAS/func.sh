@@ -87,7 +87,7 @@ CreateINTERMEDIA() {
 }
 
 TruncateINTERMEDIA() {
-  echo "TRUNCATE TABLE DATOS_EMPRESAS_LICITANTES;" | sqlplus cmde_raw/raw17${1}
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_LIC_EMP;" | sqlplus cmde_raw/raw17${1}
 }
 
 LoadINTERMEDIA() {
@@ -222,7 +222,7 @@ CrearTODO() {
 
 
 DropTODO() {
-  for i in EMPRESAS_LICITANTES LICITACIONES_PROCESOS LICITACIONES_OFERTAS LICITACIONES_LICITANTES LICITACIONES_EMPRESAS LICITACIONES_OPERADORES LICITACIONES_CAMPOS LICITACIONES_BLOQUES; do
+  for i in LICITACIONES_LIC_EMP LICITACIONES_PROCESOS LICITACIONES_OFERTAS LICITACIONES_LICITANTES LICITACIONES_EMPRESAS LICITACIONES_OPERADORES LICITACIONES_CAMPOS LICITACIONES_BLOQUES; do
     echo $i
     echo "DROP TABLE DATOS_$i;" | sqlplus cmde_raw/raw17${1}
     echo ""
@@ -256,5 +256,13 @@ CheckERRORES() {
   for i in *.log; do
     echo $i;
     cat $i | grep "Total logical records";
+  done
+}
+
+ConvertirUTF8() {
+  for i in *.csv; do
+    iconv -f latin1 -t utf-8 ${i} > ${i%.*}1.csv;
+    rm $i;
+    mv ${i%.*}1.csv ${i%.*}.csv;
   done
 }
