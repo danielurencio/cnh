@@ -33,21 +33,36 @@ contenedor.attr.transform = "translate(0,0)";
 addElement(contenedor);
 
 function reajustar() {
-  width = window.innerWidth;
-  height = window.innerHeight;
-//  console.log(width,height);
-//  d3.select("svg#canvas").attr("width",width)
-//  d3.select("g#red>rect").attr("width",width/2)
-  svgCanvas.attr.width = width;
-  svgCanvas.attr.height = height;
-  addElement(svgCanvas);
-  contenedor.attr.width = width/2;
-  contenedor.attr.height = height;
-  contenedor.append = 0;
-  contenedor.selection = "g#red>rect";
-  addElement(contenedor);
-  contenedor.selection = 'g#mapa>rect';
-  addElement(contenedor);
+    if(width != window.innerWidth || height != window.innerHeight) {
+	  d3.select("g#red").remove();
+	  width = window.innerWidth;
+	  height = window.innerHeight;
+	//  console.log(width,height);
+	//  d3.select("svg#canvas").attr("width",width)
+	//  d3.select("g#red>rect").attr("width",width/2)
+	  svgCanvas.attr.width = width;
+	  svgCanvas.attr.height = height;
+	  addElement(svgCanvas);
+
+	  contenedor.attr.width = width/2;
+	  contenedor.attr.height = height;
+	  contenedor.selection = "svg#canvas"
+	  contenedor.append = 1;
+	  contenedor.type = "g";
+	  contenedor.attr.id = "red";
+	  addElement(contenedor);
+	  //RECT
+/*	  contenedor.selection = "g#red";
+	  contenedor.type = "rect";
+	  addElement(contenedor);
+*/
+	  contenedor.append =0;
+	  delete contenedor.attr.class;
+	  contenedor.selection = 'g#mapa>rect';
+	  addElement(contenedor);
+	//  RED(width,height)
+	  d3.select("g.NODOS").attr("transform","translate(0,0)");
+    }
 };
 
 setInterval(reajustar,1000);

@@ -7,7 +7,7 @@ import math
 import pandas as pd
 import numpy as np
 
-excel = pd.ExcelFile("Base concentrada v4.xlsx")
+excel = pd.ExcelFile("Copia de Base concentrada v4.xlsx")
 sheets = excel.sheet_names
 for i in ["Concentrado","Hoja2","Adjudicados","Licitaciones","Rondas","Resultados","Generales","DPCache_Hoja2"]:
     sheets.remove(i)
@@ -50,7 +50,7 @@ for i in bloques.columns:
 bloques.index = bloques.index.map(lambda x: x.upper())
 
 # Quitar la palabra "BLOQUE" de la columna "Nombre del bloque" cuando aplique.
-bloques["Nombre del bloque"] = bloques["Nombre del bloque"].map(lambda x: x.split(" ")[1] if(re.search("BLOQUE",x)) else x)
+bloques["Nombre del bloque"] = bloques["Nombre del bloque"].map(lambda x: x.split(" ")[1] if(re.search("BLOQUE",str(x))) else x)
 
 # Existe un valor con dos opciones (EXPLORACIÓN: 2090 & EVALUACIÓN:2270-2570)
 bloques.ix["ASOC-TRION","Tirante de agua promedio (mts)"] = 2090

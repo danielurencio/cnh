@@ -301,7 +301,7 @@ def empresasNT():
     arr = []
     ee = empresas.df.copy();
     ee["EMPRESA"] = emps["EMPRESA"]
-    inxs = lics["EMPRESA"].drop_duplicates().sort_values().reset_index().drop("index",axis=1)
+    inxs = emps["EMPRESA"].drop_duplicates().sort_values().reset_index().drop("index",axis=1)
     ee["ID_LICITANTE"] = np.zeros(ee.shape[0])
     for i,d in enumerate(inxs.ix[:,"EMPRESA"]):
 	indices = ee[ee["EMPRESA"] == inxs["EMPRESA"][i]].index.tolist()
@@ -341,13 +341,10 @@ def ofertasNT():
     ofertas = licitantes.df.copy()
     ofertas["EMPRESA"] = lics["EMPRESA"]
     ofertas["ID_LICITANTE"] = np.zeros(ofertas.shape[0])
-#    for i,d in enumerate(ll.ix[:,"EMPRESA"]):
-#	indicesE = ofertas[ofertas["EMPRESA"] == ll["EMPRESA"][i]].index.tolist()
-#	for j in indicesE:
-#	    ofertas.ix[j,"ID_LICITANTE"] = i
-    for i,d in enumerate(ofertas.ix[:,"EMPRESA"]):
-	indice = ll[ll["EMPRESA"] == d].index[0]
-	ofertas.ix[i,"ID_LICITANTE"] = indice
+    for i,d in enumerate(ll.ix[:,"EMPRESA"]):
+	indicesE = ofertas[ofertas["EMPRESA"] == ll["EMPRESA"][i]].index.tolist()
+	for j in indicesE:
+	    ofertas.ix[j,"ID_LICITANTE"] = i
     ofertas["ID_LICITANTE"] = ofertas["ID_LICITANTE"].map(lambda x: int(x))
     operadores = ofertas["OPERADOR"].dropna().drop_duplicates().sort_values()\
       .reset_index().drop("index",axis=1)
@@ -393,14 +390,14 @@ def ganadores():
 
 def Empresas_Licitantes():
     arr = []
-    for i,d in enumerate(ll.ix[:,"EMPRESA"]): # <-- OJO!
+    for i,d in enumerate(ee.ix[:,"EMPRESA"]):
 	ind = []
         lic = d.split(",")
         for l in lic:
 	    for j,e in enumerate(b.ix[:,"EMPRESA"]):
 	        if( e == l ):
 		 #   ind.append(j)
-	            arr.append((i,j)) # <-- OJO!
+	            arr.append((ee.ix[i,"ID_LICITANTE"],j))
 #	arr.append((i,ind))
     arr = np.array(arr)
     arr = pd.DataFrame({ "ID_LICITANTE":arr[:,0], "ID_EMPRESA":arr[:,1] })
