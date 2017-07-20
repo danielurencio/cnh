@@ -1,166 +1,52 @@
-    <!Doctype html>
-    <html lang="es" dir="ltr">
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+<head>
+ <meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
+<link rel="stylesheet" href="http://www.gob.mx/cms/application.css">
+<link rel="stylesheet" href="css/uikit.min.css">
+        <link rel="stylesheet" href="css/sticky.min.css">
+        <link rel="stylesheet" href="css/notify.min.css">
+        <!--<link rel="stylesheet" href="/https://js.arcgis.com/4.3/esri/css/main.css">-->
 
-    <head>
-        <title>CNIH - Producción</title>
-        <meta charset="utf-8">
-        <meta name="description" content="Estadísticas oficiales de petróleo y gas">
-        <meta name="keywords" content="petroleo, aceite, gas, estadistica, indicadores, produccion, precio, licitacion, contrato, asignacion, ronda, campo, exploracion, recursos, reservas, empresas">
-        <meta name="docterms.rightHolder" content="CNH &copy; ' 2017 All Rights Reserved'">
-        <meta name="robots" content="INDEX,FOLLOW,ARCHIVE">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="viewport" content="width=320, initial-scale=1, user-scalable=yes">
+	<script src src="js/uikit.min.js"></script>
+        <script src="js/jquery-3.1.0.min.js"></script>
 
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-        <link rel="apple-touch-icon" href="/images/custom-icon.png">
-        <link rel="apple-touch-startup-image" href="/images/startup.jpg">
+        <script src="js/functions.min.js?v=2.1.1"></script>
+        <script src="js/produccion.min.js?v=2.1.1"></script>
 
-        <!-- Import JQuery 3.1.0 for extend JavaScript utilities -->
-        <script src="/frameworks/jquery-3.1.0.min.js"></script>
-
-        <!-- Import UIkit 2.27.1 Framework for responsive design and utilities -->
-        <link rel="stylesheet" href="/frameworks/uikit-2.27.1/css/uikit.min.css">
-        <link rel="stylesheet" href="/frameworks/uikit-2.27.1/css/components/sticky.min.css">
-        <link rel="stylesheet" href="/frameworks/uikit-2.27.1/css/components/notify.min.css">
-        <link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css">
-        <script src="/frameworks/uikit-2.27.1/js/uikit.min.js"></script>
-        <script src="/frameworks/uikit-2.27.1/js/components/sticky.min.js"></script>
-        <script src="/frameworks/uikit-2.27.1/js/components/notify.min.js"></script>
-        <script src="/frameworks/uikit-2.27.1/js/core/tab.min.js"></script>
-        <script src="https://js.arcgis.com/4.3/"></script>
-        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-        <script src="/frameworks/jquery.tagcloud.js-master/jquery.tagcloud.js"></script>
-
-        <!-- Import Google Resources -->
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-        <!-- Import Gob CSS for Footer -->
-        <link rel="stylesheet" href="http://www.gob.mx/cms/application.css">
-
-        <link rel="stylesheet" href="/styles/style.min.css?v=2.1.1">
-        <link rel="stylesheet" href="/styles/uikit-override.min.css?v=2.1.1">
-        <link rel="stylesheet" href="/styles/boards.min.css?v=2.1.1">
-        <script src="/js/functions.min.js?v=2.1.1"></script>
-        <script src="/js/boards/produccion.min.js?v=2.1.1"></script>
-    </head>
-
-    <body>
-
-        <nav class="uk-width-1-1 uk-visible-small">
-            <div class="topbar uk-navbar" data-uk-sticky>
-                <a class="uk-navbar-toggle uk-icon-medium uk-margin-small-top uk-contrast" data-uk-offcanvas="{target:'#offcanvasMenu', mode:'slide'}"></a>
-                <div class="uk-text-center">
-                    <a href="http://www.gob.mx/cnh/" target="_blank"><img class="logo-cnh" src="images/cnh-logo-white.svg" width="50" height="50" alt="CNH"></a>
-                </div>
-            </div>
-        </nav>
-        <div id="offcanvasMenu" class="uk-offcanvas">
-            <div class="uk-offcanvas-bar">
-                <div class="uk-text-center uk-margin-large-top uk-margin-large-bottom">
-                    <img class="uk-width-3-5" src="images/logo.svg" width="121" height="51" alt="CNIH Logo">
-                </div>
-                <ul class="uk-nav uk-nav-offcanvas uk-nav-parent-icon" data-uk-nav>
-                    <li>
-                        <a href="index.php">
-                            Inicio                        </a>
-                    </li>
-                    <li>
-                        <a href="normatividad.php">
-                            Normatividad                        </a>
-                    </li>
-                    <li>
-                        <a href="info.php">
-                            Información Digital                        </a>
-                    </li>
-                    <li>
-                        <a href="litotecas.php">
-                            Litoteca Nacional                        </a>
-                    </li>
-                    <li>
-                        <a href="estadisticas.php">
-                            Estadísticas                        </a>
-                    </li>
-                    <li>
-                        <a href="contacto.php">
-                            Contacto                        </a>
-                    </li>
-                    <li class="uk-parent"><a href="#">Idioma/Language</a><ul class="uk-nav-sub"><li><a href="?lng=en_US">English</a></li></ul></li>                </ul>
-            </div>
-        </div>
-
-        <nav class="uk-navbar uk-width-1-1 uk-hidden-small" data-uk-sticky>
-            <div class="uk-width-4-5 uk-container-center">
-                <a href="http://www.gob.mx/cnh/" target="_blank"><img class="logo-cnh" src="images/cnh-logo-white.svg" width="35" height="35" alt="CNH"></a>
-                <div class="uk-navbar-flip">
-                    <ul class="uk-navbar-nav">
-                        <li>
-                            <a href="index.php">
-                                Inicio                            </a>
-                        </li>
-                        <li>
-                            <a href="normatividad.php">
-                                Normatividad                            </a>
-                        </li>
-                        <li>
-                            <a href="info.php">
-                                Información Digital                            </a>
-                        </li>
-                        <li>
-                            <a href="litotecas.php">
-                                Litoteca Nacional                            </a>
-                        </li>
-                        <li>
-                            <a href="estadisticas.php">
-                                Estadísticas                            </a>
-                        </li>
-                        <li>
-                            <a href="contacto.php">
-                                Contacto                            </a>
-                        </li>
-                        <li class="uk-parent" data-uk-dropdown><a href=""><img src="images/ico-language.png" width="20" height="20" alt="langs"></a><div class="uk-dropdown uk-dropdown-navbar"><ul class="uk-nav uk-nav-navbar"><li><a href="?lng=en_US">English</a></li></ul></div></li>                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <section class="uk-width-small-1-1 uk-width-medium-4-5 uk-width-large-4-5 uk-container-center uk-margin-large-bottom">
-            <div class="uk-alert">Este producto está en versión de pruebas públicas.
-               <a href="mailto:estadistica@cnh.gob.mx?Subject=Comentarios del Tablero de Producción" target="_top">Agradeceremos sus comentarios</a>
-            </div>
-            <h1 class="uk-text-center">TABLERO DE PRODUCCIÓN DE PETRÓLEO Y GAS</h1>
-            <a style="float: right; padding: 0px 5px" id="ayuda" href="#modalAyuda" data-uk-modal><span class="uk-icon-question-circle-o uk-icon-small"></span></a>
-            <div class="dashboard-content">
-                <div class="uk-margin-bottom">
-                    <div class="block-interface uk-hidden"></div>
-                    <div class="uk-grid" data-uk-grid-match>
-                        <div class="uk-width-1-3">
+</head>
+<div class="uk-grid" data-uk-grid-match="">
+                        <div class="uk-width-1-3" style="min-height: 162.375px;">
                             <h4>Operador:</h4>
-                            <!--<div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
-                                <button name="dropdown">Tipo  <i class="uk-icon-caret-down uk-float-right"></i></button>
-                                <div class="uk-dropdown">
-                                    <ul class="uk-nav uk-nav-dropdown">
-                                        <li><input name="inpTipos" type="checkbox" value="Asignaciones" checked> Asignaciones</li>
-                                        <li><input name="inpTipos" type="checkbox" value="Contratos" checked> Contratos</li>
-                                    </ul>
-                                </div>
-                            </div>-->
                             <i>Régimen: </i>
 
-                            <input id="chkAsignaciones" name="inpTipos" type="checkbox" value="Asignaciones" checked> Asignaciones
-                            <input id="chkContratos" name="inpTipos" type="checkbox" value="Contratos" checked> Contratos
+                            <input id="chkAsignaciones" name="inpTipos" type="checkbox" value="Asignaciones" checked=""> Asignaciones
+                            <input id="chkContratos" name="inpTipos" type="checkbox" value="Contratos" checked=""> Contratos
                             <br>
                             <i>Nombre:</i>
-                            <select id="dataOperator">
-                                <option value="1">Todos</option>
-                            </select>
+                            <select id="dataOperator"><option value="1">Todos</option><option value="6">CMM Calibrador</option><option value="13">Canamex Energy Holdings</option><option value="3">Consorcio Petrolero 5M del Golfo</option><option value="12">Diavaz Offshore</option><option value="9">Dunas Exploración y Producción</option><option value="10">GS Oil &amp; Gas</option><option value="7">Grupo Mareógrafo</option><option value="2">Petróleos Mexicanos</option><option value="4">Renaissance Oil Corp</option><option value="11">Servicios de Extracción Petrolera Lifting</option><option value="5">Strata CPB</option><option value="8">Strata CR</option></select>
                         </div>
-                        <div class="uk-width-1-3">
+                        <div class="uk-width-1-3" style="min-height: 162.375px;">
                             <h4>Hidrocarburo:</h4>
                             <input id="dataTypeGas" type="checkbox" value="gas"><span id="dataTypeGasLbl"> Gas</span><br>
                             <input id="dataTypeOil" type="checkbox" value="oil"><span id="dataTypeOilLbl"> Petróleo</span><br>
                         </div>
-                        <div class="uk-width-1-3">
+                        <div class="uk-width-1-3" style="min-height: 162.375px;">
+
+ 
+
+
                             <h4>Periodo:</h4>
+<!-- RADIO BUTTONS -->
+<div>
+ <form>
+  <input class="periodicidad" name="periodicidad" id="m" checked="checked" name="answer" type="radio" value="m"/>Mensual</input>
+  <input class="periodicidad" name="periodicidad" id="q" checked="checked" name="answer" type="radio" value="q"/>Trimestral</input>
+<input class="periodicidad" name="periodicidad" id="a" checked="checked" name="answer" type="radio" value="a"/>Anual</input>
+ </form>
+</div>
+<!-- RADIO BUTTONS -->
                             <i>Inicio:</i>
                             <select id="sYear">
                                 <option value="">Año</option>
@@ -205,229 +91,4 @@
                             <button class="uk-button uk-button-primary uk-button-mini" id="setFilter" type="button">Mostrar Periodo</button>&nbsp;
                         </div>
                     </div>
-                </div>
-                <div class="border-top">
-<!--                    <div id="timeline">
-                        <div class="uk-button-group">
-                            <button id="playAnimation" class="button-media"><i class="uk-icon-play"></i></button>
-                            <button id="stopAnimation" class="button-media button-media-stop button-media-disabled" disabled><i class="uk-icon-stop"></i></button>
-                        </div>
-                        <div class="position-relative">
-                            <div id="timelinebar" class="uk-progress">
-                                <div class="uk-progress-bar"></div>
-                            </div>
-                            <div id="timeline-sections"></div>
-                        </div>
-                    </div>-->
-                </div>
-                <div class="uk-grid uk-grid-collapse borders border-childs" data-uk-grid-margin>
-                    <div class="uk-width-1-4 uk-hidden-small uk-hidden">
-                        <h3>Categorías</h3>
-                        <input id="chkProduccion" name="categories" type="checkbox" value="phidro"> Producción de Hidrocarburos<br>
-                        <input id="chkExploracion" name="categories" type="checkbox" value="exploracion" disabled> Exploración<br>
-                        <input id="chkReservas" name="categories" type="checkbox" value="reservas" disabled> Reservas y Recursos<br>
-                        <input id="chkActividad" name="categories" type="checkbox" value="actividad" disabled> Actividad<br>
-                        <input id="chkRondas" name="categories" type="checkbox" value="licitacion" disabled> Rondas de Licitación<br>
-                        <input id="chkEconomicos" name="categories" type="checkbox" value="economicos" disabled> Indicadores
-                        Económicos
-                        <br>
-                    </div>
-                    <div class="uk-width-1-4 uk-hidden-small position-relative">
-                        <div class="block-interface uk-hidden"></div>
-                        <div>
-                            <ul id="cloudTabs" class="uk-tab" data-uk-tab="{connect:'#campos'}">
-                                <li class="uk-active"><a href=""><b>Campos</b></a></li>
-                                <li><a href=""><b>Id Asignaciones/Contratos</b></a></li>
-                            </ul>
-                        </div>
-                        <ul id="campos" class="uk-switcher uk-margin">
-                            <li>
-                                <input id="searchFields" class="uk-width-1-1" type="text" placeholder="Buscar">
-                                <div id="wordCloud" class="uk-text-center uk-margin-top uk-margin-bottom"></div>
-                                <button class="uk-button uk-button-primary uk-button-small" id="unselectFields">Limpiar Seleccionados</button>
-                            </li>
-                            <li>
-                                <input id="searchFieldsA" class="uk-width-1-1" type="text" placeholder="Buscar">
-                                <div id="wordCloudA" class="uk-text-center uk-margin-top uk-margin-bottom"></div>
-                                <button class="uk-button uk-button-primary uk-button-small" id="unselectFieldsA">Limpiar Seleccionados</button>
-                            </li>
-                        </ul>
-                        <div class="uk-grid uk-grid-collapse" data-uk-grid-margin>
-                            <div class="uk-width-small-1-1 uk-width-medium-1-2 uk-width-large-1-2">
-                                <span class="offshoreFields"></span> Marinos
-                            </div>
-                            <div class="uk-width-small-1-1 uk-width-medium-1-2 uk-width-large-1-2">
-                                <span class="onshoreFields"></span> Terrestres
-                            </div>
-                        </div>
-                        <span class="">* El tamaño de la letra define la relevancia del campo</span>
-                    </div>
-                    <div class="uk-width-small-1-1 uk-width-medium-3-4 uk-width-large-3-4 position-relative">
-                        <div id="graphTitle" class="uk-text-center">
-                            <span class="uk-text-large"></span>&nbsp;&nbsp;<i id="spinner" class="uk-icon-spin uk-icon-refresh uk-hidden"></i>
-                            
-                        </div>
-                        <div style="text-align: center; padding: 5px;">
-                            <i>Agregar Totales: &nbsp; </i>
-                            <input id="drawTotal" type="checkbox" checked> <span id="drawTotalLbl">Nacional</span>
-                            <input id="drawTotalA" type="checkbox"> <span id="drawTotalALbl">Asignaciones</span>
-                            <input id="drawTotalC" type="checkbox"> <span id="drawTotalALbl">Contratos</span>
-                            <a style="float: right;" id="descargaCSV"><span class="uk-icon-download uk-icon-small"></span></a>
-                            
-                        </div>
-                        <div id="chart"></div>
-                        <span class="">Notas: Petróleo (P), Gas (G), Miles de Barriles Diarios (Mbd) y Millones de Pies Cúbicos Diarios (MMpcd).</span>
-                        
-                    </div>
-                </div>
-                <h3>Mapa&nbsp;&nbsp;</h3>
-                <div id="map">
-                    <div id="legend">
-                        <div class="uk-border-circle oil-indicator"></div>&nbsp;
-                        <span>Petróleo</span>&nbsp;
-                        <div class="gas-indicator"></div>&nbsp;
-                        <span>Gas</span>
-                    </div>
-                </div>
-                <br>
-                <a id="modalActivatorchart02" href="#modalExploracion" data-uk-modal>Notas Metodológicas</a>
-            </div>
-        </section>
-        
-        <section>
-        
-        <div id="modalExploracion" class="uk-modal">
-            <div class="uk-modal-dialog uk-modal-dialog-large">
-                <a class="uk-modal-close uk-close"></a>
-                <div class="uk-modal-header">
-                    <h2 class="uk-text-center">Notas Metodológicas</h2>
-                </div>
-                <div class="uk-overflow-container">
-                    <p>La información aquí contenida es dinámica y se encuentra en proceso de revisión, por lo que puede sufrir modificaciones sin previo aviso. La Comisión Nacional de Hidrocarburos no da ninguna garantía, expresa o implícita, en cuanto a la exactitud de la localización geográfica de los campos, toda vez que se presenta con fines ilustrativos.</p>
-<p>Los nombres de los Campos corresponden a los Campos Oficiales a partir de 2016, es decir aquellos Campos que tienen reservas certificadas. En este sentido, aquellos con producción anterior y posterior a 2016 se integran a dichos campos oficiales.</p>
-<p>Para los Campos que no tienen producción posterior a 2016 se presentan los nombres de los Campos utilizados por Petróleos Mexicanos, los cuales no necesariamente son los nombres Oficiales.</p>
-<p>La producción de Asignaciones y Contratos se presenta por clave de Asignación o número de Contrato. Esta clasificación puede variar respecto a la de por Campo debido a que los pozos de las Asignaciones o Contratos pueden diferir con los correspondientes al Campo.</p>
-<p>El Tablero de Producción de Petróleo y Gas se encuentra en etapa de pruebas públicas. Agradecemos sus observaciones y comentarios al correo electrónico <a href="mailto:estadistica@cnh.gob.mx?Subject=Comentarios de Notas Metodologicas">estadistica@cnh.gob.mx</a>.</p>
-
-                </div>
-            </div>
-        </div>
-        <div id="modalAyuda" class="uk-modal">
-            <div class="uk-modal-dialog uk-modal-dialog-large">
-                <a class="uk-modal-close uk-close"></a>
-                <div class="uk-modal-header">
-                    <h2 class="uk-text-center">Ayuda</h2>
-                </div>
-                <div class="uk-overflow-container">
-                    <img src="/images/dashboard-help.jpg">
-                </div>
-            </div>
-        </div>
-        </section>
-
-        <footer class="main-footer">
-            <div class="list-info">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <h2>
-                                Enlaces                            </h2>
-                            <ul>
-                                <li>
-                                    <a href="http://www.gob.mx/accesibilidad">
-                                        Declaración de Accesibilidad                                    </a>
-                                </li>
-                                <li>
-                                    <a href="http://www.gob.mx/privacidad">
-                                        Política de privacidad                                    </a>
-                                </li>
-                                <li>
-                                    <a href="http://www.gob.mx/terminos">
-                                        Términos y Condiciones                                    </a>
-                                </li>
-                                <li>
-                                    <a href="http://www.ordenjuridico.gob.mx" target="_blank" title="opens new window">
-                                        Marco Jurídico                                    </a>
-                                </li>
-                                <li>
-                                    <a href="http://www.gob.mx/cnh/" target="blank" title="opens new window">
-                                        Portal de Obligaciones de Transparencia                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://www.infomex.org.mx/gobiernofederal/home.action" target="_blank" title="opens new window">
-                                        Sistema Infomex                                    </a>
-                                </li>
-                                <li>
-                                    <a href="http://inicio.ifai.org.mx/SitePages/ifai.aspx" target="_blank" title="opens new window">
-                                        INAI                                    </a>
-                                </li>
-                                <li>
-                                    <a href="http://www.gob.mx/sitemap">
-                                        Mapa de sitio                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-4">
-                            <h2>
-                                Sitios Relacionados                            </h2>
-                            <ul>
-                                <li>
-                                    <a href="http://rondasmexico.gob.mx/" target="_blank">
-                                        rondasmexico.gob.mx                                    </a>
-                                </li>
-                                <li>
-                                    <a href="http://www.gob.mx/cnh/" target="_blank">
-                                        gob.mx/cnh                                    </a>
-                                </li>
-                                <li>
-                                    <a href="http://www.gob.mx/sener/" target="_blank">
-                                        gob.mx/sener                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-4">
-                            <h2>
-                                Contacto                            </h2>
-                            <p>
-                                Mesa de ayuda <br>gobmx@funcionpublica.gob.mx                            </p>
-                            <p>
-                                <a href="https://www.gob.mx/tramites/ficha/presentacion-de-quejas-y-denuncias-en-la-sfp/SFP54">
-                                    Denuncia contra servidores públicos                                </a>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4 col-sm-offset-4">
-                            <h2>
-                                Síguenos en                            </h2>
-                            <ul class="list-inline">
-                                <li>
-                                    <a href="https://www.facebook.com/gobmx" target="_blank" class="sendEst share-info" title="enlace a facebook abre en una nueva ventana">
-                                        <img alt="Facebook" src="https://framework-gb.cdn.gob.mx/assets/images/facebook_footer.png">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://twitter.com/gobmx" target="_blank" class="sendEst share-info" title="Enlace a twitter abre en una nueva ventana">
-                                        <img alt="Twitter" src="https://framework-gb.cdn.gob.mx/assets/images/twitter_footer.png">
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <img alt="gob.mx" class="gobmx-footer" height="39" src="images/footer/gobmxlogo.svg" width="126">
-                    </div>
-                    <div class="col-sm-4 col-sm-offset-4">
-                        <img alt="Mover a México" height="70" src="images/footer/logo_mexico.svg" width="172">
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-    </body>
-
-    </html>
+</html>
