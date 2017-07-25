@@ -1,5 +1,36 @@
-content{display:flex;flex-direction:row;padding-left:19px}
-.forenames-list-container{flex:1;overflow:scroll;margin-top:10px}
+mark {
+ background-color:transparent;
+}
+
+li:hover {
+  color:white;
+}
+
+mark:hover {
+ background-color:black;
+ color:white;
+}
+
+div#wc::-webkit-scrollbar {
+    width: 10px;
+}
+ 
+div#wc:hover::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+ 
+div#wc:hover::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.4); 
+}
+
+content{
+  display:flex;
+  flex-direction:row;
+  padding-left:19px
+}
+
 .campos{
   list-style:none;
   padding:0;
@@ -9,7 +40,9 @@ content{display:flex;flex-direction:row;padding-left:19px}
   justify-content:space-between
 }
 
-#wc {
+div#wc {
+  overflow-y:auto;
+  overflow-x:hidden;
   float:left;
   max-width:500px;
   min-width:300px;
@@ -18,7 +51,7 @@ content{display:flex;flex-direction:row;padding-left:19px}
   flex-direction:column;
   margin-bottom:10px;
   overflow:scroll;
-  max-height:400px;
+  max-height:500px;
 }
 
 div#chart {
@@ -35,12 +68,12 @@ div#chart {
 
 path {
     stroke: steelblue;
-    stroke-width: 1;
+    stroke-width: 0.8;
     fill: none;
 }
 
 
-g.tick>text { font-size:10px;}
+g.tick>text { font-size:8px;}
 .axis path,
 .axis line {
     fill: none;
