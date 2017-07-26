@@ -28,7 +28,7 @@ var contenedor = {
 addElement(svgCanvas);
 addElement(contenedor);
 contenedor.selection = 'g#red';
-contenedor.attr.fill = 'rgba(0,0,0,0.25)';
+contenedor.attr.fill = 'transparent';//'rgba(0,0,0,0.25)';
 contenedor.attr.transform = "translate(0,0)";
 addElement(contenedor);
 
