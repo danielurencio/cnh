@@ -4,23 +4,7 @@ html,body {
   margin:0px;
   border:0px;
   font-family:'Open Sans';
-  overflow:hidden;
-}
-
-
-content#main{
-  display:flex;
-  flex-direction:row;
-  padding-left:0px
-}
-
-ul.empresas{
-  list-style-type:disc;
-/*  padding:0;
-  margin:0;
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:space-between;*/
+/*  overflow:hidden;*/
 }
 
 
@@ -28,62 +12,19 @@ content{
 /*  overflow:hidden;*/
   display:flex;
   flex-direction:row;
-  padding-left:0px
-}
-
-div#wc {
- overflow:scroll;
- float:left;
- display:flex;
- flex-direction:column;
- 
-}
-
-/*ul.empresas{
-  list-style:none;
-  padding:0;
-  margin:0;
-  justify-content:space-between;
-  flex-wrap:wrap;
-}*/
-
-mark {
- background-color:transparent;
- font-weight:300;
- font-size:16px;
-}
-
-mark:hover {
- background-color:black;
-}
-
-div#else {
-  flex:1;
-}
-
-div#wc::-webkit-scrollbar-track {
-	border: 1px solid rgb(180,180,180);
-	background-color:white;
-}
-
-div#wc::-webkit-scrollbar {
-	width: 8px;
-	height:0px;
-}
-
-div#wc::-webkit-scrollbar-thumb {
- 	background-color: rgb(180,180,180);
-	height:0px;
+  padding-left:19px
 }
 
 div#red {
-  transform:translate(0px,10px);
   overflow:hidden;
   float:left;
+  max-width:50%;
+  width:50%;
   display:flex;
   flex-direction:column;
   margin-bottom:10px;
   overflow:scroll;
+  height:50%;
 }
 
 div#info {
@@ -94,21 +35,19 @@ div#info {
 div#titulo {
   text-align:center;
   font-weight:800;
-  font-size:22px;
+  font-size:24px;
   height: 12%;
-  padding-top:10px;
+  padding-top:20px;
 }
 
 
 div#titulo>div {
-  padding-top:5px;
+  padding-top:35px;
 }
 
 div#nombre, div#pais {
-  height:50px;
-  width:200px;
   font-weight:300;
-  font-size:12px;
+  font-size:16px;
 }
 
 div#modalidad {
@@ -132,7 +71,7 @@ table {
 }
 
 th {
- width:100px;
+ width:250px;
  height:50px;
  font-size:12px;
  font-weight:300;
@@ -156,14 +95,14 @@ div.totalBloques {
   padding-top:0px;
 }
 
-ul.licitantes {
- list-style:none;
+ul {
+ list-style:circle;
  padding:0px;
  margin:auto;
- width:200px;
+ width:250px;
 }
 
-li.licitantes {
+li {
  text-align: center;
  display:block;
 }
