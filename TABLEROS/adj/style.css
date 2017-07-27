@@ -4,7 +4,7 @@ html,body {
   margin:0px;
   border:0px;
   font-family:'Open Sans';
-/*  overflow:hidden;*/
+  overflow:hidden;
 }
 
 
@@ -12,7 +12,7 @@ content{
 /*  overflow:hidden;*/
   display:flex;
   flex-direction:row;
-  padding-left:19px
+  padding-left:0px
 }
 
 div#red {
@@ -28,21 +28,24 @@ div#red {
 }
 
 div#info {
+  padding-right:50px;
   flex:1;
   font-family:'Open Sans';
 }
+
 
 div#titulo {
   text-align:center;
   font-weight:800;
   font-size:24px;
-  height: 12%;
-  padding-top:20px;
+  height: 10%;
 }
 
 
+
+
 div#titulo>div {
-  padding-top:35px;
+  padding-top:25px;
 }
 
 div#nombre, div#pais {
@@ -105,4 +108,8 @@ ul {
 li {
  text-align: center;
  display:block;
+}
+
+div.totalBloques {
+ padding:0px;
 }

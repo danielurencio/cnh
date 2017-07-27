@@ -1,15 +1,20 @@
 var width = window.innerWidth;
 var height = window.innerHeight;
+var scaleHeight = 0.6;
 
 d3.selectAll("div#titulo").style("height","18%").style("padding-top","30px");
+d3.select("content#uno").style("height",height*scaleHeight + "px");
+d3.select("#wc")
+  .style("width",width*.25 + "px")
+  .style("height",height + "px");
 
 var svgCanvas = {
  selection:"svg#canvas",
  type:"svg",
  append:0,
  attr: {
-  "width":width,
-  "height":height
+  "width":width*0.5,
+  "height":height*scaleHeight
  }
 }
 
@@ -32,7 +37,7 @@ addElement(contenedor);
 contenedor.selection = 'g#red';
 contenedor.attr.fill = 'transparent';//'rgba(0,0,0,0.25)';
 contenedor.attr.transform = "translate(0,0)";
-addElement(contenedor);
+//addElement(contenedor);
 
 function reajustar() {
     if(width != window.innerWidth || height != window.innerHeight) {

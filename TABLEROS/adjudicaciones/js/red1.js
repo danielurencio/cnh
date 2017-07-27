@@ -1,5 +1,7 @@
 var graphW = window.innerWidth/2//graphConteinerRect.attr("width"),
-    graphH = window.innerHeight;//graphConteinerRect.attr("height");
+    graphH = window.innerHeight*.6;//graphConteinerRect.attr("height");
+
+var margin = 20;
 
 var NN,LL;
 
@@ -14,6 +16,29 @@ function RED(width,height) {
     .await(getDATA);
 
   function getDATA(err,data,adj,licRondas) {
+    /*¿CUÁLES SON LAS EMPRESAS?*/
+    var empresas = data.map(function(d) { return d.EMPRESA; })
+	.reduce(function(a,b) {
+	  if(a.indexOf(b) < 0) { a.push(b); }
+	  return a;
+	},[]);
+    console.log(empresas);
+    /*-------------------------*/
+
+    d3.select("ul.empresas")
+//	.style("list-style","none")
+	.selectAll("li")
+      .data(empresas).enter().append("li").append("mark")
+        .html(function(d) { return d.split(",")[0]; })
+        .on("mouseover", function(d) {
+          d3.select(this).style("color","white");
+        })
+        .on("mouseout",function(d) {
+//          if(d.type == "Terrestre") d3.select(this).style("color","black");
+          d3.select(this).style("color","black");
+        })
+
+
      /*PROCESAR LICITANTES POR RONDA*/
      licRondas.forEach(function(d) {
        d.LICITANTE = d.LICITANTE.split(";")
@@ -75,11 +100,11 @@ function RED(width,height) {
     var datos = {'nodes':arr,'links':links};
 
     var force = d3.layout.force()
-	.charge(-55)
-	.distance(20)
-	.linkDistance(40)
-	.gravity(0.075)
-	.size([graphWidth,graphHeight]);
+	.charge(-45)
+	.distance(10)
+	.linkDistance(25)
+	.gravity(0.125)
+	.size([graphWidth,graphHeight-margin*2]);
 
     force
       .nodes(datos.nodes)
@@ -111,7 +136,7 @@ function RED(width,height) {
 	  nAdj = nAdj.length > 0 ? nAdj.reduce(sum) : 0;
 	  var radiuScale = d3.scale.linear()
 	      .domain([0,maxAdj])
-	      .range([5,28]);
+	      .range([5,25]);
 	  return radiuScale(nAdj)
 	})
 	.attr("opacity",mainOpacity)
@@ -233,8 +258,8 @@ function RED(width,height) {
 
 	   var cell = d3.select("th#licitantes[tag='"+i+"']");
 	   if(licitantes.length > 1) {
-	    cell.append("ul")//.style("list-style","none")
-	      .selectAll("li")
+	    cell.append("ul").attr("class","licitantes")
+	      .selectAll("li").attr("class","licitantes")
 		.data(licitantes).enter()
 	      .append("li").html(function(d,i) { return (i+1) + ") " + d; })
 		.style("font-size","8.5px");
@@ -262,7 +287,10 @@ function RED(width,height) {
       ky = e.alpha;
       datos.nodes.forEach(function(d) {
 	/* GRAVEDAD ARTIFICIAL */
-        d.y -= (d.y*d.weight*0.015) * ky;
+	var radius = d3.select("circle[tag='" + d.id + "']").attr("r");
+        d.y -= -0.02+ (d.y*(d.weight-0)*0.02)/*(graphH)*/ * (ky);
+	d.y = Math.abs(d.y);
+
 	/* GRAVEDAD ARTIFICIAL */
       });
       links.attr("x1", function(d) { return d.source.x; })
@@ -274,6 +302,13 @@ function RED(width,height) {
       nodes.attr("cx", function(d) { return d.x; })
 	 .attr("cy", function(d) { return d.y; });
     });
+
+// CENTRAR GRÁFICO DE RED
+    var redContWidth = d3.select("content#uno").style("width").split("px")[0];
+    var gREDwidth = d3.select("#canvas").style("width").split("px")[0];
+    console.log(gREDwidth);
+    d3.select("#canvas")
+	.attr("transform","translate(" + ((redContWidth/2) - (gREDwidth/2)) + ",0)");
   };
 }
 

@@ -1,7 +1,8 @@
 var width = window.innerWidth;
 var height = window.innerHeight;
 
-d3.selectAll("div#titulo").style("height","18%").style("padding-top","30px");
+d3.selectAll("div#titulo").style("height","15%").style("padding-top","18px");
+d3.select(".totalBloques").style("padding",0)
 
 var svgCanvas = {
  selection:"svg#canvas",
