@@ -8,12 +8,13 @@ function RED(width,height) {
   var graphWidth = width, graphHeight = height;
 
   queue()
-    .defer(d3.csv,'data.csv')
-    .defer(d3.csv,'adj.csv')
-    .defer(d3.csv,'linkWidth1.csv')
+    .defer(d3.csv,'csv/data.csv')
+    .defer(d3.csv,'csv/adj.csv')
+    .defer(d3.csv,'csv/linkWidth1.csv')
+    .defer(d3.csv,'csv/ofertas.csv')
     .await(getDATA);
 
-  function getDATA(err,data,adj,licRondas) {
+  function getDATA(err,data,adj,licRondas,ofertas) {
      /*PROCESAR LICITANTES POR RONDA*/
      licRondas.forEach(function(d) {
        d.LICITANTE = d.LICITANTE.split(";")
@@ -43,6 +44,45 @@ function RED(width,height) {
       adjs.push(valor);
     };
     var maxAdj = d3.max(adjs);
+
+    /*¿CUÁL ES EL VALOR MÁXIMO DE PMT*/
+    /*... de esto depende ahora el NUEVO radio de los nodos*/
+    ofertas.forEach(function(d) {
+      var col = ['PMT_TOTAL','VAR_ADJ1','VAR_ADJ2','VPO']
+      for(var i in col)
+      d[col[i]] = +d[col[i]];
+    });
+    var lic_conBloq = ofertas.map(function(d) { return d.ID_EMPRESA; })
+      .reduce(function(a,b) {
+	if(a.indexOf(b) < 0) { a.push(b); };
+        return a;
+      },[]); console.log(lic_conBloq);
+    var pmts = [];
+    lic_conBloq.forEach(function(d) {
+     var match = ofertas
+	.filter(function(e) { return d == e.ID_EMPRESA; })
+	.map(function(s) { return s.PMT_TOTAL; });
+      var sumaPMT,filtro;
+
+      filtro = match.length > 0 ? match : 0; 
+      sumaPMT = typeof(filtro) == 'object' ? filtro.reduce(SUM) : filtro;
+      pmts.push({ 'id':d, 'pmt':sumaPMT }) 
+    });
+/*    var bloques = ofertas.map(function(d) { return d.ID_BLOQUE; })
+    .reduce(function(a,b) {
+      if(a.indexOf(b) < 0) { a.push(b); };
+      return a;
+    },[]);
+    var bb = [];
+    bloques.forEach(function(d) {
+      var match = ofertas.filter(function(j) { return j.ID_BLOQUE == d; })[0];
+      var pmt = match.PMT_TOTAL;
+      var id_adj = match.ID_LICITANTE_ADJ;
+      bb.push({ 'bloque':d,'PMT':pmt, 'id_adj':id_adj });
+    });
+    var PMT_extent = d3.extent(bb.map(function(d) { return d.PMT; }));
+*/
+//    console.log(ofertas);
     /*------------------------------------*/
     var lics = Procesar.unicos(data,"ID_LICITANTE")//"lic");
     var sets = Procesar.transformar(data,lics);
@@ -103,20 +143,36 @@ function RED(width,height) {
 	.attr("class","node")
 	.attr("tag",function(d) { return d.id; })
 	.attr("r",function(d) {
-	  var nAdj = adj.filter(function(a) { return +a.ID_EMPRESA == d.id; })
-		.map(function(d) { return +d.ADJUDICADOS; });
+	  var nAdj = /*adj*/pmts.filter(function(a) {
+	    return a.id == d.id;
+	  })
+	  .map(function(d) { return d.pmt});//+d.ADJUDICADOS; });
 
 	  function sum(a,b) { return a + b; };
 
-	  nAdj = nAdj.length > 0 ? nAdj.reduce(sum) : 0;
+	 // nAdj = nAdj.length > 0 ? nAdj.reduce(sum) : 0;
 	  var radiuScale = d3.scale.linear()
-	      .domain([0,maxAdj])
-	      .range([5,28]);
+	      .domain(d3.extent(pmts,function(d) { return d.pmt; }))
+	      .range([5,35]);
 	  return radiuScale(nAdj)
 	})
 	.attr("opacity",mainOpacity)
 //	.attr("stroke","black")
 	.attr("fill", function(d) {
+	  var nAdj = adj.filter(function(a) {
+	    return a.ID_EMPRESA == d.id;
+	  })
+	  .map(function(d) { return +d.ADJUDICADOS; });
+
+	  function sum(a,b) { return a + b; };
+
+	  nAdj = nAdj.length > 0 ? nAdj.reduce(sum) : 0;
+	  var colorScale = d3.scale.linear()
+	      .domain([0,maxAdj])
+	      .range(["gold","red"]);
+
+	  return colorScale(nAdj);
+/*
 	  var cont = data.filter(function(a) { return +a.ID_EMPRESA == d.id; })
 		.map(function(d) { return d.CONTINENTE; })[0];
 
@@ -131,7 +187,7 @@ function RED(width,height) {
 	    .domain(continentes)
 	    .range(pantones);
 
-	  return color(cont); 
+	  return color(cont); */
 	})
 	.call(force.drag)
       .on("mouseover", function(d) {
@@ -213,7 +269,7 @@ function RED(width,height) {
 	  var cond2 = objAdj[i].ID_LICITANTE_ADJ == d.ID_LICITANTE_OFERTA;
 	  return cond1 && cond2;
 	 })[0].LICITANTE;
-	 console.log(licitantes);
+
 	 d3.select("table#adjudicaciones>tbody")
 	  .append("tr").attr("class","datosMod")
 	  .style("font-weight","lighter")
@@ -255,6 +311,8 @@ function RED(width,height) {
 	total = "<span style=font-size:60px;font-weight:600;>" + total + "</span>"
 	  + "<span style=font-size:12px><br>en total</span>"
 	d3.select(".totalBloques").html(total);
+	var filtroPmts = pmts.filter(function(p) { return d.id == p.id; });
+	console.log(filtroPmts[0].pmt)
 //---------------------------------------------------------------------------|
 	});
 
@@ -328,3 +386,4 @@ Procesar.edges = function(transformacion,emps) {
  return links;
 }
 
+function SUM(a,b) { return a + b; };

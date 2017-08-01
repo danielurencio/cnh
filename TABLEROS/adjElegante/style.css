@@ -16,6 +16,7 @@ content{
 }
 
 div#red {
+  position:relative;
   overflow:hidden;
   float:left;
   max-width:50%;
@@ -112,4 +113,15 @@ li {
 
 div.totalBloques {
  padding:0px;
+}
+
+div#filtroEmpresas {
+ width:20px;
+ height:100%;
+ background-color:rgba(0,0,0,0.7);
+ position:absolute;
+}
+
+div#filtroEmpresas:hover {
+ width:200px;
 }
