@@ -1,6 +1,14 @@
 var width = window.innerWidth;
 var height = window.innerHeight;
 
+/*COLORES PARA LA SELECCIÓN DE NODOS*/
+var peers = "tomato";
+var actual = "black";
+var mainOpacity = 0.6;
+/*COLORES PARA LA SELECCIÓN DE NODOS*/
+
+d3.select("#filtroEmpresas").style("height",height + "px");
+d3.selectAll("ol").style("height",height + "px");
 d3.selectAll("div#titulo").style("height","15%").style("padding-top","18px");
 d3.select(".totalBloques").style("padding",0)
 

@@ -106,9 +106,13 @@ ul {
  width:250px;
 }
 
-li {
+ul>li {
  text-align: center;
  display:block;
+}
+
+ol>li {
+ text-align:left;
 }
 
 div.totalBloques {
@@ -117,11 +121,28 @@ div.totalBloques {
 
 div#filtroEmpresas {
  width:20px;
- height:100%;
- background-color:rgba(0,0,0,0.7);
+/* height:100%;*/
+ background-color:rgba(0,0,0,0.65);
  position:absolute;
 }
 
-div#filtroEmpresas:hover {
- width:200px;
+div#filtroEmpresas::-webkit-scrollbar-track {
+        background-color:rgba(0,0,0,0);
 }
+
+div#filtroEmpresas::-webkit-scrollbar {
+        width: 8px;
+        height:0px;
+}
+
+div#filtroEmpresas::-webkit-scrollbar-thumb {
+        background-color: rgba(0,0,0,0.5);/*rgba(180,180,180,0.5);*/
+	opacity:0.5;
+        height:0px;
+}
+
+ol {
+  list-style-type:decimal;
+  padding:0px;
+}
+

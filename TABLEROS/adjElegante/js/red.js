@@ -1,7 +1,7 @@
 var graphW = window.innerWidth/2//graphConteinerRect.attr("width"),
     graphH = window.innerHeight;//graphConteinerRect.attr("height");
 
-var NN,LL;
+var NN,LL,maxAdj;
 
 function RED(width,height) {
   var graphConteiner = d3.select("g#red");
@@ -43,7 +43,7 @@ function RED(width,height) {
       var valor = adjs_temp.length > 0 ? adjs_temp.reduce(sum) : 0;;
       adjs.push(valor);
     };
-    var maxAdj = d3.max(adjs);
+    maxAdj = d3.max(adjs);
 
     /*¿CUÁL ES EL VALOR MÁXIMO DE PMT*/
     /*... de esto depende ahora el NUEVO radio de los nodos*/
@@ -56,7 +56,7 @@ function RED(width,height) {
       .reduce(function(a,b) {
 	if(a.indexOf(b) < 0) { a.push(b); };
         return a;
-      },[]); console.log(lic_conBloq);
+      },[]);
     var pmts = [];
     lic_conBloq.forEach(function(d) {
      var match = ofertas
@@ -68,21 +68,6 @@ function RED(width,height) {
       sumaPMT = typeof(filtro) == 'object' ? filtro.reduce(SUM) : filtro;
       pmts.push({ 'id':d, 'pmt':sumaPMT }) 
     });
-/*    var bloques = ofertas.map(function(d) { return d.ID_BLOQUE; })
-    .reduce(function(a,b) {
-      if(a.indexOf(b) < 0) { a.push(b); };
-      return a;
-    },[]);
-    var bb = [];
-    bloques.forEach(function(d) {
-      var match = ofertas.filter(function(j) { return j.ID_BLOQUE == d; })[0];
-      var pmt = match.PMT_TOTAL;
-      var id_adj = match.ID_LICITANTE_ADJ;
-      bb.push({ 'bloque':d,'PMT':pmt, 'id_adj':id_adj });
-    });
-    var PMT_extent = d3.extent(bb.map(function(d) { return d.PMT; }));
-*/
-//    console.log(ofertas);
     /*------------------------------------*/
     var lics = Procesar.unicos(data,"ID_LICITANTE")//"lic");
     var sets = Procesar.transformar(data,lics);
@@ -135,7 +120,6 @@ function RED(width,height) {
 //	.attr("stroke-dasharray","1 1");
 
 
-    var mainOpacity = 0.6;
     var nodes = graphConteiner.append("g").attr("class","LIGAS")
       .selectAll("circle.node")
 	.data(force.nodes())
@@ -157,7 +141,24 @@ function RED(width,height) {
 	  return radiuScale(nAdj)
 	})
 	.attr("opacity",mainOpacity)
-//	.attr("stroke","black")
+	.attr("noAdj",function(d) {
+	  var nAdj = adj.filter(function(a) {
+	    return a.ID_EMPRESA == d.id;
+	  })
+	  .map(function(d) { return +d.ADJUDICADOS; });
+
+	  function sum(a,b) { return a + b; };
+
+	  nAdj = nAdj.length > 0 ? nAdj.reduce(sum) : 0;
+
+	  var TAG = nAdj > 0 ? null : "si";
+	  return TAG;
+	})
+	.attr("stroke",function(d) {
+	  var TAG = d3.select(this).attr('noAdj');
+	  var COLOR = TAG == 'si' ? "black" : null;
+	  return COLOR;
+	})
 	.attr("fill", function(d) {
 	  var nAdj = adj.filter(function(a) {
 	    return a.ID_EMPRESA == d.id;
@@ -171,7 +172,8 @@ function RED(width,height) {
 	      .domain([0,maxAdj])
 	      .range(["gold","red"]);
 
-	  return colorScale(nAdj);
+	  var COLOR = nAdj > 0 ? colorScale(nAdj) : "transparent";
+	  return COLOR;
 /*
 	  var cont = data.filter(function(a) { return +a.ID_EMPRESA == d.id; })
 		.map(function(d) { return d.CONTINENTE; })[0];
@@ -197,10 +199,13 @@ function RED(width,height) {
 	})[0];
 
 	var style = {
-	  'x':10,
+	  'x':width,
 	  'y':graphH - 10,
 	  'font-size':12,
-	  'font-family':'Open Sans'
+	  'font-family':'Open Sans',
+	  'id':'nombreEmpresa',
+	  'font-weight':300,
+	  'text-anchor':'end'
 	};
 
 	d3.select("g#red").append("text")
@@ -209,13 +214,17 @@ function RED(width,height) {
 
       .on("mouseout", function(d) {
 	if(!d3.select(this).attr("id")) d3.select(this).attr("opacity",mainOpacity);
-	d3.select("g#red").selectAll("text").remove();
+	d3.select("g#red").selectAll("text#nombreEmpresa").remove();
        })
        .on("click", function(d) {
 //-------INTERACCIÓN IZQUIERDA-----------------------------------------------|
 	  d3.selectAll("#selected")
 	    .attr("id",null)
-	    .attr("stroke",null)
+	    .attr("stroke",function(d) {
+	      var TAG = d3.select(this).attr('noAdj');
+	      var COLOR = TAG ? "black" : null;
+	      return COLOR;
+	    })
 	    .attr("stroke-width",null)
 	    .attr("opacity",mainOpacity);
 
@@ -235,23 +244,110 @@ function RED(width,height) {
 
 	  for(var i in arr) {
 	    d3.select("[tag='"+ arr[i] + "']")
-	      .attr("stroke","gold")
+	      .attr("stroke",peers)
 	      .attr("stroke-width",2.5)
 	      .attr("id","selected")
-	      .attr("opacity",1);
+//	      .attr("opacity",1);
 	  };
 
 	  links.style("stroke", function(d) {
 	    var cond = d.source.id == thisNode || d.target.id == thisNode;
-	    return cond ? "gold" : "black";
+	    return cond ? "tomato" : "black";
           });
 
 	d3.select(this)
 	 .attr("id","selected")
-	 .attr("stroke","tomato")
+	 .attr("stroke",actual)
+	 .attr("opacity",0.8)
 	 .attr("stroke-width",3)
 //---------------------------------------------------------------------------|
 //------INTERACCIÓN DERECHA--------------------------------------------------|
+	plantillaEmpresa(d,adj,data,licRondas,pmts);
+//---------------------------------------------------------------------------|
+	});
+
+    force.on("tick", function(e) {
+      ky = e.alpha;
+      datos.nodes.forEach(function(d) {
+	/* GRAVEDAD ARTIFICIAL */
+        d.y -= (d.y*d.weight*0.015) * ky;
+	/* GRAVEDAD ARTIFICIAL */
+      });
+      links.attr("x1", function(d) { return d.source.x; })
+	 .attr("y1", function(d) { return d.source.y; })
+	 .attr("x2", function(d) { return d.target.x; })
+	 .attr("y2", function(d) { return d.target.y; })
+	 .attr("stroke","black");
+
+      nodes.attr("cx", function(d) { return d.x; })
+	 .attr("cy", function(d) { return d.y; });
+    });
+
+  listaEmpresas(adj,data,licRondas,pmts,force,links);
+
+  leyendaRED();
+
+
+  };
+
+
+}
+
+RED(graphW,graphH);
+
+//*********************************************************************|
+//---------------------------------------------------------------------|
+//	     FUNCIONES PARA PREPROCESAR LOS NODOS Y LIGAS.	       |
+//---------------------------------------------------------------------|
+//*********************************************************************|
+var Procesar = {}
+
+Procesar.unicos = function (arr,key) {
+ var uniq = arr.map(function(d) {  return +d[key]; }).reduce(function(a,b) {
+   if(a.indexOf(b) < 0) { a.push(b) }
+   return a;
+ },[]).sort(function(a,b) { return a - b; });
+
+ return uniq;
+};
+
+
+Procesar.transformar = function (data,unicos) {
+ var arr = [];
+ for(var i in unicos) {
+  var set = data.filter(function(d) { return d.ID_LICITANTE == unicos[i]; });
+  var l = set.map(function(d) { return d.ID_LICITANTE; })[0];
+  var e = set.map(function(d) { return d.ID_EMPRESA; });
+  var doc = { lic: l, emps: e };
+  arr.push(doc);
+ }
+
+ return arr;
+};
+
+Procesar.edges = function(transformacion,emps) {
+ var links = [];
+ for(var j in transformacion) {
+  if(transformacion[j]["emps"].length > 1) {
+   var b = transformacion[j]["emps"];
+   for(var i in b) {
+    var counter = i;
+    while(counter < b.length - 1) {
+      counter++;
+      var source = emps.indexOf(+b[i]), target = emps.indexOf(+b[counter]);
+      var doc = { 'source': source, 'target':target };
+      links.push(doc)
+    }
+   }
+  }
+ }
+ return links;
+}
+
+function SUM(a,b) { return a + b; };
+
+function plantillaEmpresa(d,adj,data,licRondas,pmts) {
+
 	d3.selectAll(".datosMod").remove();
 
 	d3.select("div#nombre").html("-");
@@ -312,78 +408,140 @@ function RED(width,height) {
 	  + "<span style=font-size:12px><br>en total</span>"
 	d3.select(".totalBloques").html(total);
 	var filtroPmts = pmts.filter(function(p) { return d.id == p.id; });
-	console.log(filtroPmts[0].pmt)
-//---------------------------------------------------------------------------|
-	});
+	//console.log(filtroPmts)//[0].pmt)
+}
 
-    force.on("tick", function(e) {
-      ky = e.alpha;
-      datos.nodes.forEach(function(d) {
-	/* GRAVEDAD ARTIFICIAL */
-        d.y -= (d.y*d.weight*0.015) * ky;
-	/* GRAVEDAD ARTIFICIAL */
-      });
-      links.attr("x1", function(d) { return d.source.x; })
-	 .attr("y1", function(d) { return d.source.y; })
-	 .attr("x2", function(d) { return d.target.x; })
-	 .attr("y2", function(d) { return d.target.y; })
-	 .attr("stroke","black");
+function leyendaRED() {
+  var conteiner = d3.select("g#red").append("g");
+  var gradient = conteiner
+	.append("defs")
+	.append("linearGradient")
+	.attr("id","gradient");
 
-      nodes.attr("cx", function(d) { return d.x; })
-	 .attr("cy", function(d) { return d.y; });
+  gradient.append("stop")
+	.attr("offset","0")
+	.attr("stop-opacity",mainOpacity + 0.05)
+	.attr("stop-color","gold");
+
+  gradient.append("stop")
+	.attr("offset","1")
+	.attr("stop-opacity",mainOpacity + 0.05)
+	.attr("stop-color","red");
+
+    conteiner.append("rect")
+    .attr({
+      "id":"leyenda",
+      "height":15,
+      "width":100,
+      "x":function(d) {
+	var extraOffset = 40;
+	var offset = +d3.select("#filtroEmpresas")
+	  .style("width").split("px")[0] + extraOffset;
+	return offset;
+      },
+      "y":function(d) {
+	var offset = +d3.select("#filtroEmpresas")
+	  .style("height").split("px")[0] - 45;
+	var Height = d3.select(this).attr("height");
+	return +offset - Height;
+      },
+      "fill":"url(#gradient)",
+      "rx":5,
+      "ry":5
     });
-  };
+
+    conteiner.append("rect")
+    .attr({
+     'id':'cero',
+     'fill':'transparent',
+     'stroke':'black',
+     'stroke-width':0.5 + "px",
+//     'r':10,
+     'height':15,
+     'width':15,
+     'x': function() {
+      var x = d3.select("rect#leyenda").attr("x");
+      var offset = d3.select(this).attr("width");
+      return +x - +offset - 3;
+     },
+     'y':function() {
+	var y = d3.select("rect#leyenda").attr("y")
+      return y
+     }
+    });
+
+    var rectLeyenda = d3.select("rect#leyenda");
+
+    conteiner.append("line")
+    .attr({
+     "x1": function() {
+	var x = d3.select("rect#cero").attr("x");
+	return x;
+     },
+     "y1": function() {
+	var offset = rectLeyenda.attr("height");
+	var y = rectLeyenda.attr("y");
+	return +y + +offset + 5;
+     },
+     "x2": function() {
+	var offset = rectLeyenda.attr("width");
+	var x = +rectLeyenda.attr("x");
+	return +offset + x;
+     },
+     "y2": function() {
+	var offset = rectLeyenda.attr("height");
+	var y = rectLeyenda.attr("y");
+	return +y + +offset + 5;
+     },
+     "stroke":"black",
+     "id":"separador"
+    })
+    .style("stroke-width",0.25);
+
+    var rExpl = 'El tamaño de los círculos representa la inversión comprometida.';
+    var textoGradiente = [rExpl,'0','1',String(maxAdj),'No. de contratos:'];
+
+    conteiner.selectAll("text")
+      .data(textoGradiente).enter()
+      .append("text")
+	.attr("font-weight",300)
+	.attr("font-size",10)
+	.attr("text-anchor",function(d) {
+	  var pos;
+	  if(d=='0') pos = "middle"
+	  return pos;
+	})
+	.attr("x",function(d) {
+	  if(d == rExpl) {
+	    var x = d3.select("rect#cero").attr("x");
+	    return x;
+	  } else if(d == '0') {
+	    var x = d3.select("rect#cero").attr("x");
+	    var offset = d3.select("rect#cero").attr("width")/2;
+	    return +x + +offset;
+	  } else if(d == '1') {
+	    return +rectLeyenda.attr("x") + 3;
+	  } else if(d == String(maxAdj)) {
+	    var offset = d3.select(this).node().getBBox();
+	    return +rectLeyenda.attr("width") + +rectLeyenda.attr("x") - 15;
+	  } else {
+	    return d3.select('rect#cero').attr("x");
+	  }
+        })
+	.attr("y",function(d) {
+	  if(d == rExpl) {
+	    var y = d3.select("line#separador").attr("y1");
+	    var extraOffset = 13;
+	    return +y + extraOffset;
+	  } else if(d == '0') {
+	    return +rectLeyenda.attr("height") + +rectLeyenda.attr("y") - 3;
+	  } else if(d == '1') {
+	    return +rectLeyenda.attr("height") + +rectLeyenda.attr("y") - 3;
+	  } else if(d == String(maxAdj)) {
+	    return +rectLeyenda.attr("height") + +rectLeyenda.attr("y") - 3;
+	  } else {
+	    return +rectLeyenda.attr("y") - 4;
+	  }
+        }).text(function(d) { return d; });
+
 }
-
-RED(graphW,graphH);
-
-//*********************************************************************|
-//---------------------------------------------------------------------|
-//	     FUNCIONES PARA PREPROCESAR LOS NODOS Y LIGAS.	       |
-//---------------------------------------------------------------------|
-//*********************************************************************|
-var Procesar = {}
-
-Procesar.unicos = function (arr,key) {
- var uniq = arr.map(function(d) {  return +d[key]; }).reduce(function(a,b) {
-   if(a.indexOf(b) < 0) { a.push(b) }
-   return a;
- },[]).sort(function(a,b) { return a - b; });
-
- return uniq;
-};
-
-
-Procesar.transformar = function (data,unicos) {
- var arr = [];
- for(var i in unicos) {
-  var set = data.filter(function(d) { return d.ID_LICITANTE == unicos[i]; });
-  var l = set.map(function(d) { return d.ID_LICITANTE; })[0];
-  var e = set.map(function(d) { return d.ID_EMPRESA; });
-  var doc = { lic: l, emps: e };
-  arr.push(doc);
- }
-
- return arr;
-};
-
-Procesar.edges = function(transformacion,emps) {
- var links = [];
- for(var j in transformacion) {
-  if(transformacion[j]["emps"].length > 1) {
-   var b = transformacion[j]["emps"];
-   for(var i in b) {
-    var counter = i;
-    while(counter < b.length - 1) {
-      counter++;
-      var source = emps.indexOf(+b[i]), target = emps.indexOf(+b[counter]);
-      var doc = { 'source': source, 'target':target };
-      links.push(doc)
-    }
-   }
-  }
- }
- return links;
-}
-
-function SUM(a,b) { return a + b; };
