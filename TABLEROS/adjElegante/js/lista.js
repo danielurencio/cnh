@@ -5,7 +5,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links) {
   lista
     .on("click", function(d) {
 
-      var empresas = adj.map(function(d) { return d.EMPRESA; })
+      var empresas = /*adj*/data.map(function(d) { return d.EMPRESA; })
        .reduce(function(a,b) {
         if(a.indexOf(b) < 0) { a.push(b); }
         return a;
@@ -13,7 +13,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links) {
 
 
       for(var i in empresas) {
-       var match = adj.filter(function(e) { return e.EMPRESA == empresas[i]; })[0];
+       var match = /*adj*/data.filter(function(e) { return e.EMPRESA == empresas[i]; })[0];
        var doc = { 'EMPRESA':empresas[i], 'id':match.ID_EMPRESA }
        empresas[i] = doc;
       };
@@ -32,7 +32,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links) {
 	      .style("border-style","solid")
 	      .style("border-width","0.5px")
 	      .style("background-color","transparent")
-	      .style("background",'url(js/glass.svg) no-repeat 1px 1px')
+	      .style("background",'url(img/glass.svg) no-repeat 1px 1px')
 	      .style("padding-left","25px")
 	      .style("color","orange")
 	      .style("width","inherit");
@@ -40,8 +40,10 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links) {
 	    lista.append("ol")
 	    .style("margin-top","0px")
 	    .style("font-size","12px")
-	    .style("padding","25px")
+	    .style("padding-righ","25px")
 	    .style("padding-top","0px")
+	    .style("padding-left","30px")
+	    .style("padding-bottom","0px")
 	    .style("list-style","decimal")
 	    .style("text-align","left")
 	    .selectAll("li")

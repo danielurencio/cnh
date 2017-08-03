@@ -45,6 +45,10 @@ function RED(width,height) {
     };
     maxAdj = d3.max(adjs);
 
+    var colorScale = d3.scale.linear()
+        .domain([0,maxAdj])
+        .range(["gold","red"]);
+
     /*¿CUÁL ES EL VALOR MÁXIMO DE PMT*/
     /*... de esto depende ahora el NUEVO radio de los nodos*/
     ofertas.forEach(function(d) {
@@ -168,11 +172,14 @@ function RED(width,height) {
 	  function sum(a,b) { return a + b; };
 
 	  nAdj = nAdj.length > 0 ? nAdj.reduce(sum) : 0;
-	  var colorScale = d3.scale.linear()
+/*	  var colorScale = d3.scale.linear()
 	      .domain([0,maxAdj])
-	      .range(["gold","red"]);
+	      .range(["gold","red"]);*/
 
 	  var COLOR = nAdj > 0 ? colorScale(nAdj) : "transparent";
+	  d3.select(this)
+	    .attr("color",COLOR)
+//	    .attr("opacity",0);
 	  return COLOR;
 /*
 	  var cont = data.filter(function(a) { return +a.ID_EMPRESA == d.id; })
@@ -213,7 +220,9 @@ function RED(width,height) {
        })
 
       .on("mouseout", function(d) {
-	if(!d3.select(this).attr("id")) d3.select(this).attr("opacity",mainOpacity);
+	if(!d3.select(this).attr("id")) { 
+	  d3.select(this).attr("opacity",mainOpacity);
+	}
 	d3.select("g#red").selectAll("text#nombreEmpresa").remove();
        })
        .on("click", function(d) {
@@ -286,7 +295,7 @@ function RED(width,height) {
   listaEmpresas(adj,data,licRondas,pmts,force,links);
 
   leyendaRED();
-
+  Filtros(licRondas,data);
 
   };
 
@@ -508,7 +517,7 @@ function leyendaRED() {
 	.attr("font-size",10)
 	.attr("text-anchor",function(d) {
 	  var pos;
-	  if(d=='0') pos = "middle"
+	  if(d =='0') pos = "middle"
 	  return pos;
 	})
 	.attr("x",function(d) {
