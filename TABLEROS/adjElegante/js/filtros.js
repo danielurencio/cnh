@@ -1,4 +1,4 @@
-function Filtros(licRondas,data) {
+function Filtros(licRondas,data,adj,pmts,ofertas) {
   var conteiner = d3.select("g#red").append("g");
 
 /////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,20 @@ function Filtros(licRondas,data) {
 	var y = d3.select("#filtro").attr("y");
 	return +y + 3;
     }
-   }).text(function(d) { return d; });
+   }).text(function(d) { return d; })
+   .on("mouseover",function(d) {
+     if(d == "Total") {
+	d3.select(this)
+	.attr("fill","orange")
+	.style("cursor","pointer")
+     }
+   })
+   .on("mouseout",function(d) {
+      if( d == "Total" ) d3.select(this).attr("fill","white");
+   })
+   .on("click", function(d) {
+      if( d == "Total" ) resumen(data,adj,licRondas,pmts,ofertas);
+   });
 
 
   var cuadrosFiltros = {
@@ -232,6 +245,9 @@ function Filtros(licRondas,data) {
 	});
 	lics.attr("disable",null);
 	lics.attr("opacity",1);
+	lics.attr("id","on");
+	licsRect.attr("fill","rgba(255,165,0,0.5)");
+	licsRect.attr("stroke-width",2);
       } else {
        sel.attr({
 	  "id":null,
@@ -248,8 +264,8 @@ function Filtros(licRondas,data) {
       }
 
       var activacion = d3.select(this).attr("id");
-      console.log(activacion);
       filtrarPorRonda(activacion,ronda,licRondas,data);
+
     });
 
 
@@ -272,7 +288,19 @@ function Filtros(licRondas,data) {
 	var offset = +sel.attr("width") / 2;
 	return y + offset;
       }
-   }).text(function(d) { return d; });
+   }).text(function(d) { return d; })
+   .on("mouseover",function(d) {
+	d3.select(this)
+	.style("cursor","pointer")
+	.attr("fill","orange");
+    })
+   .on("mouseout",function(d) {
+	d3.select(this).attr("fill","white");
+    })
+   .on("click",function(d) {
+      resumen(data,adj,licRondas,pmts,ofertas,d);
+	console.log(d);
+   });
 
 
 
@@ -383,6 +411,9 @@ function Filtros(licRondas,data) {
     })
     .on("click",function() {
       var sel = d3.select(this);
+      var ronda = sel.attr("tag").split("-")[1];
+      var licitacion = sel.attr("tag").split("-")[3];
+
       if( !sel.attr("id") && !sel.attr("disable") ) {
        sel.attr({
 	  "id":"on",
@@ -390,6 +421,9 @@ function Filtros(licRondas,data) {
 	  "stroke-width":1.5,
 	  "fill":"rgba(255,165,0,0.5)"
 	});
+
+        filtrarPorRonda(activacion,RONDA,licRondas,data);
+
       } else {
        sel.attr({
 	  "id":null,
@@ -398,6 +432,17 @@ function Filtros(licRondas,data) {
 	});
       };
 
+      var activacion = d3.select(this).attr("id");
+      var RONDA = { 'ronda':ronda, 'licitacion':licitacion };
+//      filtrarPorRonda(activacion,RONDA,licRondas,data);
+    })
+    .on("dblclick",function(d) {
+	var sel = d3.select(this).attr("tag");
+	var ronda = sel.split("-")[1];
+	var lic = sel.split("-")[3];
+	var RONDA_LIC = { 'ronda':ronda, 'lic':lic, };
+	resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC)
+	console.log(RONDA_LIC);
     });
 
  }
@@ -409,25 +454,53 @@ function Filtros(licRondas,data) {
 
 function filtrarPorRonda(activacion,ronda,licRondas,data) {
   var rondasParaFiltro = [];
-  var rondasActivas = d3.selectAll("rect.Ronda#on")[0];
+  var rondasActivas;// = d3.selectAll("rect.Ronda#on")[0];
+  var licitacionesActivas;
   var filtroFinal = [];
   var empresasFiltradas = [];
 
-  for(var i in rondasActivas) {
-    var r = rondasActivas[i].getAttribute("tag");
-    if(r) {
-      r = r.split("-")[1];
-      rondasParaFiltro.push(r);
-    }
+  if(typeof(ronda) == "string") {
+    rondasActivas = d3.selectAll("rect.Ronda#on")[0];
+    for(var i in rondasActivas) {
+      var r = rondasActivas[i].getAttribute("tag");
+      if(r) {
+        r = r.split("-")[1];
+        //rondasParaFiltro.push(r);
+      }
  
-    var filtrado = licRondas.filter(function(d) { return d.RONDA == r; })
+      var filtrado = licRondas.filter(function(d) { return d.RONDA == r; })
 	.map(function(d) { return d.ID_LICITANTE_OFERTA; })
 	.reduce(function(a,b) {
 	  if( a.indexOf(b) < 0 ) { a.push(b); };
 	  return a;
 	},[]);
 
-    filtroFinal = filtroFinal.concat(filtrado);
+      filtroFinal = filtroFinal.concat(filtrado);
+    };
+  };
+
+  if(typeof(ronda) == "object") {
+   licitacionesActivas = d3.selectAll("rect.Licitacion#on")[0];
+   for(var i in licitacionesActivas) {
+    var r;
+    var l = licitacionesActivas[i].getAttribute("tag");
+    if(l) {
+      r = l.split("-")[1];
+      l = l.split("-")[3];
+    }
+
+    var filtrado = licRondas.filter(function(d) {
+	return d.RONDA == r && d.LICITACION == l;
+    })
+	.map(function(d) { return d.ID_LICITANTE_OFERTA; })
+	.reduce(function(a,b) {
+	  if( a.indexOf(b) < 0 ) { a.push(b); };
+	  return a;
+	},[]);
+
+      filtroFinal = filtroFinal.concat(filtrado);
+    
+   };
   };
 
   filtroFinal = filtroFinal.reduce(function(a,b) {
@@ -447,45 +520,100 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
     return a;
   },[]).map(function(d) { return d.ID_EMPRESA; });
 
-if(activacion == "on" ) {
-  for(var i in empresasFiltradas) {
-    var s = d3.select("circle[tag='" + empresasFiltradas[i] + "']");
-    s.attr("cambio",1);
-    var cambioColor = s.attr("color");
+  if(typeof(ronda) == "string") {
+    if(activacion == "on" ) {
+      for(var i in empresasFiltradas) {
+        var s = d3.select("circle[tag='" + empresasFiltradas[i] + "']");
+        s.attr("cambio",1);
+        var cambioColor = s.attr("color");
 
-    if( cambioColor != "transparent" ) {
-      s.transition().duration(800).attr("fill",cambioColor);
+        if( cambioColor != "transparent" ) {
+          s.transition().duration(800).attr("fill",cambioColor);
+        } else {
+          s.transition().duration(800).attr("stroke","black");
+        }
+      };
+     } else {
+       d3.selectAll("circle[cambio='1']").transition().duration(800)
+	  .attr("fill",function(d) {
+	    var color = d3.select(this).attr("color");
+	    if(color != "transparent") return "gray";
+	    if(color == "transparent") return "transparent"
+	  })
+	  .attr("stroke",function(d) {
+	    var color = d3.select(this).attr("color");
+	    if(color != "transparent") return null;
+	    if(color == "transparent") return "lightGray";
+	  })
+	  .attr("cambio",null);
+     };
+  } else {
+
+    var filtroLicUniq = licRondas.filter(function(d) {
+	return d.RONDA == ronda.ronda && d.LICITACION == ronda.licitacion;
+    }).map(function(d) { return d.ID_LICITANTE_OFERTA; })
+    .reduce(function(a,b) {
+	if(a.indexOf(b) < 0) { a.push(b); };
+        return a;
+    },[]);
+
+    var empresasFiltro = [];
+
+    for(var i in filtroLicUniq) {
+     var arrTemp = data
+	  .filter(function(d) { return d.ID_LICITANTE == filtroLicUniq[i]; });
+
+     empresasFiltro = empresasFiltro.concat(arrTemp);
+    };
+
+    empresasFiltro = empresasFiltro.map(function(d) {
+	return d.ID_EMPRESA;
+    })
+    .reduce(function(a,b) {
+	if( a.indexOf(b) < 0 ) { a.push(b) };
+	return a;
+    },[]).sort();
+
+    if(activacion == "on") {
+      for(var i in empresasFiltro) {
+	var q = String(empresasFiltro[i]);
+        var s = document.querySelectorAll('circle[tag="'+q+'"]')[0];
+        s = d3.select(s);
+	s.attr("cambio",1);
+	var color = s.attr("color");
+	if(color!="transparent") { 
+	  s.transition().duration(800).attr("fill",color);
+	}
+	if(color=="transparent") {
+	  s.transition().duration(800).attr("stroke","black");
+	}
+
+      };
+      
     } else {
-      s.transition().duration(800).attr("stroke","black");
-    }
 
+      for(var i in empresasFiltro) {
+	var q = String(empresasFiltro[i]);
+        var s = document.querySelectorAll('circle[tag="'+q+'"]')[0];
+        s = d3.select(s);
+	s.attr("cambio",null);
+	var color = s.attr("color");
+	if(color!="transparent") { 
+	  s.transition().duration(800).attr("fill","gray");
+	}
+	if(color=="transparent") {
+	  s.transition().duration(800).attr("stroke","lightGray");
+	}
+
+      };
+    };
   };
- } else {
-/*
-  for(var i in empresasFiltradas) {
-    var s = d3.select("circle[tag='" + empresasFiltradas[i] + "']");
-    var cambioColor = s.attr("color");
 
-    if( cambioColor != "transparent" ) {
-      s.transition().duration(800).attr("fill","gray");
-    } else {
-      s.transition().duration(800).attr("stroke","lightGrey");
-    }
-  };
-*/
+};
 
-   d3.selectAll("circle[cambio='1']").transition().duration(800)
-	.attr("fill",function(d) {
-	  var color = d3.select(this).attr("color");
-	  if(color != "transparent") return "gray";
-	  if(color == "transparent") return "transparent"
-	})
-	.attr("stroke",function(d) {
-	  var color = d3.select(this).attr("color");
-	  if(color != "transparent") return null;
-	  if(color == "transparent") return "lightGray";
-	})
-	.attr("cambio",null);
-
- }
+function FindByAttributeValue(attribute, value)    {
+  var All = document.getElementsByTagName('*');
+  for (var i = 0; i < All.length; i++)       {
+    if (All[i].getAttribute(attribute) == value) { return All[i]; }
+  }
 }

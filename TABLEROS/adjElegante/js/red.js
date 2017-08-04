@@ -15,6 +15,7 @@ function RED(width,height) {
     .await(getDATA);
 
   function getDATA(err,data,adj,licRondas,ofertas) {
+
      /*PROCESAR LICITANTES POR RONDA*/
      licRondas.forEach(function(d) {
        d.LICITANTE = d.LICITANTE.split(";")
@@ -72,6 +73,12 @@ function RED(width,height) {
       sumaPMT = typeof(filtro) == 'object' ? filtro.reduce(SUM) : filtro;
       pmts.push({ 'id':d, 'pmt':sumaPMT }) 
     });
+
+//////////////////////////////////////////////////////////////////////////////
+//EJECUCIÓN DE PRIMER PLANTILLA: RESUMEN DE RONDAS///////////////////////////
+    resumen(data,adj,licRondas,pmts,ofertas)
+///////////////////////////////////////////////////////////////////////////
+
     /*------------------------------------*/
     var lics = Procesar.unicos(data,"ID_LICITANTE")//"lic");
     var sets = Procesar.transformar(data,lics);
@@ -106,7 +113,7 @@ function RED(width,height) {
     var force = d3.layout.force()
 	.charge(-55)
 	.distance(20)
-	.linkDistance(40)
+	.linkDistance(50)
 	.gravity(0.075)
 	.size([graphWidth,graphHeight]);
 
@@ -295,7 +302,7 @@ function RED(width,height) {
   listaEmpresas(adj,data,licRondas,pmts,force,links);
 
   leyendaRED();
-  Filtros(licRondas,data);
+  Filtros(licRondas,data,adj,pmts,ofertas);
 
   };
 
@@ -354,71 +361,6 @@ Procesar.edges = function(transformacion,emps) {
 }
 
 function SUM(a,b) { return a + b; };
-
-function plantillaEmpresa(d,adj,data,licRondas,pmts) {
-
-	d3.selectAll(".datosMod").remove();
-
-	d3.select("div#nombre").html("-");
-	d3.select("div#pais").html("-");
-        function filtroEmp(E) { return +E.ID_EMPRESA == +d.id; };
-	var objAdj = adj.filter(filtroEmp);
-	var objEmp = data.filter(filtroEmp);
-
-	d3.select("div#nombre").html(objEmp[0].EMPRESA);
-	d3.select("div#pais").html(objEmp[0].PAIS);
-
-	for(var i in objAdj) {
-	 var licitantes = licRondas.filter(function(d) {
-	  var cond1 = objAdj[i].ID_LICITANTE_ADJ == d.ID_LICITANTE_ADJ;
-	  var cond2 = objAdj[i].ID_LICITANTE_ADJ == d.ID_LICITANTE_OFERTA;
-	  return cond1 && cond2;
-	 })[0].LICITANTE;
-
-	 d3.select("table#adjudicaciones>tbody")
-	  .append("tr").attr("class","datosMod")
-	  .style("font-weight","lighter")
-	  .html(function(d) {
-	   var n = objAdj[i].ADJUDICADOS;
-	   var mod = objAdj[i].MODALIDAD;
-	   var inv = Number(objAdj[i].INV_TOTAL).toFixed(1);
-	   var ar = Number(objAdj[i].AREA).toFixed(1);
-	   
-	   var str = "<th>"+n+"</th>" +
-		     "<th>"+mod+"</th>" +
-		     "<th id='licitantes' tag="+ i +"></th>"+
-		     "<th>"+inv+"</th>"+
-		     "<th>"+ar+"</th>";
-	   return str;
-	   });
-
-	   var cell = d3.select("th#licitantes[tag='"+i+"']");
-	   if(licitantes.length > 1) {
-	    cell.append("ul")//.style("list-style","none")
-	      .selectAll("li")
-		.data(licitantes).enter()
-	      .append("li").html(function(d,i) { return (i+1) + ") " + d; })
-		.style("font-size","8.5px");
-	   } else {
-	     cell.html("-")
-	   };
-	};
-
-	var total = objAdj.map(function(d) { return d.ADJUDICADOS; })
-
-	if(total.length == 0)  {
-	  total = 0;
-	} else {
-	  total = total.reduce(function sum(a,b) { return +a + +b; });
-	  
-	};
-
-	total = "<span style=font-size:60px;font-weight:600;>" + total + "</span>"
-	  + "<span style=font-size:12px><br>en total</span>"
-	d3.select(".totalBloques").html(total);
-	var filtroPmts = pmts.filter(function(p) { return d.id == p.id; });
-	//console.log(filtroPmts)//[0].pmt)
-}
 
 function leyendaRED() {
   var conteiner = d3.select("g#red").append("g");
