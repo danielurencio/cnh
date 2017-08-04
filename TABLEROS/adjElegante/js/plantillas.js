@@ -68,11 +68,11 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC) {
 '<div id="titulo" style="height:15%; padding-top:18px; font-size:28px;">'+
    texto.resumen +
 '<div class="totalBloques" style="padding: 0px;">'+
-'<svg id="sumas" style="width:100%;height:80px;background-color:rgba(0,0,0,0.02)"></svg>'
+'<svg id="sumas" style="width:100%;height:80px;background-color:transparent"></svg>'
 +'</div>' +  
 '</div>' +
-'<div id="titulo" style="height:15%; padding-top:0px;">'+
-   'PAÍSES' +
+//'<div id="titulo" style="height:15%; padding-top:0px; font-weight:600">'+
+//   'PAÍSES' +
   '<div id="barras" style="padding:0px;width:100%; height:300px"></div>'+
 '</div>'
 /*+'<div id="titulo" class="ModalidadEmpresa" style="height:15%; padding-top:18px;">'+
@@ -87,44 +87,77 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC) {
 	.html(plantilla);
 
 //------CÁLCULO DE SUMAS--------------//
-  calculoSumas(licRondas,ofertas,adj,RONDA_LIC);
+  var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC);
 //-----------------------------------//
 
  var sumas = d3.select("svg#sumas"); 
  var nums = [1,2,3,4,5];
 
- sumas.selectAll("text")
-  .data(nums).enter()
+ var nums = sumas.append("g").selectAll("text")
+  .data(SUMAS).enter()
+  .append("text")
+   .style("font-weight",300)
+   .attr("id",function(d,i) {
+     return "suma_" + String(i);
+   })
+   .attr("fill","rgba(0,0,0,0.5)")
+   .attr("opacity",0)
+   .attr("alignment-baseline","alphabetic")
+   .attr("text-anchor","middle")
+   .attr("x",function(d,i) {
+     var width = d3.select("svg#sumas").style("width").split("px")[0];
+     return (width / SUMAS.length)*i + (width/SUMAS.length/2);
+   })
+   .attr("y",function() {
+     var height = +d3.select("svg#sumas").style("height").split("px")[0];
+     return height / 2;
+   }).text(function(d) { return d[1]; });
+
+
+ var tits = sumas.append("g").selectAll("text")
+  .data(SUMAS).enter()
   .append("text")
    .style("font-weight",600)
-   .attr("id",function(d) {
-     return d;
-   })
-   .attr("alignment-baseline","alphabetic")
+   .style("font-size",10)
+   .attr("opacity",1)
+//   .attr("id",function(d,i) {
+//     return "suma_" + String(i);
+//   })
+//   .attr("fill","rgba(0,0,0,0.5)")
+   .attr("alignment-baseline","text-before-edge")
    .attr("text-anchor","middle")
    .attr("x",function(d,i) {
      var width = d3.select("svg#sumas").style("width").split("px")[0];
      return (width / 5)*i + (width/10);
    })
-   .attr("y",function() {
-     var height = +d3.select("svg#sumas").style("height").split("px")[0];
-     return height / 2;
-   }).text(function(d) { return d; });
+   .attr("y",function(d,i) {
+     var sel = d3.select("#suma_" + String(i)).node().getBBox();
+     var y = sel.y;
+     var height = sel.height; 
+     return y + height + 8;
+   }).text(function(d) { return d[0]; });
+
+  var t0 = nums.transition().duration(750).attr("opacity",1)
+//  tits.transition().delay(300).duration(750).attr("opacity",1)
 
 	Highcharts.chart('barras', {
 	    chart: {
 		type: 'column'
 	    },
 	    title: {
-		text:''
+		text:'PAÍSES',
+		style: {
+		  "font-weight":600,
+		  "font-family":'Open Sans, sans-serif'
+		}
 	    },
 	    credits: { enabled:false },
 	    xAxis: {
 		type: 'category',
 		labels: {
-		    rotation: -45,
+		    rotation: -34,
 		    style: {
-			fontSize: '11px',
+			fontSize: '10.5px',
 			'font-weight':300,
 			fontFamily: 'Open Sans, sans-serif'
 		    }
@@ -257,39 +290,73 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts) {
 
 function calculoSumas(licRondas,ofertas,adj,RONDA_LIC) {
   var sumas = {};
-  var FILTRO_ofertas;
-  var FILTRO_bloquesO;
-  var FILTRO_bloquesA;
-  var FILTRO_area;
-  var FILTRO_empresas;
-  var ofertas = ofertas.map(function(d) { 
-    var obj = {
-      'PMT_TOTAL':d.PMT_TOTAL,
-      'ID_BLOQUE':d.ID_BLOQUE,
-      'RONDA':d.RONDA,
-      'LICITACION':d.LICITACION
-    };
-    return obj;
-  });
+  var FILTRO1;
+  var FILTRO2;
+  var FILTRO3;
+
+  var bloques1 = _.uniq(ofertas,"ID_BLOQUE");
+  var bloques2 = _.uniq(licRondas,"ID_BLOQUE");
+  var lics = _.uniq(licRondas,"ID_LICITANTE_OFERTA")
+	.filter(function(d) { return d.ID_LICITANTE_OFERTA; });
+
 
   if(!RONDA_LIC) {
-    FILTRO_ofertas = ofertas
+    FILTRO1 = bloques1;
+    FILTRO2 = bloques2;
+    FILTRO3 = lics;
   } else {
     if(typeof(RONDA_LIC) != 'object') {
-      FILTRO_ofertas = ofertas.filter(function(d) {
+      FILTRO1 = bloques1.filter(function(d) {
        return d.RONDA == RONDA_LIC;
       });
+      FILTRO2 = bloques2.filter(function(d) {
+       return d.RONDA == RONDA_LIC;
+      });
+      FILTRO3 = lics.filter(function(d) {
+       return d.RONDA == RONDA_LIC;
+      });
+
     } else {
-      FILTRO_ofertas = ofertas.filter(function(d) {
+      FILTRO1 = bloques1.filter(function(d) {
         return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
       });
+      FILTRO2 = bloques2.filter(function(d) {
+        return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
+      });
+      FILTRO3 = lics.filter(function(d) {
+        return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
+      });
+
     };
   };
 
-  var inv_pmt = FILTRO_ofertas.map(function(d) { return d.PMT_TOTAL; })
-	.reduce(SUM);
+  var empresas = [];
+  FILTRO3.forEach(function(d) {
+    empresas = empresas.concat(d.LICITANTE);
+  });
 
-  sumas.inv_pmt = inv_pmt;
-  console.log(adj);
-//  return sumas;
+  empresas = empresas.reduce(function(a,b) {
+    if( a.indexOf(b) < 0) { a.push(b); };
+    return a;
+  },[]);  
+//console.log(empresas.sort());
+
+  var inv_pmt = FILTRO1.map(function(d) { return d.PMT_TOTAL; }).reduce(SUM);
+  var area = FILTRO1.map(function(d) { return d.AREA; }).reduce(SUM);
+  var bloquesAdjudicados = FILTRO2.filter(function(d) {
+    return d.ID_LICITANTE_ADJ != "";
+  });
+
+  sumas['Empresas'] = empresas.length;
+  sumas['Bloques ofertados'] = FILTRO2.length;
+  sumas['Bloques adjudicados'] = bloquesAdjudicados.length;
+  sumas['Inversión comprometida'] = (inv_pmt / 1000).toFixed(0) + "K";
+  sumas['Área (km\u00B2)'] = +area.toFixed(1);
+
+  var SUMAS = [];
+  for(var k in sumas) {
+    SUMAS.push([k,sumas[k]])
+  };
+
+  return SUMAS;
 };

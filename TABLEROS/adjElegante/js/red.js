@@ -17,8 +17,11 @@ function RED(width,height) {
   function getDATA(err,data,adj,licRondas,ofertas) {
 
      /*PROCESAR LICITANTES POR RONDA*/
+     licRondas = licRondas.filter(function(d) {
+	return d.RONDA && d.LICITACION;
+     });
      licRondas.forEach(function(d) {
-       d.LICITANTE = d.LICITANTE.split(";")
+       if(d) d.LICITANTE = d.LICITANTE.split(";")
      });
      /*-----------------------------*/
 
@@ -53,7 +56,7 @@ function RED(width,height) {
     /*¿CUÁL ES EL VALOR MÁXIMO DE PMT*/
     /*... de esto depende ahora el NUEVO radio de los nodos*/
     ofertas.forEach(function(d) {
-      var col = ['PMT_TOTAL','VAR_ADJ1','VAR_ADJ2','VPO']
+      var col = ['PMT_TOTAL','VAR_ADJ1','VAR_ADJ2','VPO','AREA']
       for(var i in col)
       d[col[i]] = +d[col[i]];
     });

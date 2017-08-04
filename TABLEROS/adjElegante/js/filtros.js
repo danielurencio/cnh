@@ -299,7 +299,6 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
     })
    .on("click",function(d) {
       resumen(data,adj,licRondas,pmts,ofertas,d);
-	console.log(d);
    });
 
 
@@ -422,7 +421,9 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
 	  "fill":"rgba(255,165,0,0.5)"
 	});
 
-        filtrarPorRonda(activacion,RONDA,licRondas,data);
+        var activacion = d3.select(this).attr("id");
+        var RONDA = { 'ronda':ronda, 'licitacion':licitacion };
+        filtrarPorRonda(activacion,RONDA,licRondas,data,RONDA);
 
       } else {
        sel.attr({
@@ -430,10 +431,15 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
 	  "stroke-width":1,
 	  "fill":"transparent"
 	});
+
+        var activacion = d3.select(this).attr("id");
+        var RONDA = { 'ronda':ronda, 'licitacion':licitacion };
+        filtrarPorRonda(activacion,RONDA,licRondas,data,RONDA);
+
       };
 
-      var activacion = d3.select(this).attr("id");
-      var RONDA = { 'ronda':ronda, 'licitacion':licitacion };
+//      var activacion = d3.select(this).attr("id");
+//      var RONDA = { 'ronda':ronda, 'licitacion':licitacion };
 //      filtrarPorRonda(activacion,RONDA,licRondas,data);
     })
     .on("dblclick",function(d) {
@@ -442,7 +448,6 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
 	var lic = sel.split("-")[3];
 	var RONDA_LIC = { 'ronda':ronda, 'lic':lic, };
 	resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC)
-	console.log(RONDA_LIC);
     });
 
  }
@@ -454,7 +459,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
 
 function filtrarPorRonda(activacion,ronda,licRondas,data) {
   var rondasParaFiltro = [];
-  var rondasActivas;// = d3.selectAll("rect.Ronda#on")[0];
+  var rondasActivas// = d3.selectAll("rect.Ronda#on")[0];
   var licitacionesActivas;
   var filtroFinal = [];
   var empresasFiltradas = [];
@@ -520,11 +525,12 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
     return a;
   },[]).map(function(d) { return d.ID_EMPRESA; });
 
+
   if(typeof(ronda) == "string") {
     if(activacion == "on" ) {
       for(var i in empresasFiltradas) {
         var s = d3.select("circle[tag='" + empresasFiltradas[i] + "']");
-        s.attr("cambio",1);
+//        s.attr("cambio",String(ronda));
         var cambioColor = s.attr("color");
 
         if( cambioColor != "transparent" ) {
@@ -534,7 +540,13 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
         }
       };
      } else {
-       d3.selectAll("circle[cambio='1']").transition().duration(800)
+       var empresasFILTRADAS = empresasFiltradas.sort()
+	.reduce(function(a,b) {
+	  if( a.indexOf(b) < 0 ) { a.push(b); };
+	  return a;
+	},[]);
+
+       d3.selectAll("circle").transition().duration(800)
 	  .attr("fill",function(d) {
 	    var color = d3.select(this).attr("color");
 	    if(color != "transparent") return "gray";
@@ -545,7 +557,19 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
 	    if(color != "transparent") return null;
 	    if(color == "transparent") return "lightGray";
 	  })
-	  .attr("cambio",null);
+//	  .attr("cambio",null);
+
+      for(var i in empresasFILTRADAS) {
+        var s = d3.select("circle[tag='" + empresasFILTRADAS[i] + "']");
+//        s.attr("cambio",String(ronda));
+        var cambioColor = s.attr("color");
+
+        if( cambioColor != "transparent" ) {
+          s.transition().duration(800).attr("fill",cambioColor);
+        } else {
+          s.transition().duration(800).attr("stroke","black");
+        }
+      };
      };
   } else {
 
@@ -575,11 +599,18 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
     },[]).sort();
 
     if(activacion == "on") {
-      for(var i in empresasFiltro) {
-	var q = String(empresasFiltro[i]);
+
+       var empresasFILTRADAS = empresasFiltradas.sort()
+	.reduce(function(a,b) {
+	  if( a.indexOf(b) < 0 ) { a.push(b); };
+	  return a;
+	},[]);
+
+      for(var i in empresasFILTRADAS) {
+	var q = String(empresasFILTRADAS[i]);
         var s = document.querySelectorAll('circle[tag="'+q+'"]')[0];
         s = d3.select(s);
-	s.attr("cambio",1);
+//	s.attr("cambio",null);
 	var color = s.attr("color");
 	if(color!="transparent") { 
 	  s.transition().duration(800).attr("fill",color);
@@ -589,29 +620,47 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
 	}
 
       };
-      
+
     } else {
 
-      for(var i in empresasFiltro) {
-	var q = String(empresasFiltro[i]);
+       var empresasFILTRADAS = empresasFiltradas.sort()
+	.reduce(function(a,b) {
+	  if( a.indexOf(b) < 0 ) { a.push(b); };
+	  return a;
+	},[]);
+
+       d3.selectAll("circle").transition().duration(800)
+	  .attr("fill",function(d) {
+	    var color = d3.select(this).attr("color");
+	    if(color != "transparent") return "gray";
+	    if(color == "transparent") return "transparent"
+	  })
+	  .attr("stroke",function(d) {
+	    var color = d3.select(this).attr("color");
+	    if(color != "transparent") return null;
+	    if(color == "transparent") return "lightGray";
+	  })
+
+      for(var i in empresasFILTRADAS) {
+	var q = String(empresasFILTRADAS[i]);
         var s = document.querySelectorAll('circle[tag="'+q+'"]')[0];
         s = d3.select(s);
-	s.attr("cambio",null);
+//	s.attr("cambio",null);
 	var color = s.attr("color");
 	if(color!="transparent") { 
-	  s.transition().duration(800).attr("fill","gray");
+	  s.transition().duration(800).attr("fill",color);
 	}
 	if(color=="transparent") {
-	  s.transition().duration(800).attr("stroke","lightGray");
+	  s.transition().duration(800).attr("stroke","black");
 	}
-
       };
+
     };
   };
 
 };
 
-function FindByAttributeValue(attribute, value)    {
+function FindByAttributeValue(attribute, value) {
   var All = document.getElementsByTagName('*');
   for (var i = 0; i < All.length; i++)       {
     if (All[i].getAttribute(attribute) == value) { return All[i]; }
