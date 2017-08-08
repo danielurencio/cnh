@@ -12,6 +12,10 @@ d3.selectAll("ol").style("height",height + "px");
 d3.selectAll("div#titulo").style("height","15%").style("padding-top","18px");
 d3.select(".totalBloques").style("padding",0)
 
+var infoWidth = d3.select("#info").style("width").split("px")[0];
+//d3.select("#table").style("width",infoWidth);
+//d3.select("table#ofertas>tbody").style("height",height*.3)
+
 var svgCanvas = {
  selection:"svg#canvas",
  type:"svg",

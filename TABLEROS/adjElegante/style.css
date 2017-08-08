@@ -66,13 +66,13 @@ div#red::-webkit-scrollbar {
     width: 0px;
 }
 
-table {
+table#adjudicaciones {
  padding-top:0px;
  margin: 0 auto;
 }
 
-th {
- width:250px;
+th.old {
+ width:150px;
  height:50px;
  font-size:12px;
  font-weight:300;
@@ -142,4 +142,81 @@ ol {
   list-style-type:decimal;
   padding:0px;
 }
+/*
+div#tabla {
+ text-align:center;
+}
+*/
+/*table#ofertas>thead {
+ display:block;
+/* width:50px;
+}
+
+
+table#ofertas>tbody {
+ height:300px;
+ overflow:scroll;
+ display:block;
+}
+
+*/
+#tBodyContainer::-webkit-scrollbar-track {
+        background-color:rgba(0,0,0,0.65);
+}
+
+#tBodyContainer::-webkit-scrollbar {
+        width: 8px;
+        height:0px;
+}
+
+#tBodyContainer::-webkit-scrollbar-thumb {
+        background-color: rgba(255,255,255,0.5);
+	opacity:0.5;
+        height:0px;
+}
+
+/*div#tabla{
+  position:absolute;
+  right-margin:0px;
+}
+*/
+div#scrollTableContainer {
+  position:absolute;  
+}
+
+table {
+ table-layout:fixed;
+ width:50%;
+}
+
+* {
+  box-sizing:border-box;
+}
+
+div#scrollTableContainer {
+        margin: 0px; /* just for presentation purposes */
+    }
+   
+    #tHeadContainer {
+	border-style:solid;
+	border-width:0.25px;
+	border-color:white;
+	border-top-color:gray;
+	border-bottom-color:gray;
+	background-color:white;/*rgba(0,0,0,0.65);*/
+        color: black;
+        font-weight:400;
+    }
+    #tBodyContainer {
+        height: 200px;
+        overflow-y: scroll;
+	font-weight:lighter;
+    }
+
+tr#new>th {
+	padding:0px;
+        width: 80px; 
+	font-size:12px;
+	font-weight:inherit;
+    }
 

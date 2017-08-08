@@ -1,5 +1,6 @@
-function Filtros(licRondas,data,adj,pmts,ofertas) {
-  var conteiner = d3.select("g#red").append("g");
+function Filtros(licRondas,data,adj,pmts,ofertas,tabla) {
+  var conteiner = d3.select("g#red")
+	.append("g").attr("id","FILTRO");
 
 /////////////////////////////////////////////////////////////////////////////
 /*--------ESPECIFICACIONES GENERALES PARA EL CUADRO DE FILTROS------------*/
@@ -18,7 +19,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
     "y": function() {
       var y = d3.select("g>rect").attr("height");
       var offset = d3.select(this).attr("height");
-      return +y - +offset - 30;
+      return 10//+y - +offset - 30;
     },
     "rx":5,
     "ry":5,
@@ -28,7 +29,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
    });
 
 
-  var titulos = ['Total','Ronda','Licitación'];
+  var titulos = ['Ronda','Licitación'];
   var xF = d3.select("#filtro").attr("x");
   var yF = d3.select("#filtro").attr("y");
   var widthF = d3.select("#filtro").attr("width");
@@ -48,9 +49,9 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
       if( d == "Total" ) {
 	return +xF + (+widthF/6);
       } else if( d == "Ronda" ) {
-	return +xF + (+widthF/2);
+	return +xF + (+widthF/6);
       } else {
-	return +xF + (+widthF/6)*5;
+	return +xF + (+widthF/2)*1;
       }
     },
     "y": function() {
@@ -82,10 +83,11 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
    "stroke":"white"
   };
 
+
 //////////////////////////////////////////////////////////////////////////////
 /*----------------FILTRO PARA VER TOTALES----------------------------------*/
 ////////////////////////////////////////////////////////////////////////////
-
+/*
   conteiner.append("rect")
     .attr(cuadrosFiltros)
     .attr({
@@ -179,7 +181,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
       }
 
     });
-
+*/
 
 //////////////////////////////////////////////////////////////////////////////
 /*--------------  FILTRO PARA VER RONDAS  ---------------------------------*/
@@ -199,13 +201,17 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
   .append("rect")
    .attr(cuadrosFiltros)
    .attr({
+      "id":"on",
+      "stroke":"white",
+      "stroke-width":2,
+      "fill":"orange",
       "class":"Ronda",
-      "disable":1,
-      "opacity":0.4,
+      "disable":null,
+      "opacity":1,
       "tag":function(d) { return "R-" + d; },
       "x":function(d) {
 	var offset = +d3.select(this).attr("width")/2;
-	return textOffsetR.x - (offset*4);
+	return textOffsetR.x - (offset*2);
       },
       "y":function(d,i) {
 	var iter = +d3.select(this).attr("height") + 5;
@@ -264,6 +270,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
       }
 
       var activacion = d3.select(this).attr("id");
+	console.log(ronda,activacion)
       filtrarPorRonda(activacion,ronda,licRondas,data);
 
     });
@@ -280,7 +287,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
       "font-weight":300,
       "alignment-baseline":"central",
       "x":function(d) {
-	return textOffsetR.x - 6;
+	return textOffsetR.x + 5;
       },
       "y":function(d) {
 	var sel = d3.select("rect[tag='R-" + d + "']");
@@ -298,7 +305,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
 	d3.select(this).attr("fill","white");
     })
    .on("click",function(d) {
-      resumen(data,adj,licRondas,pmts,ofertas,d);
+      resumen(data,adj,licRondas,pmts,ofertas,d,tabla);
    });
 
 
@@ -376,8 +383,12 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
    .append("rect")
    .attr(cuadrosFiltros)
    .attr({
-      "disable":1,
-      "opacity":0.4,
+      "id":"on",
+      "stroke":"white",
+      "stroke-width":2,
+      "fill":"rgba(255,165,0,0.5)",
+      "disable":null,
+      "opacity":1,
       "class":"Licitacion_N",
       "ronda":rondas[i],
       "tag":function(d) { return "R-" + rondas[i] + "-L-" + d; },
@@ -436,6 +447,20 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
         var RONDA = { 'ronda':ronda, 'licitacion':licitacion };
         filtrarPorRonda(activacion,RONDA,licRondas,data,RONDA);
 
+// HACER QUE CUANDO NINGUNA LICITACIÓN ESTÉ ACTIVA, LA RONDA SE DESACTIVE
+	var licsSelec = d3.selectAll("rect#on.Licitacion[ronda='"+ ronda +"']");
+	if(licsSelec[0].length == 0) {
+	  d3.selectAll("rect.Licitacion[ronda='"+ ronda +"']")
+	    .attr("disable","1")
+	    .attr("opacity",0.4);
+	  licsSelec
+	   .attr("id",null)
+	  d3.select("rect[tag='R-" + ronda + "']")
+	    .attr("id",null)
+	    .attr("fill","transparent")
+	    .attr("stroke-width",1)
+	};
+	
       };
 
 //      var activacion = d3.select(this).attr("id");
@@ -452,6 +477,80 @@ function Filtros(licRondas,data,adj,pmts,ofertas) {
 
  }
 
+    conteiner.append("g")
+     .attr("id","botonResumen")
+     .append("rect")
+     .attr("id","botonResumen")
+     .attr("x", function() {
+	var sel = d3.select("rect[tag='R-1-L-4']")
+	var x = +sel.attr("x").split("px")[0];
+	var offset = +sel.attr("width").split("px")[0];
+	return x + offset*2;
+     })
+     .attr("width",function() {
+	var offset = d3.select("rect[tag='R-1-L-4']").attr("width").split("px")[0];
+	var x = +d3.select("rect#filtro").attr("x").split("px")[0];
+	var thisX = +d3.select(this).attr("x").split("px")[0];
+	var w = +d3.select("rect#filtro").attr("width").split("px")[0];
+	return (thisX - x)/2 - (+offset*1);
+     })
+     .attr("height",20)
+
+     .attr("y",function() {
+	var offset = +d3.select(this).attr("height").split("px")[0]/2;
+	var y = +d3.select("rect#filtro").attr("y").split("px")[0];
+	var height = +d3.select("rect#filtro").attr("height").split("px")[0];
+	return y + (height/2) - offset;
+     })
+     .attr("rx",5)
+     .attr("ry",5)
+     .attr("fill","transparent")
+     .attr("stroke","white")
+
+    conteiner.append("text")
+      .attr("id","botonResumen")
+      .attr("x",function() {
+	var w = +d3.select("rect#botonResumen").attr("width").split("px")[0]/2;
+	var x = +d3.select("rect#botonResumen").attr("x").split("px")[0];
+	return x + w
+      })
+      .attr("y", function(d) {
+	var h = +d3.select("rect#botonResumen").attr("height").split("px")[0]/2;
+	var y = +d3.select("rect#botonResumen").attr("y").split("px")[0];
+	return y + h;
+      })
+      .attr("fill","white")
+      .attr("text-anchor","middle")
+      .attr("alignment-baseline","middle")
+      .attr("font-size",8.5)
+      .text("Ver resumen")
+      .on("mouseover",function() {
+	d3.select("rect#botonResumen").attr("stroke","orange");
+	d3.select(this).style("cursor","pointer")
+	  .attr("fill","orange");
+       })
+      .on("mouseout",function() {
+	d3.select("rect#botonResumen").attr("stroke","white");
+	d3.select(this).attr("fill","white");
+       })
+       .on("click", function() {
+	var arr = [];
+	var cuadros = d3.selectAll("rect#on.Licitacion")[0];
+	for(var i in cuadros) {
+	  var tag = cuadros[i].getAttribute("tag");
+	  if(tag) {
+	    var r = tag.split("-")[1];
+	    var l = tag.split("-")[3];
+	    var obj = { 'ronda':r, 'lic':l };
+	    arr.push(obj);
+	  }
+	}
+	
+	resumen(data,adj,licRondas,pmts,ofertas,arr,tabla)
+       });
+
+
+
  d3.selectAll("rect.Licitacion").remove();
  d3.selectAll("rect.Licitacion_N").attr("class","Licitacion");
 
@@ -463,7 +562,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
   var licitacionesActivas;
   var filtroFinal = [];
   var empresasFiltradas = [];
-
+/*
   if(typeof(ronda) == "string") {
     rondasActivas = d3.selectAll("rect.Ronda#on")[0];
     for(var i in rondasActivas) {
@@ -483,8 +582,8 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
       filtroFinal = filtroFinal.concat(filtrado);
     };
   };
-
-  if(typeof(ronda) == "object") {
+*/
+  if(typeof(ronda) == "object" || typeof(ronda) == "string") {
    licitacionesActivas = d3.selectAll("rect.Licitacion#on")[0];
    for(var i in licitacionesActivas) {
     var r;
@@ -659,10 +758,3 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
   };
 
 };
-
-function FindByAttributeValue(attribute, value) {
-  var All = document.getElementsByTagName('*');
-  for (var i = 0; i < All.length; i++)       {
-    if (All[i].getAttribute(attribute) == value) { return All[i]; }
-  }
-}

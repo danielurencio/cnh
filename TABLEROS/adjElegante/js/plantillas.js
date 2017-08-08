@@ -1,14 +1,16 @@
-function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC) {
+function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla) {
   if(d3.select("div#temporal")[0][0]) d3.select("div#temporal").remove()
 // HABRÁ QUE FILTRAR POR RONDA Y LICITACIÓN PARA REUTILIZAR ESTA FUNCIÓN.
+  var TABLA;
   var FILTRO;
   var colorBarras = "rgba(255,15,0,0.65)"
   var texto = {
-    'resumen':'TOTAL DE LAS RONDAS'
+    'resumen':'RESUMEN'
   };
 
 
   if(!RONDA_LIC) {
+    TABLA = tabla;
     FILTRO = licRondas;
   } else {
     if( typeof(RONDA_LIC) != 'object' ) {
@@ -16,12 +18,33 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC) {
       texto.resumen = "RONDA " + RONDA_LIC;
       colorBarras = "rgba(255,45,0,0.65)";
     } else {
-      FILTRO = licRondas.filter(function(d) {
-	return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
-      });
-      texto.resumen = "RONDA " + RONDA_LIC.ronda + " - LICITACIÓN "
-	+ RONDA_LIC.lic;
-      colorBarras = "rgba(255,75,0,0.65)";
+// SI ES VERDAD QUE NO EXISTE LA DISTANCIA DEL OBJETO (ES UN DICCIONARIO)
+      if(!RONDA_LIC.length) {
+        FILTRO = licRondas.filter(function(d) {
+	  return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
+        });
+        texto.resumen = "RONDA " + RONDA_LIC.ronda + " - LICITACIÓN "
+	  + RONDA_LIC.lic;
+        colorBarras = "rgba(255,75,0,0.65)";
+      } else {
+	TABLA = [];
+	FILTRO = [];
+// SI ES VERDAD QUE EXISTE LA DISTANCIA DEL OBJETO (ES UN ARRAY)
+	for(var j in RONDA_LIC) {
+	  var tempTabla = tabla.filter(function(d) {
+	    return d.RONDA == RONDA_LIC[j].ronda
+		&& d.LICITACION == RONDA_LIC[j].lic;
+	  });
+
+	  var tempFilt = licRondas.filter(function(d) {
+	    return d.RONDA == RONDA_LIC[j].ronda
+		&& d.LICITACION == RONDA_LIC[j].lic;
+	  });
+	  TABLA = TABLA.concat(tempTabla); console.log(TABLA);
+	  FILTRO = FILTRO.concat(tempFilt);
+	};
+
+      };
     };
   };
 
@@ -74,12 +97,32 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC) {
 //'<div id="titulo" style="height:15%; padding-top:0px; font-weight:600">'+
 //   'PAÍSES' +
   '<div id="barras" style="padding:0px;width:100%; height:300px"></div>'+
-'</div>'
-/*+'<div id="titulo" class="ModalidadEmpresa" style="height:15%; padding-top:18px;">'+
-  'Bloques adjudicados' +
+'</div>' +
 
-'<table id="adjudicaciones"> <tbody><tr id="titulos"> <th>No. de bloques</th> <th>Modalidad</th> <th>Licitantes</th> <th>Inversión total<br><span>(millones de dólares)</span></th> <th>Área<br><span>(km<sup>2</sup>)</span></th> </tr> </tbody></table>'+
-*/
+
+'<div id="scrollTableContainer">' +
+ '<div id="tHeadContainer">'+
+  '<table id=tHead>'+
+
+'<tr id="new">'+
+ '<th>Ronda/Licitación</th>'+
+ '<th>Bloque</th>'+
+ '<th>Hidrocarburo esperado</th>' +
+ '<th>Licitante</th>'+
+ '<th>Variable de adjudicación 1</th>'+
+ '<th>Variable de adjudicación 2</th>'+
+ '<th>VPO</th><th>Bono</th>'+
+'</tr>'+
+  '</table>' +
+ '</div>' + 
+
+'<div id="tBodyContainer">' +
+ '<table id="tBody">' +
+
+ '</table>'+
+'</div>' +
+'</div>'
+
 //'<div class="totalBloques" style="padding: 0px;"></div>';
 
        d3.select("#info").append("div")
@@ -212,10 +255,56 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC) {
 	});
 
 	d3.selectAll('.highcharts-grid-line').remove();
+
+	 d3.select("table#tBody")
+	  .selectAll("tr").data(TABLA).enter()
+	  .append("tr")
+	.attr("class","datosMod")
+	.attr("id","new")
+	  .style("font-weight","lighter")
+	  .html(function(d,i) {
+	   var ronda = d.RONDA;
+	   var licitacion = d.LICITACION;
+	   var bloque = d.ID_BLOQUE;
+	   var licitantes = d.ID_LICITANTE_OFERTA;
+	   var VPO = Number(d.VPO).toFixed(1);
+
+	  if(VPO == 0) VPO = "-"
+	   
+	   var str = "<th>"+ronda + "-" + licitacion +"</th>" +
+
+		     "<th>" + bloque + "</th>" +
+		     "<th>"+ d.HIDRO_PRINCIPAL +"</th>"+
+		     "<th>"+ licitantes +"</th>"+
+		     "<th>"+ d.VAR_ADJ1 +"</th>" +
+		     "<th>"+ d.VAR_ADJ2 +"</th>" +
+		     "<th>"+ VPO +"</th>" +
+		     "<th>"+ d.BONO +"</th>";
+	   return str;
+	   });
+
+/*
+	   var cell = d3.select("th#licitantes[tag='"+i+"']");
+	   if(licitantes.length > 1) {
+	    cell.append("ul")//.style("list-style","none")
+	      .selectAll("li")
+		.data(licitantes).enter()
+	      .append("li").html(function(d,i) { return (i+1) + ") " + d; })
+		.style("font-size","8.5px");
+	   } else {
+	     cell.html("-")
+	   };
+*/
+
 };
 
+
 function plantillaEmpresa(d,adj,data,licRondas,pmts) {
-	var plantilla = '<div id="titulo" class="NombreEmpresa" style="height: 15%; padding-top: 18px;">Nombre de la empresa   <div id="nombre" class="NombreEmpresa"></div>  </div>  <div id="titulo" class="PaisEmpresa" style="height: 15%; padding-top: 18px;">País   <div id="pais" class="PaisEmpresa"></div>  </div>  <div id="titulo" class="ModalidadEmpresa" style="height: 15%; padding-top: 18px;">Bloques adjudicados  <table id="adjudicaciones">   <tbody><tr id="titulos">    <th>No. de bloques</th>    <th>Modalidad</th>    <th>Licitantes</th>    <th>Inversión total<br><span>(millones de dólares)</span></th>    <th>Área<br><span>(km<sup>2</sup>)</span></th>   </tr>  </tbody></table>   <div class="totalBloques" style="padding: 0px;">  </div>';
+  if(d3.select("div#temporal")[0][0]) d3.select("div#temporal").remove()
+}
+
+function plantillaEmpresa1(d,adj,data,licRondas,pmts) {
+	var plantilla = '<div id="titulo" class="NombreEmpresa" style="height: 15%; padding-top: 18px;">Nombre de la empresa   <div id="nombre" class="NombreEmpresa"></div>  </div>  <div id="titulo" class="PaisEmpresa" style="height: 15%; padding-top: 18px;">País   <div id="pais" class="PaisEmpresa"></div>  </div>  <div id="titulo" class="ModalidadEmpresa" style="height: 15%; padding-top: 18px;">Bloques adjudicados  <table id="adjudicaciones">   <tbody><tr id="titulos">    <th clas="old">No. de bloques</th>    <th class="old">Modalidad</th>    <th class="old">Licitantes</th>    <th class="old">Inversión total<br><span>(millones de dólares)</span></th> <th class="old">Área<br><span>(km<sup>2</sup>)</span></th>   </tr>  </tbody></table>   <div class="totalBloques" style="padding: 0px;">  </div>';
 
 	if(d3.select("div#temporal")[0][0]) d3.select("div#temporal").remove()
 
@@ -252,11 +341,11 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts) {
 	   var inv = Number(objAdj[i].INV_TOTAL).toFixed(1);
 	   var ar = Number(objAdj[i].AREA).toFixed(1);
 	   
-	   var str = "<th>"+n+"</th>" +
-		     "<th>"+mod+"</th>" +
-		     "<th id='licitantes' tag="+ i +"></th>"+
-		     "<th>"+inv+"</th>"+
-		     "<th>"+ar+"</th>";
+	   var str = "<th class='old'>"+n+"</th>" +
+		     "<th class='old'>"+mod+"</th>" +
+		     "<th class='old' id='licitantes' tag="+ i +"></th>"+
+		     "<th class='old'>"+inv+"</th>"+
+		     "<th class='old'>"+ar+"</th>";
 	   return str;
 	   });
 
@@ -317,15 +406,39 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC) {
       });
 
     } else {
-      FILTRO1 = bloques1.filter(function(d) {
-        return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
-      });
-      FILTRO2 = bloques2.filter(function(d) {
-        return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
-      });
-      FILTRO3 = lics.filter(function(d) {
-        return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
-      });
+      if(!RONDA_LIC.length) {
+// SI ES VERDAD QUE LA DISTANCIA DEL OBJETO NO EXISTE (ES UN DICCIONARIO)
+        FILTRO1 = bloques1.filter(function(d) {
+          return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
+        });
+        FILTRO2 = bloques2.filter(function(d) {
+          return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
+        });
+        FILTRO3 = lics.filter(function(d) {
+          return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
+        });
+      } else {
+// SI ES VERDAD QUE LA DISTANCIA DEL OBJETO SÍ EXISTE (ES UN ARRAY)
+	FILTRO1 = []; FILTRO2 = []; FILTRO3 = [];
+	for(var j in RONDA_LIC) {
+          var temp1 = bloques1.filter(function(d) {
+          return d.RONDA == RONDA_LIC[j].ronda
+		&& d.LICITACION == RONDA_LIC[j].lic;
+          });
+          var temp2 = bloques2.filter(function(d) {
+          return d.RONDA == RONDA_LIC[j].ronda
+		&& d.LICITACION == RONDA_LIC[j].lic;
+          });
+          var temp3 = lics.filter(function(d) {
+          return d.RONDA == RONDA_LIC[j].ronda
+		&& d.LICITACION == RONDA_LIC[j].lic;
+          });
+
+	  FILTRO1 = FILTRO1.concat(temp1);
+	  FILTRO2 = FILTRO2.concat(temp2);
+	  FILTRO3 = FILTRO3.concat(temp3);
+	};
+      }
 
     };
   };

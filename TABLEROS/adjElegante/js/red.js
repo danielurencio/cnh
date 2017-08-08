@@ -12,9 +12,10 @@ function RED(width,height) {
     .defer(d3.csv,'csv/adj.csv')
     .defer(d3.csv,'csv/linkWidth1.csv')
     .defer(d3.csv,'csv/ofertas.csv')
+    .defer(d3.csv,'csv/tabla.csv')
     .await(getDATA);
 
-  function getDATA(err,data,adj,licRondas,ofertas) {
+  function getDATA(err,data,adj,licRondas,ofertas,tabla) {
 
      /*PROCESAR LICITANTES POR RONDA*/
      licRondas = licRondas.filter(function(d) {
@@ -79,7 +80,7 @@ function RED(width,height) {
 
 //////////////////////////////////////////////////////////////////////////////
 //EJECUCIÓN DE PRIMER PLANTILLA: RESUMEN DE RONDAS///////////////////////////
-    resumen(data,adj,licRondas,pmts,ofertas)
+    resumen(data,adj,licRondas,pmts,ofertas,null,tabla)
 ///////////////////////////////////////////////////////////////////////////
 
     /*------------------------------------*/
@@ -305,7 +306,7 @@ function RED(width,height) {
   listaEmpresas(adj,data,licRondas,pmts,force,links);
 
   leyendaRED();
-  Filtros(licRondas,data,adj,pmts,ofertas);
+  Filtros(licRondas,data,adj,pmts,ofertas,tabla);
 
   };
 
