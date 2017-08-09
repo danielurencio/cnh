@@ -180,8 +180,9 @@ table#ofertas>tbody {
   right-margin:0px;
 }
 */
-div#scrollTableContainer {
-  position:absolute;  
+div#Tabla {
+  position:absolute;
+  height:inherit;
 }
 
 table {
@@ -208,7 +209,7 @@ div#scrollTableContainer {
         font-weight:400;
     }
     #tBodyContainer {
-        height: 200px;
+        height: 87%;
         overflow-y: scroll;
 	font-weight:lighter;
     }

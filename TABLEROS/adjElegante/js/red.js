@@ -13,9 +13,10 @@ function RED(width,height) {
     .defer(d3.csv,'csv/linkWidth1.csv')
     .defer(d3.csv,'csv/ofertas.csv')
     .defer(d3.csv,'csv/tabla.csv')
+    .defer(d3.csv,'csv/procesos.csv')
     .await(getDATA);
 
-  function getDATA(err,data,adj,licRondas,ofertas,tabla) {
+  function getDATA(err,data,adj,licRondas,ofertas,tabla,procesos) {
 
      /*PROCESAR LICITANTES POR RONDA*/
      licRondas = licRondas.filter(function(d) {
@@ -80,7 +81,7 @@ function RED(width,height) {
 
 //////////////////////////////////////////////////////////////////////////////
 //EJECUCIÓN DE PRIMER PLANTILLA: RESUMEN DE RONDAS///////////////////////////
-    resumen(data,adj,licRondas,pmts,ofertas,null,tabla)
+    resumen(data,adj,licRondas,pmts,ofertas,null,tabla,procesos)
 ///////////////////////////////////////////////////////////////////////////
 
     /*------------------------------------*/
@@ -397,7 +398,7 @@ function leyendaRED() {
       "y":function(d) {
 	var offset = +d3.select("#filtroEmpresas")
 	  .style("height").split("px")[0] - 45;
-	var Height = d3.select(this).attr("height");
+	var Height = +d3.select(this).attr("height");
 	return +offset - Height;
       },
       "fill":"url(#gradient)",

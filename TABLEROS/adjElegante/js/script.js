@@ -7,9 +7,29 @@ var actual = "black";
 var mainOpacity = 0.6;
 /*COLORES PARA LA SELECCIÓN DE NODOS*/
 
-d3.select("#filtroEmpresas").style("height",height + "px");
 d3.selectAll("ol").style("height",height + "px");
-d3.selectAll("div#titulo").style("height","15%").style("padding-top","18px");
+
+var cintilla = +d3.select("svg#cintilla").style("height").split("px")[0];
+
+d3.select("content").style("padding-top",cintilla + "px")
+ .style("height",function() {
+   var HH = window.innerHeight// - cintilla;
+   return HH + "px";
+ });
+
+d3.select("#filtroEmpresas").style("height",height-cintilla + "px");
+
+
+d3.select("#red").style("height","inherit")
+
+d3.select("svg#canvas")
+ .style("height",function() {
+   var HH = window.innerHeight - cintilla;
+   return HH + "px";
+ })
+ .style("width","100%");
+
+d3.selectAll("div#titulo").style("height","15%").style("padding-top","0px");
 d3.select(".totalBloques").style("padding",0)
 
 var infoWidth = d3.select("#info").style("width").split("px")[0];
@@ -20,9 +40,9 @@ var svgCanvas = {
  selection:"svg#canvas",
  type:"svg",
  append:0,
- attr: {
+ style: {
   "width":width,
-  "height":height
+  "height":"inherit"
  }
 }
 
@@ -40,7 +60,7 @@ var contenedor = {
  }
 };
 
-addElement(svgCanvas);
+//addElement(svgCanvas);
 addElement(contenedor);
 contenedor.selection = 'g#red';
 contenedor.attr.fill = 'transparent';//'rgba(0,0,0,0.25)';

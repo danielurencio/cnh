@@ -8,9 +8,11 @@
  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 </head>
 <body>
+<svg id="cintilla" style="width:100%;height:40px;background:black;position:absolute"></svg>
+
 
 <content>
- <div id="red">
+ <div id="red" style="width:50%;">
 
  <div id="filtroEmpresas"></div>
   <svg id='canvas'>
@@ -19,38 +21,16 @@
  </div>
 
  <div id=info>
-<!--
-  <div id="titulo" class="NombreEmpresa">Nombre de la empresa
-   <div id="nombre" class="NombreEmpresa"></div>
-  </div>
-
-  <div id="titulo" class="PaisEmpresa">País
-   <div id="pais" class="PaisEmpresa"></div>
-  </div>
-
-  <div id="titulo" class="ModalidadEmpresa">Bloques adjudicados
-  <table id="adjudicaciones">
-   <tr id="titulos">
-    <th>No. de bloques</th>
-    <th>Modalidad</th>
-    <th>Licitantes</th>
-    <th>Inversión total<br><span>(millones de dólares)</span></th>
-    <th>Área<br><span>(km<sup>2</sup>)</span></th>
-   </tr>
-  </table> 
-
-  <div class="totalBloques">
-  </div>
-
--->
  </div>
 
 </content>
 
-<script src="js/script.js"></script>
+
 <script src="js/plantillas.js"></script>
 <script src="js/red.js"></script>
 <script src="js/lista.js"></script>
 <script src="js/filtros.js"></script>
+<script src="js/script.js"></script>
+
 </body>
 </html>

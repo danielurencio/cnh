@@ -1,4 +1,4 @@
-function Filtros(licRondas,data,adj,pmts,ofertas,tabla) {
+function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
   var conteiner = d3.select("g#red")
 	.append("g").attr("id","FILTRO");
 
@@ -546,7 +546,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla) {
 	  }
 	}
 	
-	resumen(data,adj,licRondas,pmts,ofertas,arr,tabla)
+	resumen(data,adj,licRondas,pmts,ofertas,arr,tabla,procesos)
        });
 
 

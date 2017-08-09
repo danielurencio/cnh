@@ -1,4 +1,4 @@
-function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla) {
+function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
   if(d3.select("div#temporal")[0][0]) d3.select("div#temporal").remove()
 // HABRÁ QUE FILTRAR POR RONDA Y LICITACIÓN PARA REUTILIZAR ESTA FUNCIÓN.
   var TABLA;
@@ -40,7 +40,7 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla) {
 	    return d.RONDA == RONDA_LIC[j].ronda
 		&& d.LICITACION == RONDA_LIC[j].lic;
 	  });
-	  TABLA = TABLA.concat(tempTabla); console.log(TABLA);
+	  TABLA = TABLA.concat(tempTabla);
 	  FILTRO = FILTRO.concat(tempFilt);
 	};
 
@@ -87,54 +87,42 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla) {
 
   var maxPaises = d3.max(paisesData,function(d) { return d[1]; });
 
+
+     var contenido =
+      '<div id="mitades" style="height:20px">'+
+       '<div id="mitad1" style="float:left;clear:left;width:33%;height:inherit"></div>' +
+       '<div id="mitad2" style="float:left;width:33%;height:inherit">'+
+	'<svg style="width:100%;height:inherit;"></svg>'+
+       '</div>' +
+       '<div id="mitad3" style="float:left;width:33%;height:inherit"></div>' +
+
+      '</div>' +
+      '<div id="barras" style="padding:0px;width:100%; height:10%"></div>';
+
           var plantilla = 
-'<div id="titulo" style="height:15%; padding-top:18px; font-size:28px;">'+
+'<div id="titulo" style="height:15%; font-size:28px;">'+
    texto.resumen +
 '<div class="totalBloques" style="padding: 0px;">'+
-'<svg id="sumas" style="width:100%;height:80px;background-color:transparent"></svg>'
+'<svg id="sumas" style="width:100%;height:80px;background-color:transparent"></svg>' +
+'<svg id="pestañas" style="width:100%;height:30px;"></svg>'
 +'</div>' +  
 '</div>' +
-//'<div id="titulo" style="height:15%; padding-top:0px; font-weight:600">'+
-//   'PAÍSES' +
-  '<div id="barras" style="padding:0px;width:100%; height:300px"></div>'+
-'</div>' +
+ '<div id="graficos">' + 
+  contenido + 
+ '</div>' +
+'</div>';
 
-
-'<div id="scrollTableContainer">' +
- '<div id="tHeadContainer">'+
-  '<table id=tHead>'+
-
-'<tr id="new">'+
- '<th>Ronda/Licitación</th>'+
- '<th>Bloque</th>'+
- '<th>Hidrocarburo esperado</th>' +
- '<th>Licitante</th>'+
- '<th>Variable de adjudicación 1</th>'+
- '<th>Variable de adjudicación 2</th>'+
- '<th>VPO</th><th>Bono</th>'+
-'</tr>'+
-  '</table>' +
- '</div>' + 
-
-'<div id="tBodyContainer">' +
- '<table id="tBody">' +
-
- '</table>'+
-'</div>' +
-'</div>'
-
-//'<div class="totalBloques" style="padding: 0px;"></div>';
 
        d3.select("#info").append("div")
 	.attr("id","temporal")
 	.html(plantilla);
 
 //------CÁLCULO DE SUMAS--------------//
-  var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC);
+  var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos);
 //-----------------------------------//
 
  var sumas = d3.select("svg#sumas"); 
- var nums = [1,2,3,4,5];
+// var nums = [1,2,3,4,5];
 
  var nums = sumas.append("g").selectAll("text")
   .data(SUMAS).enter()
@@ -163,10 +151,6 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla) {
    .style("font-weight",600)
    .style("font-size",10)
    .attr("opacity",1)
-//   .attr("id",function(d,i) {
-//     return "suma_" + String(i);
-//   })
-//   .attr("fill","rgba(0,0,0,0.5)")
    .attr("alignment-baseline","text-before-edge")
    .attr("text-anchor","middle")
    .attr("x",function(d,i) {
@@ -181,9 +165,74 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla) {
    }).text(function(d) { return d[0]; });
 
   var t0 = nums.transition().duration(750).attr("opacity",1)
-//  tits.transition().delay(300).duration(750).attr("opacity",1)
 
-	Highcharts.chart('barras', {
+/////////////////////////////////////////////////////////////////////////////////
+///////////////---- GRÁFICO PAÍSES ---- ////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+  function GRAFICOS() {
+      d3.select("#graficos").html(contenido);
+
+      var hT = +d3.select("#titulo").style("height").split("px")[0];
+      var alturaGraficas = (window.innerHeight - cintilla - hT) *.5;
+
+      d3.select("#mitades").style("height",alturaGraficas + "px");
+      d3.select("#barras").style("height",alturaGraficas + "px");
+	var bNoAdj = SUMAS[1][1] - SUMAS[2][1];
+	var bAdj = SUMAS[2][1];
+
+	Highcharts.setOptions({
+	  colors: [colorBarras,'rgba(0,0,0,0.35)']
+	});
+
+	var empresas_precalif = Highcharts.chart({
+	    credits: { enabled:false },
+            chart: {
+                renderTo: 'mitad1',
+                type: 'pie'
+            },
+           title: {
+                text: "EMPRESAS",
+		style: {
+		  'font-family':'Open Sans, sans-serif',
+		  'font-weight':600,
+		  'font-size':16
+		}
+
+            },
+           tooltip: {
+                formatter: function() {
+                    return '<b>'+ this.point.name +'</b>: '+ this.y;
+                }
+            },
+            series: [{
+                name: 'Empresas',
+                data: [["Adjudicados",bAdj],["No adjudicados",bNoAdj]],
+                size: '90%',
+                innerSize: '65%',
+                showInLegend:true,
+                dataLabels: {
+                    enabled: true,
+		    distance:15,
+		    style: {
+		      'font-family':'Open Sans, sans-serif',
+		      'font-size':8,
+		      'color':"black",
+		      'stroke-width':"0px"
+		    },
+		    formatter: function() {
+		      return this.y;
+		    }
+                }
+            }]
+        });
+
+	//d3.selectAll("tspan.highcharts-text-outline").remove()
+
+
+
+	var barras = Highcharts.chart('barras', {
 	    chart: {
 		type: 'column'
 	    },
@@ -254,8 +303,65 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla) {
 	    }]
 	});
 
-	d3.selectAll('.highcharts-grid-line').remove();
+      d3.selectAll('.highcharts-grid-line').remove();
 
+
+	var bloques = Highcharts.chart({
+	    credits: { enabled:false },
+            chart: {
+                renderTo: 'mitad3',
+                type: 'pie'
+            },
+           title: {
+                text: "BLOQUES",
+		style: {
+		  'font-family':'Open Sans, sans-serif',
+		  'font-weight':600,
+		  'font-size':16
+		}
+            },
+           tooltip: {
+                formatter: function() {
+                    return '<b>'+ this.point.name +'</b>: '+ this.y;
+                }
+            },
+            series: [{
+                name: 'Bloques',
+                data: [["Adjudicados",bAdj],["No adjudicados",bNoAdj]],
+                size: '90%',
+                innerSize: '65%',
+                showInLegend:true,
+                dataLabels: {
+                    enabled: true,
+		    distance:15,
+		    style: {
+		      'font-family':'Open Sans, sans-serif',
+		      'class':"ll",
+		      'font-weight':'light',
+		      'font-size':8,
+		      'color':"black",
+		      'stroke-width':"0px"
+		    },
+		    formatter: function() {
+		      return this.y;
+		    }
+                }
+            }]
+        });
+
+	d3.selectAll("tspan.highcharts-text-outline").remove()
+  }; GRAFICOS();
+/////////////////////////////////////////////////////////////////////////////////
+///////////////---- GRÁFICO PAÍSES ---- ////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//------------------ TABLA ------------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////////
+
+  function RenderTabla() {
 	 d3.select("table#tBody")
 	  .selectAll("tr").data(TABLA).enter()
 	  .append("tr")
@@ -282,7 +388,7 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla) {
 		     "<th>"+ d.BONO +"</th>";
 	   return str;
 	   });
-
+  };
 /*
 	   var cell = d3.select("th#licitantes[tag='"+i+"']");
 	   if(licitantes.length > 1) {
@@ -295,6 +401,101 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla) {
 	     cell.html("-")
 	   };
 */
+
+//////////////////////////////////////////////////////////////////////////////////
+//------------------ TABLA ------------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//------------------ PESTAÑAS ---------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////////
+
+  var botones = ["Gráficos","Ofertas"];
+  var attrGeneralesBotones = {
+    'rx':2,
+    'ry':2,
+    'fill':'rgba(0,0,0,0.65)',
+    'stroke':'black',
+    'stroke-width':0
+  };
+
+  var attrGeneralesTexto = {
+    'fill':'white',
+    'font-size':11,
+    'font-weight':300,
+    'text-anchor':'middle',
+    'alignment-baseline':'central'
+  };
+
+  var pests = d3.select("svg#pestañas").append("g")
+	.selectAll("rect")
+	.data(botones).enter()
+	.append("rect")
+	.attr(attrGeneralesBotones)
+    .attr({
+      'id':function(d,i) {
+	var id = d.split(" ").reduce(function sum(a,b) { return a + "_" + b; });
+	return id;
+      },
+      'width':function(d,i) {
+	return 60;
+      },
+      'height':function(d,i) {
+	var h = +d3.select("svg#pestañas").style("height").split("px")[0];
+	return h - 5;
+      },
+      'x':function(d,i) {
+	var w = +d3.select(this).attr("width").split("px")[0]// + 5;
+	return 2 + (w+3)*i;
+      },
+      'y':function(d,i) {
+	return 3;
+      }
+    });
+
+  var textoPests = d3.select("svg#pestañas").append("g")
+	.selectAll("text")
+	.data(botones).enter()
+	.append("text")
+	.attr(attrGeneralesTexto)
+    .attr({
+      'x':function(d,i) {
+	var id = d.split(" ").reduce(function sum(a,b) { return a + "_" + b; });
+	var sel = d3.select("rect#" + id);
+	var x = +sel.attr("x").split("px")[0];
+	var offset = +sel.attr("width").split("px")[0];
+	return x + offset/2;
+      },
+      'y':function(d,i) {
+	var id = d.split(" ").reduce(function sum(a,b) {
+	  return a + "_" + b;
+	});
+	var sel = d3.select("rect#" + id);
+	var x = +sel.attr("y").split("px")[0];
+	var offset = +sel.attr("height").split("px")[0];
+	return x + offset/2;
+      }
+    }).text(function(d) { return d; })
+    .on("mouseover",function() {
+      d3.select(this).style("cursor","pointer");
+    })
+    .on("click",function(d) {
+      if(d == "Ofertas") {
+	OFERTAS();
+	RenderTabla();
+      };
+
+      if(d == "Gráficos") {
+	GRAFICOS();
+      };
+
+    });
+
+//////////////////////////////////////////////////////////////////////////////////
+//------------------ PESTAÑAS ---------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////////
+
 
 };
 
@@ -377,7 +578,8 @@ function plantillaEmpresa1(d,adj,data,licRondas,pmts) {
 	//console.log(filtroPmts)//[0].pmt)
 }
 
-function calculoSumas(licRondas,ofertas,adj,RONDA_LIC) {
+function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos) {
+  console.log(_.uniq(ofertas,"ID_EMPRESA"));
   var sumas = {};
   var FILTRO1;
   var FILTRO2;
@@ -452,7 +654,6 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC) {
     if( a.indexOf(b) < 0) { a.push(b); };
     return a;
   },[]);  
-//console.log(empresas.sort());
 
   var inv_pmt = FILTRO1.map(function(d) { return d.PMT_TOTAL; }).reduce(SUM);
   var area = FILTRO1.map(function(d) { return d.AREA; }).reduce(SUM);
@@ -472,4 +673,39 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC) {
   };
 
   return SUMAS;
+};
+
+function OFERTAS(RenderTablas) {
+var tablaString =
+'<div id="Tabla">' +
+ '<div id="tHeadContainer">'+
+  '<table id=tHead>'+
+
+'<tr id="new">'+
+ '<th>Ronda/Licitación</th>'+
+ '<th>Bloque</th>'+
+ '<th>Hidrocarburo esperado</th>' +
+ '<th>Licitante</th>'+
+ '<th>Variable de adjudicación 1</th>'+
+ '<th>Variable de adjudicación 2</th>'+
+ '<th>VPO</th><th>Bono</th>'+
+'</tr>'+
+  '</table>' +
+ '</div>' + 
+
+'<div id="tBodyContainer">' +
+ '<table id="tBody">' +
+
+ '</table>'+
+'</div>' +
+'</div>';
+
+  d3.select("#Tabla").remove();
+  d3.select("#graficos").html("");
+  var hT = +d3.select("#titulo").style("height").split("px")[0];
+  d3.select("#graficos").style("height",function() {
+    var newHeight = window.innerHeight - hT - cintilla;
+    return newHeight + "px";
+  });
+  d3.select("#graficos").html(tablaString);
 };
