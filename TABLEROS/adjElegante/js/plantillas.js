@@ -118,7 +118,7 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
 	.html(plantilla);
 
 //------CÁLCULO DE SUMAS--------------//
-  var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos);
+  var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data);
 //-----------------------------------//
 
  var sumas = d3.select("svg#sumas"); 
@@ -578,8 +578,7 @@ function plantillaEmpresa1(d,adj,data,licRondas,pmts) {
 	//console.log(filtroPmts)//[0].pmt)
 }
 
-function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos) {
-  console.log(_.uniq(ofertas,"ID_EMPRESA"));
+function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data) {
   var sumas = {};
   var FILTRO1;
   var FILTRO2;
@@ -587,9 +586,17 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos) {
 
   var bloques1 = _.uniq(ofertas,"ID_BLOQUE");
   var bloques2 = _.uniq(licRondas,"ID_BLOQUE");
-  var lics = _.uniq(licRondas,"ID_LICITANTE_OFERTA")
+ /* var lics = _.uniq(licRondas,"ID_LICITANTE_OFERTA")
 	.filter(function(d) { return d.ID_LICITANTE_OFERTA; });
 
+  var lics0 = licRondas.map(function(d) { return d.ID_LICITANTE_OFERTA; })
+	.reduce(function(a,b) {
+	 if( a.indexOf(b) < 0 ) { a.push(b); }
+	 return a;
+	},[])
+*/
+  lics = licRondas.filter(function(d) { return d.ID_LICITANTE_OFERTA != ""; })
+//  console.log(lics)
 
   if(!RONDA_LIC) {
     FILTRO1 = bloques1;
@@ -647,13 +654,17 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos) {
 
   var empresas = [];
   FILTRO3.forEach(function(d) {
+    var ss = data.filter(function(e) {
+	return e.ID_LICITANTE == d.ID_LICITANTE_OFERTA;
+    }).map(function(d) { return d.ID_LICITANTE;});
+//    console.log(d.ID_LICITANTE_OFERTA,ss);
     empresas = empresas.concat(d.LICITANTE);
   });
 
   empresas = empresas.reduce(function(a,b) {
     if( a.indexOf(b) < 0) { a.push(b); };
     return a;
-  },[]);  
+  },[]);
 
   var inv_pmt = FILTRO1.map(function(d) { return d.PMT_TOTAL; }).reduce(SUM);
   var area = FILTRO1.map(function(d) { return d.AREA; }).reduce(SUM);

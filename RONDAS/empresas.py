@@ -303,6 +303,7 @@ def empresasNT():
     ee["EMPRESA"] = emps["EMPRESA"]
     inxs = lics["EMPRESA"].drop_duplicates().sort_values().reset_index().drop("index",axis=1)
     ee["ID_LICITANTE"] = np.zeros(ee.shape[0])
+    ee["ID_LICITANTE"] = 999;
     for i,d in enumerate(inxs.ix[:,"EMPRESA"]):
 	indices = ee[ee["EMPRESA"] == inxs["EMPRESA"][i]].index.tolist()
 	arr.append((indices,i))
@@ -443,6 +444,11 @@ def importar():
    EMPRESAS.index += 1
    EMPRESAS.index.rename("ID_EMPRESA",inplace=True)
    EMPRESAS.to_csv("DATOS_LICITACIONES_empresas.csv",header=HEAD,sep=",",encoding="latin1")
+#####COPIA DE EMPRESAS######################
+   copiaEMpresas = b.copy()
+   copiaEMpresas.index += 1
+   copiaEMpresas.index.rename("ID_EMPRESA",inplace=True)
+   copiaEMpresas.to_csv("EMpresas.csv",sep=",",encoding="latin1")
    ## DATOS_LICITACIONES_LICITANTES
    LICITANTES = ll.copy()
    LICITANTES["EMPRESA"] = LICITANTES["EMPRESA"].map(lambda x: re.sub(",",";",x))
@@ -452,6 +458,13 @@ def importar():
    LICITANTES.index.rename("ID_LICITANTE",inplace=True)
    LICITANTES.columns = ["LICITANTE","MODALIDAD"]
    LICITANTES.to_csv("DATOS_LICITACIONES_licitantes.csv",header=HEAD,sep=",",encoding="latin1")
+######COPIA DE LICITANTES###################
+   copiaLIcitantes = ll.copy()
+   copiaLIcitantes.index += 1
+   copiaLIcitantes.index.rename("ID_LICITANTE",inplace=True)
+   copiaLIcitantes.columns = ["LICITANTE","MODALIDAD"]
+   copiaLIcitantes.to_csv("LIcitantes.csv",sep=",",encoding="latin1")
+
    ## DATOS_LICITACIONES_LICITANTES_EMPRESAS
    EMP_LIC = emp_lic.copy()
    EMP_LIC["ID_LICITANTE"] += 1; EMP_LIC["ID_EMPRESA"] += 1;
@@ -465,7 +478,7 @@ def importar():
    ## DATOS_LICITACIONES_PROCESOS
    PROCESOS = ee.copy()
    PROCESOS["ID_LICITANTE"] += 1
-   PROCESOS.drop(["EMPRESA","PROP","MOD","ID_R"],axis=1).to_csv("DATOS_LICITACIONES_procesos.csv",header=HEAD,index=None,encoding="latin1")
+   PROCESOS.drop(["PROP","MOD","ID_R"],axis=1).to_csv("DATOS_LICITACIONES_procesos.csv",header=HEAD,index=None,encoding="latin1")
    ## DATOS_LICITACIONES_OPERADORES
    OPERADORES = operadores.copy()
    OPERADORES.index += 1

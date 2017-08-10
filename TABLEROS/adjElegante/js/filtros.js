@@ -467,14 +467,14 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 //      var RONDA = { 'ronda':ronda, 'licitacion':licitacion };
 //      filtrarPorRonda(activacion,RONDA,licRondas,data);
     })
-    .on("dblclick",function(d) {
+/*    .on("dblclick",function(d) {
 	var sel = d3.select(this).attr("tag");
 	var ronda = sel.split("-")[1];
 	var lic = sel.split("-")[3];
 	var RONDA_LIC = { 'ronda':ronda, 'lic':lic, };
 	resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC)
     });
-
+*/
  }
 
     conteiner.append("g")
@@ -705,6 +705,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
 	  return a;
 	},[]);
 
+
       for(var i in empresasFILTRADAS) {
 	var q = String(empresasFILTRADAS[i]);
         var s = document.querySelectorAll('circle[tag="'+q+'"]')[0];
@@ -728,6 +729,14 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
 	  return a;
 	},[]);
 
+/* // SERVICIO SOCIAL
+console.log("\n",empresasFILTRADAS.length)
+var coco =[]
+       empresasFILTRADAS.sort().forEach(function(d) {
+	var a = data.filter(function(e) { return e.ID_EMPRESA == d; })
+	coco.push(a[0].EMPRESA);
+       });
+*/
        d3.selectAll("circle").transition().duration(800)
 	  .attr("fill",function(d) {
 	    var color = d3.select(this).attr("color");

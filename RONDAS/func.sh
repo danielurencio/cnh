@@ -266,3 +266,15 @@ ConvertirUTF8() {
     mv ${i%.*}1.csv ${i%.*}.csv;
   done
 }
+
+procesos_nueva() {
+#  echo "ID_LICITANTE,LICITANTE,MODALIDAD" > head0
+#  cat head0 DATOS_LICITACIONES_licitantes.csv > LIcitantes__.csv
+
+#  echo "id,empresa,pais" > head1
+#  cat head1 DATOS_LICITACIONES_empresas.csv > EMpresas__.csv
+
+  echo "id,nombre,ronda,licitacion,dataroom,precalif" > head2
+  cat head2 DATOS_LICITACIONES_procesos.csv > PRocesos__.csv
+  rm head2 #head2 #head1;
+}
