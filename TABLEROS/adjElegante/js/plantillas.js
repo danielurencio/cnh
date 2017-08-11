@@ -553,6 +553,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	.append("rect")
 	.attr(attrGeneralesBotones)
     .attr({
+      'class':'boton',
       'id':function(d,i) {
 	var id = d.split(" ").reduce(function sum(a,b) { return a + "_" + b; });
 	return id;
@@ -572,6 +573,10 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	return 3;
       }
     });
+
+    d3.select("#Gráficos")
+	.attr("fill","rgba(255,15,0,0.65)")
+	.attr("stroke-width","0.5px");
 
   var textoPests = d3.select("svg#pestañas").append("g")
 	.selectAll("text")
@@ -600,6 +605,11 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
       d3.select(this).style("cursor","pointer");
     })
     .on("click",function(d) {
+      d3.selectAll("rect.boton").attr("fill","rgba(0,0,0,0.65)");
+      d3.selectAll("rect.boton").attr("tag",null);
+      d3.selectAll("rect.boton").attr("stroke-width","0px");
+      var id = d.split(" ").reduce(function sum(a,b) { return a + "_" + b; });
+      d3.select("#" + id).attr("fill",colorBarras).attr("stroke-width","0.5px");
       if(d == "Ofertas") {
 	OFERTAS();
 	RenderTabla();
@@ -778,6 +788,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 	.append("rect")
 	.attr(attrGeneralesBotones)
     .attr({
+      'class':'boton',
       'id':function(d,i) {
 	var id = d.split(" ").reduce(function sum(a,b) { return a + "_" + b; });
 	return id;
@@ -825,6 +836,12 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
       d3.select(this).style("cursor","pointer");
     })
     .on("click",function(d) {
+      var colorBarras = "rgba(255,15,0,0.65)";
+      d3.selectAll("rect.boton").attr("fill","rgba(0,0,0,0.65)");
+      d3.selectAll("rect.boton").attr("tag",null);
+      d3.selectAll("rect.boton").attr("stroke-width","0px");
+      var id = d.split(" ").reduce(function sum(a,b) { return a + "_" + b; });
+      d3.select("#" + id).attr("fill",colorBarras).attr("stroke-width","0.5px");
       if(d == "Ofertas") {
 	OFERTAS();
 	console.log(OFERTAS_);
@@ -851,6 +868,9 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 
     });
 
+    d3.select("#Gráficos")
+	.attr("fill","rgba(255,15,0,0.65)")
+	.attr("stroke-width","0.5px");
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////// TABLA-EMPRESA ////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////

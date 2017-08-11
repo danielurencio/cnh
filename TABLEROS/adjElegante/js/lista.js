@@ -28,7 +28,9 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 	    .style("padding","5px")
 	    .style("width","310px")
 	     .append("input")
+	      .attr("oninput","regex()")
 	      .attr("type","text")
+	      .attr("id","inputRegex")
 	      .style("border-style","solid")
 	      .style("border-width","0.5px")
 	      .style("background-color","transparent")
@@ -163,4 +165,21 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 //     plantillaEmpresa(d,adj,data,licRondas,pmts);
   };
 
+};
+
+function regex() {
+  var input = document.getElementById("inputRegex").value;
+  var patt = new RegExp("^" + input,"i");
+
+  var lis = d3.selectAll("div#filtroEmpresas>ol>li")[0];
+
+  for( var i=0; i<lis.length; i++ ) {
+    var sel = d3.select(lis[i]);
+    var str = sel.text();
+    if(patt.test(str)) {
+      sel.style("font-size","12px");
+    } else {
+      sel.style("font-size","0px");
+    };
+  };
 };
