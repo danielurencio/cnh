@@ -1,4 +1,4 @@
-function listaEmpresas(adj,data,licRondas,pmts,force,links) {
+function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,ofertas,OFERTAS_) {
 
   var lista = d3.select("#filtroEmpresas");
 
@@ -91,6 +91,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links) {
 		  .style("color","white")
 		  .style("background-color","rgba(255,165,0,0.85)");
 		selectNODES(d);
+  plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERTAS_);
 	      });
 	  });
 
@@ -159,7 +160,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links) {
          .attr("stroke-width",3);
 
 
-     plantillaEmpresa(d,adj,data,licRondas,pmts);
+//     plantillaEmpresa(d,adj,data,licRondas,pmts);
   };
 
 };

@@ -16,7 +16,15 @@ function RED(width,height) {
     .defer(d3.csv,'csv/procesos.csv')
     .await(getDATA);
 
-  function getDATA(err,data,adj,licRondas,ofertas,tabla,procesos) {
+  function getDATA(err,data,adj,licRondas,OFERTAS_,tabla,procesos) {
+     var ofertas = OFERTAS_.filter(function(d) {
+	return d.GANADOR == d.ID_LICITANTE_OFERTA;
+     });
+
+     procesos.forEach(function(d) {
+	d.DATAROOM = +d.DATAROOM;
+	d.PRECALIF = +d.PRECALIF;
+     });
 
      /*PROCESAR LICITANTES POR RONDA*/
      licRondas = licRondas.filter(function(d) {
@@ -283,7 +291,7 @@ function RED(width,height) {
 	 .attr("stroke-width",3)
 //---------------------------------------------------------------------------|
 //------INTERACCIÓN DERECHA--------------------------------------------------|
-	plantillaEmpresa(d,adj,data,licRondas,pmts);
+      plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERTAS_);
 //---------------------------------------------------------------------------|
 	});
 
@@ -304,10 +312,10 @@ function RED(width,height) {
 	 .attr("cy", function(d) { return d.y; });
     });
 
-  listaEmpresas(adj,data,licRondas,pmts,force,links);
+  listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,ofertas,OFERTAS_);
 
   leyendaRED();
-  Filtros(licRondas,data,adj,pmts,ofertas,tabla);
+  Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos);
 
   };
 

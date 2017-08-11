@@ -66,4 +66,19 @@ for i,r_i in mmerge3.iterrows():
     if(r_i["nombre"] == r_j["LICITANTE"]):
       mmerge3.ix[i,"id"] = r_j["ID_LICITANTE"]
 
+obj = {
+  'id_new':'ID_EMPRESA',
+  'id':'ID_LICITANTE',
+  'dataroom':'DATAROOM',
+  'empresa':'EMPRESA',
+  'nombre':'NOMBRE_LICITANTE',
+  'precalif':'PRECALIF',
+  'ronda':'RONDA',
+  'licitacion':'LICITACION'
+};
 
+mmerge3.rename(columns=obj,inplace=True)
+mmerge3['ID_LICITANTE'].replace(1000,np.nan, inplace=True)
+mmerge3['ID_LICITANTE'].replace(0,np.nan, inplace=True)
+
+mmerge3.to_csv("procesos.csv",index=False)

@@ -270,7 +270,6 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
       }
 
       var activacion = d3.select(this).attr("id");
-	console.log(ronda,activacion)
       filtrarPorRonda(activacion,ronda,licRondas,data);
 
     });
@@ -305,7 +304,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	d3.select(this).attr("fill","white");
     })
    .on("click",function(d) {
-      resumen(data,adj,licRondas,pmts,ofertas,d,tabla);
+      resumen(data,adj,licRondas,pmts,ofertas,d,tabla,procesos);
    });
 
 
