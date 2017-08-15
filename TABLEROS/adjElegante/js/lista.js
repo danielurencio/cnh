@@ -94,6 +94,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 		  .style("background-color","rgba(255,165,0,0.85)");
 		selectNODES(d);
   plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERTAS_);
+  GraficosEmpresa(d.id,data,tabla,OFERTAS_)
 	      });
 	  });
 

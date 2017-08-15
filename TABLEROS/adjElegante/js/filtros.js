@@ -1,5 +1,6 @@
 function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
-  var conteiner = d3.select("g#red")
+  var conteiner = d3.select("svg#cintilla")
+//	d3.select("g#red")
 	.append("g").attr("id","FILTRO");
 
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +11,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
    .attr({
     "id":"filtro",
     "width": 240,
-    "height": 85,
+    "height": 80,
     "x": function() {
       var x = d3.select("g>rect").attr("width");
       var offset = d3.select(this).attr("width");
@@ -19,7 +20,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
     "y": function() {
       var y = d3.select("g>rect").attr("height");
       var offset = d3.select(this).attr("height");
-      return 10//+y - +offset - 30;
+      return 0//+y - +offset - 30;
     },
     "rx":5,
     "ry":5,
@@ -44,7 +45,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
     "font-weight":600,
     "text-anchor":"middle",
     "alignment-baseline":"text-before-edge",
-    "font-size":12,
+    "font-size":10,
     "x": function(d) {
       if( d == "Total" ) {
 	return +xF + (+widthF/6);
@@ -56,7 +57,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
     },
     "y": function() {
 	var y = d3.select("#filtro").attr("y");
-	return +y + 3;
+	return +y + 2;
     }
    }).text(function(d) { return d; })
    .on("mouseover",function(d) {
@@ -75,8 +76,8 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 
 
   var cuadrosFiltros = {
-   "width":12,
-   "height":12,
+   "width":9,
+   "height":9,
    "fill":"transparent",
    "rx":2,
    "ry":2,
@@ -84,104 +85,6 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
   };
 
 
-//////////////////////////////////////////////////////////////////////////////
-/*----------------FILTRO PARA VER TOTALES----------------------------------*/
-////////////////////////////////////////////////////////////////////////////
-/*
-  conteiner.append("rect")
-    .attr(cuadrosFiltros)
-    .attr({
-      "id":"on",
-      "stroke":"white",
-      "stroke-width":2,
-      "fill":"orange",
-      "class":"Total",
-      "x":function() {
-	var offset = +d3.select(this).attr("width")/2;
-	return +xF + (+widthF/6) - offset;
-      },
-      "y":function() {
-	var offset = +d3.select(this).attr("height")/2;
-	return +yF + (+heightF/2) - offset;
-      }
-    })
-    .on("mouseover",function() {
-      var sel = d3.select(this);
-      if( !sel.attr("id") ) {
-        sel
-	  .attr("stroke","orange")
-	  .attr("stroke-width",2);
-      };
-    })
-    .on("mouseout",function() {
-      var sel = d3.select(this);
-      if( !sel.attr("id") ) {
-	sel
-	.attr("stroke","white")
-	.attr("stroke-width",1);
-      };
-    })
-    .on("click",function() {
-      var sel = d3.select(this);
-      var rondas = d3.selectAll(".Ronda");
-      var rondasRect = d3.selectAll("rect.Ronda");
-      var licitaciones = d3.selectAll(".Licitacion");
-      var licitacionesRect = d3.selectAll("rect.Licitacion");
-
-      if( !sel.attr("id") ) {
-       sel.attr({
-	  "id":"on",
-	  "stroke":"white",
-	  "stroke-width":2,
-	  "fill":"orange"
-	});
-	rondas.attr("opacity",0.4);
-	rondas.attr("disable",1);
-	rondas.attr("id",null);
-	rondasRect.attr("stroke-width",1);
-	rondasRect.attr("fill","transparent");
-	licitaciones.attr("opacity",0.4);
-	licitaciones.attr("disable",1);
-	licitaciones.attr("id",null);
-	licitacionesRect.attr("stroke-width",1);
-	licitacionesRect.attr("fill","transparent");
-
-	d3.selectAll('circle.node')
-	  .transition().duration(800)
-	  .attr("stroke", function(d) {
-	   var color = d3.select(this).attr("color");
-	   if( color == "transparent" ) return "black";
-	  })
-	  .attr("fill",function(d) {
-	    var color = d3.select(this).attr("color");
-	    return color;
-	  });
-      } else {
-       sel.attr({
-	  "id":null,
-	  "stroke-width":1,
-	  "fill":"transparent"
-	});
-	rondas.attr("opacity",1);
-	rondas.attr("disable",null);
-//	licitaciones.attr("opacity",1);
-//	licitaciones.attr("disable",null);
-	d3.selectAll('circle.node')
-	 .transition().duration(800)
-	 .attr("stroke",function(d) {
-	   var color = d3.select(this).attr("color");
-	   if( color == "transparent" ) return "lightGray";
-	 })
-	 .attr("fill",function(d) {
-	   var cambio;
-	   var color = d3.select(this).attr("color");
-	   cambio = color != "transparent" ? cambio = "gray" : cambio = "transparent";
-	   return cambio;
-	 });
-      }
-
-    });
-*/
 
 //////////////////////////////////////////////////////////////////////////////
 /*--------------  FILTRO PARA VER RONDAS  ---------------------------------*/
@@ -215,7 +118,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
       },
       "y":function(d,i) {
 	var iter = +d3.select(this).attr("height") + 5;
-	return 8 + textOffsetR.y + textOffsetR.height + (i*iter);
+	return 3 + textOffsetR.y + textOffsetR.height + (i*iter);
       }
    })
     .on("mouseover",function() {
@@ -352,10 +255,10 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	"ronda":rondas[i],
         "id":function(d) { return "L-" + d; },
         "fill":"rgba(255,255,255,0.7)",
-        "font-size":"8.5px",
+        "font-size":"8px",
 	"font-weight":300,
 	"text-anchor":"middle",
-        "alignment-baseline":"central",
+        "alignment-baseline":"middle",
         "x":function(d) {
 	  var sel = d3.select("rect[tag='R-" + rondas[i] + "-L-" + d + "']");
 	  var x = +sel.attr("x");

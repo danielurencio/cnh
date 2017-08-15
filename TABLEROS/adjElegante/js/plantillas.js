@@ -216,6 +216,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	});
 
 	var empresas_precalif = Highcharts.chart({
+	    exporting: { enabled:false },
 	    credits: { enabled:false },
             chart: {
                 renderTo: 'mitad1',
@@ -353,6 +354,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 
 	var barras = Highcharts.chart('barras', {
+	    exporting: { enabled:false },
 	    chart: {
 		type: 'column'
 	    },
@@ -426,6 +428,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 
 	var bloques = Highcharts.chart({
+	    exporting: { enabled:false },
 	    credits: { enabled:false },
             chart: {
                 renderTo: 'mitad3',
@@ -629,7 +632,6 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 
 function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERTAS_) {
-  console.log(OFERTAS_);
   var id_empresa = d.id;
   if(d3.select("div#temporal")[0][0]) d3.select("div#temporal").remove();
 
@@ -638,15 +640,13 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   var objEmp = data.filter(filtroEmp);
 
   var contenido =
-    '<div id="mitades" style="height:20px">'+
-     '<div id="mitad1" style="float:left;clear:left;width:33%;height:inherit"></div>' +
-     '<div id="mitad2" style="float:left;width:33%;height:inherit">'+
-        '<svg style="width:100%;height:inherit;"></svg>'+
+    '<div id="mitades" style="">'+
+     '<div id="mitad1" style="float:left;clear:left;width:50%;background-color:rgba(0,0,0,0.1);"></div>' +
+     '<div id="mitad2" style="float:left;width:50%; background-color:rgba(0,0,0,0.15)">'+
+//        '<svg style="width:100%;height:inherit;"></svg>'+
      '</div>' +
-     '<div id="mitad3" style="float:left;width:33%;height:inherit"></div>' +
-
     '</div>' +
-    '<div id="barras" style="padding:0px;width:100%; height:10%"></div>';
+    '<div id="gantt" style="padding:0px;width:100%;background-color:rgba(0,0,0,0.2);"></div>';
 
   var plantilla = 
   '<div id="titulo" style="height:15%; font-size:20px;padding-top:10px;">'+
@@ -662,6 +662,18 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   d3.select("#info").append("div")
     .attr("id","temporal")
     .html(plantilla);
+
+//---------- DIMENSIONES DE APARTADOS PARA GRÁFICAS ----------------------//
+  var titulo = d3.select("#temporal>#titulo")
+  var titHeight = +titulo.style("height").split("px")[0];
+  var titPad = +titulo.style("padding-top").split("px")[0];
+  var titT = titHeight //+ titPad;
+  var espacioDisp = window.innerHeight - titT - cintilla;
+  d3.select("div#mitades").style("height",(espacioDisp/2) + "px");
+  d3.selectAll("div#mitades>div").style("height","100%");
+  d3.select("div#gantt").style("height",(espacioDisp/2) + "px");
+
+//---------- DIMENSIONES DE APARTADOS PARA GRÁFICAS ----------------------//
 
   for(var i in objAdj) {
     var licitantes = licRondas.filter(function(d) {
@@ -698,10 +710,21 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
     area = 0;
   };
 
+
+  var filtroLic = data.filter(function(e) {
+    return +e.ID_EMPRESA == +id_empresa;
+  }).map(function(d) { return d.ID_LICITANTE; });
+
+  var licsEmpresa = tabla.filter(function(e) {
+    return this.indexOf(e.ID_LICITANTE_OFERTA) >= 0;
+  },filtroLic);
+
+
   var SUMAS = [
     { 'key':'Bloques adjudicados', 'val':total },
     { 'key':'Área adjudicada (km\u00B2)','val':area },
-    { 'key':'Inversión comprometida', 'val':inv_pmt }
+    { 'key':'Inversión comprometida', 'val':inv_pmt },
+    { 'key':'No. de ofertas', 'val':licsEmpresa.length }
   ];
 
  var sumas = d3.select("svg#sumas"); 
@@ -841,29 +864,26 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
       d3.selectAll("rect.boton").attr("tag",null);
       d3.selectAll("rect.boton").attr("stroke-width","0px");
       var id = d.split(" ").reduce(function sum(a,b) { return a + "_" + b; });
-      d3.select("#" + id).attr("fill",colorBarras).attr("stroke-width","0.5px");
+
+      d3.select("#" + id)
+	.attr("fill",colorBarras)
+	.attr("stroke-width","0.5px");
+
+
+
+      var TABLA = OFERTAS_.filter(function(e) {
+	return +id_empresa == e.ID_EMPRESA
+      });
+
+      TABLA = _.sortBy(TABLA,function(obj) { return obj.ID_BLOQUE; });
+
       if(d == "Ofertas") {
 	OFERTAS();
-	console.log(OFERTAS_);
-
-	var TABLA;
-        var TABLA1 = ofertas.filter(function(d) {
-	  return +d.ID_EMPRESA == +id_empresa;
-	});
-
-	if(TABLA1.length == 0) {
-	  TABLA = OFERTAS_.filter(function(d) {
-	    return +d.ID_EMPRESA == +id_empresa;
-	  });
-	} else {
-	  TABLA = TABLA1;
-	};
-	console.log(TABLA)
 	RenderTablaEmpresa(TABLA);
       };
 
       if(d == "Gráficos") {
-	//GRAFICOS();
+	GraficosEmpresa(id_empresa,data,tabla,OFERTAS_)//dataForStacked);
       };
 
     });
@@ -871,6 +891,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
     d3.select("#Gráficos")
 	.attr("fill","rgba(255,15,0,0.65)")
 	.attr("stroke-width","0.5px");
+
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////// TABLA-EMPRESA ////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -881,7 +902,11 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 	  .append("tr")
 	.attr("class","datosMod")
 	.attr("id","new")
-	  .style("font-weight","lighter")
+	  .style("font-weight",function(d) {
+	    var cond = d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ;
+	    var weight = cond ? 600 : 300;
+	    return weight;
+	  })
 	  .html(function(d,i) {
 	    var ronda = d.RONDA;
 	    var licitacion = d.LICITACION;
@@ -1181,4 +1206,266 @@ var tablaString =
     return newHeight + "px";
   });
   d3.select("#graficos").html(tablaString);
+};
+
+function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_) {
+      console.log(data[0]);
+/*------------------------- DATOS PARA STACKED ----------------------------*/
+      var filtroLic = data.filter(function(e) {
+	  return +e.ID_EMPRESA == +id_empresa;
+      }).map(function(d) { return d.ID_LICITANTE; });
+
+      var licsTodas = tabla.filter(function(e) {
+	return this.indexOf(e.ID_LICITANTE_OFERTA) < 0;
+      },filtroLic);
+
+      var licsEmpresa = tabla.filter(function(e) {
+	return this.indexOf(e.ID_LICITANTE_OFERTA) >= 0;
+      },filtroLic);
+
+
+      function AgruparOfertasPorLic(arr) {
+	var newArr = [];
+        for(var i in arr) {
+	  newArr.push(arr[i])
+	  newArr[i]["ronLic"] = newArr[i].RONDA + "-" + newArr[i].LICITACION;
+        };
+	return _.countBy(newArr,'ronLic');
+      };
+
+      licsTodas = AgruparOfertasPorLic(licsTodas);
+      licsEmpresa = AgruparOfertasPorLic(licsEmpresa);
+
+      var test0 = Object.keys(licsTodas).filter(function(e) {
+	return this.indexOf(e) >= 0;
+      },Object.keys(licsEmpresa)).sort();
+
+      var dataForStacked = [];
+      for(var k in test0) {
+	var key = String(test0[k]);
+	var obj = {
+          'ron-lic':key,
+	  'resto':licsTodas[key],
+	  'empresa':licsEmpresa[key]
+	};
+        dataForStacked.push(obj);
+      };
+
+/*------------------------- DATOS PARA STACKED ----------------------------*/
+
+
+  var contenido =
+    '<div id="mitades" style="">'+
+     '<div id="mitad1" style="float:left;clear:left;width:50%;background-color:rgba(0,0,0,0.1);"></div>' +
+     '<div id="mitad2" style="float:left;width:50%; background-color:rgba(0,0,0,0.15)">'+
+//        '<svg style="width:100%;height:inherit;"></svg>'+
+     '</div>' +
+    '</div>' +
+    '<div id="gantt" style="padding:0px;width:100%;background-color:rgba(0,0,0,0.2);"></div>';
+
+
+  d3.select("div#graficos").html(contenido)
+//---------- DIMENSIONES DE APARTADOS PARA GRÁFICAS ----------------------//
+  var titulo = d3.select("#temporal>#titulo")
+  var titHeight = +titulo.style("height").split("px")[0];
+  var titPad = +titulo.style("padding-top").split("px")[0];
+  var titT = titHeight //+ titPad;
+  var espacioDisp = window.innerHeight - titT - cintilla;
+  d3.select("div#mitades").style("height",(espacioDisp/2) + "px");
+  d3.selectAll("div#mitades>div").style("height","100%");
+  d3.select("div#gantt").style("height",(espacioDisp/2) + "px");
+
+//---------- DIMENSIONES DE APARTADOS PARA GRÁFICAS ----------------------//
+
+//---------------------------- GANTT CHART -------------------------------//
+/*
+  var gantt = Highcharts.chart('gantt',{
+	    credits: { enabled:false },
+	    exporting: { enabled: false },
+	    chart: {
+	        type: 'columnrange',
+	        inverted: true
+	    },
+	    
+	    title: {
+	        text: ''
+	    },
+	    
+		subtitle: {
+	        text: ''
+	    },
+	
+	    xAxis: {
+	        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun' ]
+	    },
+	    
+	    yAxis: {
+	        title: {
+	            text: ''
+	        }
+	    },
+	
+	    tooltip: {
+	        valueSuffix: '°C'
+	    },
+	    
+	    plotOptions: {
+	        columnrange: {
+	        	dataLabels: {
+	        		enabled: true,
+	        		formatter: function () {
+	        	//		return this.y + '°C';
+	        		}
+	        	}
+	        }
+	    },
+	    
+	    legend: {
+	        enabled: true
+	    },
+	
+	    series: [{
+	        name: 'Temperatures3',
+	        data: [
+                [0, 0, 5.6]
+			]
+	    },{
+	        name: 'Temperatures',
+	        data: [
+                		[1, 6.7, 9.4],
+				[2, 6.7, 8.5],
+				[3, 6.5, 9.4],
+				[3, 6.4, 19.9],
+			]
+	    },{
+	        name: 'Temperatures2',
+	        data: [
+				[1, 9.4, 10.3],
+				[3, 8.5, 11.9],
+				[4, 9.4, 12.3],
+				[3, 19.9,23.3],
+			]
+	    }]
+	
+	});
+*/
+//---------------------------- GANTT CHART -------------------------------//
+
+
+//------------------------- STACKED-BARS -------------------------------//
+  var maxPosible = dataForStacked.map(function(d) {
+    return d.resto + d.empresa;
+  });
+
+  maxPosible = d3.max(maxPosible);
+
+  var stacked_bars = Highcharts.chart('mitad1', {
+    credits: { enabled:false },
+    exporting: { enabled:false },
+    chart: {
+        type: 'column',
+    },
+    title: {
+        text: 'No. de ofertas por licitación',
+	style: {
+	 'fontFamily':'Open Sans, sans-serif',
+	 'font-weight':300
+	}
+    },
+    xAxis: {
+        categories: dataForStacked.map(function(d) { return d['ron-lic']; })
+    },
+    yAxis: {
+      labels: {
+	style: {
+	 'fontFamily':'Open Sans, sans-serif',
+	 'font-weight':300
+	}
+      },
+      min: 0,
+//      max: maxPosible,
+      tickInterval:2,
+      title: {
+        text: '',
+        style: { fontFamily:'Open Sans, sans-serif' }
+      }
+    },
+    legend: {
+        reversed:false,
+
+    },
+    plotOptions: {
+        series: {
+            stacking: 'normal'
+        }
+    },
+    series: [
+      {
+        name: data.filter(function(d) { return d.ID_EMPRESA == id_empresa; })[0].EMPRESA,//'Empresa',
+        data: dataForStacked.map(function(d) { return d.empresa; })
+      },
+      {
+        name: 'Resto',
+        data: dataForStacked.map(function(d) { return d.resto; })
+      }
+    ]
+  });
+  d3.selectAll("#mitad1 path.highcharts-grid-line").remove()
+//------------------------- STACKED-BARS -------------------------------//
+
+//------------------------- DONA -------------------------------//
+/*
+  var hidro = Highcharts.chart('mitad2', {
+    exporting: { enabled:false },
+    credits: { enabled:false },
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: 0,
+        plotShadow: false
+    },
+    title: {
+        text: 'Hidrocarburo<br>principal',
+        align: 'center',
+        verticalAlign: 'middle',
+        y: 40
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            dataLabels: {
+                enabled: true,
+                distance: -50,
+                style: {
+                    fontWeight: 'bold',
+                    color: 'white'
+                }
+            },
+            startAngle: -90,
+            endAngle: 90,
+            center: ['50%', '75%']
+        }
+    },
+    series: [{
+        type: 'pie',
+        name: 'Browser share',
+        innerSize: '50%',
+        data: [
+            ['Firefox',   10.38],
+            ['IE',       56.33],
+            ['Chrome', 24.03],
+            ['Safari',    4.77],
+            ['Opera',     0.91],
+            {
+                name: 'Proprietary or Undetectable',
+                y: 0.2,
+                dataLabels: {
+                    enabled: false
+                }
+            }
+        ]
+    }]
+  });
+*/
 };

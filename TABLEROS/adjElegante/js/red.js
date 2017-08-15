@@ -11,7 +11,7 @@ function RED(width,height) {
     .defer(d3.csv,'csv/data.csv')
     .defer(d3.csv,'csv/adj.csv')
     .defer(d3.csv,'csv/linkWidth1.csv')
-    .defer(d3.csv,'csv/ofertas.csv')
+    .defer(d3.csv,'csv/ofertas2.csv')
     .defer(d3.csv,'csv/tabla.csv')
     .defer(d3.csv,'csv/procesos.csv')
     .await(getDATA);
@@ -292,6 +292,7 @@ function RED(width,height) {
 //---------------------------------------------------------------------------|
 //------INTERACCIÓN DERECHA--------------------------------------------------|
       plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERTAS_);
+      GraficosEmpresa(d.id,data,tabla,OFERTAS_)
 //---------------------------------------------------------------------------|
 	});
 

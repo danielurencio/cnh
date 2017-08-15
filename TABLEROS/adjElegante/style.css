@@ -221,3 +221,17 @@ tr#new>th {
 	font-weight:inherit;
     }
 
+table#tBody {
+  border-collapse:collapse;
+  cell-spacing:0px;
+/*  border-right: solid 1px transparent;*/
+}
+
+g[class='highcharts-grid highcharts-yaxis-grid '] {
+ display:none;
+}
+
+g[class='highcharts-legend'] text{
+  font-family:'Open Sans';
+  font-weight:lighter;
+}
