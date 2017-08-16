@@ -235,3 +235,12 @@ g[class='highcharts-legend'] text{
   font-family:'Open Sans';
   font-weight:lighter;
 }
+
+#gantt tspan.highcharts-text-outline {
+  display:none;
+}
+
+#mitades { margin:0 auto; }
+
+#gantt { margin:0 auto; }
+/*#mitad1 { width:100%; margin:0 auto; display:table; text-align:center; }*/

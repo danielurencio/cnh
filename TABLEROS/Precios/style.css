@@ -1,0 +1,31 @@
+body,html {
+  margin:0px;
+  padding:0px;
+}
+
+div#header {
+  margin:0px;
+  padding:0px;
+  background-color:black;
+  width:100%;
+  height:8vh;
+}
+
+div#contenedor {
+  height:92vh;
+}
+
+div#panel {
+  height:100%;
+  width:20%;
+  float:left;
+  clear:left;
+  background-color:lightgray;
+}
+
+div#container {
+  height:100%;
+  width:80%;
+  float:left;
+  background-color:gray;
+}

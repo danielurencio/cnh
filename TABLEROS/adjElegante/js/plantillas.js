@@ -641,8 +641,8 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 
   var contenido =
     '<div id="mitades" style="">'+
-     '<div id="mitad1" style="float:left;clear:left;width:50%;background-color:rgba(0,0,0,0.1);"></div>' +
-     '<div id="mitad2" style="float:left;width:50%; background-color:rgba(0,0,0,0.15)">'+
+     '<div id="mitad1" style="float:left;clear:left;width:80%;background-color:rgba(0,0,0,0.1); display:table; margin:0 auto;"></div>' +
+   //  '<div id="mitad2" style="float:left;width:70%; background-color:rgba(0,0,0,0.15)">'+
 //        '<svg style="width:100%;height:inherit;"></svg>'+
      '</div>' +
     '</div>' +
@@ -1209,32 +1209,43 @@ var tablaString =
 };
 
 function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_) {
-      console.log(data[0]);
 /*------------------------- DATOS PARA STACKED ----------------------------*/
       var filtroLic = data.filter(function(e) {
 	  return +e.ID_EMPRESA == +id_empresa;
       }).map(function(d) { return d.ID_LICITANTE; });
 
-      var licsTodas = tabla.filter(function(e) {
+      var licsTOdas_ = tabla.filter(function(e) {
 	return this.indexOf(e.ID_LICITANTE_OFERTA) < 0;
       },filtroLic);
 
-      var licsEmpresa = tabla.filter(function(e) {
+      var licsEMpresa_ = tabla.filter(function(e) {
 	return this.indexOf(e.ID_LICITANTE_OFERTA) >= 0;
       },filtroLic);
+
+      var ganadas = licsEMpresa_.filter(function(d) {
+	return d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ
+      });
+console.log(ganadas)
+      var noGanadas = licsEMpresa_.filter(function(d) {
+	return d.ID_LICITANTE_OFERTA != d.ID_LICITANTE_ADJ
+      });
 
 
       function AgruparOfertasPorLic(arr) {
 	var newArr = [];
         for(var i in arr) {
 	  newArr.push(arr[i])
-	  newArr[i]["ronLic"] = newArr[i].RONDA + "-" + newArr[i].LICITACION;
+	  newArr[i]["ronLic"] = "R" + newArr[i].RONDA + "." + newArr[i].LICITACION;
         };
 	return _.countBy(newArr,'ronLic');
       };
 
-      licsTodas = AgruparOfertasPorLic(licsTodas);
-      licsEmpresa = AgruparOfertasPorLic(licsEmpresa);
+      licsTodas = AgruparOfertasPorLic(licsTOdas_);
+      licsEmpresa = AgruparOfertasPorLic(licsEMpresa_);
+      ganadas = AgruparOfertasPorLic(ganadas);
+      noGanadas = AgruparOfertasPorLic(noGanadas);
+
+console.log(ganadas,noGanadas)
 
       var test0 = Object.keys(licsTodas).filter(function(e) {
 	return this.indexOf(e) >= 0;
@@ -1246,22 +1257,131 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_) {
 	var obj = {
           'ron-lic':key,
 	  'resto':licsTodas[key],
-	  'empresa':licsEmpresa[key]
+	  'empresa':licsEmpresa[key],
+	  'ganadas':ganadas[key] ? ganadas[key] : 0,
+	  'noGanadas':noGanadas[key] ? noGanadas[key] : 0
 	};
         dataForStacked.push(obj);
       };
-
+console.log(dataForStacked);
 /*------------------------- DATOS PARA STACKED ----------------------------*/
 
 
+/*------------------------- DATOS PARA DONUT ----------------------------*/
+      var HIDROS = tabla.map(function(d) { return d.HIDRO_PRINCIPAL; })
+      for(var i in HIDROS) {
+        if(HIDROS[i] == 'GAS HUMEDO') HIDROS[i] = 'GAS HÚMEDO'
+      };
+
+      HIDROS = _.uniq(HIDROS);
+
+      function dataTreeMap(arr) {
+	var colorAceite = 'rgba(255,15,0,0.65)';
+	var colorGas = 'rgba(255,75,0,0.65)';
+	var colorAmbos = 'rgba(255,205,0,0.65)';
+        var GAS = new RegExp("GAS");
+        var ACEITE = new RegExp("ACEITE");
+	var conds = [];
+	var data = [];
+
+        for(var i in arr) {
+          var cond1 = GAS.test(arr[i]);
+	  var cond2 = ACEITE.test(arr[i]);
+//	  var cond3 = cond1 && cond2;
+
+	  var obj = {
+	    'gas':cond1,
+	    'aceite':cond2,
+//	    'ambos':cond3,
+	    'val':arr[i]
+	  };
+
+	  conds.push(obj);	
+        };
+
+	var aceite = conds.filter(function(d) {
+	  return d.aceite //&& !d.ambos;
+	}).map(function(d) { return d.val });
+
+	var gas = conds.filter(function(d) {
+	  return d.gas //&& !d.ambos;
+	}).map(function(d) { return d.val; });
+
+	var ambos = conds.filter(function(d) {
+	  return d.ambos;
+	}).map(function(d) { return d.val; });
+
+	if(aceite.length > 0) {
+	  var id = "aceite";
+	  var name = "Aceite";
+	  var color = colorAceite;
+	  var Parent = { 'id':id, 'name':name, 'color':color };
+	  data.push(Parent);
+
+	  var aceites = _.countBy(aceite);
+
+	  for(var k in aceites) {
+	    data.push({ 'name':k, 'parent':id, 'value':aceites[k] });
+	  };
+
+	};
+	if(gas.length > 0) {
+	  var id = "gas";
+	  var name = "Gas";
+	  var color = colorGas;
+	  var Parent = { 'id':id, 'name':name, 'color':color };
+	  data.push(Parent);
+
+	  var gases = _.countBy(gas);
+
+	  for(var k in gases) {
+	    data.push({ 'name':k, 'parent':id, 'value':gases[k] });
+	  };
+
+	};
+/*	if(ambos.length > 0) {
+	  var id = "ambos";
+	  var name = "Aceite y gas";
+	  var color = colorAmbos;
+	  var Parent = { 'id':id, 'name':name, 'color':color };
+	  data.push(Parent);
+
+	  var amboss = _.countBy(ambos);
+
+	  for(var k in amboss) {
+	    data.push({ 'name':k, 'parent':id, 'value':amboss[k] });
+	  };
+
+	};
+*/
+	return data;	
+      };
+
+
+      var hidro_p = licsEMpresa_.map(function(d) {
+	return d.HIDRO_PRINCIPAL;
+      });
+//      hidro_p = _.countBy(hidro_p);
+
+      console.log(hidro_p)
+      var data_TREE = dataTreeMap(hidro_p);
+/*      var hidros = [];
+
+      for(var k in hidro_p) {
+        hidros.push([k,hidro_p[k]]);
+      };*/
+
+/*------------------------- DATOS PARA DONUT ----------------------------*/
+
+
   var contenido =
-    '<div id="mitades" style="">'+
-     '<div id="mitad1" style="float:left;clear:left;width:50%;background-color:rgba(0,0,0,0.1);"></div>' +
-     '<div id="mitad2" style="float:left;width:50%; background-color:rgba(0,0,0,0.15)">'+
+    '<div id="mitades" style="width:80%">'+
+     '<div id="mitad1" style="background-color:rgba(0,0,0,0.1);"></div>' +
+//     '<div id="mitad2" style="float:left;width:0%; background-color:rgba(0,0,0,0.15)">'+
 //        '<svg style="width:100%;height:inherit;"></svg>'+
      '</div>' +
     '</div>' +
-    '<div id="gantt" style="padding:0px;width:100%;background-color:rgba(0,0,0,0.2);"></div>';
+    '<div id="gantt" style="padding:0px;width:80%;background-color:rgba(0,0,0,0.2);"></div>';
 
 
   d3.select("div#graficos").html(contenido)
@@ -1401,71 +1521,69 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_) {
     },
     series: [
       {
-        name: data.filter(function(d) { return d.ID_EMPRESA == id_empresa; })[0].EMPRESA,//'Empresa',
-        data: dataForStacked.map(function(d) { return d.empresa; })
+        name: 'Ofertas ganadas',//data.filter(function(d) { return d.ID_EMPRESA == id_empresa; })[0].EMPRESA,//'Empresa',
+        data: dataForStacked.map(function(d) { return d.ganadas; })
       },
       {
-        name: 'Resto',
-        data: dataForStacked.map(function(d) { return d.resto; })
+        name: 'Ofertas no ganadas',//'Resto',
+        data: dataForStacked.map(function(d) { return d.noGanadas; })
       }
     ]
   });
-  d3.selectAll("#mitad1 path.highcharts-grid-line").remove()
-//------------------------- STACKED-BARS -------------------------------//
+//  d3.selectAll("#mitad1 path.highcharts-grid-line").remove()
+//-----------------------------------------------------------------------//
 
 //------------------------- DONA -------------------------------//
-/*
-  var hidro = Highcharts.chart('mitad2', {
-    exporting: { enabled:false },
+  var treemap = Highcharts.chart('gantt', {
     credits: { enabled:false },
-    chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: 0,
-        plotShadow: false
-    },
-    title: {
-        text: 'Hidrocarburo<br>principal',
-        align: 'center',
-        verticalAlign: 'middle',
-        y: 40
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    plotOptions: {
-        pie: {
-            dataLabels: {
-                enabled: true,
-                distance: -50,
-                style: {
-                    fontWeight: 'bold',
-                    color: 'white'
-                }
-            },
-            startAngle: -90,
-            endAngle: 90,
-            center: ['50%', '75%']
-        }
-    },
+    exporting: { enabled:false },
     series: [{
-        type: 'pie',
-        name: 'Browser share',
-        innerSize: '50%',
-        data: [
-            ['Firefox',   10.38],
-            ['IE',       56.33],
-            ['Chrome', 24.03],
-            ['Safari',    4.77],
-            ['Opera',     0.91],
-            {
-                name: 'Proprietary or Undetectable',
-                y: 0.2,
-                dataLabels: {
-                    enabled: false
+        livelIsConstant:false,
+	allowDrillToNode:true,
+        type: "treemap",
+        layoutAlgorithm: 'sliceAndDice',
+        alternateStartingDirection: true,
+        levels: [{
+            level: 1,
+            layoutAlgorithm: 'sliceAndDice',
+            dataLabels: {
+//		color:"black",
+                enabled: true,
+                align: 'left',
+                verticalAlign: 'top',
+		width:10,
+                style: {
+		    fontFamily:'Open Sans, sans-serif',
+                    fontSize: '15px',
+                    fontWeight: '300',
+		    width:10
                 }
             }
-        ]
-    }]
+        },
+	{
+            level: 2,
+        //    layoutAlgorithm: 'sliceAndDice',
+            dataLabels: {
+		color:'black',
+                enabled: false,
+        //        align: 'left',
+         //       verticalAlign: 'top',
+                style: {
+                    fontSize: '7px',
+                    fontWeight: '300'
+                }
+            }
+        }
+	],
+        data: data_TREE    }],
+    title: {
+        text: 'Hidrocarburos presentes en ofertas',
+	style: {
+	  fontSize:12,
+	  fontFamily:'Open Sans, sans-serif',
+	  fontWeight:300
+	}
+    }
   });
-*/
+
 };

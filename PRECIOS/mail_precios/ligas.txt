@@ -1,0 +1,5 @@
+https://stackoverflow.com/questions/3050298/parsing-email-with-python?noredirect=1&lq=1
+
+https://stackoverflow.com/questions/1225586/checking-email-with-python
+
+outlook.office365.com
