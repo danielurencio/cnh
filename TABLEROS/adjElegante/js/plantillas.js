@@ -1,4 +1,5 @@
 function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
+  console.log(RONDA_LIC);
   if(d3.select("div#temporal")[0][0]) d3.select("div#temporal").remove()
 // HABRÁ QUE FILTRAR POR RONDA Y LICITACIÓN PARA REUTILIZAR ESTA FUNCIÓN.
   var TABLA;
@@ -388,7 +389,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		max: (maxPaises),
 	 	tickInterval:2,
 		title: {
-		    text: 'Empresas por país',
+		    text: '<b>Empresas por país</b>',
 		    style: { fontFamily:'Open Sans, sans-serif' }
 		}
 	    },
@@ -690,6 +691,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   } else {
     total = total.reduce(function sum(a,b) { return +a + +b; });	  
   };
+////////////////////////// INVERSIÓN COMPROMETIDA ///////////////////////
 
   var inv_pmt = ofertas.filter(function(e) {
     return +d.id == +e.ID_EMPRESA;
@@ -701,6 +703,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   } else {
     inv_pmt = 0;
   };
+////////////////////////////////////////////////////////////////////////
 
   var area;
   if(objAdj.length != 0) {
@@ -724,7 +727,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
     { 'key':'Bloques adjudicados', 'val':total },
     { 'key':'Área adjudicada (km\u00B2)','val':area },
     { 'key':'Inversión comprometida', 'val':inv_pmt },
-    { 'key':'No. de ofertas', 'val':licsEmpresa.length }
+//    { 'key':'No. de ofertas', 'val':licsEmpresa.length }
   ];
 
  var sumas = d3.select("svg#sumas"); 
@@ -883,7 +886,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
       };
 
       if(d == "Gráficos") {
-	GraficosEmpresa(id_empresa,data,tabla,OFERTAS_)//dataForStacked);
+	GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas)
       };
 
     });
@@ -1208,7 +1211,7 @@ var tablaString =
   d3.select("#graficos").html(tablaString);
 };
 
-function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_) {
+function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
 /*------------------------- DATOS PARA STACKED ----------------------------*/
       var filtroLic = data.filter(function(e) {
 	  return +e.ID_EMPRESA == +id_empresa;
@@ -1225,7 +1228,7 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_) {
       var ganadas = licsEMpresa_.filter(function(d) {
 	return d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ
       });
-console.log(ganadas)
+
       var noGanadas = licsEMpresa_.filter(function(d) {
 	return d.ID_LICITANTE_OFERTA != d.ID_LICITANTE_ADJ
       });
@@ -1245,8 +1248,6 @@ console.log(ganadas)
       ganadas = AgruparOfertasPorLic(ganadas);
       noGanadas = AgruparOfertasPorLic(noGanadas);
 
-console.log(ganadas,noGanadas)
-
       var test0 = Object.keys(licsTodas).filter(function(e) {
 	return this.indexOf(e) >= 0;
       },Object.keys(licsEmpresa)).sort();
@@ -1263,17 +1264,60 @@ console.log(ganadas,noGanadas)
 	};
         dataForStacked.push(obj);
       };
-console.log(dataForStacked);
+
 /*------------------------- DATOS PARA STACKED ----------------------------*/
 
 
-/*------------------------- DATOS PARA DONUT ----------------------------*/
-      var HIDROS = tabla.map(function(d) { return d.HIDRO_PRINCIPAL; })
-      for(var i in HIDROS) {
-        if(HIDROS[i] == 'GAS HUMEDO') HIDROS[i] = 'GAS HÚMEDO'
-      };
+/*------------------------- DATOS PARA TREEMAP ----------------------------*/
+      var invComRon = ofertas.filter(function(e) {
+        return id_empresa == +e.ID_EMPRESA;
+      }).map(function(d) {
+	var obj = {};
+	obj["pmt"] = d.PMT_TOTAL;
+        obj["bloque"] = d.ID_BLOQUE;
+	obj["ron_lic"] = "R" + d.RONDA + "." + d.LICITACION;
+	return obj;
+      });
 
-      HIDROS = _.uniq(HIDROS);
+      var rondas_ = ofertas.map(function(d) {
+	return "R" + d.RONDA + "." + d.LICITACION;
+      });
+
+      rondas_ = _.uniq(rondas_);
+
+      invComRon = _.groupBy(invComRon,"ron_lic");
+      rondas_r = d3.extent(rondas_.map(function(d,i) { return i; }))
+
+
+      var colorS = d3.scale.linear()
+	.domain(rondas_r)
+	.range(["orange","red"])
+	.interpolate(d3.interpolateRgb)
+
+      var dataForTree = [];
+      for(var k in invComRon) {
+	var obj_ = {};
+	var ix;
+
+	rondas_.forEach(function(d,i) {
+	  if( d == k ) ix = i;
+	});
+
+	obj_["color"] = colorS(ix);
+        obj_["id"] = "p_" + ix;
+	obj_["name"] = k;
+	dataForTree.push(obj_);
+
+	invComRon[k].forEach(function(d) {
+	  var obj = {};
+	  obj["parent"] = "p_" + ix;
+	  obj["value"] = d.pmt;
+	  obj["name"] = d.bloque;
+
+	  dataForTree.push(obj);
+
+	});
+      };
 
       function dataTreeMap(arr) {
 	var colorAceite = 'rgba(255,15,0,0.65)';
@@ -1363,14 +1407,13 @@ console.log(dataForStacked);
       });
 //      hidro_p = _.countBy(hidro_p);
 
-      console.log(hidro_p)
       var data_TREE = dataTreeMap(hidro_p);
 /*      var hidros = [];
 
       for(var k in hidro_p) {
         hidros.push([k,hidro_p[k]]);
       };*/
-
+//console.log(data_TREE)
 /*------------------------- DATOS PARA DONUT ----------------------------*/
 
 
@@ -1477,6 +1520,11 @@ console.log(dataForStacked);
     return d.resto + d.empresa;
   });
 
+
+  var licsEmpresa = tabla.filter(function(e) {
+    return this.indexOf(e.ID_LICITANTE_OFERTA) >= 0;
+  },filtroLic);
+
   maxPosible = d3.max(maxPosible);
 
   var stacked_bars = Highcharts.chart('mitad1', {
@@ -1486,6 +1534,14 @@ console.log(dataForStacked);
         type: 'column',
     },
     title: {
+        text: '<b>Ofertas presentadas: ' + licsEmpresa.length + '</b>',
+	style: {
+	 'fontFamily':'Open Sans, sans-serif',
+	 'font-weight':300,
+	 'fontSize':16
+	}
+    },
+    subtitle: {
         text: 'No. de ofertas por licitación',
 	style: {
 	 'fontFamily':'Open Sans, sans-serif',
@@ -1511,8 +1567,7 @@ console.log(dataForStacked);
       }
     },
     legend: {
-        reversed:false,
-
+        reversed:false
     },
     plotOptions: {
         series: {
@@ -1575,11 +1630,11 @@ console.log(dataForStacked);
             }
         }
 	],
-        data: data_TREE    }],
+        data:dataForTree    }],
     title: {
-        text: 'Hidrocarburos presentes en ofertas',
+        text: '<b>Inversión comprometida por Ronda-bloque</b>',
 	style: {
-	  fontSize:12,
+	  fontSize:16,
 	  fontFamily:'Open Sans, sans-serif',
 	  fontWeight:300
 	}

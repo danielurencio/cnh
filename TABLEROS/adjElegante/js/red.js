@@ -17,8 +17,30 @@ function RED(width,height) {
     .await(getDATA);
 
   function getDATA(err,data,adj,licRondas,OFERTAS_,tabla,procesos) {
+
+/*-------------------NUEVO FILTRO------------------------------------------*/
+    let ron_lic = licRondas.map(function(d) {
+      var result;
+      result = "R" + d.RONDA + "." + d.LICITACION;
+      return result;
+    }); 
+
+    ron_lic = _.uniq(ron_lic);
+    ron_lic.splice(ron_lic.indexOf("R."),1)
+
+
+    d3.select("#opciones>select").selectAll("option")
+     .data(ron_lic).enter()
+     .append("option")
+    .html(function(d) { return d; }) 
+
+    $(".chosen-select-no-results")
+     .chosen({no_results_text: "Resultado no encontrado..."})
+/*-------------------NUEVO FILTRO------------------------------------------*/
+
+
      var ofertas = OFERTAS_.filter(function(d) {
-	return d.GANADOR == d.ID_LICITANTE_OFERTA;
+	return d.ID_LICITANTE_ADJ == d.ID_LICITANTE_OFERTA;
      });
 
      procesos.forEach(function(d) {
@@ -89,7 +111,7 @@ function RED(width,height) {
 
 //////////////////////////////////////////////////////////////////////////////
 //EJECUCIÓN DE PRIMER PLANTILLA: RESUMEN DE RONDAS///////////////////////////
-    resumen(data,adj,licRondas,pmts,ofertas,null,tabla,procesos)
+   // resumen(data,adj,licRondas,pmts,ofertas,null,tabla,procesos)
 ///////////////////////////////////////////////////////////////////////////
 
     /*------------------------------------*/
@@ -292,7 +314,7 @@ function RED(width,height) {
 //---------------------------------------------------------------------------|
 //------INTERACCIÓN DERECHA--------------------------------------------------|
       plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERTAS_);
-      GraficosEmpresa(d.id,data,tabla,OFERTAS_)
+      GraficosEmpresa(d.id,data,tabla,OFERTAS_,ofertas)
 //---------------------------------------------------------------------------|
 	});
 
@@ -315,9 +337,23 @@ function RED(width,height) {
 
   listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,ofertas,OFERTAS_);
 
+
+  var arr = licRondas.map(function(d) {
+    return d.RONDA + "-" + d.LICITACION;
+  });
+
+  arr = _.uniq(arr);
+
+  arr = arr.map(function(d) {
+    var ronda = d.split("-")[0];
+    var lic = d.split("-")[1];
+    return { 'ronda':ronda, 'lic':lic };
+  });
+
   leyendaRED();
   Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos);
-
+  NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos);
+  resumen(data,adj,licRondas,pmts,ofertas,arr,tabla,procesos)
   };
 
 
@@ -463,13 +499,14 @@ function leyendaRED() {
     })
     .style("stroke-width",0.25);
 
-    var rExpl = 'El tamaño de los círculos representa la inversión comprometida.';
+    var rExpl = ' &xcirc;&mdash;&mdash;&xcirc; Las líneas representan asociaciones entre empresas.'//'El tamaño de los círculos representa la inversión comprometida.';
+//&odot;&horbar;&odot;
     var textoGradiente = [rExpl,'0','1',String(maxAdj),'No. de contratos:'];
 
     conteiner.selectAll("text")
       .data(textoGradiente).enter()
       .append("text")
-	.attr("font-weight",300)
+	.attr("font-weight",400)
 	.attr("font-size",10)
 	.attr("text-anchor",function(d) {
 	  var pos;
@@ -505,8 +542,36 @@ function leyendaRED() {
 	  } else if(d == String(maxAdj)) {
 	    return +rectLeyenda.attr("height") + +rectLeyenda.attr("y") - 3;
 	  } else {
+	    d3.select(this).attr("id","noDeContratos");
 	    return +rectLeyenda.attr("y") - 4;
 	  }
-        }).text(function(d) { return d; });
+        }).html(function(d) { return d; });
+
+	var rr = 7;
+        var radios = [rr*4,rr*3,rr*2,rr*1];
+        var radioGrande = radios[0];
+	conteiner.append("g")
+	 .selectAll("circle")
+	.data(radios).enter()
+	.append("circle")
+	 .attr({
+	  "fill":"transparent",
+	  "stroke":"gray",
+	  "stroke-width":"1",
+	  "stroke-dasharray":"4,2",
+	  "r": function(d) { return d; },
+	  "cx": function(d) {
+	   var ref = d3.select("text#noDeContratos");
+	   var x = +ref.attr("x").split("px")[0];
+	   return x + radioGrande;
+	  },
+	  "cy": function(d) {
+	    var ref = d3.select("text#noDeContratos")
+	    var h = ref.node().getBBox().height; console.log(h);
+	    var y = +ref.attr("y").split('px')[0];
+	    return y - d - h - 5;
+	  }
+	 })
+
 
 }

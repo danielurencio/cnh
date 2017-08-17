@@ -2,8 +2,25 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 
   var lista = d3.select("#filtroEmpresas");
 
+  lista.append("svg").attr("id","verLista")
+    .style("width","inherit")
+    .append("text")
+      .attr({
+	'x':-5,
+	'y':15,
+	'fill':"white",
+	'font-size':12,
+	'font-weight':400,
+	'font-family':'Open Sans',
+	'transform':'rotate(-90)',
+	'text-anchor':'end'
+      }).text("Ver lista de empresas")
+
+
   lista
     .on("click", function(d) {
+
+      d3.select("#filtroEmpresas>svg").remove();
 
       var empresas = /*adj*/data.map(function(d) { return d.EMPRESA; })
        .reduce(function(a,b) {
@@ -94,7 +111,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 		  .style("background-color","rgba(255,165,0,0.85)");
 		selectNODES(d);
   plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERTAS_);
-  GraficosEmpresa(d.id,data,tabla,OFERTAS_)
+  GraficosEmpresa(d.id,data,tabla,OFERTAS_,ofertas)
 	      });
 	  });
 
@@ -110,12 +127,31 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
     .on("click",hideLista);
 
   function hideLista(d) {
+   var verLista = d3.select("svg#verLista")[0][0];
+
     lista.attr("class",null)
     lista.selectAll("ol").remove();
     lista.selectAll("input").remove();
     lista.selectAll("div#listaConteiner").remove();
     lista.transition().duration(300)
       .style("width","20px")
+
+   if(!verLista) {
+    lista.append("svg").attr("id","verLista")
+    .style("width","inherit")
+    .append("text")
+      .attr({
+	'x':-5,
+	'y':15,
+	'fill':"white",
+	'font-size':12,
+	'font-weight':400,
+	'font-family':'Open Sans',
+	'transform':'rotate(-90)',
+	'text-anchor':'end'
+      }).text("Ver lista de empresas")
+   };
+
   };
 
   function selectNODES(d) {

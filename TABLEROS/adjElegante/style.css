@@ -243,4 +243,15 @@ g[class='highcharts-legend'] text{
 #mitades { margin:0 auto; }
 
 #gantt { margin:0 auto; }
-/*#mitad1 { width:100%; margin:0 auto; display:table; text-align:center; }*/
+
+#gantt rect {
+  opacity:0.65;
+}
+
+#gantt svg {
+  background-color:white;
+}
+
+g.highcharts-legend tspan {
+  font-weight:300;
+}

@@ -173,7 +173,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
       }
 
       var activacion = d3.select(this).attr("id");
-      filtrarPorRonda(activacion,ronda,licRondas,data);
+      filtrarPorRonda(activacion,ronda,licRondas,data,1);
 
     });
 
@@ -336,7 +336,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 
         var activacion = d3.select(this).attr("id");
         var RONDA = { 'ronda':ronda, 'licitacion':licitacion };
-        filtrarPorRonda(activacion,RONDA,licRondas,data,RONDA);
+        filtrarPorRonda(activacion,RONDA,licRondas,data,RONDA,1);
 
       } else {
        sel.attr({
@@ -347,7 +347,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 
         var activacion = d3.select(this).attr("id");
         var RONDA = { 'ronda':ronda, 'licitacion':licitacion };
-        filtrarPorRonda(activacion,RONDA,licRondas,data,RONDA);
+        filtrarPorRonda(activacion,RONDA,licRondas,data,RONDA,1);
 
 // HACER QUE CUANDO NINGUNA LICITACIÓN ESTÉ ACTIVA, LA RONDA SE DESACTIVE
 	var licsSelec = d3.selectAll("rect#on.Licitacion[ronda='"+ ronda +"']");
@@ -447,7 +447,6 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	    arr.push(obj);
 	  }
 	}
-	
 	resumen(data,adj,licRondas,pmts,ofertas,arr,tabla,procesos)
        });
 
@@ -458,7 +457,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 
 };
 
-function filtrarPorRonda(activacion,ronda,licRondas,data) {
+function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
   var rondasParaFiltro = [];
   var rondasActivas// = d3.selectAll("rect.Ronda#on")[0];
   var licitacionesActivas;
@@ -486,26 +485,50 @@ function filtrarPorRonda(activacion,ronda,licRondas,data) {
   };
 */
   if(typeof(ronda) == "object" || typeof(ronda) == "string") {
-   licitacionesActivas = d3.selectAll("rect.Licitacion#on")[0];
-   for(var i in licitacionesActivas) {
-    var r;
-    var l = licitacionesActivas[i].getAttribute("tag");
-    if(l) {
-      r = l.split("-")[1];
-      l = l.split("-")[3];
-    }
 
-    var filtrado = licRondas.filter(function(d) {
-	return d.RONDA == r && d.LICITACION == l;
-    })
-	.map(function(d) { return d.ID_LICITANTE_OFERTA; })
-	.reduce(function(a,b) {
-	  if( a.indexOf(b) < 0 ) { a.push(b); };
-	  return a;
-	},[]);
+   if(lugar) {
+     licitacionesActivas = d3.selectAll("rect.Licitacion#on")[0];
+     for(var i in licitacionesActivas) {
+        var r;
+        var l = licitacionesActivas[i].getAttribute("tag");
+        if(l) {
+          r = l.split("-")[1];
+          l = l.split("-")[3];
+        }
 
-      filtroFinal = filtroFinal.concat(filtrado);
-    
+        var filtrado = licRondas.filter(function(d) {
+	  return d.RONDA == r && d.LICITACION == l;
+        })
+	  .map(function(d) { return d.ID_LICITANTE_OFERTA; })
+	  .reduce(function(a,b) {
+	    if( a.indexOf(b) < 0 ) { a.push(b); };
+	    return a;
+	  },[]);
+
+        filtroFinal = filtroFinal.concat(filtrado); 
+     };
+
+   } else {
+/////////////////////// LUGAR NUEVO FILTRO///////////////////////////////////
+     var spans = d3.selectAll("li.search-choice>span")[0];
+     for(var i=0; i<spans.length; i++) {
+       var span = spans[i].innerText;
+       var r = span.split(".")[0].split("R")[1];
+       var l = span.split(".")[1];
+
+       var filtrado = licRondas.filter(function(d) {
+	  return d.RONDA == r && d.LICITACION == l;
+       })
+       .map(function(d) { return d.ID_LICITANTE_OFERTA; })
+       .reduce(function(a,b) {
+	    if( a.indexOf(b) < 0 ) { a.push(b); };
+	    return a;
+       },[]);
+
+        filtroFinal = filtroFinal.concat(filtrado); 
+
+     };
+
    };
   };
 
@@ -668,4 +691,55 @@ var coco =[]
     };
   };
 
+};
+
+function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
+  var nuevoFiltro = d3.select("[class='chosen-container chosen-container-multi']");
+  var seleccionados = [];
+
+  nuevoFiltro.on("click",function() {
+    var chosen_drop = d3.selectAll(".chosen-drop>ul>li");
+ 
+    chosen_drop.on("click",function() {
+      let sel = d3.select(this)[0][0].innerText;
+
+      if(seleccionados.indexOf(sel) < 0) seleccionados.push(sel);
+
+      let seleccionados_ = seleccionados.map(function(d) {
+	let s = d.split(".");
+	var ronda = s[0].split("R")[1];
+	var lic = s[1];
+	return  { 'ronda':ronda, 'lic':lic };
+      });
+/////////////////////////// AGREGAR //////////////////////////////////////////
+      //console.log(seleccionados_)
+      filtrarPorRonda('on',seleccionados_,licRondas,data);
+      resumen(data,adj,licRondas,pmts,ofertas,seleccionados_,tabla,procesos);
+
+      var spans = d3.selectAll("a.search-choice-close");
+
+      spans.on("click", function() {
+	var sel_ = d3.select(this)[0][0].parentNode.childNodes;
+	var span;
+	sel_.forEach(function(d) {
+	  var patt = RegExp("^R");
+	  var cond = patt.test(d.innerText);
+	  if(cond) span = d.innerText;
+	});
+	seleccionados.splice(seleccionados.indexOf(span),1);
+	let seleccionados_ = seleccionados.map(function(d) {
+	  let s = d.split(".");
+	  var ronda = s[0].split("R")[1];
+	  var lic = s[1];
+	  return  { 'ronda':ronda, 'lic':lic };
+	});
+/////////////////////////// QUITAR //////////////////////////////////////////
+	//console.log(seleccionados_);
+	filtrarPorRonda(undefined,seleccionados_,licRondas,data);
+	resumen(data,adj,licRondas,pmts,ofertas,seleccionados_,tabla,procesos);
+      });
+
+    });
+
+  });
 };
