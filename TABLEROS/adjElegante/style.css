@@ -215,16 +215,18 @@ div#scrollTableContainer {
     }
 
 tr#new>th {
-	padding:0px;
-        width: 80px; 
+	top-padding:20px;
+        width: 55px;
+	height:80px; 
 	font-size:12px;
 	font-weight:inherit;
+	display:table-cell;
+	vertical-align:middle;
     }
 
-table#tBody {
-  border-collapse:collapse;
-  cell-spacing:0px;
-/*  border-right: solid 1px transparent;*/
+table#tHead th{
+  font-weight:600;
+  font-size:10px;
 }
 
 g[class='highcharts-grid highcharts-yaxis-grid '] {
@@ -255,3 +257,4 @@ g[class='highcharts-legend'] text{
 g.highcharts-legend tspan {
   font-weight:300;
 }
+

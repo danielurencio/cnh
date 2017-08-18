@@ -206,7 +206,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 
 function regex() {
   var input = document.getElementById("inputRegex").value;
-  var patt = new RegExp("^" + input,"i");
+  var patt = new RegExp(input,"i");
 
   var lis = d3.selectAll("div#filtroEmpresas>ol>li")[0];
 

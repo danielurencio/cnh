@@ -2,14 +2,17 @@
 ########################################################
 
 CreatePRECIOS() {
-  cat schema_precios.txt | sqlplus cmde_raw/raw17
+  cat schema_precios.txt | sqlplus $1
 }
 
 TruncatePRECIOS() {
-  echo "TRUNCATE DATOS_TABLE PRECIOS;" | sqlplus cmde_raw/raw17
+  echo "TRUNCATE TABLE DATOS_PRECIOS;" | sqlplus $1
 }
 
 LoadPRECIOS() {
-  sqlldr cmde_raw/raw17 control=loader_precios.ctl
+  sqlldr $1 control=loader_precios.ctl
 }
 
+DropPRECIOS() {
+ echo "DROP TABLE DATOS_PRECIOS;" | sqlplus $1
+}

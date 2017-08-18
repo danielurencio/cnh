@@ -1,5 +1,6 @@
+var widLic_ = '300px';
+
 function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
-  console.log(RONDA_LIC);
   if(d3.select("div#temporal")[0][0]) d3.select("div#temporal").remove()
 // HABRÁ QUE FILTRAR POR RONDA Y LICITACIÓN PARA REUTILIZAR ESTA FUNCIÓN.
   var TABLA;
@@ -484,7 +485,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //------------------ TABLA ------------------------------------------------------
 /////////////////////////////////////////////////////////////////////////////////
 
-  function RenderTabla() {
+  function RenderTabla(widLic) {
 	 d3.select("table#tBody")
 	  .selectAll("tr").data(TABLA).enter()
 	  .append("tr")
@@ -492,23 +493,51 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	.attr("id","new")
 	  .style("font-weight","lighter")
 	  .html(function(d,i) {
+	   let bono = Number((d.BONO / 1000).toFixed(1)).toLocaleString();
 	   var ronda = d.RONDA;
 	   var licitacion = d.LICITACION;
+	   let ron_lic = ronda + "-" + licitacion;
+	   ron_lic = licitacion == 'ASOCIACIÓN' ? 'TRIÓN' : ron_lic;
+
 	   var bloque = d.ID_BLOQUE;
+
+	   if(bloque.split("-").length > 2) {
+	     bloque = bloque
+		.split("-").slice(1,bloque.split("-").length)
+		.reduce(function(a,b) { return a + "-" + b; });
+	   } else {
+	     bloque = bloque.split("-")[1];
+	   };
+
+	   bloque = bloque == 'TRION' ? 'TRIÓN' : bloque;
+
 	   var licitantes = d.ID_LICITANTE_OFERTA;
+
+	   var nombresLics = licRondas.filter(function(l) {
+	      return l.ID_LICITANTE_OFERTA == licitantes;
+	   })[0].LICITANTE
+	   .map(function(e) {
+	      var e_ = e.split(",")[0];
+	      return "&dash; " + e_;
+	   })
+	   .reduce(function(a,b) {
+	      return a + "<br>" + b;
+	   });
+
 	   var VPO = Number(d.VPO).toFixed(1);
 
 	  if(VPO == 0) VPO = "-"
 	   
-	   var str = "<th>"+ronda + "-" + licitacion +"</th>" +
+	   var str = "<th>"+ ron_lic +"</th>" +
 
 		     "<th>" + bloque + "</th>" +
-		     "<th>"+ d.HIDRO_PRINCIPAL +"</th>"+
-		     "<th>"+ licitantes +"</th>"+
+//		     "<th>"+ d.HIDRO_PRINCIPAL +"</th>"+
+  "<th id='licitantes' style='width:"+widLic+"; font-size:12px; padding-left:20px'>"+ nombresLics +"</th>"+
+//	"<th style='width:" + widLic + "'>"+ nombresLics +"</th>"+
 		     "<th>"+ d.VAR_ADJ1 +"</th>" +
 		     "<th>"+ d.VAR_ADJ2 +"</th>" +
 		     "<th>"+ VPO +"</th>" +
-		     "<th>"+ d.BONO +"</th>";
+		     "<th>"+ bono +"</th>";
 	   return str;
 	   });
   };
@@ -615,8 +644,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
       var id = d.split(" ").reduce(function sum(a,b) { return a + "_" + b; });
       d3.select("#" + id).attr("fill",colorBarras).attr("stroke-width","0.5px");
       if(d == "Ofertas") {
-	OFERTAS();
-	RenderTabla();
+	var widLic = widLic_;
+	OFERTAS(widLic);
+	RenderTabla(widLic);
       };
 
       if(d == "Gráficos") {
@@ -647,7 +677,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 //        '<svg style="width:100%;height:inherit;"></svg>'+
      '</div>' +
     '</div>' +
-    '<div id="gantt" style="padding:0px;width:100%;background-color:rgba(0,0,0,0.2);"></div>';
+    '<div id="gantt" style="padding:0px;width:100%;background-color:transparent"></div>';
 
   var plantilla = 
   '<div id="titulo" style="height:15%; font-size:20px;padding-top:10px;">'+
@@ -881,8 +911,9 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
       TABLA = _.sortBy(TABLA,function(obj) { return obj.ID_BLOQUE; });
 
       if(d == "Ofertas") {
-	OFERTAS();
-	RenderTablaEmpresa(TABLA);
+	var widLic = widLic_;
+	OFERTAS(widLic);
+	RenderTablaEmpresa(TABLA,widLic);
       };
 
       if(d == "Gráficos") {
@@ -899,7 +930,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 /////////////////////// TABLA-EMPRESA ////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-  function RenderTablaEmpresa(TABLA) {
+  function RenderTablaEmpresa(TABLA,widLic) {
 	 d3.select("table#tBody")
 	  .selectAll("tr").data(TABLA).enter()
 	  .append("tr")
@@ -911,32 +942,59 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 	    return weight;
 	  })
 	  .html(function(d,i) {
+	    let bono = Number((d.BONO / 1000).toFixed(1)).toLocaleString();
 	    var ronda = d.RONDA;
 	    var licitacion = d.LICITACION;
+	    let ron_lic = ronda + "-" + licitacion;
+	    ron_lic = licitacion == 'ASOCIACIÓN' ? 'TRIÓN' : ron_lic;
 	    var bloque = d.ID_BLOQUE;
-	    var licitantes = d.ID_LICITANTE_OFERTA;
-	    var VPO = Number(d.VPO).toFixed(1);
 
+	     if(bloque.split("-").length > 2) {
+	       bloque = bloque
+		  .split("-").slice(1,bloque.split("-").length)
+		  .reduce(function(a,b) { return a + "-" + b; });
+	     } else {
+	       bloque = bloque.split("-")[1];
+	     };
+
+	    bloque = bloque == 'TRION' ? 'TRIÓN' : bloque;
+	    var licitantes = d.ID_LICITANTE_OFERTA;
+
+	    var nombresLics = licRondas.filter(function(l) {
+	      return l.ID_LICITANTE_OFERTA == licitantes;
+	    })[0].LICITANTE
+	    .map(function(e) {
+	      var e_ = e.split(",")[0];
+	      return "&dash; " + e_;
+	    })
+	    .reduce(function(a,b) {
+	      return a + "<br>" + b;
+	    });
+
+
+	    var VPO = Number(d.VPO).toFixed(1);
+/*
 	    var HIDRO_PRINCIPAL = tabla.filter(function(o) {
 	      return o.ID_BLOQUE == bloque;
 	    })[0].HIDRO_PRINCIPAL;
-
+*/
 	    if(VPO == 0) VPO = "-"
 	   
-	    var str = "<th>"+ronda + "-" + licitacion +"</th>" +
+	    var str = "<th>"+ ron_lic +"</th>" +
 		     "<th>" + bloque + "</th>" +
-		     "<th>"+ HIDRO_PRINCIPAL +"</th>"+
-		     "<th>"+ licitantes +"</th>"+
+//		     "<th>"+ HIDRO_PRINCIPAL +"</th>"+
+  "<th style='width:"+widLic+"; font-size:12px; padding-left:20px'>"+ nombresLics +"</th>"+
 		     "<th>"+ d.VAR_ADJ1 +"</th>" +
 		     "<th>"+ d.VAR_ADJ2 +"</th>" +
 		     "<th>"+ VPO +"</th>" +
-		     "<th>"+ d.BONO +"</th>";
+		     "<th>"+ bono +"</th>";
 	    return str;
 	    });
-  };
+
+
 /*
-	   var cell = d3.select("th#licitantes[tag='"+i+"']");
-	   if(licitantes.length > 1) {
+	   var cell = d3.select("th#licitantes");
+	   if(nombresLics.length > 0) {
 	    cell.append("ul")//.style("list-style","none")
 	      .selectAll("li")
 		.data(licitantes).enter()
@@ -946,6 +1004,9 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 	     cell.html("-")
 	   };
 */
+  };
+
+
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////// TABLA-EMPRESA ////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -1176,20 +1237,20 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
   return { 'pre': pre, 'after':after };
 };
 
-function OFERTAS(RenderTablas) {
+function OFERTAS(widLic) {
 var tablaString =
 '<div id="Tabla">' +
  '<div id="tHeadContainer">'+
   '<table id=tHead>'+
 
 '<tr id="new">'+
- '<th>Ronda/Licitación</th>'+
+ '<th>Ronda - Licitación</th>'+
  '<th>Bloque</th>'+
- '<th>Hidrocarburo esperado</th>' +
- '<th>Licitante</th>'+
- '<th>Variable de adjudicación 1</th>'+
- '<th>Variable de adjudicación 2</th>'+
- '<th>VPO</th><th>Bono</th>'+
+// '<th>Hidrocarburo esperado</th>' +
+ '<th style="width:'+widLic+';">Licitante</th>'+
+ '<th>Variable de adjud. 1</th>'+
+ '<th>Variable de adjud. 2</th>'+
+ '<th>VPO</th><th>Bono (miles de dólares)</th>'+
 '</tr>'+
   '</table>' +
  '</div>' + 
@@ -1205,7 +1266,7 @@ var tablaString =
   d3.select("#graficos").html("");
   var hT = +d3.select("#titulo").style("height").split("px")[0];
   d3.select("#graficos").style("height",function() {
-    var newHeight = window.innerHeight - hT - cintilla;
+    var newHeight = window.innerHeight - hT - cintilla - 20;
     return newHeight + "px";
   });
   d3.select("#graficos").html(tablaString);

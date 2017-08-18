@@ -559,7 +559,10 @@ function leyendaRED() {
 	  "stroke":"gray",
 	  "stroke-width":"1",
 	  "stroke-dasharray":"4,2",
-	  "r": function(d) { return d; },
+	  "r": function(d) {
+	    if( d == radioGrande ) d3.select(this).attr("id","radioGrande");
+	    return d;
+	  },
 	  "cx": function(d) {
 	   var ref = d3.select("text#noDeContratos");
 	   var x = +ref.attr("x").split("px")[0];
@@ -573,5 +576,58 @@ function leyendaRED() {
 	  }
 	 })
 
+	 var grandeAttrs = d3.select("circle#radioGrande");
+	 var textoRadios = [
+	  'Círculos:',
+	  'empresas',
+	  'Tamaño:',
+	  'inversión'
+	 ];
+	 conteiner.append("g")
+	  .selectAll("text")
+	  .data(textoRadios).enter()
+	  .append("text")
+	 .attr({
+	   'font-size':10,
+	   'font-weight':function(d) {
+	     var f_w = 300;
+	     if( d == textoRadios[0] || d == textoRadios[2] ) f_w = 600;
+	     return f_w;
+	   },
+	   'text-anchor': function(d) {
+	     var t_a = 'middle';
+	     if(d == textoRadios[2] || d == textoRadios[3]) {
+		t_a = 'start';
+	     };
+	     return t_a;
+	   },
+	   'alignment-baseline': function(d) {
+	     var al;
+	     if(d == textoRadios[0] || d == textoRadios[2]) { 
+		al = 'text-after-edge';
+	     };
+	     if(d == textoRadios[1] || d == textoRadios[3]) {
+		al = 'hanging';
+	     };
+	     return al;
+	   },
+	   'x': function(d) {
+	     var x = +grandeAttrs.attr("cx");
+	     if(d == textoRadios[2] || d == textoRadios[3]) {
+		x += radioGrande + 3;
+	     };
+	     return x;
+	   },
+	   'y': function(d) {
+	     var y = +grandeAttrs.attr("cy");
+	     if(d == textoRadios[0] || d == textoRadios[1]) { 
+		y = y - radioGrande - 12;
+	     }
+	     return y;
+
+	   } 
+	  }).html(function(d) {
+	     return d
+	  });
 
 }

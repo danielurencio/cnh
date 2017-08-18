@@ -570,7 +570,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
 	  return a;
 	},[]);
 
-       d3.selectAll("circle").transition().duration(800)
+       d3.selectAll("circle.node").transition().duration(800)
 	  .attr("fill",function(d) {
 	    var color = d3.select(this).attr("color");
 	    if(color != "transparent") return "gray";
@@ -662,7 +662,7 @@ var coco =[]
 	coco.push(a[0].EMPRESA);
        });
 */
-       d3.selectAll("circle").transition().duration(800)
+       d3.selectAll("circle.node").transition().duration(800)
 	  .attr("fill",function(d) {
 	    var color = d3.select(this).attr("color");
 	    if(color != "transparent") return "gray";
