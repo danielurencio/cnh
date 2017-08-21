@@ -47,15 +47,15 @@ archivos() {
 ########################################################
 
 CreateLICITANTES() {
-  cat schema_licitantes.txt | sqlplus cmde_raw/raw17${1}
+  cat schema_licitantes.txt | sqlplus ${1}
 }
 
 TruncateLICITANTES() {
-  echo "TRUNCATE TABLE DATOS_LICITACIONES_LICITANTES;" | sqlplus cmde_raw/raw17${1}
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_LICITANTES;" | sqlplus ${1}
 }
 
 LoadLICITANTES() {
-  sqlldr cmde_raw/raw17${1} control=loader_licitantes.ctl
+  sqlldr ${1} control=loader_licitantes.ctl
 }
 
 
@@ -65,15 +65,15 @@ LoadLICITANTES() {
 
 
 CreateEMPRESAS() {
-  cat schema_empresas.txt | sqlplus cmde_raw/raw17${1}
+  cat schema_empresas.txt | sqlplus ${1}
 }
 
 TruncateEMPRESAS() {
-  echo "TRUNCATE TABLE DATOS_LICITACIONES_EMPRESAS;" | sqlplus cmde_raw/raw17${1}
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_EMPRESAS;" | sqlplus ${1}
 }
 
 LoadEMPRESAS() {
-  sqlldr cmde_raw/raw17${1} control=loader_empresas.ctl
+  sqlldr ${1} control=loader_empresas.ctl
 }
 
 
@@ -83,15 +83,15 @@ LoadEMPRESAS() {
 
 
 CreateINTERMEDIA() {
-  cat schema_intermedia.txt | sqlplus cmde_raw/raw17${1}
+  cat schema_intermedia.txt | sqlplus ${1}
 }
 
 TruncateINTERMEDIA() {
-  echo "TRUNCATE TABLE DATOS_LICITACIONES_LIC_EMP;" | sqlplus cmde_raw/raw17${1}
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_LIC_EMP;" | sqlplus ${1}
 }
 
 LoadINTERMEDIA() {
-  sqlldr cmde_raw/raw17${1} control=loader_intermedia.ctl
+  sqlldr ${1} control=loader_intermedia.ctl
 }
 
 
@@ -101,11 +101,11 @@ LoadINTERMEDIA() {
 
 
 CreateOPERADORES() {
-  cat schema_operadores.txt | sqlplus cmde_raw/raw17${1}
+  cat schema_operadores.txt | sqlplus ${1}
 }
 
 TruncateOPERADORES() {
-  echo "TRUNCATE TABLE DATOS_LICITACIONES_OPERADORES;" | sqlplus cmde_raw/raw17${1}
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_OPERADORES;" | sqlplus ${1}
 }
 
 LoadOPERADORES() {
@@ -116,7 +116,7 @@ LoadOPERADORES() {
   sed -i 's/í/Í/g' operadores1.csv
   iconv -f UTF-8 -t latin1 operadores1.csv > DATOS_LICITACIONES_operadores.csv
   rm operadores1.csv
-  sqlldr cmde_raw/raw17${1} control=loader_operadores.ctl
+  sqlldr ${1} control=loader_operadores.ctl
 }
 
 
@@ -126,11 +126,11 @@ LoadOPERADORES() {
 
 
 CreateOFERTAS() {
-  cat schema_ofertas.txt | sqlplus cmde_raw/raw17${1}
+  cat schema_ofertas.txt | sqlplus ${1}
 }
 
 TruncateOFERTAS() {
-  echo "TRUNCATE TABLE DATOS_LICITACIONES_OFERTAS;" | sqlplus cmde_raw/raw17${1}
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_OFERTAS;" | sqlplus ${1}
 }
 
 LoadOFERTAS() {
@@ -144,7 +144,7 @@ LoadOFERTAS() {
   sed -i 's/ñ/Ñ/g' ofertas.csv
   iconv -f utf-8 -t latin1 ofertas.csv > DATOS_LICITACIONES_ofertas.csv
   rm ofertas.csv
-  sqlldr cmde_raw/raw17${1} control=loader_ofertas.ctl
+  sqlldr ${1} control=loader_ofertas.ctl
 }
 
 
@@ -154,16 +154,16 @@ LoadOFERTAS() {
 
 
 CreatePROCESOS() {
-  cat schema_procesos.txt | sqlplus cmde_raw/raw17${1}
+  cat schema_procesos.txt | sqlplus ${1}
 }
 
 TruncatePROCESOS() {
-  echo "TRUNCATE TABLE DATOS_LICITACIONES_PROCESOS;" | sqlplus cmde_raw/raw17${1}
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_PROCESOS;" | sqlplus ${1}
 }
 
 LoadPROCESOS() {
   sed -i 's/[.]0$//g' DATOS_LICITACIONES_procesos.csv
-  sqlldr cmde_raw/raw17${1} control=loader_procesos.ctl
+  sqlldr ${1} control=loader_procesos.ctl
 }
 
 
@@ -173,19 +173,19 @@ LoadPROCESOS() {
 
 
 CreateBLOQUES() {
-  cat schema_bloques.txt | sqlplus cmde_raw/raw17${1}
+  cat schema_bloques.txt | sqlplus ${1}
 }
 
 TruncateBLOQUES() {
-  echo "TRUNCATE TABLE DATOS_LICITACIONES_BLOQUES;" | sqlplus cmde_raw/raw17${1}
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_BLOQUES;" | sqlplus ${1}
 }
 
 LoadBLOQUES() {
-  sqlldr cmde_raw/raw17${1} control=loader_bloques.ctl
+  sqlldr ${1} control=loader_bloques.ctl
 }
 
 DropBLOQUES() {
-  echo "DROP TABLE DATOS_LICITACIONES_BLOQUES;" | sqlplus cmde_raw/raw17${1}
+  echo "DROP TABLE DATOS_LICITACIONES_BLOQUES;" | sqlplus ${1}
 }
 
 
@@ -195,19 +195,19 @@ DropBLOQUES() {
 
 
 CreateCAMPOS() {
-  cat schema_campos.txt | sqlplus cmde_raw/raw17${1}
+  cat schema_campos.txt | sqlplus ${1}
 }
 
 TruncateCAMPOS() {
-  echo "TRUNCATE TABLE DATOS_LICITACIONES_CAMPOS;" | sqlplus cmde_raw/raw17${1}
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_CAMPOS;" | sqlplus ${1}
 }
 
 LoadCAMPOS() {
-  sqlldr cmde_raw/raw17${1} control=loader_campos.ctl
+  sqlldr ${1} control=loader_campos.ctl
 }
 
 DropCAMPOS() {
-  echo "DROP TABLE DATOS_LICITACIONES_CAMPOS;" | sqlplus cmde_raw/raw17${1}
+  echo "DROP TABLE DATOS_LICITACIONES_CAMPOS;" | sqlplus ${1}
 }
 
 
@@ -224,7 +224,7 @@ CrearTODO() {
 DropTODO() {
   for i in LICITACIONES_LIC_EMP LICITACIONES_PROCESOS LICITACIONES_OFERTAS LICITACIONES_LICITANTES LICITACIONES_EMPRESAS LICITACIONES_OPERADORES LICITACIONES_CAMPOS LICITACIONES_BLOQUES; do
     echo $i
-    echo "DROP TABLE DATOS_$i;" | sqlplus cmde_raw/raw17${1}
+    echo "DROP TABLE DATOS_$i;" | sqlplus ${1}
     echo ""
     echo ""
   done
@@ -245,7 +245,7 @@ CargarTODO() {
 }
 
 PrintTABLAS() {
-  echo "select table_name from user_tables;" | sqlplus cmde_raw/raw17${1}
+  echo "select table_name from user_tables;" | sqlplus ${1}
 }
 
 BorrarLogBad() {
