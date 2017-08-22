@@ -597,7 +597,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
       };
      };
   } else {
-
+///////////////activacion nuevo filtro///////////////////
     var filtroLicUniq = licRondas.filter(function(d) {
 	return d.RONDA == ronda.ronda && d.LICITACION == ronda.licitacion;
     }).map(function(d) { return d.ID_LICITANTE_OFERTA; })
@@ -630,6 +630,19 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
 	  if( a.indexOf(b) < 0 ) { a.push(b); };
 	  return a;
 	},[]);
+
+       d3.selectAll("circle.node").transition().duration(800)
+	  .attr("fill",function(d) {
+	    var color = d3.select(this).attr("color");
+	    if(color != "transparent") return "gray";
+	    if(color == "transparent") return "transparent"
+	  })
+	  .attr("stroke",function(d) {
+	    var color = d3.select(this).attr("color");
+	    if(color != "transparent") return null;
+	    if(color == "transparent") return "lightGray";
+	  })
+
 
 
       for(var i in empresasFILTRADAS) {
@@ -702,7 +715,25 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
     var chosen_drop = d3.selectAll(".chosen-drop>ul>li");
  
     chosen_drop.on("click",function() {
-      let sel = d3.select(this)[0][0].innerText;
+
+      var bts = d3.selectAll("li.search-choice>span")
+	.html(function(d,i) {
+	  var text;
+	  var patt = new RegExp(" - ")
+	  if(patt.test(this.innerHTML)) {
+	    var html_ = this.innerHTML.split(" - ");
+	    var ronda = html_[0].split(" ")[1];
+	    var lic = html_[1].split(" ")[1];
+	    text = "R" + ronda + "." + lic;
+	  } else {
+	    text = this.innerHTML;
+	  }
+	  return text;
+	});
+
+
+      var sel = d3.select(this)[0][0].innerText;
+      sel = "R" + sel.split(" - ")[0].split(" ")[1] + "." + sel.split(" - ")[1].split(" ")[1]
 
       if(seleccionados.indexOf(sel) < 0) seleccionados.push(sel);
 
@@ -711,7 +742,7 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	var ronda = s[0].split("R")[1];
 	var lic = s[1];
 
-/*	let s = d.split(" - "); console.log(s)
+/*	let s = d.split(" - ");
         var ronda = s[0].split(" ")[1];
 	var lic = s[1].split(" ")[1];
 */
@@ -719,7 +750,6 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 
       });
 /////////////////////////// AGREGAR //////////////////////////////////////////
-      //console.log(seleccionados_)
       filtrarPorRonda('on',seleccionados_,licRondas,data);
       resumen(data,adj,licRondas,pmts,ofertas,seleccionados_,tabla,procesos);
 

@@ -27,14 +27,14 @@ function RED(width,height) {
 
     ron_lic = _.uniq(ron_lic);
     ron_lic.splice(ron_lic.indexOf("R."),1)
-/*
+
     for(var i in ron_lic) {
      var split_ = ron_lic[i].split(".")
      var ronda = split_[0].split("R")[1];
      var lic = split_[1];
      ron_lic[i] = "Ronda " + ronda + " - Licitación " + lic;
     };
-*/
+
     d3.select("#opciones>select").selectAll("option")
      .data(ron_lic).enter()
      .append("option")
