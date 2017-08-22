@@ -456,6 +456,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
  d3.selectAll("rect.Licitacion_N").attr("class","Licitacion");
 
 };
+// <.. REFF!
 
 function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
   var rondasParaFiltro = [];
@@ -709,7 +710,13 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	let s = d.split(".");
 	var ronda = s[0].split("R")[1];
 	var lic = s[1];
+
+/*	let s = d.split(" - "); console.log(s)
+        var ronda = s[0].split(" ")[1];
+	var lic = s[1].split(" ")[1];
+*/
 	return  { 'ronda':ronda, 'lic':lic };
+
       });
 /////////////////////////// AGREGAR //////////////////////////////////////////
       //console.log(seleccionados_)
@@ -734,9 +741,9 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	  return  { 'ronda':ronda, 'lic':lic };
 	});
 /////////////////////////// QUITAR //////////////////////////////////////////
-	//console.log(seleccionados_);
 	filtrarPorRonda(undefined,seleccionados_,licRondas,data);
 	resumen(data,adj,licRondas,pmts,ofertas,seleccionados_,tabla,procesos);
+
       });
 
     });

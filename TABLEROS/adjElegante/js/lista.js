@@ -4,17 +4,23 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 
   lista.append("svg").attr("id","verLista")
     .style("width","inherit")
+    .style("height","500px")
     .append("text")
       .attr({
 	'x':-5,
 	'y':15,
 	'fill':"white",
-	'font-size':12,
+	'font-size':18,
 	'font-weight':400,
 	'font-family':'Open Sans',
 	'transform':'rotate(-90)',
-	'text-anchor':'end'
-      }).text("Ver lista de empresas")
+	'text-anchor':'end',
+	'alignment-baseline':'middle'
+      }).html("&cudarrr;&ensp;Ver lista de empresas&ensp;")
+      .on('mouseover', function() {
+	d3.select(this).style("cursor","pointer");
+      });
+
 
 
   lista
@@ -134,22 +140,28 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
     lista.selectAll("input").remove();
     lista.selectAll("div#listaConteiner").remove();
     lista.transition().duration(300)
-      .style("width","20px")
+      .style("width","30px")
 
    if(!verLista) {
     lista.append("svg").attr("id","verLista")
     .style("width","inherit")
+    .style("height","500px")
     .append("text")
       .attr({
 	'x':-5,
 	'y':15,
 	'fill':"white",
-	'font-size':12,
+	'font-size':18,
 	'font-weight':400,
 	'font-family':'Open Sans',
 	'transform':'rotate(-90)',
-	'text-anchor':'end'
-      }).text("Ver lista de empresas")
+	'text-anchor':'end',
+	'alignment-baseline':'middle'
+      }).html("&cudarrr;&ensp;Ver lista de empresas&ensp;")
+      .on('mouseover', function() {
+	d3.select(this).style("cursor","pointer");
+      });
+
    };
 
   };

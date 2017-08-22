@@ -25,8 +25,7 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
         FILTRO = licRondas.filter(function(d) {
 	  return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
         });
-        texto.resumen = "RONDA " + RONDA_LIC.ronda + " - LICITACIÓN "
-	  + RONDA_LIC.lic;
+        texto.resumen = "Seleccione una o más rondas para ver resumen."//"RONDA " + RONDA_LIC.ronda + " - LICITACIÓN "+ RONDA_LIC.lic;
         colorBarras = "rgba(255,75,0,0.65)";
       } else {
 	TABLA = [];

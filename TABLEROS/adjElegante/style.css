@@ -117,7 +117,7 @@ div.totalBloques {
 }
 
 div#filtroEmpresas {
- width:20px;
+ width:30px;
 /* height:100%;*/
  background-color:rgba(0,0,0,0.65);
  position:absolute;
@@ -258,3 +258,27 @@ g.highcharts-legend tspan {
   font-weight:300;
 }
 
+div.chosen-drop {
+  background:transparent;
+}
+
+ul.chosen-results {
+  background-color:black;
+  width:100%;
+}
+
+div[class="chosen-container chosen-container-multi"] {
+ color:orange;
+}
+
+
+li[class="active-result.highlighted"]:hover {
+  background-color:orange;
+}
+
+/*
+li.search-field {
+ width:450px;
+ font-size:16px;
+}
+*/

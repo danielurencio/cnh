@@ -491,7 +491,13 @@ def importar():
 def operadoresSobrantes():
     operadores = regexIDs(licitantes,"OPERADOR")
     arr = []
-#    for i in aa.tolist()
+
+def semblanzasYgrupos():
+    file_ = pd.ExcelFile("Licitaciones_ContratosV2.xlsx")
+    semb = file_.parse("Semblanzas",skiprows=3)
+    grupos = file_.parse("Empresas",skiprows=4)
+    return { 'semblanzas':semb,'grupos':grupos }
+
 
 if(__name__ == "__main__"):
     empresas = Rondas("DATOS_RONDAS_empresas.xlsx","EMPRESA")

@@ -19,7 +19,7 @@ function RED(width,height) {
   function getDATA(err,data,adj,licRondas,OFERTAS_,tabla,procesos) {
 
 /*-------------------NUEVO FILTRO------------------------------------------*/
-    let ron_lic = licRondas.map(function(d) {
+    var ron_lic = licRondas.map(function(d) {
       var result;
       result = "R" + d.RONDA + "." + d.LICITACION;
       return result;
@@ -27,15 +27,32 @@ function RED(width,height) {
 
     ron_lic = _.uniq(ron_lic);
     ron_lic.splice(ron_lic.indexOf("R."),1)
-
-
+/*
+    for(var i in ron_lic) {
+     var split_ = ron_lic[i].split(".")
+     var ronda = split_[0].split("R")[1];
+     var lic = split_[1];
+     ron_lic[i] = "Ronda " + ronda + " - Licitación " + lic;
+    };
+*/
     d3.select("#opciones>select").selectAll("option")
      .data(ron_lic).enter()
      .append("option")
+     .attr("id",function(d) { return d; })
     .html(function(d) { return d; }) 
 
     $(".chosen-select-no-results")
      .chosen({no_results_text: "Resultado no encontrado..."})
+
+    d3.select("ul.chosen-choices")
+     .style({
+      "background":"black",
+//      "border-color":"orange",
+      "border-style":"solid",
+      "border-width":"0.5"
+     })
+
+    d3.select("input.chosen-search-input.default").style("width","300px")
 /*-------------------NUEVO FILTRO------------------------------------------*/
 
 
@@ -351,7 +368,7 @@ function RED(width,height) {
   });
 
   leyendaRED();
-  Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos);
+  //Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos);
   NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos);
   resumen(data,adj,licRondas,pmts,ofertas,arr,tabla,procesos)
   };
@@ -570,7 +587,7 @@ function leyendaRED() {
 	  },
 	  "cy": function(d) {
 	    var ref = d3.select("text#noDeContratos")
-	    var h = ref.node().getBBox().height; console.log(h);
+	    var h = ref.node().getBBox().height;
 	    var y = +ref.attr("y").split('px')[0];
 	    return y - d - h - 5;
 	  }
@@ -588,6 +605,9 @@ function leyendaRED() {
 	  .data(textoRadios).enter()
 	  .append("text")
 	 .attr({
+           'id':function(d) {
+	      if( d == textoRadios[0] ) return d.split(':')[0];
+	   },
 	   'font-size':10,
 	   'font-weight':function(d) {
 	     var f_w = 300;
@@ -629,5 +649,94 @@ function leyendaRED() {
 	  }).html(function(d) {
 	     return d
 	  });
+/*
+  let filtroEMpresas = d3.select("div#filtroEmpresas")
 
+  var signosMas = ['&uarr;','&oplus;','&oplus;','&oplus;','&oplus;'];
+  conteiner.append("g")
+   .attr("id","plus")
+  .selectAll("text")
+   .data(signosMas).enter()
+  .append("text")
+   .attr({
+    "opacity":0.3,
+    "text-anchor":"middle",
+    "font-size":function(d,i) {
+      return Math.log(((signosMas.length)-(i)))*22;
+    },
+    "alignment-baseline":"hanging",
+    "font-weight":300,
+    "x":function(d,i) {
+     var offset = +filtroEMpresas.style("width").split("px")[0];
+     return offset + 35;
+    },
+    "y":function(d,i) {
+     return (i*30) + 5;
+    }
+   }).html(function(d) { return d; });
+
+  var signosMenos = ['&ominus;','&ominus;','&ominus;','&ominus;','&darr;'];
+  conteiner.append("g")
+   .attr("id","minus")
+  .selectAll("text")
+   .data(signosMenos).enter()
+  .append("text")
+   .attr({
+    "opacity":0.3,
+    "text-anchor":"middle",
+    "font-size":function(d,i) {
+      return Math.log((i+1))*22;
+    },
+    "alignment-baseline":"hanging",
+    "font-weight":300,
+    "x":function(d,i) {
+     var offset = +filtroEMpresas.style("width").split("px")[0];
+     return offset + 35;
+    },
+    "y":function(d,i) {
+     return (i*20) + 0;
+    },
+   }).html(function(d) { return d; });
+
+   d3.select("g#minus").attr("transform",function(d) {
+    var offset = d3.select("#Círculos").node().getBBox().y;
+    var hh = d3.select(this).node().getBBox().height;
+    return "translate(0," + (offset-hh-10) + ")";
+   });
+
+  var signosTextos = ['Empresas más asociadas'];
+  conteiner.append("g")
+   .attr("class","signosTextos")
+  .selectAll("text")
+   .data(signosTextos).enter()
+.append("text")
+   .attr({
+    //"opacity":1,
+    "text-anchor":"end",
+    "font-size":10,
+    "alignment-baseline":"text-after-edge",
+    "font-weight":400,
+    "x":function(d,i) {
+      let attrs = d3.select("g#plus").node().getBBox();
+      let x = attrs.x;
+      return x - 10; 
+    },
+    "y":function(d,i) {
+      let plus = d3.select("g#plus").node().getBBox();
+      let minus = d3.select("g#minus").node().getBBox();
+      var hh;
+      var y;
+      if( i == 0 ) {
+        y = 0;
+	hh = plus.height / 2;
+      } else {
+	hh = minus.height / 2;
+	y = +d3.select("g#minus").attr("transform")
+		.split(",")[1].split(")")[0];
+      };
+      return hh + y;
+    },
+    'transform':'rotate(-90)'
+   }).html(function(d) { return d; });
+*/
 }
