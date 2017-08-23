@@ -6,6 +6,8 @@ import re
 import math
 import pandas as pd
 import numpy as np
+import cx_Oracle
+from sqlalchemy import create_engine
 
 class Rondas:
     def __init__(self,archivo,columna):
@@ -497,6 +499,36 @@ def semblanzasYgrupos():
     semb = file_.parse("Semblanzas",skiprows=3)
     grupos = file_.parse("Empresas",skiprows=4)
     return { 'semblanzas':semb,'grupos':grupos }
+
+
+####################### AÑADIR GRUPOS EMPRESARIALES #######################
+def gruposEmpresariales(conn):
+    engine = create_engine(conn)
+    emps = pd.read_sql("SELECT * FROM DATOS_LICITACIONES_EMPRESAS",engine)
+    emps["GRUPO"] = np.zeros(emps.shape[0])
+    file_ = pd.ExcelFile("DATOS_RONDAS_empresas_.xlsx")
+    grupos = file_.parse("Empresas",skiprows=4)
+    grupos["EMPRESA"] = regexIDs(grupos,"EMPRESA")
+    grupos["EMPRESA"] = grupos["EMPRESA"].map(apellidos)
+    grupos = grupos[["EMPRESA","GRUPO"]]
+    grupos = grupos[grupos["GRUPO"] != "Consorcio"]
+    grupos["ID_GRUPO"] = np.zeros(grupos["EMPRESA"].shape[0])
+    grupos.reset_index(inplace=True)
+    grupos.drop("index",axis=1,inplace=True)
+    grupos["GRUPO"] = grupos["GRUPO"].map(lambda x: re.sub("\.","",x))
+    grupos["GRUPO"] = grupos["GRUPO"].map(lambda x: x.upper())
+    gruposUniq = grupos["GRUPO"].drop_duplicates().sort_values().reset_index().drop("index",axis=1)
+    gruposUniq.index += 1
+    for i,g in enumerate(grupos["GRUPO"]):
+      for j,e in enumerate(gruposUniq["GRUPO"]):
+        if(g == e):
+          grupos.ix[i,"ID_GRUPO"] = j + 1
+    for i,g in enumerate(grupos["EMPRESA"]):
+      for j,e in enumerate(emps["empresa"]):
+	if(g==e):
+	  emps.ix[j,"GRUPO"] = i+1
+    return gruposUniq,emps
+    
 
 
 if(__name__ == "__main__"):
