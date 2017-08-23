@@ -441,11 +441,13 @@ def importar():
    HEAD = None
    ganadores()
    ## DATOS_LICITACIONES_EMPRESAS
-   EMPRESAS = b.copy()
-   EMPRESAS["EMPRESA"] = EMPRESAS["EMPRESA"].map(apellidos)#lambda x: re.sub("JAPAN OIL;","JAPAN OIL,",x))
-   EMPRESAS.index += 1
-   EMPRESAS.index.rename("ID_EMPRESA",inplace=True)
+   EMPRESAS_ = b.copy()
+   EMPRESAS_["EMPRESA"] = EMPRESAS_["EMPRESA"].map(apellidos)#lambda x: re.sub("JAPAN OIL;","JAPAN OIL,",x))
+   EMPRESAS_.index += 1
+   EMPRESAS_.index.rename("ID_EMPRESA",inplace=True)
+   GRUPOS,EMPRESAS = gruposEmpresariales(0)
    EMPRESAS.to_csv("DATOS_LICITACIONES_empresas.csv",header=HEAD,sep=",",encoding="latin1")
+   GRUPOS.to_csv("DATOS_LICITACIONES_grupos_empresariales.csv",header=HEAD,sep=",",encoding="latin1")
 #####COPIA DE EMPRESAS######################
    copiaEMpresas = b.copy()
    copiaEMpresas.index += 1
@@ -503,8 +505,17 @@ def semblanzasYgrupos():
 
 ####################### AÑADIR GRUPOS EMPRESARIALES #######################
 def gruposEmpresariales(conn):
-    engine = create_engine(conn)
-    emps = pd.read_sql("SELECT * FROM DATOS_LICITACIONES_EMPRESAS",engine)
+    if(conn):
+        engine = create_engine(conn)
+        emps = pd.read_sql("SELECT * FROM DATOS_LICITACIONES_EMPRESAS",engine)
+#	emps.set_index("id_empresa",inplace=True)
+        empHead = "empresa"
+    else:
+        emps = b.copy()
+#        emps.index += 1
+#        emps.index.rename("ID_EMPRESA",inplace=True)
+	empHead = "EMPRESA"
+	emps[empHead] = emps[empHead].map(apellidos)
     emps["GRUPO"] = np.zeros(emps.shape[0])
     file_ = pd.ExcelFile("DATOS_RONDAS_empresas_.xlsx")
     grupos = file_.parse("Empresas",skiprows=4)
@@ -524,9 +535,17 @@ def gruposEmpresariales(conn):
         if(g == e):
           grupos.ix[i,"ID_GRUPO"] = j + 1
     for i,g in enumerate(grupos["EMPRESA"]):
-      for j,e in enumerate(emps["empresa"]):
+      for j,e in enumerate(emps[empHead]):
 	if(g==e):
-	  emps.ix[j,"GRUPO"] = i+1
+	  emps.ix[j,"GRUPO"] = grupos.ix[i,"ID_GRUPO"]
+    if(conn):
+      emps.set_index("id_empresa",inplace=True)
+      emps.columns = emps.columns.map(lambda x: x.upper()).tolist()
+    else:
+      emps.index += 1
+      emps.index.rename('ID_EMPRESA',inplace=True)
+    emps.ix[124,"GRUPO"] = 113
+    emps["GRUPO"] = emps["GRUPO"].map(lambda x: int(x))
     return gruposUniq,emps
     
 

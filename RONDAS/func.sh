@@ -38,9 +38,34 @@ archivos() {
   sed -i 's/, /;/g' DATOS_LICITACIONES_bloques.csv
   sed -i 's/\([A-Z]\) Y \([A-Z]\)/\1;\2/g' DATOS_LICITACIONES_bloques.csv
 
+################ ARCHIVO PARA PROCESOS ####################################33
+  echo "id,nombre,ronda,licitacion,dataroom,precalif" > head2
+  cat head2 DATOS_LICITACIONES_procesos.csv > PRocesos__.csv
+  rm head2 #head2 #head1;
+
+  python procesos.py
+###########################################################################
+
   aa=$(ls *.csv)
   ssconvert --merge-to=TABLAS.xls $aa
 }
+
+##########################################################
+########## GRUPOS ###################################
+########################################################
+
+CreateGRUPOS() {
+  cat schema_grupos.txt | sqlplus ${1}
+}
+
+TruncateGRUPOS() {
+  echo "TRUNCATE TABLE DATOS_LICITACIONES_GRUPOS;" | sqlplus ${1}
+}
+
+LoadGRUPOS() {
+  sqlldr ${1} control=loader_grupos.ctl
+}
+
 
 ##########################################################
 ########## LICITANTES ###################################
@@ -162,7 +187,7 @@ TruncatePROCESOS() {
 }
 
 LoadPROCESOS() {
-  sed -i 's/[.]0$//g' DATOS_LICITACIONES_procesos.csv
+  sed -i 's/[.]0$//g' procesos.csv
   sqlldr ${1} control=loader_procesos.ctl
 }
 
@@ -212,7 +237,7 @@ DropCAMPOS() {
 
 
 CrearTODO() {
-  for i in LICITANTES EMPRESAS INTERMEDIA OPERADORES OFERTAS PROCESOS BLOQUES CAMPOS; do
+  for i in GRUPOS LICITANTES EMPRESAS INTERMEDIA OPERADORES OFERTAS PROCESOS BLOQUES CAMPOS; do
     echo $i
     Create${i} ${1};
     echo ""
@@ -222,7 +247,7 @@ CrearTODO() {
 
 
 DropTODO() {
-  for i in LICITACIONES_LIC_EMP LICITACIONES_PROCESOS LICITACIONES_OFERTAS LICITACIONES_LICITANTES LICITACIONES_EMPRESAS LICITACIONES_OPERADORES LICITACIONES_CAMPOS LICITACIONES_BLOQUES; do
+  for i in LICITACIONES_GRUPOS LICITACIONES_EMPRESAS LICITACIONES_PROCESOS LICITACIONES_OFERTAS LICITACIONES_LICITANTES LICITACIONES_LIC_EMP LICITACIONES_OPERADORES LICITACIONES_CAMPOS LICITACIONES_BLOQUES; do
     echo $i
     echo "DROP TABLE DATOS_$i;" | sqlplus ${1}
     echo ""
@@ -232,14 +257,14 @@ DropTODO() {
 
 
 CreateTODO() {
- for i in LICITANTES EMPRESAS INTERMEDIA OPERADORES OFERTAS PROCESOS BLOQUES CAMPOS; do
+ for i in GRUPOS LICITANTES EMPRESAS INTERMEDIA OPERADORES OFERTAS PROCESOS BLOQUES CAMPOS; do
   Create${i} ${1}
  done
 }
 
 
 CargarTODO() {
- for i in LICITANTES EMPRESAS INTERMEDIA OPERADORES OFERTAS PROCESOS BLOQUES CAMPOS; do
+ for i in GRUPOS LICITANTES EMPRESAS INTERMEDIA OPERADORES OFERTAS PROCESOS BLOQUES CAMPOS; do
   Load${i} ${1}
  done
 }

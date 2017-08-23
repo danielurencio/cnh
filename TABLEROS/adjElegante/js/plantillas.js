@@ -1247,13 +1247,13 @@ var tablaString =
  '<th>Bloque</th>'+
 // '<th>Hidrocarburo esperado</th>' +
  '<th style="width:'+widLic+';">Licitante</th>'+
- '<th>Variable de adjud. 1</th>'+
- '<th>Variable de adjud. 2</th>'+
+ '<th>Variable de adjud. 1<sup class=info style=color:red;cursor:pointer;>a</sup></th>'+
+ '<th>Variable de adjud. 2<sup class=info style=color:red;cursor:pointer;>b</sup></th>'+
  '<th>VPO</th><th>Bono (miles de dólares)</th>'+
 '</tr>'+
   '</table>' +
  '</div>' + 
-
+"<div class='notas' style='background-color:white;height:0px;color:transparent;line-height:10px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify'>a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida, o a la regalía en caso de contratos de licencia.<br><br>b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere a un incremento en la inversión expresado en unidades de trabajo de pozos exploratorios.</div>" +
 '<div id="tBodyContainer">' +
  '<table id="tBody">' +
 
@@ -1265,10 +1265,25 @@ var tablaString =
   d3.select("#graficos").html("");
   var hT = +d3.select("#titulo").style("height").split("px")[0];
   d3.select("#graficos").style("height",function() {
-    var newHeight = window.innerHeight - hT - cintilla - 20;
+	    var newHeight = window.innerHeight - hT - cintilla - 50; /*altura de tabla*/
     return newHeight + "px";
   });
   d3.select("#graficos").html(tablaString);
+
+  d3.selectAll(".info")
+   .on("mouseover",function() {
+     d3.select(".notas")
+	.style("margin-bottom","20px")
+	.style("color","black")
+	.style("height","40px");
+   })
+   .on("mouseout",function() {
+     d3.select(".notas")
+	.style("margin-bottom","0px")
+	.style("color","transparent")
+	.style("height","0px");
+
+   })
 };
 
 function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {

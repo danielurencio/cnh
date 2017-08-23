@@ -135,6 +135,7 @@ function RED(width,height) {
     var lics = Procesar.unicos(data,"ID_LICITANTE")//"lic");
     var sets = Procesar.transformar(data,lics);
 
+
     var nodes = sets.filter(function(d) { return d.emps.length > 0; })
       .map(function(d) { return d.emps; });
 
@@ -152,6 +153,7 @@ function RED(width,height) {
      if(a.indexOf(b) < 0) { a.push(b); }
      return a;
     },[]);
+console.log(arr)
 
     var links = Procesar.edges(sets,arr);
 
@@ -180,7 +182,6 @@ function RED(width,height) {
 	.enter().append("line")
 	.attr("class","link")
 	.attr("opacity",0.4)
-//	.attr("stroke-dasharray","1 1");
 
 
     var nodes = graphConteiner.append("g").attr("class","LIGAS")
@@ -231,31 +232,11 @@ function RED(width,height) {
 	  function sum(a,b) { return a + b; };
 
 	  nAdj = nAdj.length > 0 ? nAdj.reduce(sum) : 0;
-/*	  var colorScale = d3.scale.linear()
-	      .domain([0,maxAdj])
-	      .range(["gold","red"]);*/
 
 	  var COLOR = nAdj > 0 ? colorScale(nAdj) : "transparent";
 	  d3.select(this)
 	    .attr("color",COLOR)
-//	    .attr("opacity",0);
 	  return COLOR;
-/*
-	  var cont = data.filter(function(a) { return +a.ID_EMPRESA == d.id; })
-		.map(function(d) { return d.CONTINENTE; })[0];
-
-	  var pantones = [
-		'rgb(223,63,50)', // AMÉRICA
-		'rgb(140,195,0)', // OCEANÍA
-		'rgb(0,88,94)', // EUROPA
-		'black',//'rgb(228,88,5)',  // ÁFRICA
-		'rgb(82,133,196)'   // ASIA
-	  ];
-	  var color = d3.scale.ordinal()
-	    .domain(continentes)
-	    .range(pantones);
-
-	  return color(cont); */
 	})
 	.call(force.drag)
       .on("mouseover", function(d) {
@@ -266,7 +247,7 @@ function RED(width,height) {
 
 	var style = {
 	  'x':width,
-	  'y':graphH - 10,
+	  'y':graphH - 40,
 	  'font-size':12,
 	  'font-family':'Open Sans',
 	  'id':'nombreEmpresa',
