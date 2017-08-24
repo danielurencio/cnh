@@ -42,7 +42,7 @@ function RED(width,height) {
     .html(function(d) { return d; }) 
 
     $(".chosen-select-no-results")
-     .chosen({no_results_text: "Resultado no encontrado..."})
+     .chosen({ 'no_results_text': "Resultado no encontrado..." })
 
     d3.select("ul.chosen-choices")
      .style({
