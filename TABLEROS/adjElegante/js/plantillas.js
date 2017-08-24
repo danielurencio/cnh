@@ -1237,6 +1237,11 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
 };
 
 function OFERTAS(widLic) {
+var i_a = "a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida, o a la regalía en caso de contratos de licencia.<br><br>"
+
+var i_b = "b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere a un incremento en la inversión expresado en unidades de trabajo de pozos exploratorios."
+
+var leyenda = '';
 var tablaString =
 '<div id="Tabla">' +
  '<div id="tHeadContainer">'+
@@ -1247,13 +1252,13 @@ var tablaString =
  '<th>Bloque</th>'+
 // '<th>Hidrocarburo esperado</th>' +
  '<th style="width:'+widLic+';">Licitante</th>'+
- '<th>Variable de adjud. 1<sup class=info style=color:red;cursor:pointer;>a</sup></th>'+
- '<th>Variable de adjud. 2<sup class=info style=color:red;cursor:pointer;>b</sup></th>'+
+ '<th class="info" id="a">Variable de adjud. 1<sup style=color:red;cursor:pointer;>a</sup></th>'+
+ '<th class="info" id="b">Variable de adjud. 2<sup style=color:red;cursor:pointer;>b</sup></th>'+
  '<th>VPO</th><th>Bono (miles de dólares)</th>'+
 '</tr>'+
   '</table>' +
  '</div>' + 
-"<div class='notas' style='background-color:white;height:0px;color:transparent;line-height:10px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify'>a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida, o a la regalía en caso de contratos de licencia.<br><br>b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere a un incremento en la inversión expresado en unidades de trabajo de pozos exploratorios.</div>" +
+"<div class='notas' style='background-color:white;height:0px;color:transparent;line-height:14px;font-size:12px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify'>"+leyenda+"</div>" +
 '<div id="tBodyContainer">' +
  '<table id="tBody">' +
 
@@ -1278,10 +1283,18 @@ var tablaString =
 	.style("height","40px");
    })
    .on("mouseout",function() {
+     var sel_id = d3.select(this).attr("id")
+
      d3.select(".notas")
 	.style("margin-bottom","0px")
 	.style("color","transparent")
 	.style("height","0px");
+
+     d3.select("div.notas").html(function(d) {
+	var text;
+	text = sel_id == "a" ? i_a : i_b;
+	return text
+     })
 
    })
 };
