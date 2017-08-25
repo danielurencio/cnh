@@ -44,15 +44,40 @@ function RED(width,height) {
     $(".chosen-select-no-results")
      .chosen({ 'no_results_text': "Resultado no encontrado..." })
 
+    d3.select("div[class='chosen-container chosen-container-multi']")
+     .attr({
+	"border-color":"orange",
+	"id":"borde"
+      })
+
     d3.select("ul.chosen-choices")
+     .attr("id","borde")
      .style({
+      "color":"black",
       "background":"black",
-//      "border-color":"orange",
+      "border-color":"orange",
       "border-style":"solid",
       "border-width":"0.5"
      })
 
+    d3.selectAll("#borde").style("border-color","orange")
+
     d3.select("input.chosen-search-input.default").style("width","300px")
+
+    var svgCintilla = d3.select("svg#cintilla")
+    var widthCintilla = d3.select("div#cintilla0")
+	.style("width").split("px")[0];
+
+    svgCintilla
+	.append("text")
+	.attr("x", widthCintilla-15)
+	.attr("y",16)
+	.attr("fill","rgba(255,255,255,0.7)")
+	.attr("alignment-baseline","middle")
+	.attr("text-anchor","end")
+	.attr("font-weight",800)
+	.text("Filtro:") 
+
 /*-------------------NUEVO FILTRO------------------------------------------*/
 
 

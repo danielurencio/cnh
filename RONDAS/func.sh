@@ -293,13 +293,13 @@ ConvertirUTF8() {
 }
 
 procesos_nueva() {
-#  echo "ID_LICITANTE,LICITANTE,MODALIDAD" > head0
-#  cat head0 DATOS_LICITACIONES_licitantes.csv > LIcitantes__.csv
-
-#  echo "id,empresa,pais" > head1
-#  cat head1 DATOS_LICITACIONES_empresas.csv > EMpresas__.csv
-
   echo "id,nombre,ronda,licitacion,dataroom,precalif" > head2
   cat head2 DATOS_LICITACIONES_procesos.csv > PRocesos__.csv
-  rm head2 #head2 #head1;
+  rm head2
+}
+
+
+ofertas_nuevo() {
+  libreoffice --headless --convert-to csv TABLA_OFERTAS.xlsx
+  iconv -f ISO-8859-1 -t UTF-8 TABLA_OFERTAS.csv > base_utf8.csv;
 }

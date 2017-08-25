@@ -276,9 +276,9 @@ li[class="active-result.highlighted"]:hover {
   background-color:orange;
 }
 
-/*
-li.search-field {
- width:450px;
- font-size:16px;
+
+.chosen-choices {
+  border-color:red;
+  color:black;
 }
-*/
+

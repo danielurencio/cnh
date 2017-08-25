@@ -8,7 +8,7 @@ f_ = pd.read_csv("base_utf8.csv")
 
 def empresasUnicas():
     arr = []
-    empsU = f_["LICITANTE_SISTEMA"].tolist()
+    empsU = f_["LICITANTE"].tolist()
     for i in empsU:
         s_ = i.split(";")
         for j in s_:
@@ -25,10 +25,55 @@ def empresasUnicas():
 
 
 def empresasRaw(conn):
-    engine = create_engine(conn)
-    emps = pd.read_sql("SELECT * FROM DATOS_LICITACIONES_EMPRESAS",engine)
-    emps.set_index("empresa",inplace=True)
+    if(conn):
+        engine = create_engine(conn)
+        emps = pd.read_sql("SELECT * FROM DATOS_LICITACIONES_EMPRESAS",engine)
+        emps.set_index("empresa",inplace=True)
     return emps
+
+def intermediaLics(idRecuperados):
+    lics = f_.sort_values("LICITANTE")["LICITANTE"].drop_duplicates()
+    lics = lics.reset_index()
+    lics.drop("index",axis=1,inplace=True)
+    licsU = lics["LICITANTE"].tolist()
+    arr0 = []
+    for i,d in enumerate(licsU):
+	arr1 = []
+	s_ = d.split(";")
+	for j in s_:
+            r_j = re.sub("^ ","",j)
+            r_j = re.sub(" $","",r_j)
+	    r_j = re.sub("ENERGY S.L.U.","ENERGY S.L.",r_j)
+	    r_j = re.sub("S.A DE","S.A. DE",r_j)
+	    arr1.append(int(idRecuperados.ix[r_j,:].id_empresa))
+	arr0.append(arr1)
+    arr2 = []
+    for i,d in enumerate(arr0):
+      for j in d:
+	arr2.append([i,j])
+    arr2 = np.array(arr2)
+    arr2 = pd.DataFrame({ 'ID_LICITANTE':arr2[:,0], 'ID_EMPRESA':arr2[:,1] })
+    arr2["ID_LICITANTE"] += 1
+    arr2 = arr2[["ID_LICITANTE","ID_EMPRESA"]]
+    return arr2
+
+def intermediaGrupos(intrLics,idRecuperados):
+    emps = idRecuperados.set_index("id_empresa")["id_grupo"]
+    intr = intrLics.set_index("ID_EMPRESA")
+    join = intr.join(emps)
+    join.index.rename("ID_EMPRESA",inplace=True)
+    join.reset_index(inplace=True)
+    join["id_grupo"] = join["id_grupo"].map(lambda x: int(x))
+    join = join[['ID_LICITANTE','ID_EMPRESA','id_grupo']]
+    return join
+
+
+def intermediaRaw(conn):
+    if(conn):
+        engine = create_engine(conn)
+	query = "SELECT * FROM DATOS_LICITACIONES_LIC_EMP"
+	lics = pd.read_sql(query,engine)
+    return lics
 
 
 def concatEmps(U,R):
@@ -49,9 +94,9 @@ def concatEmps(U,R):
 	newName = x.name + "," + x["apellido"] if x["apellido"] else x.name
 	return newName
     nDF_.index = nDF_.apply(p,axis=1)
-    nDF_noNull = nDF_[~nDF_["id_empresa"].isnull()]
+    nDF_noNull = nDF_[~nDF_["id_empresa"].isnull()].drop("apellido",axis=1)
     nDF_siNull = nDF_[nDF_["id_empresa"].isnull()].drop("apellido",axis=1)
-    noNULL = pd.concat([noNULL,nDF_noNull],axis=1).drop("apellido",axis=1)
+    noNULL = pd.concat([noNULL,nDF_noNull])#.drop("apellido",axis=1)
     sas0 = nDF_siNull[nDF_siNull.index.str.contains("S\.A\.S")].index.map(lambda x:x.split(" S.A.S.")[0]).tolist()
     sas1 = " S.A.S."
     sas = pd.DataFrame({ 'EMPRESA':sas0, 'apellido':sas1 })
@@ -62,27 +107,37 @@ def concatEmps(U,R):
     sas = sas.join(R)
     sas.index = sas.apply(p,axis=1)
     sas.drop("apellido",axis=1,inplace=True)
-    noNULL = pd.concat([noNULL,sas],axis=1)
+    noNULL = pd.concat([noNULL,sas])#,axis=1)
     nDF_siNull.drop(sas.index.tolist(),inplace=True)
     conequipos = R[R.index.str.contains("CONEQUIPOS")]
     conequipos.reset_index(inplace=True)
     conequipos["empresa"].values[0] = "INGENIER\xc3\x8dA CONSTRUCCIONES Y EQUIPOS CONEQUIPOS ING. LTDA."
     conequipos.set_index('empresa',inplace=True)
-    noNULL = pd.concat([noNULL,conequipos],axis=1)
+    noNULL = pd.concat([noNULL,conequipos])#,axis=1)
     nDF_siNull.drop("INGENIER\xc3\x8dA CONSTRUCCIONES Y EQUIPOS CONEQUIPOS ING. LTDA.",inplace=True)
     arrendadora = R[R.index.str.contains("ARRENDADORA")]
     arrendadora.reset_index(inplace=True)
     arrendadora["empresa"].values[0] = "CONSTRUCTORA Y ARRENDADORA M\xc3\x89XICO, S.A. DE C.V.";
     arrendadora.set_index("empresa",inplace=True)
-    noNULL = pd.concat([noNULL,arrendadora],axis=1)
+    noNULL = pd.concat([noNULL,arrendadora])#,axis=1)
     nDF_siNull.drop("CONSTRUCTORA Y ARRENDADORA M\xc3\x89XICO, S.A. DE C.V.",inplace=True)
-    return noNULL,nDF_siNull
+    nDF_siNull['id_empresa'] = [171,172,173,174,175,176]
+    nDF_siNull['pais'] = [u'M\xc9XICO',u'CHINA',u'ITALIA',u'ESTADOS UNIDOS',u'MALASIA',u'M\xc9XICO']
+    nDF_siNull['id_grupo'] = [19,21,41,92,116,137]
+    noNULL = pd.concat([noNULL,nDF_siNull])
+    return noNULL
+
+
+ 
 
 
 if(__name__ == '__main__'):
     empsU = empresasUnicas()
     empsR = empresasRaw('oracle://cmde_raw:raw17@localhost:1521/XE')
-    nn = concatEmps(empsU,empsR)
+    intrR = intermediaRaw('oracle://cmde_raw:raw17@localhost:1521/XE')
+    idRecuperados = concatEmps(empsU,empsR)
+    intrLics = intermediaLics(idRecuperados)
+    intrGpos = intermediaGrupos(intrLics,idRecuperados)
 #    empsR.set_index("empresa",inplace=True)
 #    join = empsU.join(empsR)
 #    join[join['id_empresa'].isnull()].index.tolist()
