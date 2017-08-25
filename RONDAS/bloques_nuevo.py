@@ -27,7 +27,13 @@ for i in cols:
 bloques["API"].replace("--",np.NaN,inplace=True)
 bloques["PROF_PROM"].replace("-",np.NaN,inplace=True)
 bloques["NUM"] = bloques["NUM"].map(lambda x: x.split(u"ÁREA ")[1] if not pd.isnull(x) and isinstance(x,unicode) else x)
+
 bloques["NUM"] = bloques[(bloques["RONDA"] == 2) & (bloques["LIC"] == 1)].apply(lambda x:x.AREA.split(" ")[1],axis=1)
+
+bloques["NUM"] = bloques[(bloques["RONDA"] == 1) & (bloques["LIC"] == 1)].apply(lambda x:x.AREA.split(" ")[1],axis=1)
+
+bloques["NUM"] = bloques[(bloques["RONDA"] == 2) & (bloques["LIC"] == 2)].apply(lambda x:x.AREA.split(" ")[1],axis=1)
+
 
 bloques = bloques[['ID','AREA','NUM','PROV_GEO','CUENCA','ESTADO','SUPERFICIE','UBICACION ','RONDA','LIC','PLAYS','LITOLOGIA','COB_SIS','HCBRO','API','TIRANTE_PROM','TIRANTE_MAX','TIRANTE_MIN','PROF_PROM','CAMPOS']]
 
