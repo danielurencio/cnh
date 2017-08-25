@@ -26,6 +26,7 @@ for i in cols:
 
 bloques["API"].replace("--",np.NaN,inplace=True)
 bloques["PROF_PROM"].replace("-",np.NaN,inplace=True)
+bloques["NUM"] = bloques["NUM"].map(lambda x: x.split(u"ÁREA ")[1] if not pd.isnull(x) and isinstance(x,unicode) else x)
 
 bloques = bloques[['ID','AREA','NUM','PROV_GEO','CUENCA','ESTADO','SUPERFICIE','UBICACION ','RONDA','LIC','PLAYS','LITOLOGIA','COB_SIS','HCBRO','API','TIRANTE_PROM','TIRANTE_MAX','TIRANTE_MIN','PROF_PROM','CAMPOS']]
 
