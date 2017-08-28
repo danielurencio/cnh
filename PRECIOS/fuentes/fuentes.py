@@ -24,7 +24,7 @@ mme_ = pd.DataFrame({ 'FECHA': mme[:,0], 'MME': mme[:,1] })
 mme_["MME"] = mme_["MME"].map(lambda x: np.NaN if float(x) < 0 else float(x))
 mme_.set_index("FECHA", inplace=True)
 
-precios = mme_.join(precios)[["BRENT","WTI","MME","HENRY_HUB"]]
+precios = precios.join(mme_)[["BRENT","WTI","MME","HENRY_HUB"]]
 precios["INSERTADO"] = np.zeros(precios.shape[0])
 
 fecha = datetime.date.today()
