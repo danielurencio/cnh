@@ -1,3 +1,4 @@
+import datetime
 import pandas as pd
 import scipy
 import requests
@@ -24,3 +25,14 @@ mme_["MME"] = mme_["MME"].map(lambda x: np.NaN if float(x) < 0 else float(x))
 mme_.set_index("FECHA", inplace=True)
 
 precios = mme_.join(precios)[["BRENT","WTI","MME","HENRY_HUB"]]
+precios["INSERTADO"] = np.zeros(precios.shape[0])
+
+fecha = datetime.date.today()
+precios["INSERTADO"] = str(fecha.year) + "-" + str(fecha.month) + "-" + str(fecha.day)
+
+fuentes = 'EIA;EIA;BANXICO;EIA'
+precios["FUENTES"] = np.zeros(precios.shape[0])
+precios["FUENTES"] = fuentes
+
+precios.to_csv("precios.csv",encoding="latin1",header=None)
+print("ARCHIVO GENERADO.")
