@@ -5,8 +5,7 @@ import cx_Oracle
 from sqlalchemy import create_engine
 import sys
 
-conn = "oracle://cmde_raw:raw17@localhost:1521/XE"
-#conn=sys.argv[1]
+conn=sys.argv[1]
 f_ = pd.read_csv("base_utf8.csv")
 
 def empresasUnicas():

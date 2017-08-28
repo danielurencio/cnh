@@ -3,6 +3,8 @@
 import re
 import pandas as pd
 import numpy as np
+import cx_Oracle
+from sqlalchemy import create_engine
 
 f_ = pd.ExcelFile("Licitaciones_ContratosV2.xlsx")
 sheets = f_.sheet_names
