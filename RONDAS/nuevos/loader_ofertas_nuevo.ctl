@@ -1,0 +1,5 @@
+load data
+  infile 'nt_ofertas.csv'
+  into table DATOS_LICITACIONES_OFERTAS
+  fields terminated by ',' optionally enclosed by '"'
+  (ID_LICITACION,RONDA,LICITACION,NUM_BLOQUE,MIN_VAR_ADJ1,MAX_VAR_ADJ1,VAR_ADJ1,VAR_ADJ2,VPO,VALIDEZ,BONO,INSACULACION,POSICION,ID_LICITANTE)

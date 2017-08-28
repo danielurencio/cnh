@@ -28,11 +28,20 @@ precios = precios.join(mme_)[["BRENT","WTI","MME","HENRY_HUB"]]
 precios["INSERTADO"] = np.zeros(precios.shape[0])
 
 fecha = datetime.date.today()
-precios["INSERTADO"] = str(fecha.year) + "-" + str(fecha.month) + "-" + str(fecha.day)
+fecha_ = str(fecha.year) + "-" + str(fecha.month) + "-" + str(fecha.day) 
+precios["INSERTADO"] = fecha_
 
 fuentes = 'EIA;EIA;BANXICO;EIA'
 precios["FUENTES"] = np.zeros(precios.shape[0])
 precios["FUENTES"] = fuentes
+precios.index = pd.to_datetime(precios.index)
+mme_.index = pd.to_datetime(mme_.index)
+extra = mme_[mme_.index > np.max(precios.index)].copy()
+extra.loc[extra.index,"FUENTES"] = "-;-;BANXICO;-"
+extra.loc[extra.index,"INSERTADO"] = fecha_ 
+precios = precios.append(extra)
+
+precios = precios[["BRENT","WTI","MME","HENRY_HUB","INSERTADO","FUENTES"]]
 
 precios.to_csv("precios.csv",encoding="latin1",header=None)
 print("ARCHIVO GENERADO.")

@@ -1,5 +1,5 @@
 load data
   infile 'DATOS_LICITACIONES_grupos_empresariales.csv'
-  into table DATOS_LICITACIONES_GRUPOS
+  into table DATOS_LICITACIONES_MATRICES
   fields terminated by ',' optionally enclosed by '"'
-  (ID_GRUPO,GRUPO)
+  (ID_MATRIZ,MATRIZ)

@@ -193,5 +193,5 @@ if(__name__ == '__main__'):
     intrLics.to_csv("nt_intermedia_licitantes.csv",header=None,index=False)
     intrGpos.to_csv("nt_intermedia_grupos.csv",header=None,index=False)
     empresas.to_csv("nt_empresas.csv",encoding="latin1",header=None,index=False)
-    ofertas.to_csv("nt_ofertas.csv",encoding="latin1",header=None,index=False)
+    ofertas.to_csv("nt_ofertas.csv",encoding="latin1",header=True,index=False)
         
