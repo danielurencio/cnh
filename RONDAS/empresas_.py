@@ -8,7 +8,7 @@ import sys
 conn=sys.argv[1]
 f_ = pd.read_csv("base_utf8.csv")
 
-def empresasUnicas():
+def empresasUnicas(f_):
     arr = []
     empsU = f_["LICITANTE"].tolist()
     for i in empsU:
@@ -178,7 +178,7 @@ def tablaOfertas(licsU):
 
 
 if(__name__ == '__main__'):
-    empsU = empresasUnicas()
+    empsU = empresasUnicas(f_)
     empsR = empresasRaw(conn)
     intrR = intermediaRaw(conn)
     idRecuperados = concatEmps(empsU,empsR)
