@@ -8,12 +8,12 @@ function RED(width,height) {
   var graphWidth = width, graphHeight = height;
 
   queue()
-    .defer(d3.csv,'csv/data.csv')
-    .defer(d3.csv,'csv/adj.csv')
-    .defer(d3.csv,'csv/linkWidth1.csv')
-    .defer(d3.csv,'csv/ofertas2.csv')
-    .defer(d3.csv,'csv/tabla.csv')
-    .defer(d3.csv,'csv/procesos.csv')
+    .defer(d3.csv,'csv1/data.csv')
+    .defer(d3.csv,'csv1/adj.csv')
+    .defer(d3.csv,'csv1/linkWidth1.csv')
+    .defer(d3.csv,'csv1/ofertas2.csv')
+    .defer(d3.csv,'csv1/tabla.csv')
+    .defer(d3.csv,'csv1/procesos.csv')
     .await(getDATA);
 
   function getDATA(err,data,adj,licRondas,OFERTAS_,tabla,procesos) {
@@ -657,6 +657,20 @@ function leyendaRED() {
 	  });
 /*
   let filtroEMpresas = d3.select("div#filtroEmpresas")
+  d3.select("svg#canvas").append("g")
+    .attr("id","tituloRed_")
+    .selectAll("text")
+    .data(['Red de asociaciones','entre empresas']).enter()
+    .append("text")
+   .attr({
+     "x": function() {
+	return 10
+      },
+     "y": 50
+    }).text(function(d) { return d; })
+//  d3.select('.NODOS').attr("transform","translate(0,20)")
+//  d3.select('.LIGAS').attr("transform","translate(0,20)")
+
 
   var signosMas = ['&uarr;','&oplus;','&oplus;','&oplus;','&oplus;'];
   conteiner.append("g")

@@ -655,6 +655,27 @@ function leyendaRED() {
 	  }).html(function(d) {
 	     return d
 	  });
+
+  let filtroEMpresas = d3.select("div#filtroEmpresas")
+  d3.select("svg#canvas").append("g")
+    .attr("id","tituloRed_")
+    .selectAll("text")
+    .data(['Red de asociaciones','entre empresas licitantes']).enter()
+    .append("text")
+   .attr({
+//     'text-anchor':'middle',
+     'opacity':0.8,
+     'font-size':16,
+     'font-family':'Open Sans',
+     'font-weight':800,
+     'alignment-baseline':'text-before-edge',
+     "x": function() {
+	var ww = +filtroEMpresas.style("width").split("px")[0]
+        return ww + 10
+      },
+     "y": function(d,i) { return 10 +(i*17); }
+    }).text(function(d) { return d; })
+
 /*
   let filtroEMpresas = d3.select("div#filtroEmpresas")
 
