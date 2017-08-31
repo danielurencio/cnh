@@ -1201,7 +1201,7 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
   var EmpS = _.uniq(FILTRO4,"EMPRESA");
 
   var empresas_interesadas = EmpS.length;
-
+console.log(FILTRO1)
   var empresas_precalif = EmpS.filter(function(d) {
     return d.PRECALIF == 1;
   }).length;
@@ -1222,7 +1222,7 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
    { 'key':'Empresas interesadas', 'val':empresas_interesadas },
    { 'key':'Empresas precalificadas', 'val':empresas_precalif },
    { 'key':'Bloques ofertados', 'val':FILTRO2.length },
-   { 'key':'Empresas adquirieron datos','val':dataroom }
+   { 'key':'Bloques adjudicados','val':FILTRO1.length }
 // { key:'Inversión comprometida',val:(inv_pmt / 1000).toFixed(0) + "K" },
 // { key:'Área (km\u00B2)',val:+area.toFixed(1) }
   ];

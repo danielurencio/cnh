@@ -25,7 +25,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 
   lista
     .on("click", function(d) {
-
+      d3.select("g#tituloRed_").transition().duration(800).attr("opacity",0.25)
       d3.select("#filtroEmpresas>svg").remove();
 
       var empresas = /*adj*/data.map(function(d) { return d.EMPRESA; })
@@ -134,6 +134,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 
   function hideLista(d) {
    var verLista = d3.select("svg#verLista")[0][0];
+   d3.select("g#tituloRed_").transition().duration(800).attr("opacity",1)
 
     lista.attr("class",null)
     lista.selectAll("ol").remove();

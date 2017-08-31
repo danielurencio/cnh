@@ -35,6 +35,11 @@ function RED(width,height) {
      ron_lic[i] = "Ronda " + ronda + " - Licitación " + lic;
     };
 
+console.log(ron_lic)
+// quitar asociacion
+   var asoc__ = ron_lic.indexOf("Ronda ASOCIACIÓN - Licitación ASOCIACIÓN")
+   ron_lic.splice(asoc__,1)
+
     d3.select("#opciones>select").selectAll("option")
      .data(ron_lic).enter()
      .append("option")
