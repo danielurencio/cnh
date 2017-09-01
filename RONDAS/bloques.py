@@ -76,7 +76,7 @@ for i in ["IDENTIFICADOR","CAMPOS"]:
 campos.set_index("IDENTIFICADOR",inplace=True)
 campos.index.rename("ID_BLOQUE",inplace=True)
 bloques.index.rename("ID_BLOQUE",inplace=True)
-HEAD = None
+HEAD = True
 
 for i in ["PLAYS_YACIMIENTO","LITOLOGIA"]:
   bloques[i] = bloques[i].map(lambda x: re.sub("\n","",str(x)))

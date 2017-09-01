@@ -37,8 +37,8 @@ precios["FUENTES"] = fuentes
 precios.index = pd.to_datetime(precios.index)
 mme_.index = pd.to_datetime(mme_.index)
 extra = mme_[mme_.index > np.max(precios.index)].copy()
-extra.loc[extra.index,"FUENTES"] = "-;-;BANXICO;-"
-extra.loc[extra.index,"INSERTADO"] = fecha_ 
+#extra.loc[extra.index,"FUENTES"] = "-;-;BANXICO;-"
+#extra.loc[extra.index,"INSERTADO"] = fecha_ 
 precios = precios.append(extra)
 
 precios = precios[["BRENT","WTI","MME","HENRY_HUB","INSERTADO","FUENTES"]]

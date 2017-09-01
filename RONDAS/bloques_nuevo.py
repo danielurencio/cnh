@@ -7,6 +7,12 @@ import numpy as np
 import cx_Oracle
 from sqlalchemy import create_engine
 
+bloques_antiguo = pd.read_csv('DATOS_LICITACIONES_bloques.csv');
+bloques_antiguo.set_index('ID_BLOQUE',inplace=True)
+bloques_antiguo.index = bloques_antiguo.index.map(lambda x:unicode(x.decode('utf-8')))
+bloques_antiguo.drop(['R2L2-10','R2L2-11'],inplace=True)
+bloques_antiguo.rename({ 'R2L2-12':'R2L2-10' },inplace=True)
+lista_var = ['']
 
 f_ = pd.ExcelFile("Licitaciones_ContratosV2.xlsx")
 sheets = f_.sheet_names
@@ -56,4 +62,4 @@ bloques.reset_index(inplace=True)
 bloques.drop_duplicates(["index","id_licitante_adj"],inplace=True)
 bloques.set_index("index",inplace=True)
 
-bloques.to_csv("DATOS_LICITACIONES_bloques_nuevo.csv", header=True,encoding="latin1")
+#bloques.to_csv("DATOS_LICITACIONES_bloques_nuevo.csv", header=True,encoding="latin1")
