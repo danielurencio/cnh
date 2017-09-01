@@ -5,7 +5,7 @@ import cx_Oracle
 from sqlalchemy import create_engine
 import sys
 
-conn=sys.argv[1]
+conn=sys.argv[len(sys.argv)-1]
 f_ = pd.read_csv("base_utf8.csv")
 
 def empresasUnicas(f_):
@@ -27,10 +27,15 @@ def empresasUnicas(f_):
 
 
 def empresasRaw(conn):
-    if(conn):
+    if(conn[0] == 'o'):
         engine = create_engine(conn)
         emps = pd.read_sql("SELECT * FROM DATOS_LICITACIONES_EMPRESAS",engine)
         emps.set_index("empresa",inplace=True)
+    else:
+        emps = pd.read_csv("DATOS_LICITACIONES_empresas_header.csv")
+	emps.columns = emps.columns.map(lambda x:x.lower())
+        emps.rename(columns={ 'grupo':'id_grupo' },inplace=True)
+	emps.set_index("empresa",inplace=True)
     return emps
 
 def intermediaLics(idRecuperados):
@@ -72,17 +77,19 @@ def intermediaGrupos(intrLics,idRecuperados):
     join = intr.join(emps)
     join.index.rename("ID_EMPRESA",inplace=True)
     join.reset_index(inplace=True)
-    join["id_grupo"] = join["id_grupo"].map(lambda x: int(x))
+    join["id_grupo"] = join["id_grupo"].map(lambda x: int(x)) #if not pd.isnull(x) else x)
     join = join[['ID_LICITANTE','ID_EMPRESA','id_grupo']]
     join = join[["ID_LICITANTE","id_grupo"]].drop_duplicates()
     return join
 
 
 def intermediaRaw(conn):
-    if(conn):
+    if(conn[0] == 'o'):
         engine = create_engine(conn)
 	query = "SELECT * FROM DATOS_LICITACIONES_LIC_EMP"
 	lics = pd.read_sql(query,engine)
+    else:
+	lics = pd.read_csv('INtermedia_lic_emp.csv')
     return lics
 
 
@@ -124,13 +131,13 @@ def concatEmps(U,R):
     conequipos["empresa"].values[0] = "INGENIER\xc3\x8dA CONSTRUCCIONES Y EQUIPOS CONEQUIPOS ING. LTDA."
     conequipos.set_index('empresa',inplace=True)
     noNULL = pd.concat([noNULL,conequipos])#,axis=1)
-    nDF_siNull.drop("INGENIER\xc3\x8dA CONSTRUCCIONES Y EQUIPOS CONEQUIPOS ING. LTDA.",inplace=True)
+    nDF_siNull.drop((u'INGENIER\xcdA CONSTRUCCIONES Y EQUIPOS CONEQUIPOS ING. LTDA.').encode('utf-8'),inplace=True)
     arrendadora = R[R.index.str.contains("ARRENDADORA")]
     arrendadora.reset_index(inplace=True)
     arrendadora["empresa"].values[0] = "CONSTRUCTORA Y ARRENDADORA M\xc3\x89XICO, S.A. DE C.V.";
     arrendadora.set_index("empresa",inplace=True)
     noNULL = pd.concat([noNULL,arrendadora])#,axis=1)
-    nDF_siNull.drop("CONSTRUCTORA Y ARRENDADORA M\xc3\x89XICO, S.A. DE C.V.",inplace=True)
+    nDF_siNull.drop((u'CONSTRUCTORA Y ARRENDADORA M\xc9XICO, S.A. DE C.V.').encode('utf-8'),inplace=True)
     nDF_siNull['id_empresa'] = [171,172,173,174,175,176]
     nDF_siNull['pais'] = [u'M\xc9XICO',u'CHINA',u'ITALIA',u'ESTADOS UNIDOS',u'MALASIA',u'M\xc9XICO']
     nDF_siNull['id_grupo'] = [19,21,41,92,116,137]
@@ -149,7 +156,7 @@ def actualizarEmps(empsR,idRecuperados):
     bb = bb.reset_index()
     join = pd.concat([bb,aa])
     join["id_empresa"] = join["id_empresa"].map(lambda x:int(x))
-    join["id_grupo"] = join["id_grupo"].map(lambda x:int(x))
+    join["id_grupo"] = join["id_grupo"].map(lambda x:int(x)) #if not pd.isnull(x) else x)
     join = join[['id_empresa','empresa','pais','id_grupo']]
     return join
      
@@ -193,4 +200,4 @@ if(__name__ == '__main__'):
     intrGpos.to_csv("nt_intermedia_grupos.csv",header=None,index=False)
     empresas.to_csv("nt_empresas.csv",encoding="latin1",header=None,index=False)
     ofertas.to_csv("nt_ofertas.csv",encoding="latin1",header=True,index=False)
-        
+

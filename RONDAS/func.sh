@@ -43,11 +43,21 @@ archivos() {
   cat head2 DATOS_LICITACIONES_procesos.csv > PRocesos__.csv
   rm head2 #head2 #head1;
 
-  python procesos.py
+#  python procesos.py
 ###########################################################################
 
   aa=$(ls *.csv)
-  ssconvert --merge-to=TABLAS.xls $aa
+#  ssconvert --merge-to=TABLAS.xls $aa
+  ofertas_nuevo
+}
+
+archivos1() {
+  archivos
+  ConvertirUTF8
+  ofertas_nuevo
+  python empresas_.py
+  echo "id_empresa,empresa,pais,id_grupo" > head
+  cat head nt_empresas.csv > empresasProcesos.csv
 }
 
 ##########################################################

@@ -447,6 +447,7 @@ def importar():
    EMPRESAS_.index.rename("ID_EMPRESA",inplace=True)
    GRUPOS,EMPRESAS = gruposEmpresariales(0)
    EMPRESAS.to_csv("DATOS_LICITACIONES_empresas.csv",header=HEAD,sep=",",encoding="latin1")
+   EMPRESAS.to_csv("DATOS_LICITACIONES_empresas_header.csv",header=True,sep=",",encoding="latin1")
    GRUPOS.to_csv("DATOS_LICITACIONES_grupos_empresariales.csv",header=HEAD,sep=",",encoding="latin1")
 #####COPIA DE EMPRESAS######################
    copiaEMpresas = b.copy()
@@ -473,6 +474,9 @@ def importar():
    EMP_LIC = emp_lic.copy()
    EMP_LIC["ID_LICITANTE"] += 1; EMP_LIC["ID_EMPRESA"] += 1;
    EMP_LIC.to_csv("DATOS_LICITACIONES_licitantes_empresas.csv",header=HEAD,index=False)
+################COPIA DE INTERMEDIA#######################################
+   EMP_LIC.to_csv("INtermedia_lic_emp.csv",header=True,index=False)
+##########################################################################
    ## DATOS_LICITACIONES_OFERTAS
    ofertas1 = ofertas[["ID_LICITANTE","ID","VAR_ADJ1","VAR_ADJ2","VPO","BONO","OPERADOR","GANADOR","SEGUNDO_LUGAR","ID_ADJ","ADJ"]].copy()
    for i in ["ID_LICITANTE","OPERADOR","GANADOR","SEGUNDO_LUGAR","ADJ"]:
