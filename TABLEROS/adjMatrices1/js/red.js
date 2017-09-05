@@ -7,16 +7,58 @@ function RED(width,height) {
   var graphConteiner = d3.select("g#red");
   var graphWidth = width, graphHeight = height;
 
+//======FUNCIONES PARA TRANSFORMAR TABLAS NUEVAS A ESTRUCTURAS ANTIGUAS=========|
+  function to_data(x) {
+
+    var resultado = _.uniq(x, function(item) {
+      return [item.ID_LICITANTE, item.ID_EMPRESA].sort().join(',');
+    }).map(function(d) {
+	  var obj = {};
+	  obj['ID_LICITANTE'] = d.ID_LICITANTE;
+	  obj['ID_EMPRESA'] = d.ID_EMPRESA;
+	  obj['EMPRESA'] = d.EMPRESA;
+	  obj['PAIS'] = d.PAIS;
+
+	  return obj;
+	});
+
+    /*var empresas = _.uniq(x,["ID_EMPRESA",'ID_LICITANTE'])
+	.map(function(d) {
+	  var obj = {};
+	  obj['ID_LICITANTE'] = d.ID_LICITANTE;
+	  obj['ID_EMPRESA'] = d.ID_EMPRESA;
+	  obj['EMPRESA'] = d.EMPRESA;
+	  obj['PAIS'] = d.PAIS;
+
+	  return obj;
+	});
+*/
+    var id_licitante = _.uniq(x,'ID_LICITANTE')
+	.map(function(d) { return d.ID_LICITANTE; });
+/*
+    var resultado = [];
+    id_licitante.forEach(function(d) {
+      var emps = x.filter(function(e) { return e.ID_LICITANTE == d; });
+      resultado = resultado.concat(emps);
+    });
+*/
+    console.log(resultado);
+  };
+
+//==============================================================================|
   queue()
-    .defer(d3.csv,'csv/data.csv')
+    .defer(d3.csv,'csv/data.csv') // <---- !
     .defer(d3.csv,'csv/adj.csv')
     .defer(d3.csv,'csv/linkWidth1.csv')
     .defer(d3.csv,'csv/ofertas2.csv')
     .defer(d3.csv,'csv/tabla.csv')
     .defer(d3.csv,'csv/procesos.csv')
+    .defer(d3.csv,'csv1/ofertas_bloques.csv')
     .await(getDATA);
 
-  function getDATA(err,data,adj,licRondas,OFERTAS_,tabla,procesos) {
+  function getDATA(err,data,adj,licRondas,OFERTAS_,tabla,procesos,bloques_ofertas) {
+
+  to_data(bloques_ofertas);
 
 /*-------------------NUEVO FILTRO------------------------------------------*/
     var ron_lic = licRondas.map(function(d) {
@@ -157,10 +199,6 @@ function RED(width,height) {
       pmts.push({ 'id':d, 'pmt':sumaPMT }) 
     });
 
-//////////////////////////////////////////////////////////////////////////////
-//EJECUCIÓN DE PRIMER PLANTILLA: RESUMEN DE RONDAS///////////////////////////
-   // resumen(data,adj,licRondas,pmts,ofertas,null,tabla,procesos)
-///////////////////////////////////////////////////////////////////////////
 
     /*------------------------------------*/
     var lics = Procesar.unicos(data,"ID_LICITANTE")//"lic");
@@ -184,7 +222,6 @@ function RED(width,height) {
      if(a.indexOf(b) < 0) { a.push(b); }
      return a;
     },[]);
-console.log(arr)
 
     var links = Procesar.edges(sets,arr);
 
@@ -381,8 +418,8 @@ console.log(arr)
 
   leyendaRED();
   //Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos);
-  NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos);
-  resumen(data,adj,licRondas,pmts,ofertas,arr,tabla,procesos)
+//  NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos);
+//  resumen(data,adj,licRondas,pmts,ofertas,arr,tabla,procesos)
   };
 
 

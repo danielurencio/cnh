@@ -1,11 +1,11 @@
 load data
-  infile 'DATOS_LICITACIONES_bloques_nuevo.csv'
-  into table DATOS_LICITACIONES_BLOQUES
+  infile 'DATOS_LICITACIONES_bloques_nuevo_ids.csv'
+  into table DATOS_LICITACIONES_BLOQUES1
   fields terminated by ',' optionally enclosed by '"'
   TRAILING NULLCOLS
 
   (
-  ID_BLOQUE,
+  ID_BLOQUE1,
   NOMBRE_BLOQUE,
   NUM_BLOQUE,
   PROV_GEO,
@@ -26,5 +26,6 @@ load data
   PROF_PROM,
   CAMPOS,
   ID_LICITANTE_ADJ,
-  ID_OPERADOR
+  ID_OPERADOR,
+  INV_USD
   )

@@ -285,6 +285,6 @@ bloques_raw.index = bloques_raw.index.map(lambda x: unicode(x.decode('utf-8')))
 bloques_raw = bloques_raw.join(new_pmt["INV_COMPROMETIDA_USD"])
 bloques_raw.ix[bloques_raw.index,"INV_COMPROMETIDA_USD"] = bloques_raw["INV_COMPROMETIDA_USD"].map(lambda x: np.NaN if x==0 else x)
 bloques_raw.ix['ASOC-TRION','INV_COMPROMETIDA_USD'] = 570000000
-bloques_raw.to_csv("../DATOS_LICITACIONES_bloques_nuevo1.csv",index=True,encoding="latin1",header=None)
+bloques_raw.to_csv("../DATOS_LICITACIONES_bloques_nuevo_ids.csv",index=True,encoding="latin1",header=None)
 print("ARCHIVO de BLOQUES GENERADO!")
 
