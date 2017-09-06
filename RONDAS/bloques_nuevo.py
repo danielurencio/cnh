@@ -54,6 +54,8 @@ conn = "oracle://cmde_raw:raw17@localhost:1521/XE"#sys.argv[1]
 engine = create_engine(conn)
 query = "SELECT ID_BLOQUE,ID_LICITANTE_ADJ,ID_OPERADOR FROM DATOS_LICITACIONES_OFERTAS"
 adjs = pd.read_sql(query,engine)
+#adjs = pd.read_csv('nt_ofertas_1_header.csv')
+adjs.columns = adjs.columns.map(lambda x: x.lower())
 adjs.set_index("id_bloque",inplace=True)
 adjs.index = adjs.index.map(lambda x:unicode(x.decode("utf-8")))
 bloques = bloques.join(adjs)
@@ -63,3 +65,4 @@ bloques.drop_duplicates(["index","id_licitante_adj"],inplace=True)
 bloques.set_index("index",inplace=True)
 
 bloques.to_csv("DATOS_LICITACIONES_bloques_nuevo.csv", header=True,encoding="latin1")
+print('ARCHIVO GENERADO')

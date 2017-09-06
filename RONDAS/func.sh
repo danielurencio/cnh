@@ -58,6 +58,10 @@ archivos1() {
   python empresas_.py
   echo "id_empresa,empresa,pais,id_grupo" > head
   cat head nt_empresas.csv > empresasProcesos.csv
+  python bloques_nuevo.py
+  ConvertirUTF8
+  cd fechasFirma; python fechas.py; cd ..
+  ConvertirUTF8
 }
 
 ##########################################################

@@ -22,44 +22,158 @@ function RED(width,height) {
 	  return obj;
 	});
 
-    /*var empresas = _.uniq(x,["ID_EMPRESA",'ID_LICITANTE'])
-	.map(function(d) {
-	  var obj = {};
-	  obj['ID_LICITANTE'] = d.ID_LICITANTE;
-	  obj['ID_EMPRESA'] = d.ID_EMPRESA;
-	  obj['EMPRESA'] = d.EMPRESA;
-	  obj['PAIS'] = d.PAIS;
-
-	  return obj;
-	});
-*/
     var id_licitante = _.uniq(x,'ID_LICITANTE')
 	.map(function(d) { return d.ID_LICITANTE; });
-/*
-    var resultado = [];
-    id_licitante.forEach(function(d) {
-      var emps = x.filter(function(e) { return e.ID_LICITANTE == d; });
-      resultado = resultado.concat(emps);
-    });
-*/
-    console.log(resultado);
+
+    return resultado;
   };
 
+
+  function to_adj(x) {
+    var rr = x.filter(function(d) {
+	return d.ID_LICITANTE == d.ID_LICITANTE_ADJ;
+    })
+
+    var lics = _.uniq(rr,'ID_EMPRESA')
+	.map(function(d) { return d.ID_EMPRESA; });
+
+    var resultados = [];
+
+    lics.forEach(function(l) {
+      var lic = rr.filter(function(d) { return d.ID_EMPRESA == l });
+
+      var area = lic
+	.map(function(d) { return +d.AREA; })
+	.reduce(function sum(a,b) { return +a + +b; });
+
+      var inv = lic
+	.map(function(d) { return +d.INV_USD; })
+	.reduce(function(a,b) { return +a + +b; });
+
+      var adjs = lic.length;
+      var empresa = lic[0].EMPRESA;
+      var id_emp = lic[0].ID_EMPRESA;
+      var id_lic = lic[0].ID_LICITANTE;
+      var id_lic_adj = lic[0].ID_LICITANTE_ADJ;
+      var modalidad = "";
+      var pais = lic[0].PAIS;
+
+      var obj = {
+	'ADJUDICADOS':String(adjs),
+	'AREA':String(area),
+	'EMPRESA':empresa,
+	'ID_EMPRESA':id_emp,
+	'ID_LICITANTE':id_lic,
+	'ID_LICITANTE_ADJ':id_lic_adj,
+	'INV_TOTAL':String(inv),
+	'MODALIDAD':modalidad,
+	'PAIS':pais
+      };
+      resultados.push(obj);
+    });
+
+    return resultados;
+  };
+
+  function to_licRondas(x) {
+
+    var rr = x.map(function(d) {
+      var obj = {};
+      obj['ID_BLOQUE'] = d.ID_BLOQUE;
+      obj['ID_LICITANTE_ADJ'] = d.ID_LICITANTE_ADJ;
+      obj['ID_LICITANTE_OFERTA'] = d.ID_LICITANTE;
+      obj['LICITACION'] = d.LICITACION;
+      obj['LICITANTE'] = "";
+      obj['RONDA'] = d.RONDA;
+
+      return obj;
+    });
+
+    rr = _.uniq(rr,function(v) {
+	var ARR = [
+	  v.ID_BLOQUE, v.ID_LICITANTE_ADJ, v.ID_LICITANTE_OFERTA,
+	  v.ID_LICITACION, v.LICITANTE, v.RONDA
+	];
+	return ARR.join();
+    });
+
+    rr.forEach(function(d) {
+	var emps = x.filter(function(e) {
+	  return e.ID_LICITANTE == d.ID_LICITANTE_OFERTA;
+	}).map(function(E) { return E.EMPRESA; });
+
+        emps = _.uniq(emps).reduce(function(a,b) { return a + ";" + b; });
+        d.LICITANTE = emps;
+    });
+
+    return rr;
+  };
+
+
+  function to_OFERTAS_(x) {
+    var rr = x.filter(function(d) { return d.VALIDEZ == 'VALIDA' });
+    rr = rr.map(function(d) {
+      var obj = {};
+      obj['AREA'] = d.AREA;
+      obj['BONO'] = d.BONO;
+      obj['ID_BLOQUE'] = d.ID_BLOQUE;
+      obj['ID_EMPRESA'] = d.ID_EMPRESA;
+      obj['ID_LICITANTE_ADJ'] = d.ID_LICITANTE_ADJ;
+      obj['ID_LICITANTE_OFERTA'] = d.ID_LICITANTE;
+      obj['LICITACION'] = d.LICITACION;
+      obj['PMT_TOTAL'] = d.INV_USD;
+      obj['RONDA'] = d.RONDA;
+      obj['VAR_ADJ1'] = d.VAR_ADJ1;
+      obj['VAR_ADJ2'] = d.VAR_ADJ2;
+      obj['VPO'] = d.VPO;
+
+      return obj;
+    });
+
+    return rr;
+  };
+
+
+  function to_tabla(x) {
+
+    var rr = x.map(function(d) {
+      var obj = {};
+      obj['BONO'] = d.BONO;
+      obj['ID_BLOQUE'] = d.ID_BLOQUE;
+      obj['ID_LICITANTE_ADJ'] = d.ID_LICITANTE_ADJ;
+      obj['ID_LICITANTE_OFERTA'] = d.ID_LICITANTE;
+      obj['LICITACION'] = d.LICITACION;
+      obj['RONDA'] = d.RONDA;
+      obj['VAR_ADJ1'] = d.VAR_ADJ1;
+      obj['VAR_ADJ2'] = d.VAR_ADJ2;
+      obj['VPO'] = d.VPO;
+
+      return obj;
+    });
+
+    return rr;
+
+  };
 //==============================================================================|
   queue()
-    .defer(d3.csv,'csv/data.csv') // <---- !
-    .defer(d3.csv,'csv/adj.csv')
-    .defer(d3.csv,'csv/linkWidth1.csv')
-    .defer(d3.csv,'csv/ofertas2.csv')
-    .defer(d3.csv,'csv/tabla.csv')
+//    .defer(d3.csv,'csv/data.csv') // <---- !
+//    .defer(d3.csv,'csv/adj.csv')
+//    .defer(d3.csv,'csv/linkWidth1.csv')
+//    .defer(d3.csv,'csv/ofertas2.csv')
+//    .defer(d3.csv,'csv/tabla.csv')
     .defer(d3.csv,'csv/procesos.csv')
     .defer(d3.csv,'csv1/ofertas_bloques.csv')
+    .defer(d3.csv,'csv1/PROCESOS_.csv')
     .await(getDATA);
 
-  function getDATA(err,data,adj,licRondas,OFERTAS_,tabla,procesos,bloques_ofertas) {
+  function getDATA(err,/*data,adj,licRondas,OFERTAS_,tabla,*/procesos,bloques_ofertas,PROCESOS_) {
 
-  to_data(bloques_ofertas);
-
+  data = to_data(bloques_ofertas);
+  adj = to_adj(bloques_ofertas);
+  licRondas = to_licRondas(bloques_ofertas);
+  OFERTAS_ = to_OFERTAS_(bloques_ofertas);
+  tabla = to_tabla(bloques_ofertas);
+  procesos = PROCESOS_
 /*-------------------NUEVO FILTRO------------------------------------------*/
     var ron_lic = licRondas.map(function(d) {
       var result;
@@ -146,15 +260,13 @@ function RED(width,height) {
        if(d) d.LICITANTE = d.LICITANTE.split(";")
      });
      /*-----------------------------*/
-
-     /*¿CUÁLES SON LOS CONTINENTES?*/
-     /*... de esto depende el color de los nodos*/
+/*
     var continentes = data.map(function(d) { return d.CONTINENTE; })
      .reduce(function(a,b) { 
       if(a.indexOf(b) < 0 ) { a.push(b); }
       return a;
     },[]);
-
+*/
      /*-----------------------------*/
 
     /*¿CUÁL ES EL MÁXIMO VALOR ADJUDICADO?*/
@@ -417,9 +529,9 @@ function RED(width,height) {
   });
 
   leyendaRED();
-  //Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos);
-//  NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos);
-//  resumen(data,adj,licRondas,pmts,ofertas,arr,tabla,procesos)
+//  Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos);
+  NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos);
+  resumen(data,adj,licRondas,pmts,ofertas,arr,tabla,procesos)
   };
 
 

@@ -474,6 +474,8 @@ def importar():
    EMP_LIC = emp_lic.copy()
    EMP_LIC["ID_LICITANTE"] += 1; EMP_LIC["ID_EMPRESA"] += 1;
    EMP_LIC.to_csv("DATOS_LICITACIONES_licitantes_empresas.csv",header=HEAD,index=False)
+   EMP_LIC.to_csv("DATOS_LICITACIONES_licitantes_empresas_H.csv",header=True,index=False)
+
 ################COPIA DE INTERMEDIA#######################################
    EMP_LIC.to_csv("INtermedia_lic_emp.csv",header=True,index=False)
 ##########################################################################
@@ -483,6 +485,7 @@ def importar():
        ofertas1[i] += 1
    ofertas1.columns = ["ID_LICITANTE_OFERTA","ID_BLOQUE","VAR_ADJ1","VAR_ADJ2","VPO","BONO","ID_OPERADOR","GANADOR","SEGUNDO_LUGAR","ID_ADJ","ID_LICITANTE_ADJ"]
    ofertas1.to_csv("DATOS_LICITACIONES_ofertas.csv",header=HEAD,index=False,encoding="latin1")
+   ofertas1.to_csv("DATOS_LICITACIONES_ofertas_header.csv",header=True,index=False,encoding="latin1")
    ## DATOS_LICITACIONES_PROCESOS
    PROCESOS = ee.copy()
    PROCESOS["ID_LICITANTE"] += 1

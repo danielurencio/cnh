@@ -10,7 +10,7 @@ engine = create_engine(conn)
 
 conn_local = 'oracle://cmde_raw:raw17@localhost:1521/XE'
 query_ofertas = "SELECT ID_BLOQUE,VAR_ADJ2 FROM DATOS_LICITACIONES_OFERTAS WHERE ID_LICITANTE_OFERTA = ID_LICITANTE_ADJ"
-query_bloques = "SELECT ID_BLOQUE,RONDA,LICITACION,NOMBRE_BLOQUE,NUM_BLOQUE FROM DATOS_LICITACIONES_BLOQUES1" 
+query_bloques = "SELECT ID_BLOQUE1,RONDA,LICITACION,NOMBRE_BLOQUE,NUM_BLOQUE FROM DATOS_LICITACIONES_BLOQUES1" 
 
 engine_local = create_engine(conn_local)
 
@@ -19,7 +19,8 @@ ofertas_local.columns = ofertas_local.columns.map(lambda x: x.upper())
 ofertas_local.set_index('ID_BLOQUE',inplace=True)
 
 #################################OFERTAS RAW##################################3
-ofertas_raw = pd.read_sql('SELECT * FROM DATOS_LICITACIONES_OFERTAS',create_engine('oracle://cmde_raw:raw17@172.16.120.3:1521/cnih'))
+#ofertas_raw = pd.read_sql('SELECT * FROM DATOS_LICITACIONES_OFERTAS',create_engine('oracle://cmde_raw:raw17@172.16.120.3:1521/cnih'))
+ofertas_raw = pd.read_csv('../nt_ofertas.csv')
 ofertas_raw.columns = ofertas_raw.columns.map(lambda x:x.upper())
 ofertas_raw['ID_BLOQUE_'] = np.zeros(ofertas_raw.shape[0])
 ofertas_raw['ID_BLOQUE_'] = ofertas_raw['ID_BLOQUE_'].map(lambda x: np.NaN)
@@ -32,11 +33,11 @@ todos = pd.DataFrame({'ID_BLOQUE':todos})
 ###########################################################################
 
 
-#bloques_local = pd.read_sql(query_bloques,engine_local)
-bloques_local = pd.read_csv("../DATOS_LICITACIONES_bloques_nuevo.csv")
+bloques_local = pd.read_sql(query_bloques,engine_local)
+#bloques_local = pd.read_csv("../DATOS_LICITACIONES_bloques_nuevo.csv")
 bloques_local.rename(columns={ 'index':'ID_BLOQUE', 'NUM':'NUM_BLOQUE','AREA':'NOMBRE_BLOQUE','LIC':'LICITACION' },inplace=True)
 bloques_local.columns = bloques_local.columns.map(lambda x: x.upper())
-bloques_local.set_index('ID_BLOQUE',inplace=True)
+bloques_local.set_index('ID_BLOQUE1',inplace=True)
 bloques_local.ix[bloques_local[bloques_local['RONDA'].str.contains('ASOC')].index,"RONDA"] = "ASOC"
 
 brent = pd.read_sql(query,engine)
@@ -267,6 +268,8 @@ ofertas_raw.ix["RPEMEXLTrion-Trion","ID_BLOQUE"] = "ASOC-TRION"
 ofertasRawNulls = ofertas_raw[ofertas_raw['ID_BLOQUE'].isnull()].index.drop_duplicates()
 ofertas_raw.ix[ofertasRawNulls,"ID_BLOQUE"] = ofertas_raw.ix[ofertasRawNulls].index.map(lambda x:x)
 ofertas_raw.to_csv("../nt_ofertas_1.csv",header=False,index=False,encoding="latin1")
+ofertas_raw.to_csv("../nt_ofertas_1_header.csv",header=True,index=False,encoding="UTF-8")
+
 print("ARCHIVO NUEVO DE OFERTAS GENERADO!")
 
 #############################################################################3
@@ -285,6 +288,6 @@ bloques_raw.index = bloques_raw.index.map(lambda x: unicode(x.decode('utf-8')))
 bloques_raw = bloques_raw.join(new_pmt["INV_COMPROMETIDA_USD"])
 bloques_raw.ix[bloques_raw.index,"INV_COMPROMETIDA_USD"] = bloques_raw["INV_COMPROMETIDA_USD"].map(lambda x: np.NaN if x==0 else x)
 bloques_raw.ix['ASOC-TRION','INV_COMPROMETIDA_USD'] = 570000000
-bloques_raw.to_csv("../DATOS_LICITACIONES_bloques_nuevo_ids.csv",index=True,encoding="latin1",header=None)
+bloques_raw.to_csv("../DATOS_LICITACIONES_bloques_nuevo_ids.csv",index=True,encoding="latin1",header=True)
 print("ARCHIVO de BLOQUES GENERADO!")
 

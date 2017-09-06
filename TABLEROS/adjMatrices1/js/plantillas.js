@@ -174,6 +174,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 
   function GRAFICOS() {
+
       d3.select("#graficos").html(contenido);
 
       var hT = +d3.select("#titulo").style("height").split("px")[0];
@@ -1104,6 +1105,7 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
     return d.ID_LICITANTE_OFERTA != "";
   });
 
+
   if(!RONDA_LIC) {
     FILTRO1 = bloques1;
     FILTRO2 = bloques2;
@@ -1198,6 +1200,7 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
   var bloquesAdjudicados = FILTRO2.filter(function(d) {
     return d.ID_LICITANTE_ADJ != "";
   });
+
   var EmpS = _.uniq(FILTRO4,"EMPRESA");
 
   var empresas_interesadas = EmpS.length;
@@ -1218,11 +1221,12 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
   };
   ofertasValidas = d3.mean(cuentaOfertas).toFixed(1);
 
+
   pre = [
    { 'key':'Empresas interesadas', 'val':empresas_interesadas },
    { 'key':'Empresas precalificadas', 'val':empresas_precalif },
-   { 'key':'Bloques ofertados', 'val':FILTRO2.length },
-   { 'key':'Bloques adjudicados','val':FILTRO1.length }
+   { 'key':'Bloques ofertados', 'val': FILTRO2.length },
+   { 'key':'Bloques adjudicados','val': bloquesAdjudicados.length},//FILTRO1.length }
 // { key:'Inversión comprometida',val:(inv_pmt / 1000).toFixed(0) + "K" },
 // { key:'Área (km\u00B2)',val:+area.toFixed(1) }
   ];

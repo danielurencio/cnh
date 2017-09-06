@@ -197,6 +197,7 @@ if(__name__ == '__main__'):
 ###################### IMPORTAR ############################################
     licsU.to_csv("nt_licitantes.csv",encoding="latin1",header=None)
     intrLics.to_csv("nt_intermedia_licitantes.csv",header=None,index=False)
+    intrLics.to_csv("nt_intermedia_licitantes_H.csv",header=True,index=False)
     intrGpos.to_csv("nt_intermedia_grupos.csv",header=None,index=False)
     empresas.to_csv("nt_empresas.csv",encoding="latin1",header=None,index=False)
     ofertas.to_csv("nt_ofertas.csv",encoding="latin1",header=True,index=False)
