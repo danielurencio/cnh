@@ -122,11 +122,12 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
 var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //-----------------------------------//
 
- var sumas = d3.select("svg#sumas"); 
-// var nums = [1,2,3,4,5];
+ var sumas = d3.select("svg#sumas");
+
+ var contenidoSumas = SUMAS.pre.filter(function(d) { return !d.ignorar; });
 
  var nums = sumas.append("g").selectAll("text")
-  .data(SUMAS.pre).enter()
+  .data(contenidoSumas).enter()
   .append("text")
    .style("font-weight",300)
    .attr("id",function(d,i) {
@@ -138,7 +139,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
    .attr("text-anchor","middle")
    .attr("x",function(d,i) {
      var width = d3.select("svg#sumas").style("width").split("px")[0];
-     var objLength = Object.keys(SUMAS.pre).length;
+     var objLength = Object.keys(contenidoSumas).length;
      return (width / objLength*i) + (width/objLength/2);
    })
    .attr("y",function() {
@@ -146,7 +147,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
      return height / 2;
    }).text(function(d) { return d.val; });
 
- var tits__ = SUMAS.pre.map(function(d) { return d.key; });
+ var tits__ = contenidoSumas.map(function(d) { return d.key; });
  var tits = sumas.append("g").selectAll("text")
   .data(tits__).enter()
   .append("text")
@@ -312,7 +313,8 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	var T = String(d.val).split("K");
 	if(T.length == 1) T = Number(T[0]).toLocaleString();
         if(T.length ==2) T = Number(T[0]).toLocaleString() + "K";
-	return T;
+//	return T;
+	return Number(d.val).toLocaleString();
    });
 
   figuras.transition().duration(1000).attr("opacity",1);
@@ -320,6 +322,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
   medio.append("g").selectAll("text")
    .data(valores).enter()
    .append("text")
+   .attr("tag",function(d) { return d.key; })
    .attr({
     'fill':function(d,i) { 
       var c = i == 1 ? colorBarras : 'black';
@@ -348,6 +351,22 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
    .text(function(d,i) {
 	return d.key;
    });
+
+  var MM_ = d3.select('text[tag="Inversión comprometida"]')
+	.node()
+
+  d3.select(MM_.parentNode).append("text")
+  .attr("text-anchor","middle")
+  .attr('alignment-baseline','text-before-edge')
+  .attr('font-weight',600)
+  .attr('font-size',12)
+  .attr('fill',colorBarras)
+  .attr("x",function() {
+    var x = +d3.select('#mitad2').style("width").split("px")[0];
+    return x/2;
+  })
+  .attr("y",MM_.getBBox().y + MM_.getBBox().height + 4)
+  .text("(millones de dólares)");
 
 //////////////////////////////////////////////////////////////////////////
 	Highcharts.setOptions({
@@ -1095,7 +1114,8 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
   var FILTRO2;
   var FILTRO3;
   var FILTRO4;
-  var FILTRO5;
+//  var FILTRO5;
+  var FILTRO6;
 
   var bloques1 = _.uniq(ofertas,"ID_BLOQUE");
   var bloques2 = _.uniq(licRondas,"ID_BLOQUE");
@@ -1105,13 +1125,15 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
     return d.ID_LICITANTE_OFERTA != "";
   });
 
+//console.log(ofertas)
 
   if(!RONDA_LIC) {
     FILTRO1 = bloques1;
     FILTRO2 = bloques2;
     FILTRO3 = lics;
     FILTRO4 = empresasPreLic;
-    FILTRO5 = tabla;
+//    FILTRO5 = tabla;
+    FILTRO6 = tabla;
   } else {
     if(typeof(RONDA_LIC) != 'object') {
       FILTRO1 = bloques1.filter(function(d) {
@@ -1126,7 +1148,10 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
       FILTRO4 = procesos.filter(function(d) {
        return d.RONDA == RONDA_LIC;
       });
-      FILTRO5 = procesos.filter(function(d) {
+//      FILTRO5 = procesos.filter(function(d) {
+//       return d.RONDA == RONDA_LIC;
+//      });
+      FILTRO6 = tabla.filter(function(d) {
        return d.RONDA == RONDA_LIC;
       });
     } else {
@@ -1144,12 +1169,16 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
         FILTRO4 = procesos.filter(function(d) {
           return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
         });
-        FILTRO5 = procesos.filter(function(d) {
+//        FILTRO5 = procesos.filter(function(d) {
+//          return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
+//        });
+        FILTRO6 = tabla.filter(function(d) {
           return d.RONDA == RONDA_LIC.ronda && d.LICITACION == RONDA_LIC.lic;
         });
+
       } else {
 // SI ES VERDAD QUE LA DISTANCIA DEL OBJETO SÍ EXISTE (ES UN ARRAY)
-	FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = [], FILTRO5 = [];
+FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = [];
 	for(var j in RONDA_LIC) {
           var temp1 = bloques1.filter(function(d) {
           return d.RONDA == RONDA_LIC[j].ronda
@@ -1167,7 +1196,11 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
           return d.RONDA == RONDA_LIC[j].ronda
 		&& d.LICITACION == RONDA_LIC[j].lic;
           });
-          var temp5 = tabla.filter(function(d) {
+//          var temp5 = tabla.filter(function(d) {
+//          return d.RONDA == RONDA_LIC[j].ronda
+//		&& d.LICITACION == RONDA_LIC[j].lic;
+//          });
+          var temp6 = tabla.filter(function(d) {
           return d.RONDA == RONDA_LIC[j].ronda
 		&& d.LICITACION == RONDA_LIC[j].lic;
           });
@@ -1176,7 +1209,8 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
 	  FILTRO2 = FILTRO2.concat(temp2);
 	  FILTRO3 = FILTRO3.concat(temp3);
 	  FILTRO4 = FILTRO4.concat(temp4);
-	  FILTRO5 = FILTRO5.concat(temp5);
+//	  FILTRO5 = FILTRO5.concat(temp5);
+	  FILTRO6 = FILTRO6.concat(temp6);
 	};
       };
     };
@@ -1195,12 +1229,22 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
     return a;
   },[]);
 
+console.log(FILTRO1.map(function(d) {return d.ID_BLOQUE;}).sort())
+
   var inv_pmt = FILTRO1.map(function(d) { return d.PMT_TOTAL; }).reduce(SUM);
   var area = FILTRO1.map(function(d) { return d.AREA; }).reduce(SUM);
   var bloquesAdjudicados = FILTRO2.filter(function(d) {
     return d.ID_LICITANTE_ADJ != "";
   });
 
+  var empresas_adj = FILTRO6.filter(function(d) {
+    return d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ;
+  }).map(function(e) { return e.EMPRESA; });
+
+  var empresas_adj_uniq = _.uniq(empresas_adj).length;
+
+  var EmpS_ = FILTRO6.map(function(d) { return d.EMPRESA; });
+  var empresas_participantes = _.uniq(EmpS_).length;
   var EmpS = _.uniq(FILTRO4,"EMPRESA");
 
   var empresas_interesadas = EmpS.length;
@@ -1214,17 +1258,23 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
   }).length;
 
 
-  var ofertasValidas = _.groupBy(FILTRO5,"ID_BLOQUE");
+  var ofertasValidas = _.groupBy(FILTRO6,"ID_BLOQUE");
+
   var cuentaOfertas = [];
   for(var k in ofertasValidas) {
-    cuentaOfertas.push(ofertasValidas[k].length);
+    var val = ofertasValidas[k].filter(function(d) {
+      return d.VALIDEZ == 'VALIDA';
+    });
+    cuentaOfertas.push(val.length);
   };
   ofertasValidas = d3.mean(cuentaOfertas).toFixed(1);
 
 
   pre = [
-   { 'key':'Empresas interesadas', 'val':empresas_interesadas },
-   { 'key':'Empresas precalificadas', 'val':empresas_precalif },
+   { 'key':'Empresas participantes', 'val':empresas_participantes },
+   { 'key':'Empresas adjudicadas', 'val':empresas_adj_uniq },
+   { 'key':'Empresas interesadas', 'val':empresas_interesadas, 'ignorar':true },
+   { 'key':'Empresas precalificadas', 'val':empresas_precalif, 'ignorar':true },
    { 'key':'Bloques ofertados', 'val': FILTRO2.length },
    { 'key':'Bloques adjudicados','val': bloquesAdjudicados.length},//FILTRO1.length }
 // { key:'Inversión comprometida',val:(inv_pmt / 1000).toFixed(0) + "K" },
@@ -1232,7 +1282,7 @@ function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
   ];
 
   after = [
-   { 'key':'Inversión comprometida','val':(inv_pmt/1000).toFixed(0) + "K" },
+   { 'key':'Inversión comprometida','val':(inv_pmt/1000000).toFixed(0) },
    { 'key':'Bloques adjudicados', 'val':bloquesAdjudicados.length },
    { 'key':'Área adjudicada (km\u00B2)', 'val':+area.toFixed(1) },
    { 'key':'Empresas que participaron', 'val':empresas.length },

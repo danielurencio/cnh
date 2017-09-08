@@ -267,7 +267,7 @@ ofertas_raw.ix["R1L4-6","ID_BLOQUE"] = "R1L4-HAN2"
 ofertas_raw.ix["RPEMEXLTrion-Trion","ID_BLOQUE"] = "ASOC-TRION"
 ofertasRawNulls = ofertas_raw[ofertas_raw['ID_BLOQUE'].isnull()].index.drop_duplicates()
 ofertas_raw.ix[ofertasRawNulls,"ID_BLOQUE"] = ofertas_raw.ix[ofertasRawNulls].index.map(lambda x:x)
-ofertas_raw.to_csv("../nt_ofertas_1.csv",header=False,index=False,encoding="latin1")
+ofertas_raw.to_csv("../nt_ofertas_1.csv",header=False,index=False,encoding="utf-8")
 ofertas_raw.to_csv("../nt_ofertas_1_header.csv",header=True,index=False,encoding="UTF-8")
 
 print("ARCHIVO NUEVO DE OFERTAS GENERADO!")
@@ -288,6 +288,6 @@ bloques_raw.index = bloques_raw.index.map(lambda x: unicode(x.decode('utf-8')))
 bloques_raw = bloques_raw.join(new_pmt["INV_COMPROMETIDA_USD"])
 bloques_raw.ix[bloques_raw.index,"INV_COMPROMETIDA_USD"] = bloques_raw["INV_COMPROMETIDA_USD"].map(lambda x: np.NaN if x==0 else x)
 bloques_raw.ix['ASOC-TRION','INV_COMPROMETIDA_USD'] = 570000000
-bloques_raw.to_csv("../DATOS_LICITACIONES_bloques_nuevo_ids.csv",index=True,encoding="latin1",header=True)
+bloques_raw.to_csv("../DATOS_LICITACIONES_bloques_nuevo_ids.csv",index=True,encoding="utf-8",header=True)
 print("ARCHIVO de BLOQUES GENERADO!")
 

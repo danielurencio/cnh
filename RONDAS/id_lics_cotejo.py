@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 
+procesos = pd.read_csv('procesos_h.csv')
+
 antiguo = pd.read_csv('DATOS_LICITACIONES_licitantes_empresas_H.csv')
 nuevo = pd.read_csv('nt_intermedia_licitantes_H.csv')
 
@@ -14,6 +16,8 @@ nuevo = nuevo.map(lambda x: str(sorted(x)))
 nuevo = nuevo.reset_index()
 nuevo.rename(columns={ 'ID_LICITANTE':'ID_LICITANTE1'},inplace=True)
 nuevo.set_index('ID_EMPRESA',inplace=True)
+
+
 
 rel = nuevo.join(antiguo)
 rel.ix['[11, 171]','ID_LICITANTE0'] = 6
@@ -36,5 +40,9 @@ bloques = pd.read_csv('DATOS_LICITACIONES_bloques_nuevo_ids.csv')
 bloques.id_licitante_adj = bloques.id_licitante_adj.map(lambda x: str(x) if not pd.isnull(x) else x)
 
 bloques.replace({ 'id_licitante_adj':CAMBIOS },inplace=True)
-bloques.to_csv('bloques_bien.csv',index=False,encoding="latin1")
+bloques.to_csv('bloques_bien.csv',index=False,encoding="utf-8")
 print("BLOQUES BIEN! archivo generado..")
+procesos.ID_LICITANTE = procesos.ID_LICITANTE.map(lambda x: str(x) if not pd.isnull(x) else x)
+procesos.replace({'ID_LICITANTE':CAMBIOS},inplace=True)
+procesos.to_csv('procesos_bien.csv',index=False,encoding='utf-8',header=True)
+print("PROCESOS BIEN! archivo generado..")

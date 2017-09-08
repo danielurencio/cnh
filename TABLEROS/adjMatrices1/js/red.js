@@ -11,7 +11,7 @@ function RED(width,height) {
   function to_data(x) {
 
     var resultado = _.uniq(x, function(item) {
-      return [item.ID_LICITANTE, item.ID_EMPRESA].sort().join(',');
+      return [item.ID_LICITANTE, item.ID_EMPRESA,item.EMPRESA].sort().join(',');
     }).map(function(d) {
 	  var obj = {};
 	  obj['ID_LICITANTE'] = d.ID_LICITANTE;
@@ -111,8 +111,8 @@ function RED(width,height) {
 
 
   function to_OFERTAS_(x) {
-    var rr = x.filter(function(d) { return d.VALIDEZ == 'VALIDA' });
-    rr = rr.map(function(d) {
+      var rr = x.filter(function(d) { return d.VALIDEZ == 'VALIDA' });
+      rr = rr.map(function(d) {
       var obj = {};
       obj['AREA'] = d.AREA;
       obj['BONO'] = d.BONO;
@@ -147,6 +147,8 @@ function RED(width,height) {
       obj['VAR_ADJ1'] = d.VAR_ADJ1;
       obj['VAR_ADJ2'] = d.VAR_ADJ2;
       obj['VPO'] = d.VPO;
+      obj['EMPRESA'] = d.EMPRESA;
+      obj['VALIDEZ'] = d.VALIDEZ;
 
       return obj;
     });
@@ -162,7 +164,8 @@ function RED(width,height) {
 //    .defer(d3.csv,'csv/ofertas2.csv')
 //    .defer(d3.csv,'csv/tabla.csv')
     .defer(d3.csv,'csv/procesos.csv')
-    .defer(d3.csv,'csv1/ofertas_bloques.csv')
+//    .defer(d3.csv,'csv1/adios.csv')
+    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')//'csv1/export.csv')
     .defer(d3.csv,'csv1/PROCESOS_.csv')
     .await(getDATA);
 
@@ -174,6 +177,7 @@ function RED(width,height) {
   OFERTAS_ = to_OFERTAS_(bloques_ofertas);
   tabla = to_tabla(bloques_ofertas);
   procesos = PROCESOS_
+
 /*-------------------NUEVO FILTRO------------------------------------------*/
     var ron_lic = licRondas.map(function(d) {
       var result;
@@ -182,7 +186,8 @@ function RED(width,height) {
     }); 
 
     ron_lic = _.uniq(ron_lic);
-    ron_lic.splice(ron_lic.indexOf("R."),1)
+
+//    ron_lic.splice(ron_lic.indexOf("R."),1)
 
     for(var i in ron_lic) {
      var split_ = ron_lic[i].split(".")
@@ -191,7 +196,7 @@ function RED(width,height) {
      ron_lic[i] = "Ronda " + ronda + " - Licitación " + lic;
     };
 
-
+   ron_lic.sort();
 /* quitar asociacion
    var asoc__ = ron_lic.indexOf("Ronda ASOCIACIÓN - Licitación ASOCIACIÓN")
    ron_lic.splice(asoc__,1)
@@ -242,10 +247,12 @@ function RED(width,height) {
 
 /*-------------------NUEVO FILTRO------------------------------------------*/
 
+     console.log(OFERTAS_)
 
      var ofertas = OFERTAS_.filter(function(d) {
 	return d.ID_LICITANTE_ADJ == d.ID_LICITANTE_OFERTA;
      });
+
 
      procesos.forEach(function(d) {
 	d.DATAROOM = +d.DATAROOM;

@@ -5,8 +5,15 @@ import cx_Oracle
 from sqlalchemy import create_engine
 import sys
 
-conn=sys.argv[len(sys.argv)-1]
-f_ = pd.read_csv("base_utf8.csv")
+conn = "f"
+#conn=sys.argv[len(sys.argv)-1]
+#f_ = pd.read_csv("base_utf8.csv")
+f_ = pd.ExcelFile('Bloques_licitados_validos.xlsx')
+f_ = f_.parse('OFERTAS',skiprows=1,encoding='utf-8')
+f_.drop('Unnamed: 0',axis=1,inplace=True)
+f_.rename(columns={'ID_BLOQUE':'ID_BLOQUE_NUEVO'},inplace=True)
+f_.to_csv('Base_utf8.csv',encoding="utf-8",index=False,header=True)
+f_ = pd.read_csv('Base_utf8.csv')
 
 def empresasUnicas(f_):
     arr = []
@@ -79,7 +86,7 @@ def intermediaGrupos(intrLics,idRecuperados):
     join.reset_index(inplace=True)
     join["id_grupo"] = join["id_grupo"].map(lambda x: int(x)) #if not pd.isnull(x) else x)
     join = join[['ID_LICITANTE','ID_EMPRESA','id_grupo']]
-    join = join[["ID_LICITANTE","id_grupo"]].drop_duplicates()
+#    join = join[["ID_LICITANTE","id_grupo"]].drop_duplicates()
     return join
 
 
@@ -95,6 +102,7 @@ def intermediaRaw(conn):
 
 def concatEmps(U,R):
     join = U.join(R)
+#    join = pd.concat([join,R[~R.index.isin(join.index)]],axis=0).drop_duplicates().sort_index()
     noNULL = join[~join['id_empresa'].isnull()]
     siNULL = join[join['id_empresa'].isnull()]
     arr0 = []
@@ -189,16 +197,17 @@ if(__name__ == '__main__'):
     empsR = empresasRaw(conn)
     intrR = intermediaRaw(conn)
     idRecuperados = concatEmps(empsU,empsR)
+    #idRecuperados = empsR.join(empsU)
     intrLics = intermediaLics(idRecuperados)[0]
     licsU = intermediaLics(idRecuperados)[1]
     intrGpos = intermediaGrupos(intrLics,idRecuperados)
     empresas = actualizarEmps(empsR,idRecuperados)
     ofertas = tablaOfertas(licsU)
 ###################### IMPORTAR ############################################
-    licsU.to_csv("nt_licitantes.csv",encoding="latin1",header=None)
+    licsU.to_csv("nt_licitantes.csv",encoding="utf-8",header=None)
     intrLics.to_csv("nt_intermedia_licitantes.csv",header=None,index=False)
     intrLics.to_csv("nt_intermedia_licitantes_H.csv",header=True,index=False)
     intrGpos.to_csv("nt_intermedia_grupos.csv",header=None,index=False)
-    empresas.to_csv("nt_empresas.csv",encoding="latin1",header=None,index=False)
-    ofertas.to_csv("nt_ofertas.csv",encoding="latin1",header=True,index=False)
-
+    empresas.to_csv("nt_empresas.csv",encoding="utf-8",header=None,index=False)
+    ofertas.to_csv("nt_ofertas.csv",encoding="utf-8",header=True,index=False)
+    print("LISTO!!")

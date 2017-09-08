@@ -82,3 +82,4 @@ mmerge3['ID_LICITANTE'].replace(1000,np.nan, inplace=True)
 mmerge3['ID_LICITANTE'].replace(0,np.nan, inplace=True)
 mmerge3 = mmerge3[["ID_LICITANTE","ID_EMPRESA","RONDA","LICITACION","DATAROOM","PRECALIF"]]
 mmerge3.to_csv("procesos.csv",index=False,header=None)
+mmerge3.to_csv("procesos_h.csv",index=False,header=True)

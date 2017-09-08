@@ -41,6 +41,20 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
        empresas[i] = doc;
       };
 
+  var emps_ = data.map(function(d) {
+    var obj = {};
+    obj["EMPRESA"] = d.EMPRESA;
+    obj["id"] = d.ID_EMPRESA;
+    return obj;
+  });
+
+  emps_ = _.uniq(emps_,function(item) {
+    return [item.EMPRESA, item.id].sort().join(',');
+  });
+
+  console.log(emps_);
+
+
       if(!lista.attr("class")) {
         lista.attr("class","toggled")
         var t0 = d3.select(this).transition().duration(300)

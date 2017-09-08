@@ -316,4 +316,6 @@ procesos_nueva() {
 ofertas_nuevo() {
   libreoffice --headless --convert-to csv TABLA_OFERTAS.xlsx
   iconv -f ISO-8859-1 -t UTF-8 TABLA_OFERTAS.csv > base_utf8.csv;
+  rm TABLA_OFERTAS.csv;
+#  mv TABLA_OFERTAS.csv base_utf8.csv;
 }

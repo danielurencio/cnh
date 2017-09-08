@@ -64,5 +64,5 @@ bloques.reset_index(inplace=True)
 bloques.drop_duplicates(["index","id_licitante_adj"],inplace=True)
 bloques.set_index("index",inplace=True)
 
-bloques.to_csv("DATOS_LICITACIONES_bloques_nuevo.csv", header=True,encoding="latin1")
-print('ARCHIVO GENERADO')
+bloques.to_csv("DATOS_LICITACIONES_bloques_nuevo.csv", header=True,encoding="utf-8")
+print('ARCHIVO GENERADO BLOQUES_NUEVO.CSV')
