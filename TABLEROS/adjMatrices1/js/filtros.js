@@ -561,7 +561,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
         if( cambioColor != "transparent" ) {
           s.transition().duration(800).attr("fill",cambioColor);
         } else {
-          s.transition().duration(800).attr("stroke","black");
+          s.transition().duration(800).attr("stroke","rgb(8,109,115)");
         }
       };
      } else {
@@ -574,7 +574,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
        d3.selectAll("circle.node").transition().duration(800)
 	  .attr("fill",function(d) {
 	    var color = d3.select(this).attr("color");
-	    if(color != "transparent") return "gray";
+	    if(color != "transparent") return "rgb(232,232,232)";
 	    if(color == "transparent") return "transparent"
 	  })
 	  .attr("stroke",function(d) {
@@ -592,7 +592,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
         if( cambioColor != "transparent" ) {
           s.transition().duration(800).attr("fill",cambioColor);
         } else {
-          s.transition().duration(800).attr("stroke","black");
+          s.transition().duration(800).attr("stroke","rgb(8,109,115)");
         }
       };
      };
@@ -634,7 +634,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
        d3.selectAll("circle.node").transition().duration(800)
 	  .attr("fill",function(d) {
 	    var color = d3.select(this).attr("color");
-	    if(color != "transparent") return "gray";
+	    if(color != "transparent") return "rgb(232,232,232)";
 	    if(color == "transparent") return "transparent"
 	  })
 	  .attr("stroke",function(d) {
@@ -655,7 +655,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
 	  s.transition().duration(800).attr("fill",color);
 	}
 	if(color=="transparent") {
-	  s.transition().duration(800).attr("stroke","black");
+	  s.transition().duration(800).attr("stroke","rgb(8,109,115)");
 	}
 
       };
@@ -679,7 +679,7 @@ var coco =[]
        d3.selectAll("circle.node").transition().duration(800)
 	  .attr("fill",function(d) {
 	    var color = d3.select(this).attr("color");
-	    if(color != "transparent") return "gray";
+	    if(color != "transparent") return "rgb(232,232,232)";
 	    if(color == "transparent") return "transparent"
 	  })
 	  .attr("stroke",function(d) {
@@ -698,7 +698,7 @@ var coco =[]
 	  s.transition().duration(800).attr("fill",color);
 	}
 	if(color=="transparent") {
-	  s.transition().duration(800).attr("stroke","black");
+	  s.transition().duration(800).attr("stroke","rgb(8,109,115)");
 	}
       };
 

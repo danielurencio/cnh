@@ -5,7 +5,7 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
 // HABRÁ QUE FILTRAR POR RONDA Y LICITACIÓN PARA REUTILIZAR ESTA FUNCIÓN.
   var TABLA;
   var FILTRO;
-  var colorBarras = "rgba(255,15,0,0.65)"
+  var colorBarras = "rgb(8,109,115)"//"rgba(255,15,0,0.65)"
   var texto = {
     'resumen':'RESUMEN'
   };
@@ -187,11 +187,13 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	  return d.key == "Bloques ofertados";
 	})[0].val;
 
-	var bAdj = SUMAS.after.filter(function(d) {
-	  return d.key == "Bloques adjudicados";
+	var bAdj = +SUMAS.pre.filter(function(d) {
+	  return d.key == "Área adjudicada";
 	})[0].val;
 
-	var bNoAdj = bOf - bAdj;
+	var bNoAdj = +SUMAS.pre.filter(function(d) {
+	  return d.key == "Área no adjudicada";
+	})[0].val;
 
 	var precalif = SUMAS.pre.filter(function(d) {
 	  return d['key'] == 'Empresas precalificadas';
@@ -208,14 +210,33 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	var noPrecalif = interesadas - precalif;
 	var precalifNoOf = precalif - participaron;
 
+        var lic_ADJ = SUMAS.pre.filter(function(d) {
+	  return d['key'] == 'Licencia adjudicados'
+	})[0];
+
+        var com_ADJ = SUMAS.pre.filter(function(d) {
+	  return d['key'] == 'Producción compartida adjudicados'
+	})[0];
+
+        var lic_noADJ = SUMAS.pre.filter(function(d) {
+	  return d['key'] == 'Licencia no adjudicados'
+	})[0];
+
+        var com_noADJ = SUMAS.pre.filter(function(d) {
+	  return d['key'] == 'Producción compartida no adjudicados'
+	})[0];
+
+
+
 	var serieEmpresas = [
-	  ["No precalificadas",noPrecalif],
-	  ["No ofertaron",precalifNoOf],
-	  ["Ofertaron",participaron]
+	  [com_noADJ.key,com_noADJ.val.length],
+	  [lic_noADJ.key,lic_noADJ.val.length],
+	  [com_ADJ.key,com_ADJ.val.length],
+          [lic_ADJ.key,lic_ADJ.val.length]
 	];
 
 	Highcharts.setOptions({
-	  colors: ['rgba(0,0,0,0.2)','rgba(0,0,0,0.35)',colorBarras]
+	  colors: ['rgba(0,0,0,0.2)','rgba(0,0,0,0.35)','rgba(8,109,115,0.7)','rgba(8,109,115,1)']
 	});
 
 	var empresas_precalif = Highcharts.chart({
@@ -226,13 +247,12 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
                 type: 'pie'
             },
            title: {
-                text: "EMPRESAS",
+                text: "CONTRATOS",
 		style: {
 		  'font-family':'Open Sans, sans-serif',
 		  'font-weight':600,
 		  'font-size':16
 		}
-
             },
            tooltip: {
                 formatter: function() {
@@ -247,10 +267,10 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
                 showInLegend:true,
                 dataLabels: {
                     enabled: true,
-		    distance:15,
+		    distance:5,
 		    style: {
 		      'font-family':'Open Sans, sans-serif',
-		      'font-size':8,
+		      'font-size':7,
 		      'color':"black",
 		      'stroke-width':"0px"
 		    },
@@ -266,7 +286,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
   var medio = d3.select("#mitad2>svg");
 
   var inv = SUMAS.after.filter(function(d) {
-    return d.key == 'Inversión comprometida'
+    return d.key == 'Inversión'
   })[0];
 
   var ofertasXbloque = SUMAS.after.filter(function(d) {
@@ -352,7 +372,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	return d.key;
    });
 
-  var MM_ = d3.select('text[tag="Inversión comprometida"]')
+  var MM_ = d3.select('text[tag="Inversión"]')
 	.node()
 
   d3.select(MM_.parentNode).append("text")
@@ -456,13 +476,14 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
                 type: 'pie'
             },
            title: {
-                text: "BLOQUES",
+                text: "ÁREA",
 		style: {
 		  'font-family':'Open Sans, sans-serif',
 		  'font-weight':600,
 		  'font-size':16
 		}
             },
+	   subtitle: { text: "(miles de km\u00B2)" },
            tooltip: {
                 formatter: function() {
                     return '<b>'+ this.point.name +'</b>: '+ this.y;
@@ -470,7 +491,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
             },
             series: [{
                 name: 'Bloques',
-                data: [["Adjudicados",bAdj],["No adjudicados",bNoAdj]],
+                data: [["Adjudicada",bAdj],["No adjudicada",bNoAdj]],
                 size: '90%',
                 innerSize: '65%',
                 showInLegend:true,
@@ -503,7 +524,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //////////////////////////////////////////////////////////////////////////////////
 //------------------ TABLA ------------------------------------------------------
 /////////////////////////////////////////////////////////////////////////////////
-
+  TABLA = TABLA.filter(function(d) { return d.VAR_ADJ1 != ""; })
   function RenderTabla(widLic) {
 	 d3.select("table#tBody")
 	  .selectAll("tr").data(TABLA).enter()
@@ -627,7 +648,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
     });
 
     d3.select("#Gráficos")
-	.attr("fill","rgba(255,15,0,0.65)")
+	.attr("fill","rgb(8,109,115)")
 	.attr("stroke-width","0.5px");
 
   var textoPests = d3.select("svg#pestañas").append("g")
@@ -777,7 +798,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   var SUMAS = [
     { 'key':'Bloques adjudicados', 'val':total },
     { 'key':'Área adjudicada (km\u00B2)','val':area },
-    { 'key':'Inversión comprometida', 'val':inv_pmt },
+    { 'key':'Inversión (dólares)', 'val':inv_pmt },
 //    { 'key':'No. de ofertas', 'val':licsEmpresa.length }
   ];
 
@@ -809,8 +830,9 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
      return height / 2;
    }).text(function(d) {
       var t;
-      if( d3.select(this).attr("class") == "Inversión_comprometida" ) {
-	t = Number((d.val/1000).toFixed(0)).toLocaleString() + "K";
+      if( d3.select(this).attr("class") == "Inversión_(dólares)" ) {
+	t = Number((d.val/1).toFixed(1)).toLocaleString();
+	t = "$ " + t;
       } else {
 	t = Number(d.val).toLocaleString();
       };
@@ -913,7 +935,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
       d3.select(this).style("cursor","pointer");
     })
     .on("click",function(d) {
-      var colorBarras = "rgba(255,15,0,0.65)";
+      var colorBarras = "rgb(8,109,115)";
       d3.selectAll("rect.boton").attr("fill","rgba(0,0,0,0.65)");
       d3.selectAll("rect.boton").attr("tag",null);
       d3.selectAll("rect.boton").attr("stroke-width","0px");
@@ -944,7 +966,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
     });
 
     d3.select("#Gráficos")
-	.attr("fill","rgba(255,15,0,0.65)")
+	.attr("fill","rgb(8,109,115)")
 	.attr("stroke-width","0.5px");
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1229,7 +1251,59 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
     return a;
   },[]);
 
-console.log(FILTRO1.map(function(d) {return d.ID_BLOQUE;}).sort())
+  var contratos = FILTRO6.map(function(d) {
+    var obj = {};
+    obj['ID_BLOQUE'] = d.ID_BLOQUE;
+    obj['CONTRATO'] = d.CONTRATO;
+    obj['ID_LICITANTE_ADJ'] = d.ID_LICITANTE_ADJ;
+    return obj;
+  });
+
+  contratos = _.uniq(contratos,'ID_BLOQUE');
+
+  var contratosAdj = contratos.filter(function(d) {
+    return d.ID_LICITANTE_ADJ;
+  });
+
+  var contratosNoAdj = contratos.filter(function(d) {
+    return !d.ID_LICITANTE_ADJ;
+  });
+
+  var lic_Adj = contratosAdj.filter(function(d) {
+    return d.CONTRATO == 'Licencia';
+  });
+
+  var lic_NoAdj = contratosNoAdj.filter(function(d) {
+    return d.CONTRATO == 'Licencia';
+  });
+
+  var com_Adj = contratosAdj.filter(function(d) {
+    return d.CONTRATO == 'Producción compartida';
+  });
+
+  var com_NoAdj = contratosNoAdj.filter(function(d) {
+    return d.CONTRATO == 'Producción compartida';
+  });
+
+  var bloqs_ = _.uniq(FILTRO6,'ID_BLOQUE');
+
+  var areaAdj = bloqs_.filter(function(d) {
+    return d.ID_LICITANTE_ADJ != "";
+  })
+  .map(function(d) { return d.AREA; })
+  .reduce(function(a,b) { return +a + +b; });
+
+  var areaNoAdj = bloqs_.filter(function(d) {
+    return d.ID_LICITANTE_ADJ == "";
+  });
+
+  if( areaNoAdj.length != 0 ) {
+   areaNoAdj = areaNoAdj
+    .map(function(d) { return d.AREA; })
+    .reduce(function(a,b) { return +a + +b; });
+  } else {
+   areaNoAdj = 0;
+  };
 
   var inv_pmt = FILTRO1.map(function(d) { return d.PMT_TOTAL; }).reduce(SUM);
   var area = FILTRO1.map(function(d) { return d.AREA; }).reduce(SUM);
@@ -1275,14 +1349,18 @@ console.log(FILTRO1.map(function(d) {return d.ID_BLOQUE;}).sort())
    { 'key':'Empresas adjudicadas', 'val':empresas_adj_uniq },
    { 'key':'Empresas interesadas', 'val':empresas_interesadas, 'ignorar':true },
    { 'key':'Empresas precalificadas', 'val':empresas_precalif, 'ignorar':true },
+   { 'key':'Licencia adjudicados', 'val':lic_Adj, 'ignorar':true },
+   { 'key':'Licencia no adjudicados', 'val':lic_NoAdj, 'ignorar':true},
+   { 'key':'Producción compartida adjudicados', 'val':com_Adj, 'ignorar':true },
+   { 'key':'Producción compartida no adjudicados','val':com_NoAdj,'ignorar':true},
    { 'key':'Bloques ofertados', 'val': FILTRO2.length },
    { 'key':'Bloques adjudicados','val': bloquesAdjudicados.length},//FILTRO1.length }
-// { key:'Inversión comprometida',val:(inv_pmt / 1000).toFixed(0) + "K" },
-// { key:'Área (km\u00B2)',val:+area.toFixed(1) }
+   {'key':'Área adjudicada','val':(areaAdj/1000).toFixed(1),'ignorar':true },
+   {'key':'Área no adjudicada','val':(areaNoAdj/1000).toFixed(1), 'ignorar':true }
   ];
 
   after = [
-   { 'key':'Inversión comprometida','val':(inv_pmt/1000000).toFixed(0) },
+   { 'key':'Inversión','val':(inv_pmt/1000000).toFixed(0) },
    { 'key':'Bloques adjudicados', 'val':bloquesAdjudicados.length },
    { 'key':'Área adjudicada (km\u00B2)', 'val':+area.toFixed(1) },
    { 'key':'Empresas que participaron', 'val':empresas.length },
@@ -1356,27 +1434,40 @@ var tablaString =
 };
 
 function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
+  var empNom = data.filter(function(d) {
+	return d.ID_EMPRESA == id_empresa;
+  })[0].EMPRESA;
 /*------------------------- DATOS PARA STACKED ----------------------------*/
       var filtroLic = data.filter(function(e) {
 	  return +e.ID_EMPRESA == +id_empresa;
       }).map(function(d) { return d.ID_LICITANTE; });
 
+
       var licsTOdas_ = tabla.filter(function(e) {
 	return this.indexOf(e.ID_LICITANTE_OFERTA) < 0;
       },filtroLic);
+
 
       var licsEMpresa_ = tabla.filter(function(e) {
 	return this.indexOf(e.ID_LICITANTE_OFERTA) >= 0;
       },filtroLic);
 
+      licsEMpresa_ = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
+
+//      licsEMpresa_ = licsEMpresa_.filter(function(d) {
+//	return d.EMPRESA == empNom;
+//      });
+
       var ganadas = licsEMpresa_.filter(function(d) {
 	return d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ
       });
 
+//      ganadas = ganadas.filter(function(d) { return d.EMPRESA == empNom; })
+
       var noGanadas = licsEMpresa_.filter(function(d) {
 	return d.ID_LICITANTE_OFERTA != d.ID_LICITANTE_ADJ
       });
-
+//      noGanadas = noGanadas.filter(function(d) { return d.EMPRESA == empNom; });
 
       function AgruparOfertasPorLic(arr) {
 	var newArr = [];
@@ -1409,6 +1500,7 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
         dataForStacked.push(obj);
       };
 
+console.log(dataForStacked)
 /*------------------------- DATOS PARA STACKED ----------------------------*/
 
 
@@ -1435,7 +1527,7 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
 
       var colorS = d3.scale.linear()
 	.domain(rondas_r)
-	.range(["orange","red"])
+	.range(["rgb(0,120,170)","rgb(5,63,66)"])
 	.interpolate(d3.interpolateRgb)
 
       var dataForTree = [];
@@ -1669,6 +1761,8 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
     return this.indexOf(e.ID_LICITANTE_OFERTA) >= 0;
   },filtroLic);
 
+licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
+
   maxPosible = d3.max(maxPosible);
 
   var stacked_bars = Highcharts.chart('mitad1', {
@@ -1776,7 +1870,7 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
 	],
         data:dataForTree    }],
     title: {
-        text: '<b>Inversión comprometida por Ronda-bloque</b>',
+        text: '<b>Inversión por Ronda-bloque</b>',
 	style: {
 	  fontSize:16,
 	  fontFamily:'Open Sans, sans-serif',

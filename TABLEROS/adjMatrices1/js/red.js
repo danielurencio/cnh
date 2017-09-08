@@ -149,6 +149,8 @@ function RED(width,height) {
       obj['VPO'] = d.VPO;
       obj['EMPRESA'] = d.EMPRESA;
       obj['VALIDEZ'] = d.VALIDEZ;
+      obj['CONTRATO'] = d.CONTRATO;
+      obj['AREA'] = d.AREA;
 
       return obj;
     });
@@ -247,7 +249,6 @@ function RED(width,height) {
 
 /*-------------------NUEVO FILTRO------------------------------------------*/
 
-     console.log(OFERTAS_)
 
      var ofertas = OFERTAS_.filter(function(d) {
 	return d.ID_LICITANTE_ADJ == d.ID_LICITANTE_OFERTA;
@@ -292,7 +293,7 @@ function RED(width,height) {
 
     var colorScale = d3.scale.linear()
         .domain([0,maxAdj])
-        .range(["gold","red"]);
+        .range(['rgb(233,241,255)',"rgb(5,63,66)"]);
 
     /*¿CUÁL ES EL VALOR MÁXIMO DE PMT*/
     /*... de esto depende ahora el NUEVO radio de los nodos*/
@@ -408,7 +409,7 @@ function RED(width,height) {
 	.attr("stroke",function(d) {
 	  var TAG = d3.select(this).attr('noAdj');
 	  var COLOR = TAG == 'si' ? "black" : null;
-	  return COLOR;
+	  return 'rgb(5,63,66)';
 	})
 	.attr("fill", function(d) {
 	  var nAdj = adj.filter(function(a) {
@@ -454,14 +455,17 @@ function RED(width,height) {
        })
        .on("click", function(d) {
 //-------INTERACCIÓN IZQUIERDA-----------------------------------------------|
+//	  d3.selectAll("circle.node")
+//	    .attr("stroke","rgb"
+
 	  d3.selectAll("#selected")
 	    .attr("id",null)
 	    .attr("stroke",function(d) {
 	      var TAG = d3.select(this).attr('noAdj');
 	      var COLOR = TAG ? "black" : null;
-	      return COLOR;
+	      return 'rgb(8,109,115)';
 	    })
-	    .attr("stroke-width",null)
+	    .attr("stroke-width",1)
 	    .attr("opacity",mainOpacity);
 
 	  var thisNode = d.id;
@@ -607,12 +611,12 @@ function leyendaRED() {
   gradient.append("stop")
 	.attr("offset","0")
 	.attr("stop-opacity",mainOpacity + 0.05)
-	.attr("stop-color","gold");
+	.attr("stop-color","rgb(233,241,255)");
 
   gradient.append("stop")
 	.attr("offset","1")
 	.attr("stop-opacity",mainOpacity + 0.05)
-	.attr("stop-color","red");
+	.attr("stop-color","rgb(5,63,66)");
 
     conteiner.append("rect")
     .attr({
