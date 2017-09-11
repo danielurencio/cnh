@@ -1,6 +1,9 @@
 var graphW = window.innerWidth/2//graphConteinerRect.attr("width"),
     graphH = window.innerHeight;//graphConteinerRect.attr("height");
 
+var minColor = "rgb(247,195,32)";
+var maxColor = "rgb(255,0,61)";
+
 var NN,LL,maxAdj;
 
 function RED(width,height) {
@@ -160,25 +163,18 @@ function RED(width,height) {
   };
 //==============================================================================|
   queue()
-//    .defer(d3.csv,'csv/data.csv') // <---- !
-//    .defer(d3.csv,'csv/adj.csv')
-//    .defer(d3.csv,'csv/linkWidth1.csv')
-//    .defer(d3.csv,'csv/ofertas2.csv')
-//    .defer(d3.csv,'csv/tabla.csv')
-    .defer(d3.csv,'csv/procesos.csv')
-//    .defer(d3.csv,'csv1/adios.csv')
-    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')//'csv1/export.csv')
-    .defer(d3.csv,'csv1/PROCESOS_.csv')
+    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
     .await(getDATA);
 
-  function getDATA(err,/*data,adj,licRondas,OFERTAS_,tabla,*/procesos,bloques_ofertas,PROCESOS_) {
+  function getDATA(err,bloques_ofertas) {
 
   data = to_data(bloques_ofertas);
   adj = to_adj(bloques_ofertas);
   licRondas = to_licRondas(bloques_ofertas);
   OFERTAS_ = to_OFERTAS_(bloques_ofertas);
   tabla = to_tabla(bloques_ofertas);
-  procesos = PROCESOS_
+  var procesos = [];
+//  procesos = PROCESOS_
 
 /*-------------------NUEVO FILTRO------------------------------------------*/
     var ron_lic = licRondas.map(function(d) {
@@ -254,12 +250,12 @@ function RED(width,height) {
 	return d.ID_LICITANTE_ADJ == d.ID_LICITANTE_OFERTA;
      });
 
-
+/*
      procesos.forEach(function(d) {
 	d.DATAROOM = +d.DATAROOM;
 	d.PRECALIF = +d.PRECALIF;
      });
-
+*/
      /*PROCESAR LICITANTES POR RONDA*/
      licRondas = licRondas.filter(function(d) {
 	return d.RONDA && d.LICITACION;
@@ -293,7 +289,7 @@ function RED(width,height) {
 
     var colorScale = d3.scale.linear()
         .domain([0,maxAdj])
-        .range(['rgb(233,241,255)',"rgb(5,63,66)"]);
+        .range([minColor,maxColor])//['rgb(233,241,255)',"rgb(5,63,66)"]);
 
     /*¿CUÁL ES EL VALOR MÁXIMO DE PMT*/
     /*... de esto depende ahora el NUEVO radio de los nodos*/
@@ -409,7 +405,7 @@ function RED(width,height) {
 	.attr("stroke",function(d) {
 	  var TAG = d3.select(this).attr('noAdj');
 	  var COLOR = TAG == 'si' ? "black" : null;
-	  return 'rgb(5,63,66)';
+	  return COLOR//'rgb(5,63,66)';
 	})
 	.attr("fill", function(d) {
 	  var nAdj = adj.filter(function(a) {
@@ -463,7 +459,7 @@ function RED(width,height) {
 	    .attr("stroke",function(d) {
 	      var TAG = d3.select(this).attr('noAdj');
 	      var COLOR = TAG ? "black" : null;
-	      return 'rgb(8,109,115)';
+	      return COLOR//'rgb(8,109,115)';
 	    })
 	    .attr("stroke-width",1)
 	    .attr("opacity",mainOpacity);
@@ -484,15 +480,20 @@ function RED(width,height) {
 
 	  for(var i in arr) {
 	    d3.select("[tag='"+ arr[i] + "']")
-	      .attr("stroke",peers)
+	      .attr("stroke","blue")
 	      .attr("stroke-width",2.5)
 	      .attr("id","selected")
 //	      .attr("opacity",1);
 	  };
 
-	  links.style("stroke", function(d) {
+	  links.style("stroke-width", function(d) {
 	    var cond = d.source.id == thisNode || d.target.id == thisNode;
-	    return cond ? "tomato" : "black";
+	    return cond ? "2" : "1";
+          });
+
+          links.style("stroke", function(d) {
+            var cond = d.source.id == thisNode || d.target.id == thisNode;
+            return cond ? "blue" : "black";
           });
 
 	d3.select(this)
@@ -611,12 +612,12 @@ function leyendaRED() {
   gradient.append("stop")
 	.attr("offset","0")
 	.attr("stop-opacity",mainOpacity + 0.05)
-	.attr("stop-color","rgb(233,241,255)");
+	.attr("stop-color",minColor);
 
   gradient.append("stop")
 	.attr("offset","1")
 	.attr("stop-opacity",mainOpacity + 0.05)
-	.attr("stop-color","rgb(5,63,66)");
+	.attr("stop-color",maxColor);
 
     conteiner.append("rect")
     .attr({

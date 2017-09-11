@@ -52,8 +52,6 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
     return [item.EMPRESA, item.id].sort().join(',');
   });
 
-  console.log(emps_);
-
 
       if(!lista.attr("class")) {
         lista.attr("class","toggled")
@@ -120,6 +118,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 		if(!sel.attr("class")) sel.style("color","rgba(255,255,255,0.4)");
 	      })
 	      .on("click",function(d) {
+
 		d3.selectAll(".on")
 		  .attr("class",null)
 		  .style("background-color",null)
@@ -207,17 +206,24 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
           },[]);
 
           for(var i in arr) {
-            d3.select("[tag='"+ arr[i] + "']")
-              .attr("stroke",peers)
+            var sel_ = d3.select("circle[tag='"+ arr[i] + "']")
+              .attr("stroke","blue")
               .attr("stroke-width",2.5)
               .attr("id","selected")
 //              .attr("opacity",mainOpacity);
+
           };
+
+          links.style("stroke-width", function(d) {
+            var cond = d.source.id == thisNode || d.target.id == thisNode;
+            return cond ? "2" : "1";
+          });
 
           links.style("stroke", function(d) {
             var cond = d.source.id == thisNode || d.target.id == thisNode;
-            return cond ? "tomato" : "black";
+            return cond ? "blue" : "black";
           });
+
 
         d3.select("circle[tag='" + d.id + "']")
          .attr("id","selected")

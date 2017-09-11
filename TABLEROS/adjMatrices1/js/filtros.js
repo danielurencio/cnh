@@ -365,18 +365,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	
       };
 
-//      var activacion = d3.select(this).attr("id");
-//      var RONDA = { 'ronda':ronda, 'licitacion':licitacion };
-//      filtrarPorRonda(activacion,RONDA,licRondas,data);
     })
-/*    .on("dblclick",function(d) {
-	var sel = d3.select(this).attr("tag");
-	var ronda = sel.split("-")[1];
-	var lic = sel.split("-")[3];
-	var RONDA_LIC = { 'ronda':ronda, 'lic':lic, };
-	resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC)
-    });
-*/
  }
 
     conteiner.append("g")
@@ -436,6 +425,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	d3.select(this).attr("fill","white");
        })
        .on("click", function() {
+
 	var arr = [];
 	var cuadros = d3.selectAll("rect#on.Licitacion")[0];
 	for(var i in cuadros) {
@@ -561,7 +551,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
         if( cambioColor != "transparent" ) {
           s.transition().duration(800).attr("fill",cambioColor);
         } else {
-          s.transition().duration(800).attr("stroke","rgb(8,109,115)");
+          s.transition().duration(800).attr("stroke","black")//"rgb(8,109,115)");
         }
       };
      } else {
@@ -592,7 +582,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
         if( cambioColor != "transparent" ) {
           s.transition().duration(800).attr("fill",cambioColor);
         } else {
-          s.transition().duration(800).attr("stroke","rgb(8,109,115)");
+          s.transition().duration(800).attr("stroke","black");
         }
       };
      };
@@ -655,7 +645,7 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
 	  s.transition().duration(800).attr("fill",color);
 	}
 	if(color=="transparent") {
-	  s.transition().duration(800).attr("stroke","rgb(8,109,115)");
+	  s.transition().duration(800).attr("stroke","black")//"rgb(8,109,115)");
 	}
 
       };
@@ -698,7 +688,7 @@ var coco =[]
 	  s.transition().duration(800).attr("fill",color);
 	}
 	if(color=="transparent") {
-	  s.transition().duration(800).attr("stroke","rgb(8,109,115)");
+	  s.transition().duration(800).attr("stroke","black")//"rgb(8,109,115)");
 	}
       };
 
@@ -715,6 +705,14 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
     var chosen_drop = d3.selectAll(".chosen-drop>ul>li");
  
     chosen_drop.on("click",function() {
+
+      d3.selectAll("line.link")
+	.attr("stroke-width",function(d) {
+//	  let st;
+//	  let sel = d3.select(this).color;
+//	  if(sel == "transparent") st = "black";
+	  return 1;
+	});
 
       var bts = d3.selectAll("li.search-choice>span")
 	.html(function(d,i) {
@@ -756,6 +754,7 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
       var spans = d3.selectAll("a.search-choice-close");
 
       spans.on("click", function() {
+
 	var sel_ = d3.select(this)[0][0].parentNode.childNodes;
 	var span;
 	sel_.forEach(function(d) {
@@ -775,6 +774,7 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	resumen(data,adj,licRondas,pmts,ofertas,seleccionados_,tabla,procesos);
 
       });
+
 
     });
 

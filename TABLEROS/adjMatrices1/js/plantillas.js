@@ -229,9 +229,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 
 	var serieEmpresas = [
-	  [com_noADJ.key,com_noADJ.val.length],
+	  ['Producción compartida<br> no adjudicados',com_noADJ.val.length],
 	  [lic_noADJ.key,lic_noADJ.val.length],
-	  [com_ADJ.key,com_ADJ.val.length],
+	  ['Producción compartida<br> adjudicados',com_ADJ.val.length],
           [lic_ADJ.key,lic_ADJ.val.length]
 	];
 
@@ -259,6 +259,13 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
                     return '<b>'+ this.point.name +'</b>: '+ this.y;
                 }
             },
+	    legend: {
+//		width:200,
+//		itemWidth:150,
+		itemStyle: {
+		  fontSize:'11px'
+		}
+	    },
             series: [{
                 name: 'Empresas',
                 data:serieEmpresas,
@@ -476,7 +483,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
                 type: 'pie'
             },
            title: {
-                text: "ÁREA",
+                text: "SUPERFICIE",
 		style: {
 		  'font-family':'Open Sans, sans-serif',
 		  'font-weight':600,
@@ -497,7 +504,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
                 showInLegend:true,
                 dataLabels: {
                     enabled: true,
-		    distance:15,
+		    distance:6,
 		    style: {
 		      'font-family':'Open Sans, sans-serif',
 		      'class':"ll",
@@ -1132,6 +1139,7 @@ function plantillaEmpresa1(d,adj,data,licRondas,pmts) {
 }
 
 function calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla) {
+  procesos = []
   var FILTRO1;
   var FILTRO2;
   var FILTRO3;
@@ -1500,7 +1508,6 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
         dataForStacked.push(obj);
       };
 
-console.log(dataForStacked)
 /*------------------------- DATOS PARA STACKED ----------------------------*/
 
 
@@ -1876,6 +1883,9 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 	  fontFamily:'Open Sans, sans-serif',
 	  fontWeight:300
 	}
+    },
+    subtitle: {
+	text:"(dólares)"
     }
   });
 
