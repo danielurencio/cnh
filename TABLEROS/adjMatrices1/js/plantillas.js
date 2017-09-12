@@ -229,9 +229,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 
 	var serieEmpresas = [
-	  ['Producción compartida<br> no adjudicados',com_noADJ.val.length],
+	  ['Producción compartida no adjudicados',com_noADJ.val.length],
 	  [lic_noADJ.key,lic_noADJ.val.length],
-	  ['Producción compartida<br> adjudicados',com_ADJ.val.length],
+	  ['Producción compartida adjudicados',com_ADJ.val.length],
           [lic_ADJ.key,lic_ADJ.val.length]
 	];
 
