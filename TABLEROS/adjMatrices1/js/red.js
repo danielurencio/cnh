@@ -211,6 +211,7 @@ function RED(width,height) {
 
     d3.select("div[class='chosen-container chosen-container-multi']")
      .attr({
+	"color":"black",
 	"border-color":"orange",
 	"id":"borde"
       })
@@ -219,11 +220,14 @@ function RED(width,height) {
      .attr("id","borde")
      .style({
       "color":"black",
-      "background":"black",
+      "background":"rgba(215,215,215,0.45)",
       "border-color":"orange",
       "border-style":"solid",
       "border-width":"0.5"
      })
+
+    d3.select("ul.chosen-results")
+	.style("background-color","rgba(215,215,215,0.45)")
 
     d3.selectAll("#borde").style("border-color","orange")
 
@@ -237,11 +241,11 @@ function RED(width,height) {
 	.append("text")
 	.attr("x", widthCintilla-15)
 	.attr("y",16)
-	.attr("fill","rgba(255,255,255,0.7)")
+	.attr("fill","black")
 	.attr("alignment-baseline","middle")
 	.attr("text-anchor","end")
 	.attr("font-weight",800)
-	.text("Filtro:") 
+	.text("Licitaciones seleccionadas:") 
 
 /*-------------------NUEVO FILTRO------------------------------------------*/
 
@@ -431,12 +435,13 @@ function RED(width,height) {
 
 	var style = {
 	  'x':width,
-	  'y':graphH - 40,
+	  'y':10,//graphH - 40,
 	  'font-size':12,
 	  'font-family':'Open Sans',
 	  'id':'nombreEmpresa',
-	  'font-weight':300,
-	  'text-anchor':'end'
+	  'font-weight':700,
+	  'text-anchor':'end',
+	  'transform':'rotate(-90,'+(width-10)+','+20+')'
 	};
 
 	d3.select("g#red").append("text")

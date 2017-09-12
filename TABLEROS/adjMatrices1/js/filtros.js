@@ -726,6 +726,7 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	  } else {
 	    text = this.innerHTML;
 	  }
+//	  if(text == "RPEMEX.Trion") text = "PEMEX-Trión"
 	  return text;
 	});
 
