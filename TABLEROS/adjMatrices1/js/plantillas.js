@@ -1354,7 +1354,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 
   pre = [
    { 'key':'Empresas participantes', 'val':empresas_participantes },
-   { 'key':'Empresas adjudicadas', 'val':empresas_adj_uniq },
+   { 'key':'Empresas que adjudicaron', 'val':empresas_adj_uniq },
    { 'key':'Empresas interesadas', 'val':empresas_interesadas, 'ignorar':true },
    { 'key':'Empresas precalificadas', 'val':empresas_precalif, 'ignorar':true },
    { 'key':'Licencia adjudicados', 'val':lic_Adj, 'ignorar':true },
