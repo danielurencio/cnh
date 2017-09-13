@@ -1480,7 +1480,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 
 function OFERTAS(widLic) {
 
-  var boton_ = '<button onclick="descargar_CSV();" id="descargarCSV" style="color:black;border:2px;border-radius:2px;font-family:Open Sans;font-weight:300;text-shadow:0 1px 1px rgba(0,0,0,0.2);">Descargar</button>';
+  var boton_ = '<button onclick="descargar_CSV();" id="descargarCSV" style="color:black;border:2px;border-radius:2px;font-family:Open Sans;font-weight:300;text-shadow:0 1px 1px rgba(0,0,0,0.2);">Descargar tabla</button>';
 
 d3.select("#espacioParaBoton").remove()
 
