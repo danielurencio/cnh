@@ -175,6 +175,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 
   function GRAFICOS() {
+      d3.select("#espacioParaBoton").remove()
 
       d3.select("#graficos").html(contenido);
 
@@ -1081,7 +1082,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 	    var str = "<th>"+ ron_lic +"</th>" +
 		     "<th>" + bloque + "</th>" +
 //		     "<th>"+ HIDRO_PRINCIPAL +"</th>"+
-  "<th style='width:"+widLic+"; font-size:12px; padding-left:20px'>"+ nombresLics +"</th>"+
+  "<th id='licitantes' style='width:"+widLic+"; font-size:12px; padding-left:20px'>"+ nombresLics +"</th>"+
 		     "<th>"+ d.VAR_ADJ1.toLocaleString('es-MX') +"</th>" +
 		     "<th>"+ d.VAR_ADJ2.toLocaleString('es-MX') +"</th>" +
 		     "<th>"+ VPO.toLocaleString('es-MX') +"</th>" +
@@ -1427,7 +1428,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 };
 
   function descargar_CSV() {
-    var csv = ["Ronda-Licitación,Bloque,Licitante,Variable de adjudicación 1,Variable de adjudicación 2,VPO,Bono (millones de dólares)"];
+    var csv = ["RONDA-LICITACION,BLOQUE,LICITANTE,VARIABLE DE ADJUDICACION 1,VARIABLE DE ADJUDICACION 2,VPO,BONO (MILES DE DOLARES)"];
     var rows = document.querySelectorAll("table tr.datosMod");
 
     for(var i = 0; i < rows.length; i++) {
@@ -1439,10 +1440,20 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 	  celda = cols[j].innerHTML.replace("\n","/").replace(/amp;/g,"");
 	  celda = celda.replace(/- /g,"");
 	  celda = celda.replace(/<br>/g," / ")
+	  celda = celda.replace(/Á/g,"A")
+	  celda = celda.replace(/É/g,"E")
+	  celda = celda.replace(/Í/g,"I")
+	  celda = celda.replace(/Ó/g,"O")
+	  celda = celda.replace(/Ú/g,"U")
+
 	} else {
-          celda = cols[j].innerText//.replace(/-/g,".");
+          celda = cols[j].innerText.replace(/-/g,".");
 	  celda = celda.replace(/,/g,"");
-//	  if(j>2) celda = Number(cols[j].innerText);
+	  celda = celda.replace(/Á/g,"A")
+	  celda = celda.replace(/É/g,"E")
+	  celda = celda.replace(/Í/g,"I")
+	  celda = celda.replace(/Ó/g,"O")
+	  celda = celda.replace(/Ú/g,"U")
 	}
 	row.push(celda);
       }
@@ -1451,14 +1462,14 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
     }
     csv = csv.join("\n");
 
-console.log(csv)
+//console.log(csv)
 
     var csvFile;
     var downloadLink;
 
     csvFile = new Blob([csv], {type:"text/csv"});
     downloadLink = document.createElement("a");
-    downloadLink.download = "archivo.csv";
+    downloadLink.download = "tabla.csv";
     downloadLink.href = window.URL.createObjectURL(csvFile);
     downloadLink.style.display = "non";
     document.body.appendChild(downloadLink);
@@ -1468,6 +1479,19 @@ console.log(csv)
 
 
 function OFERTAS(widLic) {
+
+  var boton_ = '<button onclick="descargar_CSV();" id="descargarCSV" style="color:black;border:2px;border-radius:2px;font-family:Open Sans;font-weight:300;text-shadow:0 1px 1px rgba(0,0,0,0.2);">Descargar</button>';
+
+d3.select("#espacioParaBoton").remove()
+
+d3.select("div#titulo").append("div")
+  .attr("id","espacioParaBoton")
+  .style("padding",0)
+  .style("margin",0)
+  .style("text-align","left")
+//  .style("height","30px")
+  .html(boton_)
+
 var i_a = "a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida, o a la regalía adicional en caso de contratos de licencia.<br><br>"
 
 var i_b = "b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere al factor de inversión adicional."
@@ -1488,7 +1512,7 @@ var tablaString =
  '<th>VPO</th><th>Bono (miles de dólares)</th>'+
 '</tr>'+
   '</table>' +
-  '<button onclick="descargar_CSV();" id="descargarCSV" style="position:absolute;color:black;border:2px;border-radius:2px;font-family:Open Sans;font-weight:300;text-shadow:0 1px 1px rgba(0,0,0,0.2);margin-top:2px;">Descargar</button>' +
+//  '<button onclick="descargar_CSV();" id="descargarCSV" style="position:absolute;color:black;border:2px;border-radius:2px;font-family:Open Sans;font-weight:300;text-shadow:0 1px 1px rgba(0,0,0,0.2);margin-top:2px;">Descargar</button>' +
  '</div>' + 
 "<div class='notas' style='background-color:white;height:0px;color:transparent;line-height:14px;font-size:12px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify'>"+leyenda+"</div>" +
 '<div id="tBodyContainer">' +
@@ -1534,6 +1558,8 @@ var tablaString =
 };
 
 function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
+  d3.select("#espacioParaBoton").remove()
+
   var empNom = data.filter(function(d) {
 	return d.ID_EMPRESA == id_empresa;
   })[0].EMPRESA;
