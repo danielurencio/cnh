@@ -835,19 +835,27 @@ function leyendaRED() {
     .data(['Red de asociaciones','entre empresas licitantes']).enter()
     .append("text")
    .attr({
-//     'text-anchor':'middle',
+     'text-anchor':'end',
      'opacity':0.8,
-     'font-size':16,
+     'font-size':14,
      'font-family':'Open Sans',
      'font-weight':800,
-     'alignment-baseline':'text-before-edge',
+     'alignment-baseline':'text-after-edge',
      "x": function() {
-	var ww = +filtroEMpresas.style("width").split("px")[0]
-        return ww + 10
+//	var ww = +filtroEMpresas.style("width").split("px")[0]
+	let anchor_ = d3.select("g#red>rect").attr("width").split("px")[0]
+        return anchor_ -  15//ww + 10
       },
-     "y": function(d,i) { return 10 +(i*17); }
-    }).text(function(d) { return d; })
+     "y": function(d,i) {
+	let anchor_ = d3.select("g#red>rect").attr("height").split("px")[0]
+	return (anchor_-0) +(i*17);
+      }
+    }).text(function(d) { return d; });
 
+  var tituloRed__ = d3.select("g#tituloRed_");
+  var titREDheight = tituloRed__.node().getBBox().height;
+
+  tituloRed__.attr("transform","translate(0," + -2*titREDheight + ")");
 /*
   let filtroEMpresas = d3.select("div#filtroEmpresas")
 

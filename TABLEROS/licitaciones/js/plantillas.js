@@ -239,8 +239,24 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	  colors: ['rgba(0,0,0,0.2)','rgba(0,0,0,0.35)','rgba(8,109,115,0.7)','rgba(8,109,115,1)']
 	});
 
-	var empresas_precalif = Highcharts.chart({
-	    exporting: { enabled:false },
+	var empresas_precalif = Highcharts.chart({ 
+	    exporting: {
+		enabled:true,
+		type:'image/jpeg',
+		filename:'contratos',
+		buttons: {
+		  contextButton: {
+		    menuItems: [
+			{
+			  'text':'Exportar gráfica (JPEG)',
+			  'onclick': function() {
+			     this.exportChart();
+			  }
+			}
+		    ]
+		  }
+		}
+	    },
 	    credits: { enabled:false },
             chart: {
                 renderTo: 'mitad1',
@@ -260,8 +276,8 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
                 }
             },
 	    legend: {
-//		width:200,
-//		itemWidth:150,
+		width:200,
+//		itemWidth:250,
 		itemStyle: {
 		  fontSize:'11px'
 		}
@@ -274,7 +290,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
                 showInLegend:true,
                 dataLabels: {
                     enabled: true,
-		    distance:5,
+		    distance:2,
 		    style: {
 		      'font-family':'Open Sans, sans-serif',
 		      'font-size':7,
@@ -337,11 +353,11 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
     }
    })
    .text(function(d,i) {
-	var T = String(d.val).split("K");
-	if(T.length == 1) T = Number(T[0]).toLocaleString();
-        if(T.length ==2) T = Number(T[0]).toLocaleString() + "K";
+//	var T = String(d.val).split("K");
+//	if(T.length == 1) T = Number(T[0]).toLocaleString('es-MX');
+//        if(T.length ==2) T = Number(T[0]).toLocaleString('es-MX') + "K";
 //	return T;
-	return Number(d.val).toLocaleString();
+	return Number(d.val).toLocaleString('es-MX');
    });
 
   figuras.transition().duration(1000).attr("opacity",1);
@@ -402,7 +418,23 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 
 	var barras = Highcharts.chart('barras', {
-	    exporting: { enabled:false },
+	    exporting: {
+		enabled:true,
+		type:'image/jpeg',
+		filename:'países',
+		buttons: {
+		  contextButton: {
+		    menuItems: [
+			{
+			  'text':'Exportar gráfica (JPEG)',
+			  'onclick': function() {
+			     this.exportChart();
+			  }
+			}
+		    ]
+		  }
+		}
+	    },
 	    chart: {
 		type: 'column'
 	    },
@@ -476,7 +508,23 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 
 	var bloques = Highcharts.chart({
-	    exporting: { enabled:false },
+	    exporting: {
+		enabled:true,
+		type:'image/jpeg',
+		filename:'superficie',
+		buttons: {
+		  contextButton: {
+		    menuItems: [
+			{
+			  'text':'Exportar gráfica (JPEG)',
+			  'onclick': function() {
+			     this.exportChart();
+			  }
+			}
+		    ]
+		  }
+		}
+	    },
 	    credits: { enabled:false },
             chart: {
                 renderTo: 'mitad3',
@@ -493,7 +541,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	   subtitle: { text: "(miles de km\u00B2)" },
            tooltip: {
                 formatter: function() {
-                    return '<b>'+ this.point.name +'</b>: '+ this.y;
+                    return '<b>'+ this.point.name +'</b>: '+ this.y.toLocaleString('es-MX');
                 }
             },
             series: [{
@@ -504,7 +552,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
                 showInLegend:true,
                 dataLabels: {
                     enabled: true,
-		    distance:6,
+		    distance:2,
 		    style: {
 		      'font-family':'Open Sans, sans-serif',
 		      'class':"ll",
@@ -514,7 +562,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		      'stroke-width':"0px"
 		    },
 		    formatter: function() {
-		      return this.y;
+		      return this.y.toLocaleString('es-MX');
 		    }
                 }
             }]
@@ -540,7 +588,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	.attr("id","new")
 	  .style("font-weight","lighter")
 	  .html(function(d,i) {
-	   let bono = Number((d.BONO / 1000).toFixed(1)).toLocaleString();
+	   let bono = Number((d.BONO / 1000).toFixed(1)).toLocaleString('es-MX');
 	   var ronda = d.RONDA;
 	   var licitacion = d.LICITACION;
 	   let ron_lic = ronda + "-" + licitacion;
@@ -565,7 +613,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	   })[0].LICITANTE
 	   .map(function(e) {
 	      var e_ = e.split(",")[0];
-	      return "&dash; " + e_;
+	      return "- " + e_;
 	   })
 	   .reduce(function(a,b) {
 	      return a + "<br>" + b;
@@ -581,10 +629,10 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //		     "<th>"+ d.HIDRO_PRINCIPAL +"</th>"+
   "<th id='licitantes' style='width:"+widLic+"; font-size:12px; padding-left:20px'>"+ nombresLics +"</th>"+
 //	"<th style='width:" + widLic + "'>"+ nombresLics +"</th>"+
-		     "<th>"+ d.VAR_ADJ1 +"</th>" +
-		     "<th>"+ d.VAR_ADJ2 +"</th>" +
-		     "<th>"+ VPO +"</th>" +
-		     "<th>"+ bono +"</th>";
+		     "<th>"+ d.VAR_ADJ1.toLocaleString('es-MX') +"</th>" +
+		     "<th>"+ d.VAR_ADJ2.toLocaleString('es-MX') +"</th>" +
+		     "<th>"+ VPO.toLocaleString('es-MX') +"</th>" +
+		     "<th>"+ bono.toLocaleString('es-MX') +"</th>";
 	   return str;
 	   });
   };
@@ -838,10 +886,10 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
    }).text(function(d) {
       var t;
       if( d3.select(this).attr("class") == "Inversión_(dólares)" ) {
-	t = Number((d.val/1).toFixed(1)).toLocaleString();
+	t = Number((d.val/1).toFixed(1)).toLocaleString('es-MX');
 	t = "$ " + t;
       } else {
-	t = Number(d.val).toLocaleString();
+	t = Number(d.val).toLocaleString('es-MX');
       };
       return t;
    });
@@ -992,7 +1040,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 	    return weight;
 	  })
 	  .html(function(d,i) {
-	    let bono = Number((d.BONO / 1000).toFixed(1)).toLocaleString();
+	    let bono = Number((d.BONO / 1000).toFixed(1)).toLocaleString('es-MX');
 	    var ronda = d.RONDA;
 	    var licitacion = d.LICITACION;
 	    let ron_lic = ronda + "-" + licitacion;
@@ -1015,7 +1063,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 	    })[0].LICITANTE
 	    .map(function(e) {
 	      var e_ = e.split(",")[0];
-	      return "&dash; " + e_;
+	      return "- " + e_;
 	    })
 	    .reduce(function(a,b) {
 	      return a + "<br>" + b;
@@ -1034,10 +1082,10 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 		     "<th>" + bloque + "</th>" +
 //		     "<th>"+ HIDRO_PRINCIPAL +"</th>"+
   "<th style='width:"+widLic+"; font-size:12px; padding-left:20px'>"+ nombresLics +"</th>"+
-		     "<th>"+ d.VAR_ADJ1 +"</th>" +
-		     "<th>"+ d.VAR_ADJ2 +"</th>" +
-		     "<th>"+ VPO +"</th>" +
-		     "<th>"+ bono +"</th>";
+		     "<th>"+ d.VAR_ADJ1.toLocaleString('es-MX') +"</th>" +
+		     "<th>"+ d.VAR_ADJ2.toLocaleString('es-MX') +"</th>" +
+		     "<th>"+ VPO.toLocaleString('es-MX') +"</th>" +
+		     "<th>"+ bono.toLocaleString('es-MX') +"</th>";
 	    return str;
 	    });
 
@@ -1378,10 +1426,51 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
   return { 'pre': pre, 'after':after };
 };
 
-function OFERTAS(widLic) {
-var i_a = "a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida, o a la regalía en caso de contratos de licencia.<br><br>"
+  function descargar_CSV() {
+    var csv = ["Ronda-Licitación,Bloque,Licitante,Variable de adjudicación 1,Variable de adjudicación 2,VPO,Bono (millones de dólares)"];
+    var rows = document.querySelectorAll("table tr.datosMod");
 
-var i_b = "b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere a un incremento en la inversión expresado en unidades de trabajo de pozos exploratorios."
+    for(var i = 0; i < rows.length; i++) {
+      var row = [], cols = rows[i].querySelectorAll("th");
+      var celda;
+
+      for(var j = 0; j < cols.length; j++) {
+	if(cols[j].id) {
+	  celda = cols[j].innerHTML.replace("\n","/").replace(/amp;/g,"");
+	  celda = celda.replace(/- /g,"");
+	  celda = celda.replace(/<br>/g," / ")
+	} else {
+          celda = cols[j].innerText//.replace(/-/g,".");
+	  celda = celda.replace(/,/g,"");
+//	  if(j>2) celda = Number(cols[j].innerText);
+	}
+	row.push(celda);
+      }
+
+      csv.push(row.join(","));
+    }
+    csv = csv.join("\n");
+
+console.log(csv)
+
+    var csvFile;
+    var downloadLink;
+
+    csvFile = new Blob([csv], {type:"text/csv"});
+    downloadLink = document.createElement("a");
+    downloadLink.download = "archivo.csv";
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "non";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    
+  };
+
+
+function OFERTAS(widLic) {
+var i_a = "a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida, o a la regalía adicional en caso de contratos de licencia.<br><br>"
+
+var i_b = "b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere al factor de inversión adicional."
 
 var leyenda = '';
 var tablaString =
@@ -1399,6 +1488,7 @@ var tablaString =
  '<th>VPO</th><th>Bono (miles de dólares)</th>'+
 '</tr>'+
   '</table>' +
+  '<button onclick="descargar_CSV();" id="descargarCSV" style="position:absolute;color:black;border:2px;border-radius:2px;font-family:Open Sans;font-weight:300;text-shadow:0 1px 1px rgba(0,0,0,0.2);margin-top:2px;">Descargar</button>' +
  '</div>' + 
 "<div class='notas' style='background-color:white;height:0px;color:transparent;line-height:14px;font-size:12px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify'>"+leyenda+"</div>" +
 '<div id="tBodyContainer">' +
@@ -1420,6 +1510,7 @@ var tablaString =
   d3.selectAll(".info")
    .on("mouseover",function() {
      d3.select(".notas")
+	.style("padding-top","30px")
 	.style("margin-bottom","20px")
 	.style("color","black")
 	.style("height","40px");
@@ -1439,6 +1530,7 @@ var tablaString =
      })
 
    })
+
 };
 
 function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
@@ -1774,7 +1866,24 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 
   var stacked_bars = Highcharts.chart('mitad1', {
     credits: { enabled:false },
-    exporting: { enabled:false },
+    exporting: {
+	enabled:true,
+	type:'image/jpeg',
+	filename:'gráfico-ofertas',
+	buttons: {
+	 contextButton: {
+          menuItems: [
+	   {
+	    'text':'Exportar gráfica (JPEG)',
+	    'onclick': function() {
+		this.exportChart();
+	    }
+	   }
+	  ]
+	 }
+	}
+    },
+
     chart: {
         type: 'column',
     },
@@ -1835,8 +1944,29 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 
 //------------------------- DONA -------------------------------//
   var treemap = Highcharts.chart('gantt', {
+    tooltip: {
+      formatter: function() {
+        return '<b>'+ this.point.name +'</b>: '+ this.point.value.toLocaleString("es-MX");
+      }
+    },
     credits: { enabled:false },
-    exporting: { enabled:false },
+    exporting: {
+	enabled:false,
+	type:'image/jpeg',
+	filename:'inversion-ronda-bloque',
+	buttons: {
+	 contextButton: {
+          menuItems: [
+	   {
+	    'text':'Exportar gráfica (JPEG)',
+	    'onclick': function() {
+		this.exportChart();
+	    }
+	   }
+	  ]
+	 }
+	}
+    },
     series: [{
         livelIsConstant:false,
 	allowDrillToNode:true,

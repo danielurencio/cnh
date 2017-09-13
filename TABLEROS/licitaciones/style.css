@@ -282,3 +282,7 @@ li[class="active-result.highlighted"]:hover {
   color:black;
 }
 
+button:hover {
+  background:rgb(66,184,221);
+}
+
