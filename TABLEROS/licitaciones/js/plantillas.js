@@ -249,9 +249,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		  contextButton: {
 		    menuItems: [
 			{
-			  'text':'Exportar gráfica (JPEG)',
+			  'text':'Exportar datos (CSV)',
 			  'onclick': function() {
-			     this.exportChart();
+			     csvGraf(this.getCSV(),"contratos",{rondas:RONDA_LIC});
 			  }
 			}
 		    ]
@@ -427,9 +427,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		  contextButton: {
 		    menuItems: [
 			{
-			  'text':'Exportar gráfica (JPEG)',
+			  'text':'Exportar datos (CSV)',
 			  'onclick': function() {
-			     this.exportChart();
+			     csvGraf(this.getCSV(),'paises',{rondas:RONDA_LIC});
 			  }
 			}
 		    ]
@@ -517,9 +517,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		  contextButton: {
 		    menuItems: [
 			{
-			  'text':'Exportar gráfica (JPEG)',
+			  'text':'Exportar datos (CSV)',
 			  'onclick': function() {
-			     this.exportChart();
+			     csvGraf(this.getCSV(),'superficie',{rondas:RONDA_LIC});
 			  }
 			}
 		    ]
@@ -1430,6 +1430,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
   function descargar_CSV() {
     var csv = ["RONDA-LICITACION,BLOQUE,LICITANTE,VARIABLE DE ADJUDICACION 1,VARIABLE DE ADJUDICACION 2,VPO,BONO (MILES DE DOLARES)"];
     var rows = document.querySelectorAll("table tr.datosMod");
+    var ronda_ = [];
 
     for(var i = 0; i < rows.length; i++) {
       var row = [], cols = rows[i].querySelectorAll("th");
@@ -1447,7 +1448,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 	  celda = celda.replace(/Ú/g,"U")
 
 	} else {
-          celda = cols[j].innerText.replace(/-/g,".");
+          celda = cols[j].innerText//.replace(/-/g,".");
 	  celda = celda.replace(/,/g,"");
 	  celda = celda.replace(/Á/g,"A")
 	  celda = celda.replace(/É/g,"E")
@@ -1456,31 +1457,28 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 	  celda = celda.replace(/Ú/g,"U")
 	}
 	row.push(celda);
+	if(j == 0) { ronda_.push(celda) };
       }
 
       csv.push(row.join(","));
     }
+    ronda_ = _.uniq(ronda_).sort().join(";").replace(/-/g,".");
     csv = csv.join("\n");
-
-//console.log(csv)
 
     var csvFile;
     var downloadLink;
+    var objCSV = { rondas:ronda_ };
+    var emp_nom = document.getElementById("titulo").innerText.split("\n")[0];
+    if(emp_nom != "RESUMEN") objCSV["empresa"] = emp_nom;
 
-    csvFile = new Blob([csv], {type:"text/csv"});
-    downloadLink = document.createElement("a");
-    downloadLink.download = "tabla.csv";
-    downloadLink.href = window.URL.createObjectURL(csvFile);
-    downloadLink.style.display = "non";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
+    csvGraf(csv,"tabla",objCSV)
     
   };
 
 
 function OFERTAS(widLic) {
 
-  var boton_ = '<button onclick="descargar_CSV();" id="descargarCSV" style="color:black;border:2px;border-radius:2px;font-family:Open Sans;font-weight:300;text-shadow:0 1px 1px rgba(0,0,0,0.2);">Descargar tabla</button>';
+  var boton_ = '<button onclick="descargar_CSV();" id="descargarCSV" style="color:black;border:2px;border-radius:2px;font-family:Open Sans;font-weight:300;text-shadow:0 1px 1px rgba(0,0,0,0.2);">Descargar</button>';
 
 d3.select("#espacioParaBoton").remove()
 
@@ -1580,20 +1578,15 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
 
       licsEMpresa_ = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 
-//      licsEMpresa_ = licsEMpresa_.filter(function(d) {
-//	return d.EMPRESA == empNom;
-//      });
 
       var ganadas = licsEMpresa_.filter(function(d) {
 	return d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ
       });
 
-//      ganadas = ganadas.filter(function(d) { return d.EMPRESA == empNom; })
 
       var noGanadas = licsEMpresa_.filter(function(d) {
 	return d.ID_LICITANTE_OFERTA != d.ID_LICITANTE_ADJ
       });
-//      noGanadas = noGanadas.filter(function(d) { return d.EMPRESA == empNom; });
 
       function AgruparOfertasPorLic(arr) {
 	var newArr = [];
@@ -1680,101 +1673,8 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
 	});
       };
 
-      function dataTreeMap(arr) {
-	var colorAceite = 'rgba(255,15,0,0.65)';
-	var colorGas = 'rgba(255,75,0,0.65)';
-	var colorAmbos = 'rgba(255,205,0,0.65)';
-        var GAS = new RegExp("GAS");
-        var ACEITE = new RegExp("ACEITE");
-	var conds = [];
-	var data = [];
-
-        for(var i in arr) {
-          var cond1 = GAS.test(arr[i]);
-	  var cond2 = ACEITE.test(arr[i]);
-//	  var cond3 = cond1 && cond2;
-
-	  var obj = {
-	    'gas':cond1,
-	    'aceite':cond2,
-//	    'ambos':cond3,
-	    'val':arr[i]
-	  };
-
-	  conds.push(obj);	
-        };
-
-	var aceite = conds.filter(function(d) {
-	  return d.aceite //&& !d.ambos;
-	}).map(function(d) { return d.val });
-
-	var gas = conds.filter(function(d) {
-	  return d.gas //&& !d.ambos;
-	}).map(function(d) { return d.val; });
-
-	var ambos = conds.filter(function(d) {
-	  return d.ambos;
-	}).map(function(d) { return d.val; });
-
-	if(aceite.length > 0) {
-	  var id = "aceite";
-	  var name = "Aceite";
-	  var color = colorAceite;
-	  var Parent = { 'id':id, 'name':name, 'color':color };
-	  data.push(Parent);
-
-	  var aceites = _.countBy(aceite);
-
-	  for(var k in aceites) {
-	    data.push({ 'name':k, 'parent':id, 'value':aceites[k] });
-	  };
-
-	};
-	if(gas.length > 0) {
-	  var id = "gas";
-	  var name = "Gas";
-	  var color = colorGas;
-	  var Parent = { 'id':id, 'name':name, 'color':color };
-	  data.push(Parent);
-
-	  var gases = _.countBy(gas);
-
-	  for(var k in gases) {
-	    data.push({ 'name':k, 'parent':id, 'value':gases[k] });
-	  };
-
-	};
-/*	if(ambos.length > 0) {
-	  var id = "ambos";
-	  var name = "Aceite y gas";
-	  var color = colorAmbos;
-	  var Parent = { 'id':id, 'name':name, 'color':color };
-	  data.push(Parent);
-
-	  var amboss = _.countBy(ambos);
-
-	  for(var k in amboss) {
-	    data.push({ 'name':k, 'parent':id, 'value':amboss[k] });
-	  };
-
-	};
-*/
-	return data;	
-      };
 
 
-      var hidro_p = licsEMpresa_.map(function(d) {
-	return d.HIDRO_PRINCIPAL;
-      });
-//      hidro_p = _.countBy(hidro_p);
-
-      var data_TREE = dataTreeMap(hidro_p);
-/*      var hidros = [];
-
-      for(var k in hidro_p) {
-        hidros.push([k,hidro_p[k]]);
-      };*/
-//console.log(data_TREE)
 /*------------------------- DATOS PARA DONUT ----------------------------*/
 
 
@@ -1799,81 +1699,6 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
   d3.selectAll("div#mitades>div").style("height","100%");
   d3.select("div#gantt").style("height",(espacioDisp/2) + "px");
 
-//---------- DIMENSIONES DE APARTADOS PARA GRÁFICAS ----------------------//
-
-//---------------------------- GANTT CHART -------------------------------//
-/*
-  var gantt = Highcharts.chart('gantt',{
-	    credits: { enabled:false },
-	    exporting: { enabled: false },
-	    chart: {
-	        type: 'columnrange',
-	        inverted: true
-	    },
-	    
-	    title: {
-	        text: ''
-	    },
-	    
-		subtitle: {
-	        text: ''
-	    },
-	
-	    xAxis: {
-	        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun' ]
-	    },
-	    
-	    yAxis: {
-	        title: {
-	            text: ''
-	        }
-	    },
-	
-	    tooltip: {
-	        valueSuffix: '°C'
-	    },
-	    
-	    plotOptions: {
-	        columnrange: {
-	        	dataLabels: {
-	        		enabled: true,
-	        		formatter: function () {
-	        	//		return this.y + '°C';
-	        		}
-	        	}
-	        }
-	    },
-	    
-	    legend: {
-	        enabled: true
-	    },
-	
-	    series: [{
-	        name: 'Temperatures3',
-	        data: [
-                [0, 0, 5.6]
-			]
-	    },{
-	        name: 'Temperatures',
-	        data: [
-                		[1, 6.7, 9.4],
-				[2, 6.7, 8.5],
-				[3, 6.5, 9.4],
-				[3, 6.4, 19.9],
-			]
-	    },{
-	        name: 'Temperatures2',
-	        data: [
-				[1, 9.4, 10.3],
-				[3, 8.5, 11.9],
-				[4, 9.4, 12.3],
-				[3, 19.9,23.3],
-			]
-	    }]
-	
-	});
-*/
-//---------------------------- GANTT CHART -------------------------------//
 
 
 //------------------------- STACKED-BARS -------------------------------//
@@ -1900,9 +1725,9 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 	 contextButton: {
           menuItems: [
 	   {
-	    'text':'Exportar gráfica (JPEG)',
+	    'text':'Exportar datos (CSV)',
 	    'onclick': function() {
-		this.exportChart();
+		csvGraf(this.getCSV(),"ofertas",{empresa:empNom})
 	    }
 	   }
 	  ]
@@ -1972,21 +1797,25 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
   var treemap = Highcharts.chart('gantt', {
     tooltip: {
       formatter: function() {
-        return '<b>'+ this.point.name +'</b>: '+ this.point.value.toLocaleString("es-MX");
+        return '<b>'+ this.point.name +'</b>: $'+ this.point.value.toLocaleString("es-MX");
       }
     },
     credits: { enabled:false },
     exporting: {
-	enabled:false,
-	type:'image/jpeg',
-	filename:'inversion-ronda-bloque',
+	enabled:true,
+//	type:'image/jpeg',
+//	filename:'inversion-ronda-bloque',
 	buttons: {
 	 contextButton: {
           menuItems: [
 	   {
-	    'text':'Exportar gráfica (JPEG)',
+	    'text':'Exportar datos (CSV)',
 	    'onclick': function() {
-		this.exportChart();
+	      var ex_ = dataForTree.filter(function(d) { return d.value; })
+		.map(function(d) { return String(d.name) +","+String(d.value); });
+
+	      ex_ = ["BLOQUE,INVERSION"].concat(ex_).join("\n");
+	      csvGraf(ex_,"inversion",{empresa:empNom});
 	    }
 	   }
 	  ]
@@ -2046,3 +1875,87 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
   });
 
 };
+
+
+function csvGraf(csv,filename,obj) {
+      var CSV;
+      var titulo;
+      var category;
+      var rondas_;
+
+      if( filename == "ofertas" ) {
+	titulo = "OFERTAS PRESENTADAS";
+	category = "RONDAS";
+      }
+      if( filename == "inversion" ) {
+	titulo = "INVERSION POR BLOQUE EN MILLONES DE DOLARES";
+      }
+      if( filename == "contratos" ) {
+	titulo = "NUMERO DE CONTRATOS POR TIPO";
+	category = "TIPO DE CONTRATO";
+      }
+      if( filename == "superficie" ) {
+	titulo = "SUPERFICE DE BLOQUES EN KM2";
+	csv = csv.replace("Bloques","MILES DE KM2")
+	category = "SUPERFICIE";
+      }
+      if( filename == "paises" ) {
+	titulo = "PAISES PARTICIPANTES";
+	category = "PAIS";
+      }
+      if( filename == "tabla" ) {
+	titulo = "OFERTAS";
+	
+      }
+
+     var fecha = new Date();
+     var anio = fecha.getFullYear(), mes = fecha.getMonth(), dia = fecha.getDay()
+     if( String(mes).length == 1 ) mes = "0" + mes;
+     if( String(dia).length == 1 ) dia = "0" + dia;
+     fecha = anio + "/" + mes + "/" + dia;
+      
+
+      var header = [titulo,"COMISION NACIONAL DE HIDROCARBUROS","Fecha de descarga: " + fecha ]
+
+      if(obj.empresa) {
+	header.push("Empresa: " + obj.empresa)
+        CSV = header.join("\n") + "\n\n\n" + csv
+      } 
+
+      if(obj.rondas && typeof(obj.rondas) != "string") {
+        rondas_ = obj.rondas.map(function(d) {
+	  let val = String(d.ronda) + "." + String(d.lic);
+	  return val;
+	}).sort().join(";");
+
+	header.push("RONDAS: " + rondas_)
+	CSV = header.join("\n") + "\n\n\n" + csv;
+      }
+
+var notas = "a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida o a la regalía adicional en caso de contratos de licencia. b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo; para las rondas posteriores esta variable se refiere al factor de inversión adicional."
+
+
+      if(obj.rondas && typeof(obj.rondas) == "string") {
+	header.push("RONDAS: " + obj.rondas);
+        header.push("NOTAS: " + notas);
+	CSV = header.join("\n") + "\n\n\n" + csv;
+      }
+
+	CSV = CSV.toUpperCase()
+	CSV = CSV.replace(/Á/g,"A");
+	CSV = CSV.replace(/É/g,"E");
+	CSV = CSV.replace(/Í/g,"I");
+	CSV = CSV.replace(/Ó/g,"O");
+	CSV = CSV.replace(/Ú/g,"U");
+	CSV = CSV.replace("CATEGORY",category)
+	
+
+      var csvFile = new Blob([CSV], {type:"text/csv"});
+      var downloadLink = document.createElement("a");
+      downloadLink.download = filename + ".csv";
+      downloadLink.href = window.URL.createObjectURL(csvFile);
+      downloadLink.style.display = "none";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      d3.selectAll("a").remove();
+}

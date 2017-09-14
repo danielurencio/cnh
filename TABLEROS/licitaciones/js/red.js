@@ -163,7 +163,8 @@ function RED(width,height) {
   };
 //==============================================================================|
   queue()
-    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
+//    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
+    .defer(d3.csv,'csv1/NUEVA.csv')
     .await(getDATA);
 
   function getDATA(err,bloques_ofertas) {
@@ -434,14 +435,15 @@ function RED(width,height) {
 	})[0];
 
 	var style = {
-	  'x':width,
+	  'x':width-10,
 	  'y':10,//graphH - 40,
 	  'font-size':12,
 	  'font-family':'Open Sans',
 	  'id':'nombreEmpresa',
 	  'font-weight':700,
-	  'text-anchor':'end',
-	  'transform':'rotate(-90,'+(width-10)+','+20+')'
+	  'text-anchor':'start',
+	  'fill':'rgb(8,109,115)',
+	  'transform':'rotate(90,'+(width-30)+','+0+')'
 	};
 
 	d3.select("g#red").append("text")
