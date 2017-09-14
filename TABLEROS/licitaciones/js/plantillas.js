@@ -580,7 +580,14 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //////////////////////////////////////////////////////////////////////////////////
 //------------------ TABLA ------------------------------------------------------
 /////////////////////////////////////////////////////////////////////////////////
-  TABLA = TABLA.filter(function(d) { return d.VAR_ADJ1 != ""; })
+  TABLA = TABLA.filter(function(d) { return d.VAR_ADJ1 != ""; });
+
+/*  TABLA = _.uniq(TABLA,function(v) {
+    var ARR = [ v.BONO, v.ID_BLOQUE, v.ID_LICITANTE_ADJ, v.ID_LICITANTE_OFERTA, v.LICITACION, v.RONDA, v.VAR_ADJ1, v.VAR_ADJ2, v.VPO, v.EMPRESA, v.VALIDEZ, v.CONTRATO, v.AREA,v.ronLic ]
+    return ARR.join();
+  })
+*/
+
   function RenderTabla(widLic) {
 	 d3.select("table#tBody")
 	  .selectAll("tr").data(TABLA).enter()
@@ -589,6 +596,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	.attr("id","new")
 	  .style("font-weight","lighter")
 	  .html(function(d,i) {
+
 	   let bono = Number((d.BONO / 1000).toFixed(1)).toLocaleString('es-MX');
 	   var ronda = d.RONDA;
 	   var licitacion = d.LICITACION;
@@ -619,6 +627,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	   .reduce(function(a,b) {
 	      return a + "<br>" + b;
 	   });
+
 
 	   var VPO = Number(d.VPO).toFixed(1);
 

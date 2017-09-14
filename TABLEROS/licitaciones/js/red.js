@@ -103,7 +103,7 @@ function RED(width,height) {
     rr.forEach(function(d) {
 	var emps = x.filter(function(e) {
 	  return e.ID_LICITANTE == d.ID_LICITANTE_OFERTA;
-	}).map(function(E) { return E.EMPRESA; });
+	}).map(function(E) { return E.EMPRESA; });//E.NOMBRE_PARTICIPACION; });
 
         emps = _.uniq(emps).reduce(function(a,b) { return a + ";" + b; });
         d.LICITANTE = emps;
@@ -163,8 +163,8 @@ function RED(width,height) {
   };
 //==============================================================================|
   queue()
-//    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
-    .defer(d3.csv,'csv1/NUEVA.csv')
+    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
+//    .defer(d3.csv,'csv1/NUEVA.csv')
     .await(getDATA);
 
   function getDATA(err,bloques_ofertas) {
