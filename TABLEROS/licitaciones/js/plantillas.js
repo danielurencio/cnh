@@ -1457,6 +1457,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 	  celda = celda.replace(/Ú/g,"U")
 
 	} else {
+	  if(j == 0) { cols[j].innerText = cols[j].innerText.replace(/-/g,".") };
           celda = cols[j].innerText//.replace(/-/g,".");
 	  celda = celda.replace(/,/g,"");
 	  celda = celda.replace(/Á/g,"A")
