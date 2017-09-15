@@ -100,7 +100,7 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
 
       '</div>' +
 
-      '<div id="leyendaInv" style="width:inherit;height:20px;text-align:center;font-weight:400;font-size:9px;color:rgb(8,109,115);">*La inversión corresponde a los programas de inversión aprobados y, en caso de no contar con éste, a la inversión comprometida.</div>' +
+//      '<div id="leyendaInv" style="width:inherit;height:20px;text-align:center;font-weight:400;font-size:9px;color:rgb(8,109,115);">*La inversión corresponde a los programas de inversión aprobados y, en caso de no contar con éste, a la inversión comprometida.</div>' +
       '<div id="barras" style="padding:0px;width:100%; height:10%"></div>';
 
           var plantilla = 
@@ -331,6 +331,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
    .data(valores).enter()
    .append("text")
    .attr({
+    'id':'numInv',
     'opacity':0,
     'fill':function(d,i) { 
       var c = i == 1 ? colorBarras : 'black';
@@ -345,7 +346,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
     'y':function(d,i) {
       var y = +d3.select('#mitad2').style("height").split("px")[0];
       //var Y = i == 0 ? (y/4) : (y/4)*3;
-      return (y/valores.length*(i+1)) - (y/valores.length/2);
+      var val = (y/valores.length*(i+1)) - (y/valores.length/2);
+      if(d.key == 'Inversión') val = val - 14;
+      return val;
     },
     'font-weight':function(d,i) {
       var w = i == 1 ? 800 : 800;
@@ -356,12 +359,10 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
       return s;
     }
    })
-   .text(function(d,i) {
-//	var T = String(d.val).split("K");
-//	if(T.length == 1) T = Number(T[0]).toLocaleString('es-MX');
-//        if(T.length ==2) T = Number(T[0]).toLocaleString('es-MX') + "K";
-//	return T;
-	return Number(d.val).toLocaleString('es-MX');
+   .html(function(d,i) {
+	var val = Number(d.val).toLocaleString('es-MX');
+	if (d.key == "Inversión") val = "$" + val;
+        return val;
    });
 
   figuras.transition().duration(1000).attr("opacity",1);
@@ -384,7 +385,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
     'y':function(d,i) {
       var y = +d3.select('#mitad2').style("height").split("px")[0];
       //var Y = i == 0 ? (y/4) : (y/4)*3;
-      return (y/valores.length*(i+1)) - (y/valores.length/2);
+      var val = (y/valores.length*(i+1)) - (y/valores.length/2);
+      if(d.key == 'Inversión') val = val - 18;
+      return val;
     },
     'font-weight':function(d,i) {
       var w = i == 1 ? 700 : 400;
@@ -395,14 +398,17 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
       return s;
     }
    })
-   .text(function(d,i) {
-	return d.key;
+   .html(function(d,i) {
+        var val = d.key;
+        if(val == 'Inversión') val = val + "*"
+	return val;
    });
 
   var MM_ = d3.select('text[tag="Inversión"]')
 	.node()
 
-  d3.select(MM_.parentNode).append("text")
+  var millones = d3.select(MM_.parentNode).append("text")
+  .attr("id","millones")
   .attr("text-anchor","middle")
   .attr('alignment-baseline','text-before-edge')
   .attr('font-weight',600)
@@ -412,8 +418,33 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
     var x = +d3.select('#mitad2').style("width").split("px")[0];
     return x/2;
   })
-  .attr("y",MM_.getBBox().y + MM_.getBBox().height + 4)
-  .text("(millones de dólares)");
+  .attr("y",MM_.getBBox().y + MM_.getBBox().height + 2)
+  .html("(millones de dólares)");
+
+  d3.select(MM_.parentNode).append("text")
+    .attr("fill","rgb(8,109,115)")
+    .attr("alignment-baseline","text-before-edge")
+    .attr("font-family","Open Sans")
+    .attr("font-size",9)
+    .attr("y",function() {
+	var offset = millones.node().getBBox().height;
+	var y = millones.node().getBBox().y;
+	return offset + y + 3;
+    })
+    .selectAll("tspan")
+    .data([
+'* La inversión corresponde a los programas de','inversión aprobados y, en caso de no contar','con éste, a la inversión comprometida.'
+]).enter()
+    .append("tspan")
+    .attr("text-anchor","middle")
+    .attr("x",function() {
+      var x = +d3.select('#mitad2').style("width").split("px")[0];
+      return x/2;
+    })
+
+    .attr("dy","1.0em")
+    .text(function(d) { return d; });
+console.log(millones.node().getBBox())
 
 //////////////////////////////////////////////////////////////////////////
 	Highcharts.setOptions({
