@@ -444,7 +444,6 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
     .attr("dy","1.0em")
     .text(function(d) { return d; });
-console.log(millones.node().getBBox())
 
 //////////////////////////////////////////////////////////////////////////
 	Highcharts.setOptions({
@@ -494,6 +493,7 @@ console.log(millones.node().getBBox())
 	    },
 	    yAxis: {
 		labels: {
+		  enabled:false,
 		  style: {
 		    'fontFamily':'Open Sans, sans-serif',
 		    'font-weight':300
@@ -511,10 +511,11 @@ console.log(millones.node().getBBox())
 		enabled: false
 	    },
 	    tooltip: {
+		enabled:true,
 		style: { color:"white",stroke:null },
 		backgroundColor:colorBarras,
 		borderColor:"transparent",
-		pointFormat: '<b>{point.y:.1f}</b>'
+		pointFormat: '<b>{point.y:.0f}</b>'
 	    },
 	    plotOptions: {
 		series: {
@@ -525,14 +526,15 @@ console.log(millones.node().getBBox())
 		name: 'número',
 		data: paisesData,
 		dataLabels: {
-		    enabled: false,
-		    rotation: -90,
-		    color: 'rgba(255,0,0,0.65)',
-		    align: 'right',
-		    format: '{point.y:.1f}',
-		    y: 10,
+		    enabled: true,
+		    rotation: 0,
+		    color: 'black',
+		    align: 'center',
+//		    format: '{point.y:.1f}',
+//		    y: -10,
+//		    inside:false,
 		    style: {
-			fontSize: '13px',
+			fontSize: '11px',
 			fontFamily: 'Open Sans'
 		    }
 		}
@@ -541,19 +543,29 @@ console.log(millones.node().getBBox())
 
       d3.selectAll('.highcharts-grid-line').remove();
 
+      var ing_ =SUMAS.pre
+	.filter(function(d) { return d.key == 'Ingresos' })[0].val
 
 	var bloques = Highcharts.chart({
+	    xAxis: { categories:[''] },
+	    yAxis: {
+	      labels:{ enabled:false },
+	      title: {
+		text:'<b>Porcentaje</b>',
+		style:{ fontFamily: 'Open Sans'},
+	      }
+	    },
 	    exporting: {
 		enabled:true,
-		type:'image/jpeg',
-		filename:'superficie',
+//		type:'image/jpeg',
+//		filename:'ingresos',
 		buttons: {
 		  contextButton: {
 		    menuItems: [
 			{
 			  'text':'Exportar datos (CSV)',
 			  'onclick': function() {
-			     csvGraf(this.getCSV(),'superficie',{rondas:RONDA_LIC});
+			     csvGraf(this.getCSV(),'ofertas_resumen',{rondas:RONDA_LIC});
 			  }
 			}
 		    ]
@@ -563,24 +575,41 @@ console.log(millones.node().getBBox())
 	    credits: { enabled:false },
             chart: {
                 renderTo: 'mitad3',
-                type: 'pie'
+                type: 'column'
             },
            title: {
-                text: "SUPERFICIE",
+                text: "OFERTAS",
 		style: {
 		  'font-family':'Open Sans, sans-serif',
 		  'font-weight':600,
 		  'font-size':16
 		}
             },
-	   subtitle: { text: "(miles de km\u00B2)" },
+	   subtitle: { text:'Promedio de ofertas ganadoras' },
+//	   subtitle: { text: "(miles de km\u00B2)" },
            tooltip: {
                 formatter: function() {
-                    return '<b>'+ this.point.name +'</b>: '+ this.y.toLocaleString('es-MX');
+                    return '<b>'+ this.y.toFixed(2).toLocaleString('es-MX');
                 }
             },
-            series: [{
-                name: 'Bloques',
+            series: [
+		{
+		 name:'Participación',
+		 data:[ing_['Producción compartida']],
+		 dataLabels: {
+		   enabled:true,
+		   formatter:function() { return this.y.toLocaleString('es-MX'); }
+		 }
+		},
+		{
+		 name:'Regalía',
+		 data:[ing_['Licencia']],
+		 dataLabels: {
+		  enabled:true,
+		  formatter:function() { return this.y.toLocaleString('es-MX'); }
+		 }
+		}
+/*                name: 'Bloques',
                 data: [["Adjudicada",bAdj],["No adjudicada",bNoAdj]],
                 size: '90%',
                 innerSize: '65%',
@@ -600,7 +629,8 @@ console.log(millones.node().getBBox())
 		      return this.y.toLocaleString('es-MX');
 		    }
                 }
-            }]
+*/
+            ]
         });
 
 	d3.selectAll("tspan.highcharts-text-outline").remove()
@@ -1369,6 +1399,30 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
     return a;
   },[]);
 
+
+  var ing = FILTRO6
+	.map(function(d) {
+	   return {
+	    VAR_ADJ1: d.VAR_ADJ1,
+	    VALIDEZ: d.VALIDEZ,
+	    CONTRATO: d.CONTRATO,
+	    ID_LICITANTE_OFERTA: d.ID_LICITANTE_OFERTA,
+	    ID_LICITANTE_ADJ: d.ID_LICITANTE_ADJ,
+	    ID_BLOQUE:d.ID_BLOQUE
+	   }
+	})
+	.filter(function(d) {
+	  return d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ;
+	});
+
+  ing = _.groupBy(_.uniq(ing,"ID_BLOQUE"),"CONTRATO")
+
+  for(var k in ing ) {
+    ing[k] = +d3.mean(ing[k].map(function(d) {
+	  return +d.VAR_ADJ1;;
+    })).toFixed(2);
+  };
+
   var contratos = FILTRO6.map(function(d) {
     var obj = {};
     obj['ID_BLOQUE'] = d.ID_BLOQUE;
@@ -1474,7 +1528,8 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
    { 'key':'Bloques ofertados', 'val': FILTRO2.length },
    { 'key':'Bloques adjudicados','val': bloquesAdjudicados.length},//FILTRO1.length }
    {'key':'Área adjudicada','val':(areaAdj/1000).toFixed(1),'ignorar':true },
-   {'key':'Área no adjudicada','val':(areaNoAdj/1000).toFixed(1), 'ignorar':true }
+   {'key':'Área no adjudicada','val':(areaNoAdj/1000).toFixed(1), 'ignorar':true },
+   { 'key':'Ingresos','val':ing, 'ignorar':true }
   ];
 
   after = [
@@ -1956,10 +2011,10 @@ function csvGraf(csv,filename,obj) {
 	titulo = "NUMERO DE CONTRATOS POR TIPO";
 	category = "TIPO DE CONTRATO";
       }
-      if( filename == "superficie" ) {
-	titulo = "SUPERFICE DE BLOQUES EN KM2";
-	csv = csv.replace("Bloques","MILES DE KM2")
-	category = "SUPERFICIE";
+      if( filename == "ofertas_resumen" ) {
+	titulo = "PARTICIPACIÓN DEL ESTADO O REGALÍA ADICIONAL (PORCENTAJE PROMEDIO DE OFERTAS GANADORAS)";
+//	csv = csv.replace("Bloques","MILES DE KM2")
+	category = "OFERTAS";
       }
       if( filename == "paises" ) {
 	titulo = "PAISES PARTICIPANTES";

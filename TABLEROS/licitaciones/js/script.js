@@ -67,40 +67,23 @@ contenedor.attr.fill = 'transparent';//'rgba(0,0,0,0.25)';
 contenedor.attr.transform = "translate(0,0)";
 addElement(contenedor);
 
+//RED(width/2,height);
+
 function reajustar() {
     if(width != window.innerWidth || height != window.innerHeight) {
-	  d3.select("g#red").remove();
-	  width = window.innerWidth;
-	  height = window.innerHeight;
-	//  console.log(width,height);
-	//  d3.select("svg#canvas").attr("width",width)
-	//  d3.select("g#red>rect").attr("width",width/2)
-	  svgCanvas.attr.width = width;
-	  svgCanvas.attr.height = height;
-	  addElement(svgCanvas);
-
-	  contenedor.attr.width = width/2;
-	  contenedor.attr.height = height;
-	  contenedor.selection = "svg#canvas"
-	  contenedor.append = 1;
-	  contenedor.type = "g";
-	  contenedor.attr.id = "red";
-	  addElement(contenedor);
-	  //RECT
-/*	  contenedor.selection = "g#red";
-	  contenedor.type = "rect";
-	  addElement(contenedor);
-*/
-	  contenedor.append =0;
-	  delete contenedor.attr.class;
-	  contenedor.selection = 'g#mapa>rect';
-	  addElement(contenedor);
-	//  RED(width,height)
-	  d3.select("g.NODOS").attr("transform","translate(0,0)");
+      width = window.innerWidth;
+      height = window.innerHeight;
+      d3.selectAll("g#red>g").remove();
+      d3.select("svg#verLista").remove();
+      d3.select("g#tituloRed_").remove();
+      d3.select("div#remporal").remove();
+      d3.select("svg#cintilla>text").remove();
+      d3.selectAll("div[class='chosen-container chosen-container-multi']").remove()
+      RED(width/2,height);
     }
 };
 
-//setInterval(reajustar,1000);
+//setInterval(reajustar,500);
 
 function addElement(obj) {
   var sel;
