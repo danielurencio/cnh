@@ -91,16 +91,16 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
 
 
      var contenido =
-      '<div id="mitades" style="position:relative;height:20px">'+
+      '<div id="mitades" style="height:20px">'+
        '<div id="mitad1" style="float:left;clear:left;width:33%;height:inherit"></div>' +
        '<div id="mitad2" style="float:left;width:33%;height:inherit">'+
 	'<svg style="width:100%;height:inherit;"></svg>'+
        '</div>' +
        '<div id="mitad3" style="float:left;width:33%;height:inherit"></div>' +
 
-      '<div id="leyendaInv" style="z-index:1000;width:inherit;height:20px;text-align:center;position:absolute;font-weight:400;font-size:9px;color:rgb(8,109,115);">*La inversión corresponde a los programas de inversión aprobados y, en caso de no contar con éste, a la inversión comprometida.</div>' +
       '</div>' +
 
+      '<div id="leyendaInv" style="width:inherit;height:20px;text-align:center;font-weight:400;font-size:9px;color:rgb(8,109,115);">*La inversión corresponde a los programas de inversión aprobados y, en caso de no contar con éste, a la inversión comprometida.</div>' +
       '<div id="barras" style="padding:0px;width:100%; height:10%"></div>';
 
           var plantilla = 
@@ -575,7 +575,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	d3.selectAll("tspan.highcharts-text-outline").remove()
 
 ///////////////////////LEYENDA INVERSIÓN///////////////////////////////////////
-  var mitades_height = +d3.select("div#mitades").style("height").split("px")[0];
+  /*var mitades_height = +d3.select("div#mitades").style("height").split("px")[0];
   var mitades_width = +d3.select("div#mitades").style("width").split("px")[0];
 
   d3.select("div#leyendaInv")
@@ -587,7 +587,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
     var pad = Math.ceil(0.07936507936507936*mitades_width);
     return String(pad) + "px";
   });
-
+*/
 
   }; GRAFICOS();
 /////////////////////////////////////////////////////////////////////////////////
