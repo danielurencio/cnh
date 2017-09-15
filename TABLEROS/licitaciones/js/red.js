@@ -103,7 +103,7 @@ function RED(width,height) {
     rr.forEach(function(d) {
 	var emps = x.filter(function(e) {
 	  return e.ID_LICITANTE == d.ID_LICITANTE_OFERTA;
-	}).map(function(E) { return E.EMPRESA; });//E.NOMBRE_PARTICIPACION; });
+	}).map(function(E) { return E.LICITANTE; });
 
         emps = _.uniq(emps).reduce(function(a,b) { return a + ";" + b; });
         d.LICITANTE = emps;
