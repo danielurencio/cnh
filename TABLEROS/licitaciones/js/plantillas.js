@@ -121,6 +121,7 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
     .html(plantilla);
 
 
+
 //------CÁLCULO DE SUMAS--------------//
 var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //-----------------------------------//
@@ -355,7 +356,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
       return w;
     },
     'font-size':function(d,i) {
-      var s = i == 1 ? 35 : 22;
+      var s = i == 1 ? 30 : 22;
       return s;
     }
    })
@@ -534,8 +535,10 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //		    y: -10,
 //		    inside:false,
 		    style: {
-			fontSize: '11px',
-			fontFamily: 'Open Sans'
+			fontSize: '13px',
+			fontFamily: 'Open Sans',
+//			stroke:'black',
+//			strokeWidth:"1px"
 		    }
 		}
 	    }]
@@ -594,7 +597,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
             },
             series: [
 		{
-		 name:'Participación',
+		 name:'Participación del Estado',
 		 data:[ing_['Producción compartida']],
 		 dataLabels: {
 		   enabled:true,
@@ -602,7 +605,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		 }
 		},
 		{
-		 name:'Regalía',
+		 name:'Regalía adicional',
 		 data:[ing_['Licencia']],
 		 dataLabels: {
 		  enabled:true,
@@ -635,6 +638,22 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 	d3.selectAll("tspan.highcharts-text-outline").remove()
 
+//-----------------------------------------------------------------------------
+//  PRESERVE ASPECT RATIO LADO DERECHO
+//---------------------------------------------------------------------------
+  var sumas__ = d3.select("svg#sumas");
+  sumas_feats = sumas__.node().getBBox();
+  var ww_f = sumas_feats.width + 50
+  sumas__
+    .attr("viewBox","0 10 " + (ww_f) + " " + sumas_feats.height)
+    .attr("preserveAspectRatio","xMinYMid meet")
+
+  var mitad2_sel = d3.select("div#mitad2>svg");
+  var mitad2_feats = mitad2_sel.node().getBBox()
+  mitad2_sel
+    .attr("viewBox","0 20 " + mitad2_feats.width + " " + mitad2_feats.height)
+    .attr("preserveAspectRatio","xMinYMid meet")
+  
 ///////////////////////LEYENDA INVERSIÓN///////////////////////////////////////
   /*var mitades_height = +d3.select("div#mitades").style("height").split("px")[0];
   var mitades_width = +d3.select("div#mitades").style("width").split("px")[0];

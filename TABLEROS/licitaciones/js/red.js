@@ -551,6 +551,18 @@ function RED(width,height) {
 //  Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos);
   NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos);
   resumen(data,adj,licRondas,pmts,ofertas,arr,tabla,procesos)
+
+//---------------------------------------------------------------------------
+// PRESERVE ASPECT RATIO LADO IZQUIERDO
+//-------------------------------------------------------------------------
+var svg_canvas = d3.select("div#red")
+var red_WIDTH = +svg_canvas.style("width").split("px")[0];
+var red_HEIGHT = svg_canvas.style("height").split("px")[0];
+console.log("red_WIDTH")
+d3.select("svg#canvas")
+  .attr("viewBox","-20 -20 " + (red_WIDTH) + " " + red_HEIGHT)
+  .attr("preserveAspectRatio","xMinYMid meet")
+//  .style("padding-top","20px")
   };
 
 
