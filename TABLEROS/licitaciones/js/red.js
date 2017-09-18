@@ -555,6 +555,7 @@ function RED(width,height) {
 //---------------------------------------------------------------------------
 // PRESERVE ASPECT RATIO LADO IZQUIERDO
 //-------------------------------------------------------------------------
+/*
 var svg_canvas = d3.select("div#red")
 var red_WIDTH = +svg_canvas.style("width").split("px")[0];
 var red_HEIGHT = svg_canvas.style("height").split("px")[0];
@@ -563,6 +564,7 @@ d3.select("svg#canvas")
   .attr("viewBox","-20 -20 " + (red_WIDTH) + " " + red_HEIGHT)
   .attr("preserveAspectRatio","xMinYMid meet")
 //  .style("padding-top","20px")
+*/
   };
 
 

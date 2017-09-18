@@ -71,8 +71,10 @@ addElement(contenedor);
 
 function reajustar() {
     if(width != window.innerWidth || height != window.innerHeight) {
+
       width = window.innerWidth;
       height = window.innerHeight;
+/*
       d3.selectAll("g#red>g").remove();
       d3.select("svg#verLista").remove();
       d3.select("g#tituloRed_").remove();
@@ -80,10 +82,16 @@ function reajustar() {
       d3.select("svg#cintilla>text").remove();
       d3.selectAll("div[class='chosen-container chosen-container-multi']").remove()
       RED(width/2,height);
+*/
+      if(confirm("Han cambiado las dimensiones de la pantalla. Refresque la página para una mejor experiencia.")) {
+	window.location.reload();
+      } else {
+	null;
+      }
     }
 };
 
-//setInterval(reajustar,500);
+setInterval(reajustar,500);
 
 function addElement(obj) {
   var sel;

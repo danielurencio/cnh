@@ -641,6 +641,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //-----------------------------------------------------------------------------
 //  PRESERVE ASPECT RATIO LADO DERECHO
 //---------------------------------------------------------------------------
+/*
   var sumas__ = d3.select("svg#sumas");
   sumas_feats = sumas__.node().getBBox();
   var ww_f = sumas_feats.width + 50
@@ -653,7 +654,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
   mitad2_sel
     .attr("viewBox","0 20 " + mitad2_feats.width + " " + mitad2_feats.height)
     .attr("preserveAspectRatio","xMinYMid meet")
-  
+*/
 ///////////////////////LEYENDA INVERSIÓN///////////////////////////////////////
   /*var mitades_height = +d3.select("div#mitades").style("height").split("px")[0];
   var mitades_width = +d3.select("div#mitades").style("width").split("px")[0];
