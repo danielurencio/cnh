@@ -527,7 +527,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		name: 'número',
 		data: paisesData,
 		dataLabels: {
-		    enabled: true,
+		    enabled: false,
 		    rotation: 0,
 		    color: 'black',
 		    align: 'center',
@@ -744,7 +744,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		     "<th>"+ d.VAR_ADJ1.toLocaleString('es-MX') +"</th>" +
 		     "<th>"+ d.VAR_ADJ2.toLocaleString('es-MX') +"</th>" +
 		     "<th>"+ VPO.toLocaleString('es-MX') +"</th>" +
-		     "<th>"+ bono.toLocaleString('es-MX') +"</th>";
+		     "<th TAG="+ d.BONO +">"+ bono.toLocaleString('es-MX') +"</th>";
 	   return str;
 	   });
   };
@@ -1197,7 +1197,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 		     "<th>"+ d.VAR_ADJ1.toLocaleString('es-MX') +"</th>" +
 		     "<th>"+ d.VAR_ADJ2.toLocaleString('es-MX') +"</th>" +
 		     "<th>"+ VPO.toLocaleString('es-MX') +"</th>" +
-		     "<th>"+ bono.toLocaleString('es-MX') +"</th>";
+		     "<th TAG="+d.BONO+">"+ bono.toLocaleString('es-MX') +"</th>";
 	    return str;
 	    });
 
