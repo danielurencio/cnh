@@ -22,10 +22,16 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
       });
 
 
-
   lista
-    .on("click", function(d) {
-//      d3.select("g#tituloRed_").transition().duration(800).attr("opacity",0.25)
+    .on("click",mostrarLista);
+
+  d3.select("div#tutorial")
+    .on("click",mostrarLista);
+
+function mostrarLista() {
+
+     d3.select("div#tutorial")[0][0] ? d3.select("div#tutorial").remove() : null;
+      
       d3.select("#filtroEmpresas>svg").remove();
 
       var empresas = /*adj*/data.map(function(d) { return d.EMPRESA; })
@@ -55,7 +61,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 
       if(!lista.attr("class")) {
         lista.attr("class","toggled")
-        var t0 = d3.select(this).transition().duration(300)
+        var t0 = d3.select("div#filtroEmpresas").transition().duration(300)
         t0.style("width","360px")
 	  .each("end",function() {
 	    lista.append("div")
@@ -136,8 +142,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 
         lista.style("overflow","auto")
       }
-    });
-
+    };
 
   d3.select("svg#canvas")
    .on("click",hideLista);
@@ -253,3 +258,4 @@ function regex() {
     };
   };
 };
+

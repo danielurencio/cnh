@@ -436,14 +436,14 @@ function RED(width,height) {
 
 	var style = {
 	  'x':width-10,
-	  'y':10,//graphH - 40,
-	  'font-size':12,
+	  'y':25,//graphH - 40,
+	  'font-size':16,
 	  'font-family':'Open Sans',
 	  'id':'nombreEmpresa',
-	  'font-weight':700,
-	  'text-anchor':'start',
+	  'font-weight':800,
+	  'text-anchor':'end',
 	  'fill':'rgb(8,109,115)',
-	  'transform':'rotate(90,'+(width-30)+','+0+')'
+	 // 'transform':'rotate(90,'+(width-30)+','+0+')'
 	};
 
 	d3.select("g#red").append("text")
@@ -552,8 +552,11 @@ function RED(width,height) {
   NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos);
   resumen(data,adj,licRondas,pmts,ofertas,arr,tabla,procesos)
   
-  d3.select("div#tutorial")
-    .on("click",function() { d3.select(this).remove(); });
+/*  d3.select("div#tutorial")
+    .on("click",function() {
+      d3.select(this).remove();
+    });
+*/
 //---------------------------------------------------------------------------
 // PRESERVE ASPECT RATIO LADO IZQUIERDO
 //-------------------------------------------------------------------------
