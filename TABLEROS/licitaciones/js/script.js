@@ -85,6 +85,8 @@ function reajustar() {
 */
       if(confirm("Han cambiado las dimensiones de la pantalla. Refresque la página para una mejor experiencia.")) {
 	window.location.reload();
+//	d3.select("div#tutorial").remove();
+
       } else {
 	null;
       }

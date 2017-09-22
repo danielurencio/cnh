@@ -163,8 +163,8 @@ function RED(width,height) {
   };
 //==============================================================================|
   queue()
-    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
-//    .defer(d3.csv,'csv1/NUEVA.csv')
+//    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
+    .defer(d3.csv,'csv1/NUEVA.csv')
     .await(getDATA);
 
   function getDATA(err,bloques_ofertas) {
@@ -551,7 +551,9 @@ function RED(width,height) {
 //  Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos);
   NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos);
   resumen(data,adj,licRondas,pmts,ofertas,arr,tabla,procesos)
-
+  
+  d3.select("div#tutorial")
+    .on("click",function() { d3.select(this).remove(); });
 //---------------------------------------------------------------------------
 // PRESERVE ASPECT RATIO LADO IZQUIERDO
 //-------------------------------------------------------------------------

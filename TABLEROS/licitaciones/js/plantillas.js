@@ -1585,6 +1585,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 
 	} else {
 	  if(j == 0) { cols[j].innerText = cols[j].innerText.replace(/-/g,".") };
+	  if( cols[j].tag ) { console.log(cols[j]); };
           celda = cols[j].innerText//.replace(/-/g,".");
 	  celda = celda.replace(/,/g,"");
 	  celda = celda.replace(/Á/g,"A")
@@ -1592,6 +1593,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 	  celda = celda.replace(/Í/g,"I")
 	  celda = celda.replace(/Ó/g,"O")
 	  celda = celda.replace(/Ú/g,"U")
+	  
 	}
 	row.push(celda);
 	if(j == 0) { ronda_.push(celda) };

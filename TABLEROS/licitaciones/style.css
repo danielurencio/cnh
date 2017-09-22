@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800');
+@import url('https://fonts.googleapis.com/css?family=Coming+Soon|Gloria+Hallelujah');
 
 html,body {
+  height:100%;
+  display:block;
   margin:0px;
   border:0px;
   font-family:'Open Sans';
@@ -32,7 +35,7 @@ div#red {
 div#info {
   display:inline-block;
   position:relative;
-  width:50%;
+  width:100%;
   padding-right:50px;
   flex:1;
   font-family:'Open Sans';
@@ -289,5 +292,244 @@ li[class="active-result.highlighted"]:hover {
 
 button:hover {
   background:rgb(66,184,221);
+}
+
+div#tutorial {
+  position:absolute;
+  width:100%;
+  z-index:500000;
+  background-color:rgba(0,0,0,1);
+  opacity:0.75;
+}
+
+div#vertical-mitad {
+  display:block;
+  background-image:url(img/vertical-line.png);
+  background-repeat:repeat-y;
+  position:absolute;
+  width:6px;
+  height:100%;
+  top:30px;
+  right:50%;
+}
+
+div#horizontal-filtro {
+  display:block;
+  background-image:url(img/horizontal-line.png);
+  background-repeat:repeat-x;
+  position:absolute;
+  height:6px;
+  width:100%;
+  top:30px;
+}
+
+div#vertical-lista {
+  display:block;
+  background-image:url(img/vertical-line.png);
+  background-repeat:repeat-y;
+  position:absolute;
+  width:6px;
+  height:100%;
+  top:30px;
+  left:30px;
+}
+
+div#red-instrucciones {
+  font-size:20px;
+  position:absolute;
+  top:22.5%;
+  color:white;
+  text-align:center;
+  width:30%;
+  left:12.75%;
+  font-weight:800;
+  border:solid 1px;
+  border-radius:5px;
+}
+
+div#ul-instrucciones {
+  width:100%;
+  font-size:14px;
+  font-weight:400;
+}
+
+div#ul-instrucciones ul {
+  display:inline-block;
+  width:100%;
+  padding:10px;
+}
+
+div#ul-instrucciones li {
+  text-align:left;
+}
+
+div#clic {
+  left:12.75%;
+  background-image:url(img/clic.svg);
+  width:130px;
+  height:148.52px;
+  z-index:10000;
+  margin:0 auto;
+  text-align:center;
+}
+
+div#hacerClic {
+  font-size:14px;
+  padding-bottom:4px;
+}
+
+
+div#listaDespegable {
+  display:block;
+  background-image:url(img/horizontal-full-line.png);
+  background-repeat:repeat-x;
+  position:absolute;
+  left:15px;
+  height:2px;
+  width:75px;
+  top:110px;
+}
+
+div#listaTexto {
+  display:block;
+  position:absolute;
+  left:95px;
+  top:102px;
+  z-index:5000;
+  color:white;
+  font-size:12px;
+  font-weight:800;
+}
+
+div#circuloLista {
+  display:block;
+  position:absolute;
+  left:12px;
+  top:105px;
+  background-image:url(img/circle.svg);
+  width:10px;
+  height:10px;
+}
+
+div#circuloFiltro {
+  display:block;
+  position:absolute;
+  left:60%;
+  top:12px;
+  background-image:url(img/circle.svg);
+  width:10px;
+  height:10px;
+}
+
+div#filtroLinea {
+  display:block;
+  background-image:url(img/vertical-full-line.png);
+  background-repeat:repeat-y;
+  position:absolute;
+  left:60.4%;
+  height:42px;
+  width:2px;
+  top:16px;
+}
+
+div#filtroTexto {
+  display:block;
+  position:absolute;
+  left:60%;
+  top:58px;
+  z-index:5000;
+  color:white;
+  font-size:12px;
+  font-weight:800;
+}
+
+div#circuloBoton1 {
+  display:block;
+  position:absolute;
+  left:50%;
+  margin-top:65px;
+  margin-left:5px;
+  top:15%;
+  background-image:url(img/circle.svg);
+  width:10px;
+  height:10px;
+}
+
+div#circuloBoton2 {
+  display:block;
+  position:absolute;
+  left:50%;
+  margin-top:65px;
+  margin-left:68px;
+  top:15%;
+  background-image:url(img/circle.svg);
+  width:10px;
+  height:10px;
+}
+
+div#lineaBoton1 {
+  display:block;
+  background-image:url(img/vertical-full-line.png);
+  background-repeat:repeat-y;
+  position:absolute;
+  left:50%;
+  height:20px;
+  width:2px;
+  top:15%;
+  margin-top:75px;
+  margin-left:9px;
+}
+
+div#lineaBoton2 {
+  display:block;
+  background-image:url(img/vertical-full-line.png);
+  background-repeat:repeat-y;
+  position:absolute;
+  left:50%;
+  height:20px;
+  width:2px;
+  top:15%;
+  margin-top:75px;
+  margin-left:72px;
+}
+
+div#linea-horizontal-botones {
+  display:block;
+  background-image:url(img/horizontal-full-line.png);
+  background-repeat:repeat-x;
+  position:absolute;
+  left:50%;
+  height:2px;
+  width:150px;
+  top:15%;
+  margin-left:9px;
+  margin-top:95px;
+}
+
+div#texto-horizontal-botones {
+  display:block;
+  position:absolute;
+  left:50%;
+  top:15%;
+  z-index:5000;
+  color:white;
+  font-size:12px;
+  font-weight:800;
+  margin-left:165px;
+  margin-top:88px;
+}
+
+div#info-rondas-empresa {
+  display:block;
+  position:absolute;
+  left:60%;
+  top:50%;
+  z-index:5000;
+  color:white;
+  font-size:22px;
+  font-weight:800;
+  border:solid 1px;
+  border-radius:5px;
+  padding:10px;
 }
 
