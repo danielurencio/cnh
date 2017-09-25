@@ -245,12 +245,18 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	});
 
 	var empresas_precalif = Highcharts.chart({ 
+	    lang: { Descargar:'Descargar' },
 	    exporting: {
 		enabled:true,
 		type:'image/jpeg',
 		filename:'contratos',
 		buttons: {
-		  contextButton: {
+		  contextButton: { enabled:false },
+		  myButton: {
+		    symbol: 'url(../img/download.svg)',
+		    symbolX:19,
+		    symbolY:18,
+		    _titleKey:'Descargar',
 		    menuItems: [
 			{
 			  'text':'Exportar datos (CSV)',
@@ -453,12 +459,17 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 
 	var barras = Highcharts.chart('barras', {
+	    lang: { Descargar: "Descargar" },
 	    exporting: {
 		enabled:true,
 		type:'image/jpeg',
 		filename:'países',
 		buttons: {
-		  contextButton: {
+		  myButton: {
+		    _titleKey:"Descargar",
+		    symbol: 'url(../img/download.svg)',
+		    symbolX:19,
+		    symbolY:18,
 		    menuItems: [
 			{
 			  'text':'Exportar datos (CSV)',
@@ -467,6 +478,10 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 			  }
 			}
 		    ]
+
+		  },
+		  contextButton: {
+		    enabled:false,
 		  }
 		}
 	    },
@@ -558,12 +573,17 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		style:{ fontFamily: 'Open Sans'},
 	      }
 	    },
+	    lang: { 'Descargar':'Descargar' },
 	    exporting: {
 		enabled:true,
 //		type:'image/jpeg',
 //		filename:'ingresos',
 		buttons: {
 		  contextButton: {
+		    symbol:'url(../img/download.svg)',
+		    symbolX:19,
+		    symbolY:18,
+		    _titleKey:"Descargar",
 		    menuItems: [
 			{
 			  'text':'Exportar datos (CSV)',
@@ -1856,12 +1876,17 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 
   var stacked_bars = Highcharts.chart('mitad1', {
     credits: { enabled:false },
+    lang: { Descargar:"Descargar" },
     exporting: {
 	enabled:true,
 	type:'image/jpeg',
 	filename:'gráfico-ofertas',
 	buttons: {
 	 contextButton: {
+	  symbol:'url(../img/download.svg)',
+	  _titleKey:"Descargar",
+	  symbolX:19,
+	  symbolY:18,
           menuItems: [
 	   {
 	    'text':'Exportar datos (CSV)',
@@ -1940,12 +1965,17 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
       }
     },
     credits: { enabled:false },
+    lang: { Descargar:'Descargar' },
     exporting: {
 	enabled:true,
 //	type:'image/jpeg',
 //	filename:'inversion-ronda-bloque',
 	buttons: {
 	 contextButton: {
+	  symbol:'url(../img/download.svg)',
+	  symbolX:19,
+	  symbolY:18,
+          _titleKey:'Descargar',
           menuItems: [
 	   {
 	    'text':'Exportar datos (CSV)',
