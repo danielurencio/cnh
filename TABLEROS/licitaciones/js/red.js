@@ -114,7 +114,8 @@ function RED(width,height) {
 
 
   function to_OFERTAS_(x) {
-      var rr = x.filter(function(d) { return d.VALIDEZ == 'VALIDA' });
+      var rr = x.filter(function(d) { return d.VALIDEZ != 'NO PRESENTA' });
+      rr = rr.filter(function(d) { return d.VALIDEZ != 'SIN GARANTIA' });
       rr = rr.map(function(d) {
       var obj = {};
       obj['AREA'] = d.AREA;
@@ -129,6 +130,7 @@ function RED(width,height) {
       obj['VAR_ADJ1'] = d.VAR_ADJ1;
       obj['VAR_ADJ2'] = d.VAR_ADJ2;
       obj['VPO'] = d.VPO;
+      obj['VALIDEZ'] = d.VALIDEZ;
 
       return obj;
     });

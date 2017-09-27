@@ -334,9 +334,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
   var valores = [area,inv,ofertasXbloque]
 //  medio.style("background-color","rgba(0,0,0,0.1");
 
-  var figuras = medio.append("g").selectAll("text")
+  var figuras = medio.append("g").append("text").selectAll("tspan")
    .data(valores).enter()
-   .append("text")
+   .append("tspan")
    .attr({
     'id':'numInv',
     'opacity':0,
@@ -700,7 +700,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //////////////////////////////////////////////////////////////////////////////////
 //------------------ TABLA ------------------------------------------------------
 /////////////////////////////////////////////////////////////////////////////////
-  TABLA = TABLA.filter(function(d) { return d.VAR_ADJ1 != ""; });
+   TABLA = TABLA.filter(function(d) { return d.VALIDEZ != 'NO PRESENTA' });
+   TABLA = TABLA.filter(function(d) { return d.VALIDEZ != 'SIN GARANTIA' });
+//  TABLA = TABLA.filter(function(d) { return d.VAR_ADJ1 != ""; });
 
   TABLA = _.uniq(TABLA,function(v) {
     var ARR = [ v.BONO, v.ID_BLOQUE, v.ID_LICITANTE_ADJ, v.ID_LICITANTE_OFERTA, v.LICITACION, v.RONDA, v.VAR_ADJ1, v.VAR_ADJ2, v.VPO, v.VALIDEZ, v.CONTRATO, v.AREA,v.ronLic ]
@@ -709,14 +711,31 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
   TABLA = _.sortBy(TABLA,"ID_BLOQUE")
 
-
   function RenderTabla(widLic) {
 	 d3.select("table#tBody")
 	  .selectAll("tr").data(TABLA).enter()
 	  .append("tr")
 	.attr("class","datosMod")
 	.attr("id","new")
-	  .style("font-weight","lighter")
+	  .style("color",function(d) {
+	    var color;
+	    if(d.VALIDEZ == "DESECHADA") {
+		color = "red";
+	    } else {
+		color = "black";
+	    };
+
+	    return color;
+	  })
+	  .style("font-weight",function(d) {
+	    var weight;
+	    if(d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ) {
+		weight = 700;
+	    } else {
+		weight = 300
+	    };
+	    return weight;
+	  })
 	  .html(function(d,i) {
 
 	   let bono = Number((d.BONO / 1000).toFixed(1)).toLocaleString('es-MX');
@@ -990,9 +1009,9 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   ];
 
  var sumas = d3.select("svg#sumas"); 
- var nums = sumas.append("g").selectAll("text")
+ var nums = sumas.append("g").append("text").selectAll("tspan")
   .data(SUMAS).enter()
-  .append("text")
+  .append("tspan")
    .style("font-weight",300)
    .attr("id",function(d,i) {
      return "suma_" + String(i);
@@ -1005,7 +1024,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
    })
    .attr("fill","rgba(0,0,0,0.5)")
    .attr("opacity",0)
-   .attr("alignment-baseline","alphabetic")
+   .attr("dominant-baseline","alphabetic")
    .attr("text-anchor","middle")
    .attr("x",function(d,i) {
      var width = d3.select("svg#sumas").style("width").split("px")[0];
@@ -1031,9 +1050,9 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   .data(tits__).enter()
   .append("text")
    .style("font-weight",600)
-   .style("font-size",10)
+   .attr("font-size","10px")
    .attr("opacity",1)
-   .attr("alignment-baseline","text-before-edge")
+   .attr("dominant-baseline","text-before-edge")
    .attr("text-anchor","middle")
    .attr("x",function(d,i) {
      var width = d3.select("svg#sumas").style("width").split("px")[0];
@@ -1166,6 +1185,15 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 	  .append("tr")
 	.attr("class","datosMod")
 	.attr("id","new")
+	  .style("color",function(d) {
+	    var color;
+	    if(d.VALIDEZ == 'DESECHADA') {
+		color = "red";
+	    } else {
+		color = "black";
+	    }
+	    return color;
+	  })
 	  .style("font-weight",function(d) {
 	    var cond = d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ;
 	    var weight = cond ? 600 : 300;
@@ -1584,7 +1612,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 };
 
   function descargar_CSV() {
-    var csv = ["RONDA-LICITACION,BLOQUE,LICITANTE,VARIABLE DE ADJUDICACION 1,VARIABLE DE ADJUDICACION 2,VPO,BONO (MILES DE DOLARES)"];
+    var csv = ["RONDA-LICITACION,BLOQUE,LICITANTE,VARIABLE DE ADJUDICACION 1,VARIABLE DE ADJUDICACION 2,VPO,BONO (DOLARES)"];
     var rows = document.querySelectorAll("table tr.datosMod");
     var ronda_ = [];
 
@@ -1593,6 +1621,11 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
       var celda;
 
       for(var j = 0; j < cols.length; j++) {
+	if( d3.select(cols[j]).attr("tag") ) {
+	//  cols[j].innerText = +d3.select(cols[j]).attr("tag");
+	//  console.log(cols[j]);
+	};
+
 	if(cols[j].id) {
 	  celda = cols[j].innerHTML.replace("\n","/").replace(/amp;/g,"");
 	  celda = celda.replace(/- /g,"");
@@ -1604,16 +1637,16 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 	  celda = celda.replace(/Ú/g,"U")
 
 	} else {
-	  if(j == 0) { cols[j].innerText = cols[j].innerText.replace(/-/g,".") };
-	  if( cols[j].tag ) { console.log(cols[j]); };
-          celda = cols[j].innerText//.replace(/-/g,".");
+          celda = cols[j].innerText
 	  celda = celda.replace(/,/g,"");
 	  celda = celda.replace(/Á/g,"A")
 	  celda = celda.replace(/É/g,"E")
 	  celda = celda.replace(/Í/g,"I")
 	  celda = celda.replace(/Ó/g,"O")
 	  celda = celda.replace(/Ú/g,"U")
-	  
+          if(j == 0) { celda/*cols[j].innerText*/ = celda.replace(/-/g,".") }
+          if(j == 6) { celda = +d3.select(cols[j]).attr("tag") }
+  
 	}
 	row.push(celda);
 	if(j == 0) { ronda_.push(celda) };
@@ -1651,7 +1684,7 @@ d3.select("div#titulo").append("div")
 
 var i_a = "a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida, o a la regalía adicional en caso de contratos de licencia.<br>"
 
-var i_b = "b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere al factor de inversión adicional."
+var i_b = "b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere al factor de inversión adicional.<br><span style='font-weight:700'>* Las ofertas en negritas fueron ganadoras.</span><br><span style='color:red'>* Las ofertas en rojo fueron desechadas por no superar el límite establecido por la Secretaría de Hacienda y Crédito Público.</span>"
 
 var leyenda = '';
 var tablaString =
@@ -1670,7 +1703,7 @@ var tablaString =
 '</tr>'+
   '</table>' +
  '</div>' + 
-"<div class='notas' style='background-color:white;height:55px;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
+"<div class='notas' style='background-color:white;height:82px;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
 '<div id="tBodyContainer">' +
  '<table id="tBody">' +
 
