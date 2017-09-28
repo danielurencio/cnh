@@ -16,7 +16,7 @@ function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,oferta
 	'transform':'rotate(-90)',
 	'text-anchor':'end',
 	'alignment-baseline':'middle'
-      }).html("&cudarrr;&ensp;Ver lista de empresas&ensp;")
+      }).text("&cudarrr;&ensp;Ver lista de empresas&ensp;")
       .on('mouseover', function() {
 	d3.select(this).style("cursor","pointer");
       });

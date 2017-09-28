@@ -717,7 +717,7 @@ function leyendaRED() {
     })
     .style("stroke-width",0.25);
 
-    var rExpl = ' &xcirc;&mdash;&mdash;&xcirc; Las líneas representan asociaciones entre empresas.'//'El tamaño de los círculos representa la inversión comprometida.';
+    var rExpl = 'Las líneas representan asociaciones entre empresas.'//'El tamaño de los círculos representa la inversión comprometida.';
 //&odot;&horbar;&odot;
     var textoGradiente = [rExpl,'0','1',String(maxAdj),'No. de contratos:'];
 
