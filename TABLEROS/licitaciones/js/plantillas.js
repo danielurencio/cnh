@@ -94,10 +94,9 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
       '<div id="mitades" style="height:20px">'+
        '<div id="mitad1" style="float:left;clear:left;width:33%;height:inherit"></div>' +
        '<div id="mitad2" style="float:left;width:33%;height:inherit">'+
-	'<svg style="width:100%;height:inherit;"></svg>'+
+
        '</div>' +
        '<div id="mitad3" style="float:left;width:33%;height:inherit"></div>' +
-
       '</div>' +
 
 //      '<div id="leyendaInv" style="width:inherit;height:20px;text-align:center;font-weight:400;font-size:9px;color:rgb(8,109,115);">*La inversión corresponde a los programas de inversión aprobados y, en caso de no contar con éste, a la inversión comprometida.</div>' +
@@ -107,7 +106,7 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
 '<div id="titulo" style="height:15%; font-size:28px;">'+
    texto.resumen +
 '<div class="totalBloques" style="padding: 0px;">'+
-'<svg id="sumas" style="width:100%;height:80px;background-color:transparent"></svg>' +
+'<div id="sumas" style="width:100%;height:80px;background-color:transparent"></div>' +
 '<svg id="pestañas" style="width:100%;height:30px;"></svg>'
 +'</div>' +  
 '</div>' +
@@ -126,53 +125,32 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
 var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //-----------------------------------//
 
- var sumas = d3.select("svg#sumas");
+ var sumas = d3.select("div#sumas");
 
  var contenidoSumas = SUMAS.pre.filter(function(d) { return !d.ignorar; });
 
- var nums = sumas.append("g").selectAll("text")
+ var num = sumas.selectAll("div")
   .data(contenidoSumas).enter()
-  .append("text")
-   .style("font-weight",300)
-   .attr("id",function(d,i) {
-     return "suma_" + String(i);
-   })
-   .attr("fill","rgba(0,0,0,0.5)")
-   .attr("opacity",0)
-   .attr("alignment-baseline","alphabetic")
-   .attr("text-anchor","middle")
-   .attr("x",function(d,i) {
-     var width = d3.select("svg#sumas").style("width").split("px")[0];
-     var objLength = Object.keys(contenidoSumas).length;
-     return (width / objLength*i) + (width/objLength/2);
-   })
-   .attr("y",function() {
-     var height = +d3.select("svg#sumas").style("height").split("px")[0];
-     return height / 2;
-   }).text(function(d) { return d.val; });
-
- var tits__ = contenidoSumas.map(function(d) { return d.key; });
- var tits = sumas.append("g").selectAll("text")
-  .data(tits__).enter()
-  .append("text")
-   .style("font-weight",600)
-   .style("font-size",10)
-   .attr("opacity",1)
-   .attr("alignment-baseline","text-before-edge")
-   .attr("text-anchor","middle")
-   .attr("x",function(d,i) {
-     var width = d3.select("svg#sumas").style("width").split("px")[0];
-     return (width / tits__.length)*i + (width/tits__.length/2);
-   })
-   .attr("y",function(d,i) {
-     var sel = d3.select("#suma_" + String(i)).node().getBBox();
-     var y = sel.y;
-     var height = sel.height; 
-     return y + height + 8;
-   }).text(function(d) { return d; });
-
-  var t0 = nums.transition().duration(750).attr("opacity",1)
-
+  .append("div")
+  .style("clear",function(d,i) {
+    var cl;
+    if( i == 0 ) {
+      cl = "left";
+    } else {
+      cl = null;
+    };
+    return cl;
+  })
+  .style("float","left")
+  .style("text-align","center")
+  .style("padding-top","10px")
+  .style("font-weight","300")
+  .style("width","25%")
+  .html(function(d) {
+    var txt = "<div style='color:rgba(0,0,0,0.5)'>" + d.val + "</div>"
+    + "<div style='font-size:11px; font-weight:600'>"+ d.key +"</div>";
+    return txt;
+  });
 //////////////////////////////////////////////////////////////////////////////
 ///////////////---- GRÁFICO PAÍSES ---- /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
@@ -253,7 +231,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		buttons: {
 		  contextButton: { enabled:false },
 		  myButton: {
-		    symbol: 'url(../img/download.svg)',
+		    symbol: 'url(./img/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    _titleKey:'Descargar',
@@ -317,7 +295,10 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 ///////////////////////////////////////////////////////////////////////////
 ///////// DATOS DEL SEGUDO TERCIO
 /////////////////////////////////////////////////////////////////////////
-  var medio = d3.select("#mitad2>svg");
+  var medio = d3.select("#mitad2");
+
+  medio.selectAll("div")
+  
 
   var inv = SUMAS.after.filter(function(d) {
     return d.key == 'Inversión'
@@ -331,7 +312,79 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
     return d.key == 'Área adjudicada (km\u00B2)';
   })[0];
 
-  var valores = [area,inv,ofertasXbloque]
+  var valores = [area,inv,'',ofertasXbloque]
+
+  medio.selectAll("div")
+   .data(valores).enter()
+   .append("div")
+   .style("display","table")
+   .style("width","100%")
+   .style("height","25%")
+   .attr("id",function(d,i) { return "D_" + i; })
+   .html(function(d,i) {
+      var txt = 
+            '<div style="display: table-cell; vertical-align: middle;">'+
+	      '<div style="text-align:center;" id="B_'+ i +'"></div>'+
+	    '</div>'
+      return txt;
+   })
+
+
+  d3.select("div#B_0")
+  .html(function(d) {
+   var txt = "<div style='font-size:20px;font-weight:800;'>"+
+		Number(valores[0].val).toLocaleString("es-MX")+
+	     "</div>"+
+	     "<div style='font-size:11px;font-weight:400;'>"+ valores[0].key +"</div>"
+
+   return txt;
+  });
+
+
+  d3.select("div#B_1")
+  .html(function(d) {
+   var txt = "<div style='font-size:30px;font-weight:800;color:"+colorBarras+"'>$"+
+		Number(valores[1].val).toLocaleString("es-MX")+
+	     "</div>"+
+	     "<div style='font-size:12px;font-weight:700;color:"+colorBarras+"'>"+ valores[1].key +"*</div>"
+
+   return txt;
+  });
+
+  d3.select("div#D_2")
+   .style("display",null)
+
+  d3.select("div#D_2>div")
+   .style("display",null)
+
+  d3.select("div#B_2")
+  .html(function(d) {
+   var txt = "<div style='font-size:10px;font-weight:600;color:"+colorBarras+"'>"+
+		"(millones de dólares)"+
+	     "</div>"+
+	     "<div style='line-height:9.5px;font-size:9px;color:"+colorBarras+";'>"+ '* La inversión corresponde a los programas de inversión aprobados y, en caso de no contar con éste, a la inversión comprometida.' +"</div>"
+
+   return txt;
+  })
+
+  d3.select("div#D_3")
+   .style("display",null)
+
+  d3.select("div#D_3>div")
+   .style("display",null)
+
+
+  d3.select("div#B_3")
+  .html(function(d) {
+   var txt = "<div style='font-size:20px;font-weight:800;'>"+
+		Number(valores[3].val).toLocaleString("es-MX")+
+	     "</div>"+
+	     "<div style='font-size:11px;font-weight:400;'>"+ valores[3].key +"</div>"
+
+   return txt;
+  });
+
+/*
 //  medio.style("background-color","rgba(0,0,0,0.1");
 
   var figuras = medio.append("g").append("text").selectAll("tspan")
@@ -448,10 +501,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
       var x = +d3.select('#mitad2').style("width").split("px")[0];
       return x/2;
     })
-
     .attr("dy","1.0em")
     .text(function(d) { return d; });
-
+*/
 //////////////////////////////////////////////////////////////////////////
 	Highcharts.setOptions({
 	  colors: [colorBarras,'rgba(0,0,0,0.35)']
@@ -467,7 +519,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		buttons: {
 		  myButton: {
 		    _titleKey:"Descargar",
-		    symbol: 'url(../img/download.svg)',
+		    symbol: 'url(./img/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    menuItems: [
@@ -580,7 +632,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //		filename:'ingresos',
 		buttons: {
 		  contextButton: {
-		    symbol:'url(../img/download.svg)',
+		    symbol:'url(./img/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    _titleKey:"Descargar",
@@ -929,7 +981,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   '<div id="titulo" style="height:15%; font-size:20px;padding-top:10px;">'+
 	objEmp[0].EMPRESA.split(",")[0] +
    '<div class="totalBloques" style="padding: 0px;">'+
-    '<svg id="sumas" style="width:100%;height:80px;"></svg>' +
+    '<div id="sumas" style="width:100%;height:80px;"></div>' +
 '   <svg id="pestañas" style="width:100%;height:30px;"></svg>' +
    '</div>' +
   '</div>' +
@@ -1008,64 +1060,33 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 //    { 'key':'No. de ofertas', 'val':licsEmpresa.length }
   ];
 
- var sumas = d3.select("svg#sumas"); 
- var nums = sumas.append("g").append("text").selectAll("tspan")
+ var sumas = d3.select("div#sumas");
+
+
+ var num = sumas.selectAll("div")
   .data(SUMAS).enter()
-  .append("tspan")
-   .style("font-weight",300)
-   .attr("id",function(d,i) {
-     return "suma_" + String(i);
-   })
-   .attr("class", function(d) {
-     var t = d.key.split(" ").reduce(function concat(a,b) {
-       return a + "_" + b;
-     });
-     return t;
-   })
-   .attr("fill","rgba(0,0,0,0.5)")
-   .attr("opacity",0)
-   .attr("dominant-baseline","alphabetic")
-   .attr("text-anchor","middle")
-   .attr("x",function(d,i) {
-     var width = d3.select("svg#sumas").style("width").split("px")[0];
-     var objLength = Object.keys(SUMAS).length;
-     return (width / objLength*i) + (width/objLength/2);
-   })
-   .attr("y",function() {
-     var height = +d3.select("svg#sumas").style("height").split("px")[0];
-     return height / 2;
-   }).text(function(d) {
-      var t;
-      if( d3.select(this).attr("class") == "Inversión_(dólares)" ) {
-	t = Number((d.val/1).toFixed(1)).toLocaleString('es-MX');
-	t = "$ " + t;
-      } else {
-	t = Number(d.val).toLocaleString('es-MX');
-      };
-      return t;
-   });
-
- var tits__ = SUMAS.map(function(d) { return d.key; });
- var tits = sumas.append("g").selectAll("text")
-  .data(tits__).enter()
-  .append("text")
-   .style("font-weight",600)
-   .attr("font-size","10px")
-   .attr("opacity",1)
-   .attr("dominant-baseline","text-before-edge")
-   .attr("text-anchor","middle")
-   .attr("x",function(d,i) {
-     var width = d3.select("svg#sumas").style("width").split("px")[0];
-     return (width / tits__.length)*i + (width/tits__.length/2);
-   })
-   .attr("y",function(d,i) {
-     var sel = d3.select("#suma_" + String(i)).node().getBBox();
-     var y = sel.y;
-     var height = sel.height; 
-     return y + height + 8;
-   }).text(function(d) { return d; });
-
-  var t0 = nums.transition().duration(750).attr("opacity",1);
+  .append("div")
+  .style("clear",function(d,i) {
+    var cl;
+    if( i == 0 ) {
+      cl = "left";
+    } else {
+      cl = null;
+    };
+    return cl;
+  })
+  .style("float","left")
+  .style("text-align","center")
+  .style("padding-top","10px")
+  .style("font-weight","300")
+  .style("width","33%")
+  .html(function(d,i) {
+    var valor = d.val.toLocaleString('es-MX');
+    if( i == 2 ) valor = "$" + Number(d.val.toFixed(1)).toLocaleString('es-MX')
+    var txt = "<div style='color:rgba(0,0,0,0.5)'>" + valor + "</div>"
+    + "<div style='font-size:11px; font-weight:600'>"+ d.key +"</div>";
+    return txt;
+  });
 
 /////////////////////////////////////////////////////////////////////////
 //////////////////////////// PESTAÑAS //////////////////////////////////
@@ -1095,7 +1116,9 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
     .attr({
       'class':'boton',
       'id':function(d,i) {
-	var id = d.split(" ").reduce(function sum(a,b) { return a + "_" + b; });
+	var id = d.split(" ").reduce(function sum(a,b) {
+	  return a + "_" + b;
+	});
 	return id;
       },
       'width':function(d,i) {
@@ -1684,8 +1707,7 @@ d3.select("div#titulo").append("div")
 
 var i_a = "a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida, o a la regalía adicional en caso de contratos de licencia.<br>"
 
-var i_b = "b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere al factor de inversión adicional.<br><span style='font-weight:700'>* Las ofertas en negritas fueron ganadoras.</span><br><span style='color:red'>* Las ofertas en rojo fueron desechadas por no superar el límite establecido por la Secretaría de Hacienda y Crédito Público.</span>"
-
+var i_b = "b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere al factor de inversión adicional."
 var leyenda = '';
 var tablaString =
 '<div id="Tabla">' +
@@ -1703,47 +1725,23 @@ var tablaString =
 '</tr>'+
   '</table>' +
  '</div>' + 
-"<div class='notas' style='background-color:white;height:82px;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
+"<div class='notas' style='background-color:white;height:60px;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
 '<div id="tBodyContainer">' +
  '<table id="tBody">' +
 
  '</table>'+
 '</div>' +
+'<div style="width:100%;padding-left:20px;line-height:12px;border-top:solid 0.25px gray"><span style="font-weight:700">* Las ofertas en negritas fueron ganadoras.</span><br><span style="color:red">* Las ofertas en rojo fueron desechadas por no superar el límite establecido por la Secretaría de Hacienda y Crédito Público.</span></div>' +
 '</div>';
 
   d3.select("#Tabla").remove();
   d3.select("#graficos").html("");
   var hT = +d3.select("#titulo").style("height").split("px")[0];
   d3.select("#graficos").style("height",function() {
-	    var newHeight = window.innerHeight - hT - cintilla - 100; /*altura de tabla*/
+	    var newHeight = window.innerHeight - hT - cintilla - 145; /*altura de tabla*/
     return newHeight + "px";
   });
   d3.select("#graficos").html(tablaString);
-/*
-  d3.selectAll(".info")
-   .on("mouseover",function() {
-     d3.select(".notas")
-	.style("padding-top","30px")
-	.style("margin-bottom","20px")
-	.style("color","black")
-	.style("height","40px");
-   })
-   .on("mouseout",function() {
-     var sel_id = d3.select(this).attr("id")
-
-     d3.select(".notas")
-	.style("margin-bottom","0px")
-	.style("color","transparent")
-	.style("height","0px");
-
-     d3.select("div.notas").html(function(d) {
-	var text;
-	text = sel_id == "a" ? i_a : i_b;
-	return text
-     })
-
-   })
-*/
 
 };
 
@@ -1916,7 +1914,7 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 	filename:'gráfico-ofertas',
 	buttons: {
 	 contextButton: {
-	  symbol:'url(../img/download.svg)',
+	  symbol:'url(./img/download.svg)',
 	  _titleKey:"Descargar",
 	  symbolX:19,
 	  symbolY:18,
@@ -2005,7 +2003,7 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 //	filename:'inversion-ronda-bloque',
 	buttons: {
 	 contextButton: {
-	  symbol:'url(../img/download.svg)',
+	  symbol:'url(./img/download.svg)',
 	  symbolX:19,
 	  symbolY:18,
           _titleKey:'Descargar',

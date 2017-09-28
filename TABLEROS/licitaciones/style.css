@@ -22,7 +22,7 @@ content{
 div#red {
   position:relative;
   overflow:hidden;
-  -moz-overflow:hidden;
+  -ms-overflow-style:none;
   float:left;
   max-width:50%;
   width:50%;
@@ -31,6 +31,7 @@ div#red {
   margin-bottom:10px;
   overflow:scroll;
   height:50%;
+  overflow-y:hidden;
 }
 
 div#info {
@@ -130,6 +131,7 @@ div#filtroEmpresas {
 /* height:100%;*/
  background-color:rgba(0,0,0,0.65);
  position:absolute;
+ overflow-y:hidden;
 }
 
 div#filtroEmpresas::-webkit-scrollbar-track {
@@ -338,7 +340,7 @@ div#vertical-lista {
 div#red-instrucciones {
   font-size:20px;
   position:absolute;
-  top:18%;
+  top:25%;
   color:white;
   text-align:center;
   width:30%;
@@ -524,7 +526,7 @@ div#info-rondas-empresa {
   display:block;
   position:absolute;
   left:60%;
-  top:35%;
+  top:40%;
   z-index:5000;
   color:white;
   font-size:22px;

@@ -165,8 +165,8 @@ function RED(width,height) {
   };
 //==============================================================================|
   queue()
-//    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
-    .defer(d3.csv,'csv1/NUEVA.csv')
+    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
+//    .defer(d3.csv,'csv1/NUEVA.csv')
     .await(getDATA);
 
   function getDATA(err,bloques_ofertas) {
@@ -194,7 +194,11 @@ function RED(width,height) {
      var split_ = ron_lic[i].split(".")
      var ronda = split_[0].split("R")[1];
      var lic = split_[1];
-     ron_lic[i] = "Ronda " + ronda + " - Licitación " + lic;
+     if( ronda == 'PEMEX') {
+       ron_lic[i] = "Asociación " + ronda + " - Licitación " + lic;
+     } else {
+       ron_lic[i] = "Ronda " + ronda + " - Licitación " + lic;
+     }
     };
 
    ron_lic.sort();
@@ -717,7 +721,7 @@ function leyendaRED() {
     })
     .style("stroke-width",0.25);
 
-    var rExpl = ' &xcirc;&mdash;&mdash;&xcirc; Las líneas representan asociaciones entre empresas.'//'El tamaño de los círculos representa la inversión comprometida.';
+    var rExpl = 'Las líneas representan asociaciones entre empresas.'//'El tamaño de los círculos representa la inversión comprometida.';
 //&odot;&horbar;&odot;
     var textoGradiente = [rExpl,'0','1',String(maxAdj),'No. de contratos:'];
 
@@ -763,7 +767,7 @@ function leyendaRED() {
 	    d3.select(this).attr("id","noDeContratos");
 	    return +rectLeyenda.attr("y") - 4;
 	  }
-        }).html(function(d) { return d; });
+        }).text(function(d) { return d; });
 
 	var rr = 7;
         var radios = [rr*4,rr*3,rr*2,rr*1];
@@ -801,10 +805,10 @@ function leyendaRED() {
 	  'Tamaño:',
 	  'inversión'
 	 ];
-	 conteiner.append("g")
-	  .selectAll("text")
+	 conteiner.append("g").append("text")
+	  .selectAll("tspan")
 	  .data(textoRadios).enter()
-	  .append("text")
+	  .append("tspan")
 	 .attr({
            'id':function(d) {
 	      if( d == textoRadios[0] ) return d.split(':')[0];
@@ -822,7 +826,7 @@ function leyendaRED() {
 	     };
 	     return t_a;
 	   },
-	   'alignment-baseline': function(d) {
+/*	   'alignment-baseline': function(d) {
 	     var al;
 	     if(d == textoRadios[0] || d == textoRadios[2]) { 
 		al = 'text-after-edge';
@@ -832,6 +836,7 @@ function leyendaRED() {
 	     };
 	     return al;
 	   },
+*/
 	   'x': function(d) {
 	     var x = +grandeAttrs.attr("cx");
 	     if(d == textoRadios[2] || d == textoRadios[3]) {
@@ -839,15 +844,18 @@ function leyendaRED() {
 	     };
 	     return x;
 	   },
-	   'y': function(d) {
+	   'y': function(d,i) {
 	     var y = +grandeAttrs.attr("cy");
+	     var offset = 0;
+	     if( i == 3 || i == 1 ) offset = 9;
+
 	     if(d == textoRadios[0] || d == textoRadios[1]) { 
 		y = y - radioGrande - 12;
 	     }
-	     return y;
+	     return y + offset;
 
 	   } 
-	  }).html(function(d) {
+	  }).text(function(d) {
 	     return d
 	  });
 

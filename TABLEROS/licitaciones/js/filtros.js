@@ -726,12 +726,13 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	  } else {
 	    text = this.innerHTML;
 	  }
-//	  if(text == "RPEMEX.Trion") text = "PEMEX-Trión"
+//	  if(text == "RPEMEX.Trion") text = "PEMEX.Trion"
 	  return text;
 	});
 
 
       var sel = d3.select(this)[0][0].innerText;
+
       sel = "R" + sel.split(" - ")[0].split(" ")[1] + "." + sel.split(" - ")[1].split(" ")[1]
 
       if(seleccionados.indexOf(sel) < 0) seleccionados.push(sel);
@@ -748,6 +749,7 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	return  { 'ronda':ronda, 'lic':lic };
 
       });
+
 /////////////////////////// AGREGAR //////////////////////////////////////////
       filtrarPorRonda('on',seleccionados_,licRondas,data);
       resumen(data,adj,licRondas,pmts,ofertas,seleccionados_,tabla,procesos);
@@ -770,6 +772,7 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	  var lic = s[1];
 	  return  { 'ronda':ronda, 'lic':lic };
 	});
+
 /////////////////////////// QUITAR //////////////////////////////////////////
 	filtrarPorRonda(undefined,seleccionados_,licRondas,data);
 	resumen(data,adj,licRondas,pmts,ofertas,seleccionados_,tabla,procesos);

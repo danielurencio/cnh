@@ -93,7 +93,7 @@ function reajustar() {
     }
 };
 
-setInterval(reajustar,500);
+//setInterval(reajustar,500);
 
 function addElement(obj) {
   var sel;
