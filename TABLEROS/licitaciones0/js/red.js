@@ -763,7 +763,7 @@ function leyendaRED() {
 	    d3.select(this).attr("id","noDeContratos");
 	    return +rectLeyenda.attr("y") - 4;
 	  }
-        }).html(function(d) { return d; });
+        }).text(function(d) { return d; });
 
 	var rr = 7;
         var radios = [rr*4,rr*3,rr*2,rr*1];
@@ -815,13 +815,13 @@ function leyendaRED() {
 	     if( d == textoRadios[0] || d == textoRadios[2] ) f_w = 600;
 	     return f_w;
 	   },
-/*	   'text-anchor': function(d) {
-	     var t_a = 'start'//'middle';
+	   'text-anchor': function(d) {
+	     var t_a = 'middle';
 	     if(d == textoRadios[2] || d == textoRadios[3]) {
 		t_a = 'start';
 	     };
 	     return t_a;
-	   },*/
+	   },
 /*	   'alignment-baseline': function(d) {
 	     var al;
 	     if(d == textoRadios[0] || d == textoRadios[2]) { 
@@ -851,7 +851,7 @@ function leyendaRED() {
 	     return y + offset;
 
 	   } 
-	  }).html(function(d) {
+	  }).text(function(d) {
 	     return d
 	  });
 
