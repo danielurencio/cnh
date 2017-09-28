@@ -22,7 +22,7 @@ content{
 div#red {
   position:relative;
   overflow:hidden;
-  -moz-overflow:hidden;
+  -ms-overflow-style:none;
   float:left;
   max-width:50%;
   width:50%;
