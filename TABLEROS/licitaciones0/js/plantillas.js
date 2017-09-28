@@ -231,7 +231,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		buttons: {
 		  contextButton: { enabled:false },
 		  myButton: {
-		    symbol: 'url(../img/download.svg)',
+		    symbol: 'url(./img/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    _titleKey:'Descargar',
@@ -519,7 +519,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		buttons: {
 		  myButton: {
 		    _titleKey:"Descargar",
-		    symbol: 'url(../img/download.svg)',
+		    symbol: 'url(./img/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    menuItems: [
@@ -632,7 +632,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //		filename:'ingresos',
 		buttons: {
 		  contextButton: {
-		    symbol:'url(../img/download.svg)',
+		    symbol:'url(./img/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    _titleKey:"Descargar",
@@ -1914,7 +1914,7 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 	filename:'gráfico-ofertas',
 	buttons: {
 	 contextButton: {
-	  symbol:'url(../img/download.svg)',
+	  symbol:'url(./img/download.svg)',
 	  _titleKey:"Descargar",
 	  symbolX:19,
 	  symbolY:18,
@@ -2003,7 +2003,7 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 //	filename:'inversion-ronda-bloque',
 	buttons: {
 	 contextButton: {
-	  symbol:'url(../img/download.svg)',
+	  symbol:'url(./img/download.svg)',
 	  symbolX:19,
 	  symbolY:18,
           _titleKey:'Descargar',
