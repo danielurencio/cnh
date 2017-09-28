@@ -759,12 +759,22 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
       spans.on("click", function() {
 
 	var sel_ = d3.select(this)[0][0].parentNode.childNodes;
+
 	var span;
+/*
 	sel_.forEach(function(d) {
+          console.log(d);
 	  var patt = RegExp("^R");
 	  var cond = patt.test(d.innerText);
 	  if(cond) span = d.innerText;
 	});
+*/
+	for(var i=0; i<sel_.length; i++) {
+	  var patt = RegExp("^R");
+	  var cond = patt.test(sel_[i].innerText);
+	  if(cond) span = sel_[i].innerText;
+	}
+
 	seleccionados.splice(seleccionados.indexOf(span),1);
 	let seleccionados_ = seleccionados.map(function(d) {
 	  let s = d.split(".");
