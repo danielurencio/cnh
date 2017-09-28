@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<head>
+ <meta charset="utf-8">
+ <link rel="stylesheet" href="style.css">
+ <link href="chosen.min.css" rel="stylesheet"/>
+ <script src="libs/d3.v3.min.js"></script>
+ <script src="libs/queue.v1.min.js"></script>
+ <script src="libs/highcharts.js"></script>
+ <script src="libs/highcharts-more.js"></script>
+ <script src="libs/exporting.js"></script>
+ <script src="libs/export-csv.js"></script>
+ <script src="libs/treemap.js"></script>
+ <script src="libs/underscore-min.js"></script>
+ <script src="libs/jquery.min.js"></script>
+ <script src="chosen.jquery.min.js" type="text/javascript"></script>
+</head>
+<body style="height:100%;">
+
+<div style="height:inherit;" id="tutorial">
+ <div id="listaDespegable"></div>
+ <div id="listaTexto">Lista desplegable de empresas:<br><span style='font-weight:600'>Si conoce a alguna empresa búsquela aquí.</span></div>
+ <div id="circuloLista"></div>
+ <div id="circuloFiltro"></div>
+ <div id="filtroLinea"></div>
+ <div id="filtroTexto">Filtrar por licitación:<br><span style='font-weight:600'>Seleccione una o varias licitaciones.</span></div>
+ <div id="horizontal-filtro"></div>
+ <div id="vertical-mitad"></div>
+ <div id="vertical-lista"></div>
+ <div id="red-instrucciones">
+  <div style="width:90%;">Red de asociaciones entre empresas licitantes</div>
+  <div id="ul-instrucciones">
+   <ul>
+    <li>&bull; Cada círculo representa a una empresa que ha participado en alguna licitación.</li>
+    <li>&bull; Si dos empresas están unidas por una línea significa que dichas empresas se han asociado.</li>
+   </ul>
+  </div>
+
+ <div id="clic"></div>
+ <div id="hacerClic"><br>Para conocer a qué empresa representa cada círculo coloque el cursor sobre éste, y para ver información detallada sobre la empresa haga clic.</div>
+ </div>
+ <div id="circuloBoton1"></div>
+ <div id="circuloBoton2"></div>
+ <div id="lineaBoton1"></div>
+ <div id="lineaBoton2"></div>
+ <div id="linea-horizontal-botones"></div>
+ <div id="texto-horizontal-botones">Seleccionar el tipo de contenido</div>
+ <div id="info-rondas-empresa" style="text-align:center;width:30%">Información de licitaciones / empresa
+  <div id="ul-instrucciones">
+   <ul>
+    <li>&bull; Coloque el cursor por encima de cada gráfica para interactuar con ella.</li>
+    <li>&bull; Habilite o deshabilite contenidos al hacer clic en cada una de las leyendas de las gráficas.</li>
+   </ul>
+  </div>
+<!-- <div id="clicDescarga"></div>
+ <div id="hacerClicDescarga"><br>Para descargar la información de cada gráfica presione el botón de descarga.</div>
+ -->
+ </div>
+</div>
+
+<div id="header"
+    style="width:100%;height:30px;position:absolute;background:white;border-bottom:solid 1px;">
+
+  <div id="cintilla0" style="float:left;clear:left;width:50%;height:30px;">
+    <svg id="cintilla"
+       style="height:30px;background:transparent;position:absolute;width:50%"></svg>
+  </div>
+  <div style="float:left;width:50%;height:30px;color:black;" id="opciones">
+  <select data-placeholder="  Presione para agregar licitaciones." style="width:550px; height:27px;dispay:table;margin:0 auto;overflow:hidden;border:0;" multiple class="chosen-select-no-results" tabindex="11">
+          </select>
+  </div>
+</div>
+
+<content>
+ <div id="red" style="width:50%;">
+
+ <div id="filtroEmpresas"></div>
+  <svg id='canvas'>
+   <g id='red'></g>
+  </svg>
+ </div>
+
+ <div id=info style="width:50%;">
+ </div>
+
+</content>
+
+
+<script src="js/plantillas.js"></script>
+<script src="js/red.js"></script>
+<script src="js/lista.js"></script>
+<script src="js/filtros.js"></script>
+<script src="js/script.js"></script>
+
+</body>
+</html>
