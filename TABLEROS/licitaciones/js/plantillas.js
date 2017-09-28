@@ -2157,5 +2157,9 @@ var notas = "a) La variable de adjudicación 1 se refiere al porcentaje que corr
       downloadLink.style.display = "none";
       document.body.appendChild(downloadLink);
       downloadLink.click();
-      d3.selectAll("a").remove();
+      var s_a = document.getElementsByTagName("a");
+      for(var i=0; i<s_a.length; i++) {
+	s_a[i].parentNode.removeChild(s_a[i]);
+      }
+//      d3.selectAll("a").remove();
 }
