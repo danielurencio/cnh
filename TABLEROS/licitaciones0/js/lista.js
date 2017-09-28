@@ -176,7 +176,7 @@ function mostrarLista() {
 	'transform':'rotate(-90)',
 	'text-anchor':'end',
 	'alignment-baseline':'middle'
-      }).html("&cudarrr;&ensp;Ver lista de empresas&ensp;")
+      }).text("Ver lista de empresas")
       .on('mouseover', function() {
 	d3.select(this).style("cursor","pointer");
       });
