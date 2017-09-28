@@ -773,10 +773,15 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	  return  { 'ronda':ronda, 'lic':lic };
 	});
 
+	if(seleccionados_.length == 0) {
+	  d3.select("div#titulo").html("Seleccione una o varias licitaciones para ver el resumen.")
+	  d3.select("div#graficos").html("")
+	}
 /////////////////////////// QUITAR //////////////////////////////////////////
-	filtrarPorRonda(undefined,seleccionados_,licRondas,data);
+        if(seleccionados_.length > 0) {
+	  filtrarPorRonda(undefined,seleccionados_,licRondas,data);
 	resumen(data,adj,licRondas,pmts,ofertas,seleccionados_,tabla,procesos);
-
+	}
       });
 
 
