@@ -31,6 +31,7 @@ div#red {
   margin-bottom:10px;
   overflow:scroll;
   height:50%;
+  overflow-y:hidden;
 }
 
 div#info {
@@ -130,6 +131,7 @@ div#filtroEmpresas {
 /* height:100%;*/
  background-color:rgba(0,0,0,0.65);
  position:absolute;
+ overflow-y:hidden;
 }
 
 div#filtroEmpresas::-webkit-scrollbar-track {

@@ -801,10 +801,10 @@ function leyendaRED() {
 	  'Tamaño:',
 	  'inversión'
 	 ];
-	 conteiner.append("g")
-	  .selectAll("text")
+	 conteiner.append("g").append("text")
+	  .selectAll("tspan")
 	  .data(textoRadios).enter()
-	  .append("text")
+	  .append("tspan")
 	 .attr({
            'id':function(d) {
 	      if( d == textoRadios[0] ) return d.split(':')[0];
@@ -816,13 +816,13 @@ function leyendaRED() {
 	     return f_w;
 	   },
 	   'text-anchor': function(d) {
-	     var t_a = 'middle';
+	     var t_a = 'start'//'middle';
 	     if(d == textoRadios[2] || d == textoRadios[3]) {
 		t_a = 'start';
 	     };
 	     return t_a;
 	   },
-	   'alignment-baseline': function(d) {
+/*	   'alignment-baseline': function(d) {
 	     var al;
 	     if(d == textoRadios[0] || d == textoRadios[2]) { 
 		al = 'text-after-edge';
@@ -832,6 +832,7 @@ function leyendaRED() {
 	     };
 	     return al;
 	   },
+*/
 	   'x': function(d) {
 	     var x = +grandeAttrs.attr("cx");
 	     if(d == textoRadios[2] || d == textoRadios[3]) {
@@ -839,12 +840,15 @@ function leyendaRED() {
 	     };
 	     return x;
 	   },
-	   'y': function(d) {
+	   'y': function(d,i) {
 	     var y = +grandeAttrs.attr("cy");
+	     var offset = 0;
+	     if( i == 3 || i == 1 ) offset = 9;
+
 	     if(d == textoRadios[0] || d == textoRadios[1]) { 
 		y = y - radioGrande - 12;
 	     }
-	     return y;
+	     return y + offset;
 
 	   } 
 	  }).html(function(d) {
