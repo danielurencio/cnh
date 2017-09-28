@@ -2151,15 +2151,22 @@ var notas = "a) La variable de adjudicación 1 se refiere al porcentaje que corr
 	
 
       var csvFile = new Blob([CSV], {type:"text/csv"});
+
+      if(window.navigator && window.navigator.msSaveOrOpenBlob) {
+	window.navigator.msSaveOrOpenBlob(csvFile,filename + ".csv");
+      } else {
       var downloadLink = document.createElement("a");
-      downloadLink.download = filename + ".csv";
-      downloadLink.href = window.URL.createObjectURL(csvFile);
-      downloadLink.style.display = "none";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      var s_a = document.getElementsByTagName("a");
-      for(var i=0; i<s_a.length; i++) {
-	s_a[i].parentNode.removeChild(s_a[i]);
+//      downloadLink.style = "display:none";
+//      downloadLink.href = URL.createObjectURL(csvFile);
+        downloadLink.download = filename + ".csv";
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        var s_a = document.getElementsByTagName("a");
+        for(var i=0; i<s_a.length; i++) {
+	  s_a[i].parentNode.removeChild(s_a[i]);
+        }
       }
 //      d3.selectAll("a").remove();
 }
