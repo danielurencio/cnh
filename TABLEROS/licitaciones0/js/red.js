@@ -815,13 +815,13 @@ function leyendaRED() {
 	     if( d == textoRadios[0] || d == textoRadios[2] ) f_w = 600;
 	     return f_w;
 	   },
-	   'text-anchor': function(d) {
+/*	   'text-anchor': function(d) {
 	     var t_a = 'start'//'middle';
 	     if(d == textoRadios[2] || d == textoRadios[3]) {
 		t_a = 'start';
 	     };
 	     return t_a;
-	   },
+	   },*/
 /*	   'alignment-baseline': function(d) {
 	     var al;
 	     if(d == textoRadios[0] || d == textoRadios[2]) { 
