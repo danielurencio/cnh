@@ -369,11 +369,23 @@ div#ul-instrucciones li {
 div#clic {
   left:12.75%;
   background-image:url(img/clic.svg);
-  width:130px;
-  height:148.52px;
+  width:320px;
+  height:150px;
   z-index:10000;
   margin:0 auto;
   text-align:center;
+  height:150px;
+}
+
+div#inv_size {
+  left:12.75%;
+  background-image:url(img/inv_size.svg);
+  width:150px;
+  height:150px;
+  z-index:10000;
+  margin:0 auto;
+  text-align:center;
+  height:150px;
 }
 
 div#hacerClic {
