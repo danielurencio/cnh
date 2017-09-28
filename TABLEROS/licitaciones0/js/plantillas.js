@@ -313,7 +313,6 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
   })[0];
 
   var valores = [area,inv,'',ofertasXbloque]
-  console.log(valores);
 
   medio.selectAll("div")
    .data(valores).enter()
@@ -1708,8 +1707,7 @@ d3.select("div#titulo").append("div")
 
 var i_a = "a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida, o a la regalía adicional en caso de contratos de licencia.<br>"
 
-var i_b = "b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere al factor de inversión adicional.<br><span style='font-weight:700'>* Las ofertas en negritas fueron ganadoras.</span><br><span style='color:red'>* Las ofertas en rojo fueron desechadas por no superar el límite establecido por la Secretaría de Hacienda y Crédito Público.</span>"
-
+var i_b = "b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere al factor de inversión adicional."
 var leyenda = '';
 var tablaString =
 '<div id="Tabla">' +
@@ -1727,47 +1725,23 @@ var tablaString =
 '</tr>'+
   '</table>' +
  '</div>' + 
-"<div class='notas' style='background-color:white;height:82px;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
+"<div class='notas' style='background-color:white;height:60px;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
 '<div id="tBodyContainer">' +
  '<table id="tBody">' +
 
  '</table>'+
 '</div>' +
+'<div style="width:100%;padding-left:20px;line-height:12px;border-top:solid 0.25px gray"><span style="font-weight:700">* Las ofertas en negritas fueron ganadoras.</span><br><span style="color:red">* Las ofertas en rojo fueron desechadas por no superar el límite establecido por la Secretaría de Hacienda y Crédito Público.</span></div>' +
 '</div>';
 
   d3.select("#Tabla").remove();
   d3.select("#graficos").html("");
   var hT = +d3.select("#titulo").style("height").split("px")[0];
   d3.select("#graficos").style("height",function() {
-	    var newHeight = window.innerHeight - hT - cintilla - 100; /*altura de tabla*/
+	    var newHeight = window.innerHeight - hT - cintilla - 145; /*altura de tabla*/
     return newHeight + "px";
   });
   d3.select("#graficos").html(tablaString);
-/*
-  d3.selectAll(".info")
-   .on("mouseover",function() {
-     d3.select(".notas")
-	.style("padding-top","30px")
-	.style("margin-bottom","20px")
-	.style("color","black")
-	.style("height","40px");
-   })
-   .on("mouseout",function() {
-     var sel_id = d3.select(this).attr("id")
-
-     d3.select(".notas")
-	.style("margin-bottom","0px")
-	.style("color","transparent")
-	.style("height","0px");
-
-     d3.select("div.notas").html(function(d) {
-	var text;
-	text = sel_id == "a" ? i_a : i_b;
-	return text
-     })
-
-   })
-*/
 
 };
 
