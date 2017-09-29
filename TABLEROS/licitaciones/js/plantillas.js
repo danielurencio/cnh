@@ -2042,8 +2042,9 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 	}
     },
     subtitle: {
-	text:"(dólares)"
-    }
+	text:"(Coloque el cursor sobre un cuadrante para ver la inversión en dólares por licitación. Para conocer la inversión por bloque presione el cuadrante correspondiente a cada licitación y se mostraran los bloques ganados en esa licitación; para regresar a la vista por licitación presione el botón de la esquina superior derecha.)"
+    },
+    	style:{ 'fontSize':5,'fontWeight':800 }
   });
 
 };
