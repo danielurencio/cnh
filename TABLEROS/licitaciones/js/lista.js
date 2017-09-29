@@ -159,7 +159,7 @@ function mostrarLista() {
     lista.selectAll("input").remove();
     lista.selectAll("div#listaConteiner").remove();
     lista.transition().duration(300)
-      .style("width","30px")
+      .style("width","40px")
 
    if(!verLista) {
     lista.append("svg").attr("id","verLista")

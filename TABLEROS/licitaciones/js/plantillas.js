@@ -104,13 +104,13 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
 
           var plantilla = 
 '<div id="titulo" style="height:15%; font-size:28px;">'+
-  '<div style="padding:0px;height:25%">' + texto.resumen + '</div>' +
-  '<div class="totalBloques" style="padding: 0px;height:75%;">'+
-    '<div id="sumas" style="width:100%;height:70%;background-color:transparent"></div>' +
-    '<svg id="pestañas" style="width:100%;height:30%;z-index:5000;"></svg>'
+  '<div style="padding:0px;height:15%">' + texto.resumen + '</div>' +
+  '<div class="totalBloques" style="padding: 0px;height:75%;z-index:10000;">'+
+    '<div id="sumas" style="width:100%;height:80px;background-color:transparent"></div>' +
+    '<svg id="pestañas" style="width:100%;height:30px;z-index:500;"></svg>'
  +'</div>' +  
 '</div>' +
-'<div id="graficos" style="height:85%">' + 
+'<div id="graficos" style="padding-top:30px;height:85%;z-index:1">' + 
   contenido + 
  '</div>' +
 '</div>';
@@ -711,37 +711,6 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 	d3.selectAll("tspan.highcharts-text-outline").remove()
 
-//-----------------------------------------------------------------------------
-//  PRESERVE ASPECT RATIO LADO DERECHO
-//---------------------------------------------------------------------------
-/*
-  var sumas__ = d3.select("svg#sumas");
-  sumas_feats = sumas__.node().getBBox();
-  var ww_f = sumas_feats.width + 50
-  sumas__
-    .attr("viewBox","0 10 " + (ww_f) + " " + sumas_feats.height)
-    .attr("preserveAspectRatio","xMinYMid meet")
-
-  var mitad2_sel = d3.select("div#mitad2>svg");
-  var mitad2_feats = mitad2_sel.node().getBBox()
-  mitad2_sel
-    .attr("viewBox","0 20 " + mitad2_feats.width + " " + mitad2_feats.height)
-    .attr("preserveAspectRatio","xMinYMid meet")
-*/
-///////////////////////LEYENDA INVERSIÓN///////////////////////////////////////
-  /*var mitades_height = +d3.select("div#mitades").style("height").split("px")[0];
-  var mitades_width = +d3.select("div#mitades").style("width").split("px")[0];
-
-  d3.select("div#leyendaInv")
-  .style("padding-top",function() {
-    var pad = Math.ceil(0.9349593495934959*mitades_height);
-    return String(pad) + "px";
-  })
-  .style("padding-left",function() {
-    var pad = Math.ceil(0.07936507936507936*mitades_width);
-    return String(pad) + "px";
-  });
-*/
 
   }; GRAFICOS();
 /////////////////////////////////////////////////////////////////////////////////
@@ -980,13 +949,13 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 
   var plantilla = 
   '<div id="titulo" style="height:15%; font-size:20px;padding-top:10px;">'+
-	'<div style="padding:0px;height:25%;">' + objEmp[0].EMPRESA.split(",")[0] + '</div>' +
+	'<div style="padding:0px;height:15%;">' + objEmp[0].EMPRESA.split(",")[0] + '</div>' +
    '<div class="totalBloques" style="padding:0px;height:75%;">'+
-    '<div id="sumas" style="width:100%;height:70%;"></div>' +
-'   <svg id="pestañas" style="width:100%;height:30%;z-index:5000;"></svg>' +
+    '<div id="sumas" style="width:100%;height:80px;"></div>' +
+'   <svg id="pestañas" style="width:100%;height:30px;z-index:5000;"></svg>' +
    '</div>' +
   '</div>' +
-  '<div id="graficos" style="height:85%">' + contenido + '</div>' +
+  '<div id="graficos" style="padding-top:30px;height:85%">' + contenido + '</div>' +
  '</div>';
 
   d3.select("#info").append("div")
@@ -1696,15 +1665,15 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 
 function OFERTAS(widLic) {
 
-  var boton_ = '<button onclick="descargar_CSV();" id="descargarCSV" style="color:black;border:2px;border-radius:2px;font-family:Open Sans;font-weight:300;text-shadow:0 1px 1px rgba(0,0,0,0.2);">Descargar</button>';
+  var boton_ = '<button onclick="descargar_CSV();" id="descargarCSV" style="text-align:right;color:black;border:2px;border-radius:2px;font-family:Open Sans;font-weight:300;text-shadow:0 1px 1px rgba(0,0,0,0.2);">Descargar</button>';
 
 d3.select("#espacioParaBoton").remove()
 
 d3.select("div#titulo").append("div")
   .attr("id","espacioParaBoton")
-  .style("padding",0)
+  .style("padding-top",0)
   .style("margin",0)
-  .style("text-align","left")
+  .style("text-align","right")
 //  .style("height","30px")
   .html(boton_)
 
@@ -1729,7 +1698,7 @@ var tablaString =
   '</table>' +
  '</div>' + 
 "<div class='notas' style='background-color:white;height:7.4%;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
-'<div id="tBodyContainer" style="height:60.6%">' +
+'<div id="tBodyContainer" style="height:58%">' +
  '<table id="tBody">' +
 
  '</table>'+

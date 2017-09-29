@@ -127,7 +127,7 @@ div.totalBloques {
 }
 
 div#filtroEmpresas {
- width:30px;
+ width:40px;
  height:100%;
  background-color:rgba(0,0,0,0.65);
  position:fixed;
@@ -335,7 +335,7 @@ div#vertical-lista {
   width:6px;
   height:100%;
   top:30px;
-  left:30px;
+  left:40px;
 }
 
 div#red-instrucciones {
@@ -463,9 +463,9 @@ div#circuloBoton1 {
   display:block;
   position:absolute;
   left:50%;
-  margin-top:38px;
+  margin-top:110px;
   margin-left:5px;
-  top:120px;
+  top:30px;
   background-image:url(img/circle.svg);
   width:10px;
   height:10px;
@@ -475,9 +475,9 @@ div#circuloBoton2 {
   display:block;
   position:absolute;
   left:50%;
-  margin-top:38px;
+  margin-top:110px;
   margin-left:68px;
-  top:120px;
+  top:30px;
   background-image:url(img/circle.svg);
   width:10px;
   height:10px;
@@ -489,9 +489,9 @@ div#lineaBoton1 {
   background-repeat:repeat-y;
   position:absolute;
   left:50%;
-  height:32px;
+  height:42px;
   width:2px;
-  top:120px;
+  top:110px;
   margin-top:38px;
   margin-left:9px;
 }
@@ -502,9 +502,9 @@ div#lineaBoton2 {
   background-repeat:repeat-y;
   position:absolute;
   left:50%;
-  height:32px;
+  height:42px;
   width:2px;
-  top:120px;
+  top:110px;
   margin-top:38px;
   margin-left:72px;
 }

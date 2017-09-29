@@ -165,8 +165,8 @@ function RED(width,height) {
   };
 //==============================================================================|
   queue()
-    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
-//    .defer(d3.csv,'csv1/NUEVA.csv')
+//    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
+    .defer(d3.csv,'csv1/NUEVA.csv')
     .await(getDATA);
 
   function getDATA(err,bloques_ofertas) {
@@ -566,7 +566,7 @@ function RED(width,height) {
 //---------------------------------------------------------------------------
 // PRESERVE ASPECT RATIO LADO IZQUIERDO
 //-------------------------------------------------------------------------
-/*
+
 var svg_canvas = d3.select("div#red")
 var red_WIDTH = +svg_canvas.style("width").split("px")[0];
 var red_HEIGHT = svg_canvas.style("height").split("px")[0];
@@ -575,7 +575,7 @@ d3.select("svg#canvas")
   .attr("viewBox","-20 -20 " + (red_WIDTH) + " " + red_HEIGHT)
   .attr("preserveAspectRatio","xMinYMid meet")
 //  .style("padding-top","20px")
-*/
+
   };
 
 
@@ -635,7 +635,7 @@ Procesar.edges = function(transformacion,emps) {
 function SUM(a,b) { return a + b; };
 
 function leyendaRED() {
-  var conteiner = d3.select("g#red").append("g");
+  var conteiner = d3.select("g#red").append("g").attr("id","leyenda_principal");
   var gradient = conteiner
 	.append("defs")
 	.append("linearGradient")
@@ -664,7 +664,7 @@ function leyendaRED() {
       },
       "y":function(d) {
 	var offset = +d3.select("#filtroEmpresas")
-	  .style("height").split("px")[0] - 45;
+	  .style("height").split("px")[0] - 75;
 	var Height = +d3.select(this).attr("height");
 	return +offset - Height;
       },
@@ -875,7 +875,7 @@ function leyendaRED() {
      "x": function() {
 //	var ww = +filtroEMpresas.style("width").split("px")[0]
 	let anchor_ = d3.select("g#red>rect").attr("width").split("px")[0]
-        return anchor_ -  15//ww + 10
+        return anchor_ -  25//ww + 10
       },
      "y": function(d,i) {
 	let anchor_ = d3.select("g#red>rect").attr("height").split("px")[0]
