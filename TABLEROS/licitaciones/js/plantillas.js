@@ -91,32 +91,33 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
 
 
      var contenido =
-      '<div id="mitades" style="height:20px">'+
-       '<div id="mitad1" style="float:left;clear:left;width:33%;height:inherit"></div>' +
-       '<div id="mitad2" style="float:left;width:33%;height:inherit">'+
+      '<div id="mitades" style="height:50%">'+
+       '<div id="mitad1" style="float:left;clear:left;width:33%;height:100%"></div>' +
+       '<div id="mitad2" style="float:left;width:33%;height:100%">'+
 
        '</div>' +
-       '<div id="mitad3" style="float:left;width:33%;height:inherit"></div>' +
+       '<div id="mitad3" style="float:left;width:33%;height:100%"></div>' +
       '</div>' +
 
 //      '<div id="leyendaInv" style="width:inherit;height:20px;text-align:center;font-weight:400;font-size:9px;color:rgb(8,109,115);">*La inversión corresponde a los programas de inversión aprobados y, en caso de no contar con éste, a la inversión comprometida.</div>' +
-      '<div id="barras" style="padding:0px;width:100%; height:10%"></div>';
+      '<div id="barras" style="padding:0px;width:100%; height:50%"></div>';
 
           var plantilla = 
 '<div id="titulo" style="height:15%; font-size:28px;">'+
-   texto.resumen +
-'<div class="totalBloques" style="padding: 0px;">'+
-'<div id="sumas" style="width:100%;height:80px;background-color:transparent"></div>' +
-'<svg id="pestañas" style="width:100%;height:30px;"></svg>'
-+'</div>' +  
+  '<div style="padding:0px;height:25%">' + texto.resumen + '</div>' +
+  '<div class="totalBloques" style="padding: 0px;height:75%;">'+
+    '<div id="sumas" style="width:100%;height:70%;background-color:transparent"></div>' +
+    '<svg id="pestañas" style="width:100%;height:30%;z-index:5000;"></svg>'
+ +'</div>' +  
 '</div>' +
- '<div id="graficos">' + 
+'<div id="graficos" style="height:85%">' + 
   contenido + 
  '</div>' +
 '</div>';
 
   d3.select("#info").append("div")
     .attr("id","temporal")
+    .style("height","100%")
     .html(plantilla);
 
 
@@ -164,8 +165,8 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
       var hT = +d3.select("#titulo").style("height").split("px")[0];
       var alturaGraficas = (window.innerHeight - cintilla - hT) *.5;
 
-      d3.select("#mitades").style("height",alturaGraficas + "px");
-      d3.select("#barras").style("height",alturaGraficas + "px");
+//      d3.select("#mitades").style("height",alturaGraficas + "px");
+//      d3.select("#barras").style("height",alturaGraficas + "px");
 	var bOf = SUMAS.pre.filter(function(d) {
 	  return d.key == "Bloques ofertados";
 	})[0].val;
@@ -969,27 +970,28 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   var objEmp = data.filter(filtroEmp);
 
   var contenido =
-    '<div id="mitades" style="">'+
-     '<div id="mitad1" style="float:left;clear:left;width:80%;background-color:rgba(0,0,0,0.1); display:table; margin:0 auto;"></div>' +
+    '<div id="mitades" style="height:50%">'+
+     '<div id="mitad1" style="height:100%;float:left;clear:left;width:80%;background-color:rgba(0,0,0,0.1); display:table; margin:0 auto;"></div>' +
    //  '<div id="mitad2" style="float:left;width:70%; background-color:rgba(0,0,0,0.15)">'+
 //        '<svg style="width:100%;height:inherit;"></svg>'+
      '</div>' +
     '</div>' +
-    '<div id="gantt" style="padding:0px;width:100%;background-color:transparent"></div>';
+    '<div id="gantt" style="height:100%;padding:0px;width:100%;background-color:transparent"></div>';
 
   var plantilla = 
   '<div id="titulo" style="height:15%; font-size:20px;padding-top:10px;">'+
-	objEmp[0].EMPRESA.split(",")[0] +
-   '<div class="totalBloques" style="padding: 0px;">'+
-    '<div id="sumas" style="width:100%;height:80px;"></div>' +
-'   <svg id="pestañas" style="width:100%;height:30px;"></svg>' +
+	'<div style="padding:0px;height:25%;">' + objEmp[0].EMPRESA.split(",")[0] + '</div>' +
+   '<div class="totalBloques" style="padding:0px;height:75%;">'+
+    '<div id="sumas" style="width:100%;height:70%;"></div>' +
+'   <svg id="pestañas" style="width:100%;height:30%;z-index:5000;"></svg>' +
    '</div>' +
   '</div>' +
-  '<div id="graficos">' + contenido + '</div>' +
+  '<div id="graficos" style="height:85%">' + contenido + '</div>' +
  '</div>';
 
   d3.select("#info").append("div")
     .attr("id","temporal")
+    .style("height","100%")
     .html(plantilla);
 
 //---------- DIMENSIONES DE APARTADOS PARA GRÁFICAS ----------------------//
@@ -998,9 +1000,9 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   var titPad = +titulo.style("padding-top").split("px")[0];
   var titT = titHeight //+ titPad;
   var espacioDisp = window.innerHeight - titT - cintilla;
-  d3.select("div#mitades").style("height",(espacioDisp/2) + "px");
-  d3.selectAll("div#mitades>div").style("height","100%");
-  d3.select("div#gantt").style("height",(espacioDisp/2) + "px");
+//  d3.select("div#mitades").style("height",(espacioDisp/2) + "px");
+//  d3.selectAll("div#mitades>div").style("height","100%");
+//  d3.select("div#gantt").style("height",(espacioDisp/2) + "px");
 
 //---------- DIMENSIONES DE APARTADOS PARA GRÁFICAS ----------------------//
 
@@ -1303,6 +1305,7 @@ function plantillaEmpresa1(d,adj,data,licRondas,pmts) {
   	if(!d3.select("div#info>div#titulo")[0][0]){
     	  d3.select("#info")
 	    .append("div").attr("id","temporal")
+	    .style("height","100%")
 	    .html(plantilla);
   	}
 
@@ -1710,11 +1713,11 @@ var i_a = "a) La variable de adjudicación 1 se refiere al porcentaje que corres
 var i_b = "b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo, para las rondas posteriores esta variable se refiere al factor de inversión adicional."
 var leyenda = '';
 var tablaString =
-'<div id="Tabla">' +
- '<div id="tHeadContainer">'+
-  '<table id=tHead>'+
+'<div id="Tabla" style="height:100%">' +
+ '<div id="tHeadContainer" style="height:10%">'+
+  '<table id=tHead style="height:100%">'+
 
-'<tr id="new">'+
+'<tr id="new" style="height:100%">'+
  '<th>Ronda - Licitación</th>'+
  '<th>Bloque</th>'+
 // '<th>Hidrocarburo esperado</th>' +
@@ -1725,8 +1728,8 @@ var tablaString =
 '</tr>'+
   '</table>' +
  '</div>' + 
-"<div class='notas' style='background-color:white;height:60px;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
-'<div id="tBodyContainer">' +
+"<div class='notas' style='background-color:white;height:7.4%;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
+'<div id="tBodyContainer" style="height:60.6%">' +
  '<table id="tBody">' +
 
  '</table>'+
@@ -1737,10 +1740,10 @@ var tablaString =
   d3.select("#Tabla").remove();
   d3.select("#graficos").html("");
   var hT = +d3.select("#titulo").style("height").split("px")[0];
-  d3.select("#graficos").style("height",function() {
-	    var newHeight = window.innerHeight - hT - cintilla - 145; /*altura de tabla*/
-    return newHeight + "px";
-  });
+  d3.select("#graficos").style("height","85%")//,function() {
+//	    var newHeight = window.innerHeight - hT - cintilla - 145; /*altura de tabla*/
+//    return newHeight + "px";
+//  });
   d3.select("#graficos").html(tablaString);
 
 };
@@ -1869,13 +1872,13 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
 
 
   var contenido =
-    '<div id="mitades" style="width:80%">'+
-     '<div id="mitad1" style="background-color:rgba(0,0,0,0.1);"></div>' +
+    '<div id="mitades" style="width:80%;height:50%">'+
+     '<div id="mitad1" style="background-color:rgba(0,0,0,0.1);height:100%;"></div>' +
 //     '<div id="mitad2" style="float:left;width:0%; background-color:rgba(0,0,0,0.15)">'+
 //        '<svg style="width:100%;height:inherit;"></svg>'+
      '</div>' +
     '</div>' +
-    '<div id="gantt" style="padding:0px;width:80%;background-color:rgba(0,0,0,0.2);"></div>';
+    '<div id="gantt" style="padding:0px;width:80%;background-color:rgba(0,0,0,0.2);height:50%;"></div>';
 
 
   d3.select("div#graficos").html(contenido)
@@ -1885,9 +1888,9 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
   var titPad = +titulo.style("padding-top").split("px")[0];
   var titT = titHeight //+ titPad;
   var espacioDisp = window.innerHeight - titT - cintilla;
-  d3.select("div#mitades").style("height",(espacioDisp/2) + "px");
-  d3.selectAll("div#mitades>div").style("height","100%");
-  d3.select("div#gantt").style("height",(espacioDisp/2) + "px");
+//  d3.select("div#mitades").style("height",(espacioDisp/2) + "px");
+//  d3.selectAll("div#mitades>div").style("height","100%");
+//  d3.select("div#gantt").style("height",(espacioDisp/2) + "px");
 
 
 

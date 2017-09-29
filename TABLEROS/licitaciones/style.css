@@ -28,9 +28,9 @@ div#red {
   width:50%;
   display:flex;
   flex-direction:column;
-  margin-bottom:10px;
+  margin-bottom:0px;
   overflow:scroll;
-  height:50%;
+  height:100%;
   overflow-y:hidden;
 }
 
@@ -128,9 +128,9 @@ div.totalBloques {
 
 div#filtroEmpresas {
  width:30px;
-/* height:100%;*/
+ height:100%;
  background-color:rgba(0,0,0,0.65);
- position:absolute;
+ position:fixed;
  overflow-y:hidden;
 }
 
@@ -193,7 +193,6 @@ table#ofertas>tbody {
 */
 div#Tabla {
   position:absolute;
-  height:inherit;
 }
 
 table {
@@ -218,6 +217,7 @@ div#scrollTableContainer {
 	background-color:white;/*rgba(0,0,0,0.65);*/
         color: black;
         font-weight:400;
+	height:10%;
     }
     #tBodyContainer {
         height: 87%;
@@ -233,6 +233,7 @@ tr#new>th {
 	font-weight:inherit;
 	display:table-cell;
 	vertical-align:middle;
+	left-margin:12%;
     }
 
 table#tHead th{

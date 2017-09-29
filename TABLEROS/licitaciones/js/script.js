@@ -13,19 +13,22 @@ var cintilla = +d3.select("svg#cintilla").style("height").split("px")[0];
 
 d3.select("content").style("padding-top",cintilla + "px")
  .style("height",function() {
-   var HH = window.innerHeight// - cintilla;
-   return HH + "px";
+   var HH = "100%"//window.innerHeight// - cintilla;
+   return HH //+ "px";
  });
 
-d3.select("#filtroEmpresas").style("height",height-cintilla + "px");
+var percentageHeight = ( (window.innerHeight-cintilla) / height ) * 100;
+
+d3.select("#filtroEmpresas")
+  .style("height","100%")//,height-cintilla + "px");
 
 
-d3.select("#red").style("height","inherit")
+d3.select("#red").style("height","100%")
 
 d3.select("svg#canvas")
  .style("height",function() {
-   var HH = window.innerHeight - cintilla;
-   return HH + "px";
+   var HH = 100 + "%"//window.innerHeight - cintilla;
+   return HH// + "px";
  })
  .style("width","100%");
 
