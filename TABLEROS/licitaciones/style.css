@@ -390,7 +390,7 @@ div#inv_size {
 
 div#hacerClic {
   font-size:12px;
-  padding-bottom:4px;
+  padding:10px;
 }
 
 
@@ -462,9 +462,9 @@ div#circuloBoton1 {
   display:block;
   position:absolute;
   left:50%;
-  margin-top:65px;
+  margin-top:35px;
   margin-left:5px;
-  top:15%;
+  top:120px;
   background-image:url(img/circle.svg);
   width:10px;
   height:10px;
@@ -474,9 +474,9 @@ div#circuloBoton2 {
   display:block;
   position:absolute;
   left:50%;
-  margin-top:65px;
+  margin-top:35px;
   margin-left:68px;
-  top:15%;
+  top:120px;
   background-image:url(img/circle.svg);
   width:10px;
   height:10px;
@@ -488,10 +488,10 @@ div#lineaBoton1 {
   background-repeat:repeat-y;
   position:absolute;
   left:50%;
-  height:20px;
+  height:35px;
   width:2px;
-  top:15%;
-  margin-top:75px;
+  top:120px;
+  margin-top:35px;
   margin-left:9px;
 }
 
@@ -501,10 +501,10 @@ div#lineaBoton2 {
   background-repeat:repeat-y;
   position:absolute;
   left:50%;
-  height:20px;
+  height:35px;
   width:2px;
-  top:15%;
-  margin-top:75px;
+  top:120px;
+  margin-top:35px;
   margin-left:72px;
 }
 
@@ -516,22 +516,22 @@ div#linea-horizontal-botones {
   left:50%;
   height:2px;
   width:150px;
-  top:15%;
+  top:120px;
   margin-left:9px;
-  margin-top:95px;
+  margin-top:70px;
 }
 
 div#texto-horizontal-botones {
   display:block;
   position:absolute;
   left:50%;
-  top:15%;
+  top:120px;
   z-index:5000;
   color:white;
   font-size:12px;
   font-weight:800;
   margin-left:165px;
-  margin-top:88px;
+  margin-top:62px;
 }
 
 div#info-rondas-empresa {
