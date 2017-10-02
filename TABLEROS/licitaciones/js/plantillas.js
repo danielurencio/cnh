@@ -740,12 +740,12 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	.attr("class","datosMod")
 	.attr("id","new")
 	  .style("color",function(d) {
-	    var color;
+	    var color = "black";
 	    if(d.VALIDEZ == "DESECHADA") {
-		color = "red";
-	    } else {
-		color = "black";
-	    };
+		color = "gray";
+	    } else if(d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ) {
+		color = colorBarras;
+	    } else { color = "black" };
 
 	    return color;
 	  })
@@ -1182,7 +1182,9 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 	  .style("color",function(d) {
 	    var color;
 	    if(d.VALIDEZ == 'DESECHADA') {
-		color = "red";
+		color = "gray";
+	    } else if(d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ) {
+		color = "rgb(8,109,115)";
 	    } else {
 		color = "black";
 	    }
@@ -1697,13 +1699,13 @@ var tablaString =
 '</tr>'+
   '</table>' +
  '</div>' + 
-"<div class='notas' style='background-color:white;height:7.4%;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
+"<div class='notas' style='background-color:white;height:8%;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
 '<div id="tBodyContainer" style="height:58%">' +
  '<table id="tBody">' +
 
  '</table>'+
 '</div>' +
-'<div style="width:100%;padding-left:20px;line-height:12px;border-top:solid 0.25px gray"><span style="font-weight:700">* Las ofertas en negritas fueron ganadoras.</span><br><span style="color:red">* Las ofertas en rojo fueron desechadas por no superar el límite establecido por la Secretaría de Hacienda y Crédito Público.</span></div>' +
+'<div style="width:100%;padding-left:20px;line-height:11px;border-top:solid 0.25px gray"><span style="font-weight:700;color:rgb(8,109,115)">* Las ofertas en negritas y en este color fueron ganadoras.</span><br><span style="color:white;background-color:gray">* Las ofertas en gris fueron desechadas por no superar el límite establecido por la Secretaría de Hacienda y Crédito Público.</span></div>' +
 '</div>';
 
   d3.select("#Tabla").remove();

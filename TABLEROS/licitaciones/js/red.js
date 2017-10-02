@@ -441,7 +441,7 @@ function RED(width,height) {
 	})[0];
 
 	var style = {
-	  'x':width-10,
+	  'x':width-20,
 	  'y':25,//graphH - 40,
 	  'font-size':16,
 	  'font-family':'Open Sans',
