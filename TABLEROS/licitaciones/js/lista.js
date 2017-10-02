@@ -154,6 +154,8 @@ function mostrarLista() {
    var verLista = d3.select("svg#verLista")[0][0];
 //   d3.select("g#tituloRed_").transition().duration(800).attr("opacity",1)
 
+    d3.select("div#filtroEmpresas").style("overflow","hidden")
+
     lista.attr("class",null)
     lista.selectAll("ol").remove();
     lista.selectAll("input").remove();
