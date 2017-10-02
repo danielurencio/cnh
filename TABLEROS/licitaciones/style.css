@@ -565,3 +565,6 @@ div#hacerClicDescarga {
   padding-bottom:4px;
 }
 
+rect.highcharts-background {
+ fill:transparent;
+}

@@ -106,7 +106,7 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
 '<div id="titulo" style="height:15%; font-size:28px;">'+
   '<div style="padding:0px;height:15%">' + texto.resumen + '</div>' +
   '<div class="totalBloques" style="padding: 0px;height:75%;z-index:10000;">'+
-    '<div id="sumas" style="width:100%;height:80px;background-color:transparent"></div>' +
+    '<div id="sumas" style="padding-top:10px;width:100%;height:80px;background-color:transparent"></div>' +
     '<svg id="pestañas" style="width:100%;height:30px;z-index:500;"></svg>'
  +'</div>' +  
 '</div>' +
@@ -951,11 +951,11 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   '<div id="titulo" style="height:15%; font-size:20px;padding-top:10px;">'+
 	'<div style="padding:0px;height:15%;">' + objEmp[0].EMPRESA.split(",")[0] + '</div>' +
    '<div class="totalBloques" style="padding:0px;height:75%;">'+
-    '<div id="sumas" style="width:100%;height:80px;"></div>' +
+    '<div id="sumas" style="padding-top:10px;width:100%;height:80px;"></div>' +
 '   <svg id="pestañas" style="width:100%;height:30px;z-index:5000;"></svg>' +
    '</div>' +
   '</div>' +
-  '<div id="graficos" style="padding-top:30px;height:85%">' + contenido + '</div>' +
+  '<div id="graficos" style="padding-top:30px;height:85%;z-index:1">' + contenido + '</div>' +
  '</div>';
 
   d3.select("#info").append("div")
@@ -1842,12 +1842,12 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
 
   var contenido =
     '<div id="mitades" style="width:80%;height:50%">'+
-     '<div id="mitad1" style="background-color:rgba(0,0,0,0.1);height:100%;"></div>' +
+     '<div id="mitad1" style="background-color:transparent;height:100%;"></div>' +
 //     '<div id="mitad2" style="float:left;width:0%; background-color:rgba(0,0,0,0.15)">'+
 //        '<svg style="width:100%;height:inherit;"></svg>'+
      '</div>' +
     '</div>' +
-    '<div id="gantt" style="padding:0px;width:80%;background-color:rgba(0,0,0,0.2);height:50%;"></div>';
+    '<div id="gantt" style="padding:0px;width:80%;background-color:transparent;height:50%;"></div>';
 
 
   d3.select("div#graficos").html(contenido)
@@ -2042,7 +2042,7 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 	}
     },
     subtitle: {
-	text:"(Coloque el cursor sobre un cuadrante para ver la inversión en dólares por licitación. Para conocer la inversión por bloque presione el cuadrante correspondiente a cada licitación y se mostraran los bloques ganados en esa licitación; para regresar a la vista por licitación presione el botón de la esquina superior derecha.)"
+	text:"Para conocer la inversión en dólares por licitación o bloque interactúe con esta gráfica."
     },
     	style:{ 'fontSize':5,'fontWeight':800 }
   });
