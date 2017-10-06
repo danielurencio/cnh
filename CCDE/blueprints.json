@@ -1,0 +1,39 @@
+{
+ "A": {
+  "maquina": {},
+  "esp": {
+   "filtros": {
+     "titles": {
+	"tema":"Tema: ",
+	"nivel":"Nivel:",
+	"fecha":"Fecha: ",
+	"tempo":"Periodo: "
+     },
+     "options": [
+	{ "tema":"Producción",
+	  "nivel":["Cuenca","Campo"],
+	  "tempo":["Mensual","Anual"]
+        }
+     ]
+   }
+  },
+  "eng": {
+   "filtros": {
+     "titles": {
+	"tema":"Topic: ",
+	"nivel":"Level:",
+	"fecha":"Date: ",
+	"tempo":"Period: "
+     },
+     "options": [
+	{ "tema":"Production",
+	  "nivel":["Basin","Field"],
+	  "tempo":["Monthly","Yearly"]
+        }
+
+     ]
+   }
+  }
+
+ }
+}

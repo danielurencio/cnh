@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Centro de Consumo de Datos Estadísticos</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="js/script.js"></script>
+ </head>
+ <body>
+<!-- ################################# FILTROS ################### (start) -->
+<div id="filtros" style="width:100%;padding-top:0%;height:70px;">
+
+ <div style="height:100%;">
+  <div style="text-align:center;position:relative;height:30%;font-size:14px;font-weight:800;">
+   <div id="tema_text" style="position:absolute;left:0%;width:25%;"></div>
+   <div id="nivel_text" style="position:absolute;left:25%;width:25%;"></div>
+   <div id="fecha_text" style="position:absolute;left:50%;width:25%;"></div>
+   <div id="tempo_text" style="position:absolute;left:75%;width:25%;"></div>
+  </div>
+
+
+  <div style="height:70%">
+   <div id="tema_options" style="text-align:center;position:absolute;width:25%;left:0%">
+    <form action="">
+     <select>
+     </select>
+    </form>
+   </div>
+
+   <div id="nivel_options" style="text-align:center;position:absolute;width:25%;left:25%">
+    <form action="">
+     <select>
+     </select>
+    </form>
+   </div>
+
+   <div id="fecha_options" style="position:absolute;width:25%;left:50%"> 
+    <div style="position:absolute;width:50%;left:0%;text-align:right;">
+     <form action="">
+      <span id="start"></span><select style="width:60px">
+      </select>
+     </form>
+     <form action="">
+      <span id="end"></span><select style="width:60px">
+      </select>
+     </form>
+    </div>
+    <div style="position:absolute;width:50%;left:50%">
+     <form action="">
+      <select style="width:60px">
+      </select>
+     </form>
+     <form action="">
+      <select style="width:60px">
+      </select>
+     </form>
+    </div>
+
+   </div>
+
+   <div id="tempo_options" style="text-align:center;position:absolute;width:25%;left:75%">
+    <form action="">
+     <input type="radio" name="temporalidad" value="mensual">
+     <input type="radio" name="temporalidad" value="anual">
+    </form>
+   </div>  
+  </div>
+
+ </div>
+</div>
+<!-- ################################# FILTROS ##################### (end)-->
+
+<!-- ################################# TABLA #####################(start) -->
+  <div id="tabla" style="width:100%;height:90%;">
+  </div>
+<!-- ################################# TABLA #####################(end) -->
+
+ </body>
+</html>
