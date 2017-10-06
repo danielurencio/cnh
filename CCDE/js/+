@@ -5,7 +5,7 @@ $(document).ready(function() {
    url:"blueprints.json",
    dataType:'json',
    success:function(response) {
-     RenderWords(response,"esp");
+     RenderWords(response,"eng");
      $("span.lang").on("click", function() {
 	RenderWords(response,this.id);
      });

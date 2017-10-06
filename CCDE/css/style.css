@@ -66,3 +66,18 @@ thead>tr>th {
   font-style:normal;
   color:white;
 }
+
+select {
+  font-family:'Open Sans';
+  font-weight:300;
+  background:white;
+  border-radius:5px;
+}
+
+option {
+  font-family:"Open Sans";
+}
+
+div#lang span:hover {
+  color:mediumvioletred;
+}

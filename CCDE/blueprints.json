@@ -4,14 +4,24 @@
   "esp": {
    "filtros": {
      "titles": {
-	"tema":"Tema: ",
+	"tema":"Tema:",
 	"nivel":"Nivel:",
-	"fecha":"Fecha: ",
-	"tempo":"Periodo: "
+	"fecha":"Fecha:",
+	"start":"Inicio:",
+        "end":"Fin:",
+	"tempo":"Periodo:",
+	"month":"Mensual",
+	"year":"Anual"
      },
+     "months": ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
+     "years":[1960,2017],
      "options": [
 	{ "tema":"Producción",
 	  "nivel":["Cuenca","Campo"],
+	  "tempo":["Mensual","Anual"]
+        },
+	{ "tema":"Producción1",
+	  "nivel":["Cuenca1","Campo1"],
 	  "tempo":["Mensual","Anual"]
         }
      ]
@@ -20,16 +30,27 @@
   "eng": {
    "filtros": {
      "titles": {
-	"tema":"Topic: ",
+	"tema":"Topic:",
 	"nivel":"Level:",
-	"fecha":"Date: ",
-	"tempo":"Period: "
+	"fecha":"Date:",
+	"start":"Start:",
+	"end":"End:",
+	"tempo":"Period:",
+	"month":"Monthly",
+	"year":"Yearly"
      },
+     "months": ["January","February","March","April","May","June","July","August","September","October","November","December"],
+     "years":[1960,2017],
      "options": [
 	{ "tema":"Production",
 	  "nivel":["Basin","Field"],
 	  "tempo":["Monthly","Yearly"]
+        },
+	{ "tema":"Production1",
+	  "nivel":["Basin1","Field1"],
+	  "tempo":["Monthly","Yearly"]
         }
+
 
      ]
    }

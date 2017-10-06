@@ -9,11 +9,19 @@
   <script src="js/script.js"></script>
  </head>
  <body>
-<!-- ################################# FILTROS ################### (start) -->
-<div id="filtros" style="width:100%;padding-top:0%;height:70px;">
 
- <div style="height:100%;">
-  <div style="text-align:center;position:relative;height:30%;font-size:14px;font-weight:800;">
+<!-- ################################# FILTROS ################### (start) -->
+<div id="filtros" style="width:100%;padding-top:0%;height:90px;position:fixed;background:white;border-bottom-style:solid;border-bottom-width:1px">
+
+<div style="padding-top:0px;padding-bottom:0px;text-align:right;width:100%;font-weight:700;color:rgb(13,180,190);font-size:10px;z-index:50;position:fixed;" id=lang>
+  <span id="esp" class="lang" style="cursor:pointer;">Español</span>
+  &nbsp; / &nbsp;
+ <span id="eng" class="lang" style="cursor:pointer;">English</span>
+ &emsp;
+</div>
+
+ <div style="height:100%;width:100%;">
+  <div style="padding-top:10px;padding-bottom:5px;text-align:center;position:relative;height:20%;font-size:14px;font-weight:800;">
    <div id="tema_text" style="position:absolute;left:0%;width:25%;"></div>
    <div id="nivel_text" style="position:absolute;left:25%;width:25%;"></div>
    <div id="fecha_text" style="position:absolute;left:50%;width:25%;"></div>
@@ -21,17 +29,17 @@
   </div>
 
 
-  <div style="height:70%">
+  <div style="height:80%;">
    <div id="tema_options" style="text-align:center;position:absolute;width:25%;left:0%">
     <form action="">
-     <select>
+     <select id="tema_options" style="font-family:'Open Sans'">
      </select>
     </form>
    </div>
 
    <div id="nivel_options" style="text-align:center;position:absolute;width:25%;left:25%">
     <form action="">
-     <select>
+     <select id="nivel_options">
      </select>
     </form>
    </div>
@@ -39,21 +47,21 @@
    <div id="fecha_options" style="position:absolute;width:25%;left:50%"> 
     <div style="position:absolute;width:50%;left:0%;text-align:right;">
      <form action="">
-      <span id="start"></span><select style="width:60px">
+      <span id="start_text"></span>&nbsp;<select id="start_year" style="width:55px">
       </select>
      </form>
-     <form action="">
-      <span id="end"></span><select style="width:60px">
+     <form style="padding-top:2px;" action="">
+      <span id="end_text"></span>&nbsp;<select id="end_year" style="width:55px">
       </select>
      </form>
     </div>
-    <div style="position:absolute;width:50%;left:50%">
+    <div style="position:absolute;width:50%;left:50%;padding-left:2px">
      <form action="">
-      <select style="width:60px">
+      <select id="start_month" style="width:85px">
       </select>
      </form>
-     <form action="">
-      <select style="width:60px">
+     <form style="padding-top:2px;" action="">
+      <select id="end_month" style="width:85px">
       </select>
      </form>
     </div>
@@ -62,8 +70,8 @@
 
    <div id="tempo_options" style="text-align:center;position:absolute;width:25%;left:75%">
     <form action="">
-     <input type="radio" name="temporalidad" value="mensual">
-     <input type="radio" name="temporalidad" value="anual">
+     <span id="month_text"></span><input type="radio" name="temporalidad" value="mensual" checked>
+     <span id="year_text"></span><input type="radio" name="temporalidad" value="anual"><span class="radio"></span>
     </form>
    </div>  
   </div>
@@ -73,7 +81,7 @@
 <!-- ################################# FILTROS ##################### (end)-->
 
 <!-- ################################# TABLA #####################(start) -->
-  <div id="tabla" style="width:100%;height:90%;">
+  <div id="tabla" style="width:100%;height:90%;padding-top:90px;">
   </div>
 <!-- ################################# TABLA #####################(end) -->
 
