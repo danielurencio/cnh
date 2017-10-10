@@ -81,3 +81,16 @@ option {
 div#lang span:hover {
   color:mediumvioletred;
 }
+
+/* Nuevas reglas */
+td {
+  width:250px;
+}
+
+.label tr td label {
+  display: block;
+}
+
+[data-toggle="toggle"] {
+	display: none;
+}
