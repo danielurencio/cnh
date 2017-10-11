@@ -6,28 +6,9 @@ $(document).ready(function() {
    dataType:'json',
    success:function(response) {
 
-   $.get("produccion_cuencas.json",function(data) {
-     var rr = data.index.map(function(d) {
-	var a = d[0].replace(/2\) |1\) |3\) |4\) /g,"");
-	a = a.replace(
-	/^Plataforma Burro-Picachos/g,
-	"Burgos, Plataforma Burro-Picachos y Sabinas"
-	);
-	return a;
-     });
-
-     for(var i in data.index) {
-      data.index[i][0] = rr[i]
-     }
-
-     console.log(data);
-
-     var data1 = recurr(data,unicosXnivel,filtroXnivel);
-
-     RenderTabla(data1);
-
-   });
-
+     $.get("data.json", function(data) {
+	RenderTabla(data,segmentos,colapsables);
+     })
 
      RenderWords(response,"esp");
      $("span.lang").on("click", function() {
@@ -107,8 +88,59 @@ function RenderWords(obj,lang) {
     $("div#nivel_options select").append(niveles);
   });
 
-
 };
+
+
+/* PARÁMETROS:
+   "obj": El objeto 'data' del JSON que se recibe del back-end.
+   "counter": Un 'integer' que se utiliza para llevar la cuenta de los niveles
+	    anidados del JSON. El valor de este parámetro siempre será '0'.
+   "limit": La profundidad a la que se desea extraer la información del JSON.
+   "arr": Es un 'array' sobre el cual se escribira la información obtenida.
+   "parent_": Es 'string' que detalla a qué nivel pertenece cada objeto.
+
+   * El propósito de esta función es transformar el 'input' para que se generen
+     segementos expandibles en los cubos de información. Esta función especifíca
+     hasta que nivel serán expandibles/colapsables los segmentos de los cubos.
+
+     Esta función no se utiliza por sí misma. Para simplificar el código, su
+     ejecución se da dentro de la función llamada 'segmentos'.
+*/
+
+function colapsables(obj,counter,limit,arr,parent_) {
+  for (var k in obj) {
+    if (typeof obj[k] == "object" && obj[k] !== null && counter < limit) {
+      if(Object.keys(obj).indexOf(k) === 0 && !obj[k].length) {
+        counter+=1; 
+        arr.push({
+          "nivel":counter,
+          "labels":Object.keys(obj),
+          "parent":parent_
+        })
+      }
+      parent_ = k;
+      colapsables(obj[k],counter,limit,arr,parent_);
+    }
+  }
+};
+
+/* PARÁMETROS:
+   "data": El JSON que se recibe del back-end.
+   "f1": La función 'colapsables' la cual se ejecuta dentro del cuerpo de esta
+   misma función.
+
+   * El único objetivo de esta función es facilitar la lectura del código ya que
+     la función 'colapsables', misma que se ejecuta dentro de esta función,
+     es una función recursiva y con muchos parámetros, aspectos que hacen que su
+     código sea más complejo.
+*/
+
+function segmentos(data,f1) {
+  var arr = [];
+  f1(data.data,0,data.keys,arr,'root');
+  return arr;
+};
+
 
 function unicosXnivel(arr,n) {
   var a = arr.map(function(d) { return d[n]; });
@@ -165,48 +197,76 @@ function recurr(arr,f1,f2) {
   return obj;
 }
 
-function RenderTabla(data) {
-// Agregar tbodys
+function RenderTabla(data,f1,f2) {
+  data.keys = 3;
+  var segmentos_ = f1(data,f2);
+
+  var segmentos_root = segmentos_.filter(function(d) {
+    return d.parent == 'root';
+  })[0].labels;
+
+  var segmentos_child = segmentos_.filter(function(d) {
+    return d.parent != 'root';
+  });
+
+
+// Agregar segmentos de primer nivel.
   d3.select("tbody#tabla").selectAll("tbody")
-   .data(Object.keys(data)).enter()
+   .data(segmentos_root).enter()
   .append("tbody")
    .attr("class","labels")
    .style("background","rgb(13,180,190)")
    .style("font-weight",700)
    .style("color","white")
-   .attr("tag",function(d) { return d; })
-   .each(function() {
+   .attr("id",function(d) { return d; })
+   .each(function(d) {
      var t = document.createElement("div");
-     $("<tbody class='hide'></tbody>").insertAfter(this);
+     $("<tbody class='hide' id='"+ d +"'></tbody>").insertAfter(this);
    });
 
   d3.selectAll("tbody#tabla > tbody")
   .each(function(d,i) {
     var selection = d3.select(this);
+    var id = selection.attr("id");
     if(selection.attr("class") == "labels") {
 	var str = "" +
 	"<tr>" +
 	"<td colspan='21'>" +
-	"<label>"+ selection.attr("tag") + "</label>" +
-	"<input type='checkbox' data-toggle='toggle' style='display=none'></input>" +
+	"<label>" + selection.attr("id") + "</label>" +
+//	"<input type='checkbox' data-toggle='toggle' style='display=none'></input>" +
 	"</td>" + 
 	"</tr>" + 
 	"";
 	selection.html(str)
     } else {
-	var str = "" +
-	"<tr>" +
-	"<td>a</td><td>b</td><td>c</td><td>f</td><td>g</td>" +
-	"<td></td><td></td><td></td><td></td><td></td>" +
 
-	"</tr>"
-	selection.html(str); 
     }
 
   })
 
+  for(var j=2; j<=data.keys; j++) {
+    var temas = segmentos_child.filter(function(d) {
+      return d.nivel == j //&& d.parent == selection.attr("id");
+    });
+
+    for(var t in temas) {
+      console.log(temas[t]);
+      var selection = d3.select("#" + temas[t].parent + ".hide")
+	selection.selectAll("div")
+       .data(temas[t].labels).enter()
+	.append("div")
+	.attr("tag",function(d) { return d; });
+
+//	var selection = d3.select("[tag='"+  +"']") // <-- aquí me quedé
+
+    } 
+
+//        var selection = 
+  };
+
+
   d3.selectAll("tbody.labels").on("click",function() {
-    d3.select("tbody.hide").style("display","none")
+    d3.selectAll("tbody.hide").style("display","none")
   });
   
 };
