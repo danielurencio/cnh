@@ -6,8 +6,10 @@ $(document).ready(function() {
    dataType:'json',
    success:function(response) {
 
-     $.get("data.json", function(data) {
-	RenderTabla(data,segmentos,colapsables);
+     $.get("prueba2.json", function(data) {
+	console.log(data);
+	Tabla(data);
+//	RenderTabla(data,segmentos,colapsables);
      })
 
      RenderWords(response,"esp");
@@ -23,6 +25,78 @@ $(document).ready(function() {
 /*  $("div#tabla").load("produccion_cuencas.html",function() {
 
   });*/
+
+function Tabla(data) {
+
+  d3.select("tbody#tabla").selectAll("tbody")
+   .data(data).enter()
+  .append("tbody")
+   .style("width","100%")
+   .attr("class","labels")
+   .attr("tag",function(d) { return d[0]; })
+   .each(function(d) {
+     $("<tbody class='hide' tag='"+ d[0] +"'></tbody>").insertAfter(this);
+   });
+
+  d3.selectAll("tbody#tabla > tbody")
+  .each(function(d,i) {
+    var selection = d3.select(this);
+    selection.style("width","100%");
+    var id = selection.attr("tag");
+    if(selection.attr("class") == "labels") {
+	var str = "" +
+	"<tr style='width:100%'>" +
+	"<td style='width:100%'>" +
+	"<label style='cursor:pointer;width:100%'>&emsp;<span style='font-size:16px'>(-)&ensp;</span>" + selection.attr("tag") + "</label>" +
+	"</td>" + 
+	"</tr>" + 
+	"";
+	selection.html(str)
+    } else {
+	var tag = selection.attr("tag");
+	var seg = data.filter(function(d) { return d[0] == tag; })[0];
+	var tablas = seg.filter(function(d) { return typeof(d) == "object"; });
+
+      for(var j in tablas) {
+	console.log(tablas[j]);
+	var str = "" +
+	"<thead style='width:100%'>" +
+	"<div style='cursor:pointer;width:100%'>&emsp;<span style='font-size:16px'>( - )&ensp;</span>" + Object.keys(tablas[j])[0] + "</div>" +
+	"</thead>";
+	selection.append("div")
+	  .attr("class","labels")
+	  .attr("tag",Object.keys(tablas[j])[0])
+	  .attr("id","id_"+j)
+	  .html(str);
+	selection.append("tbody")
+	  .attr("class","hide")
+	  .style("width","100%")
+	  .attr("tag",Object.keys(tablas[j])[0])
+	  .attr("id","id_"+j)
+	  .html(tablas[j][Object.keys(tablas[j])[0]])
+
+      }
+    }
+
+  })
+
+  d3.selectAll(".labels").on("click",function() {
+    var tag = d3.select(this).attr("tag");
+    var selection = d3.select("[tag='" + tag + "'].hide")
+    var selection = d3.select($(this).next()[0])
+    console.log(selection);
+    if(selection.style("display") == 'table-row-group') {
+	selection
+	.style("display","none")
+	console.log(selection.node())
+    } else {
+	selection.style("display","table-row-group")
+	console.log(selection.node())
+    }	
+  });
+ 
+
+};
 
 function RenderWords(obj,lang) {
   var titles = obj.A[lang].filtros.titles;
@@ -198,7 +272,7 @@ function recurr(arr,f1,f2) {
 }
 
 function RenderTabla(data,f1,f2) {
-  data.keys = 3;
+//  data.keys = 3;
   var segmentos_ = f1(data,f2);
 
   var segmentos_root = segmentos_.filter(function(d) {
@@ -215,13 +289,13 @@ function RenderTabla(data,f1,f2) {
    .data(segmentos_root).enter()
   .append("tbody")
    .attr("class","labels")
-   .style("background","rgb(13,180,190)")
+//   .style("background","rgb(13,180,190)")
    .style("font-weight",700)
    .style("color","white")
    .attr("id",function(d) { return d; })
    .each(function(d) {
      var t = document.createElement("div");
-     $("<tbody class='hide' id='"+ d +"'></tbody>").insertAfter(this);
+     $("<tbody class='hide' tag='"+ d +"'></tbody>").insertAfter(this);
    });
 
   d3.selectAll("tbody#tabla > tbody")
@@ -231,7 +305,7 @@ function RenderTabla(data,f1,f2) {
     if(selection.attr("class") == "labels") {
 	var str = "" +
 	"<tr>" +
-	"<td colspan='21'>" +
+	"<td colspan='22'>" +
 	"<label>" + selection.attr("id") + "</label>" +
 //	"<input type='checkbox' data-toggle='toggle' style='display=none'></input>" +
 	"</td>" + 
@@ -244,31 +318,61 @@ function RenderTabla(data,f1,f2) {
 
   })
 
+//-------------------AGREGAR SUBNIVELES -----------------------------
   for(var j=2; j<=data.keys; j++) {
     var temas = segmentos_child.filter(function(d) {
-      return d.nivel == j //&& d.parent == selection.attr("id");
+      return d.nivel == j;
     });
 
     for(var t in temas) {
-      console.log(temas[t]);
-      var selection = d3.select("#" + temas[t].parent + ".hide")
-	selection.selectAll("div")
+      var selection = d3.select("[tag='" + temas[t].parent + "'].hide");
+/*
+      selection.selectAll("div")
        .data(temas[t].labels).enter()
 	.append("div")
-	.attr("tag",function(d) { return d; });
+	.attr("id","id_" + j)
+	.attr("tag",function(d) { return d; })
+	.each(function(d) {
+	  console.log(d)
+	});
+*/
+	
+	for(var l in temas[t].labels) {
+	  selection.append("tbody")
+	  .attr("tag",temas[t].labels[l])
+	  .attr("class","label")
+	   .append("tr").append("td").style("colspan","22")
+	   .html("<label>"+ temas[t].labels[l] +"</label>") ;
+	  selection.append("tbody")
+	  .attr("tag",temas[t].labels[l])
+	  .attr("class","hide")
+	  .attr("id","id_"+j);
 
-//	var selection = d3.select("[tag='"+  +"']") // <-- aquí me quedé
+	}
 
+	  selection = d3.select("div[tag='" + temas[t].parent+ "']");
     } 
 
-//        var selection = 
   };
+//---------------------------------------------------------------------
+
+  d3.selectAll("#id_"+data.keys)
+    .each(function(d) {
+      var selection = d3.select(this).append("tr");
+      var tag = selection.attr("tag");                        // <-- *
+      var parentTag = d3.select(this.parentNode).attr("tag"); // <-- *
+//      *: Sustituir por recursivo.
+
+      var ss = d3.select("[tag='"+ parentTag +"'].hide>[tag='"+ tag +"'].hide")
+      var obj = data.data[parentTag][tag];
+ss.append("svg")
+//      selection.append("tr")
 
 
-  d3.selectAll("tbody.labels").on("click",function() {
-    d3.selectAll("tbody.hide").style("display","none")
-  });
-  
+
+    });
+
+ 
 };
 
 
