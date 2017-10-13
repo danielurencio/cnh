@@ -19,6 +19,8 @@ $.get("blueprints.json",function(response) {
      });
 
      $("button#boton").on("click",descargar);
+
+
 })
 //   }
 
@@ -101,16 +103,16 @@ function formatoData(data) {
    for(var j in data[i]) {
      if(typeof(data[i][j]) == "object") {
        data[i][j][Object.keys(data[i][j])[0]] =
-	data[i][j][Object.keys(data[i][j])[0]].replace(/(\d)-(\d)/g,"$1/$2")
+	data[i][j][Object.keys(data[i][j])[0]].replace(/(\d)-(\d)/g,"$1 $2")
 
        data[i][j][Object.keys(data[i][j])[0]] =
-	data[i][j][Object.keys(data[i][j])[0]].replace(/-/g,"&nbsp;")
+	data[i][j][Object.keys(data[i][j])[0]].replace(/-/g,"&ensp;&nbsp;")
 
        data[i][j][Object.keys(data[i][j])[0]] =
 	data[i][j][Object.keys(data[i][j])[0]].replace(/\<tr(\>\n.*)\(/g,'<tr id="dist"$1(')
 
        data[i][j][Object.keys(data[i][j])[0]] =
-	data[i][j][Object.keys(data[i][j])[0]].replace(/¡/g,'í')
+	data[i][j][Object.keys(data[i][j])[0]].replace(/Categor¡a/g,'')
 
      }
    }
@@ -120,6 +122,14 @@ function formatoData(data) {
 
 
 function Tabla(data) {
+  var color = getComputedStyle(document.body).getPropertyValue('--filasYcols');
+//  var plus = "&roarr;", minus = "&angrt;";
+  var plus = "&plus;", minus = "&angrt;";
+
+  $("button.filtros").click(function() {
+    $("button.filtros").attr("id","off")
+    $(this).attr("id","on")
+  });
 
   d3.select("tbody#tabla").selectAll("tbody")
    .data(data).enter()
@@ -140,7 +150,7 @@ function Tabla(data) {
 	var str = "" +
 	"<tr style='width:100%'>" +
 	"<td style='width:100%'>" +
-	"<label style='cursor:pointer;width:100%'><span class='s' style='font-size:18px;font-weight:400;'>( - )&ensp;</span>" + selection.attr("tag") + "</label>" +
+	"<label style='cursor:pointer;width:100%'><span class='s' id='uno' style='font-weight:400;'>" + minus + "&ensp;</span>" + selection.attr("tag") + "</label>" +
 	"</td>" + 
 	"</tr>" + 
 	"";
@@ -153,7 +163,7 @@ function Tabla(data) {
       for(var j in tablas) {
 	var str = "" +
 	"<thead style='width:100%'>" +
-	"<div style='width:100%'><label style='cursor:pointer;'>&ensp;<span class='s' style='font-weight:400;'>( - )&ensp;</span>&ensp;&ensp;" + Object.keys(tablas[j])[0] + "</label></div>" +
+	"<div style='width:100%'><label style='cursor:pointer;'>&ensp;<span id='dos' class='s' style='font-weight:400;'>" + minus + "&ensp;</span>&ensp;&ensp;" + Object.keys(tablas[j])[0] + "</label></div>" +
 	"</thead>";
 	selection.append("div")
 	  .attr("class","labels")
@@ -166,7 +176,7 @@ function Tabla(data) {
 	  .attr("tag",Object.keys(tablas[j])[0])
 	  .attr("download","1")
 	  .attr("id","id_"+j)
-	  .html(tablas[j][Object.keys(tablas[j])[0]])
+	  .html(tablas[j][Object.keys(tablas[j])[0]] + "<br>")
 
       }
     }
@@ -181,11 +191,35 @@ function Tabla(data) {
     if(selection.style("display") == 'table-row-group') {
 	selection
 	.style("display","none")
-	span.html("( + )&ensp;")
+	span.html(plus + "&ensp;")
     } else {
 	selection.style("display","table-row-group")
-	span.html("( - )&ensp;")
+	span.html(minus + "&ensp;")
     }	
+  });
+
+  d3.selectAll(".hide td:not(:first-child)").on("mouseover",function() {
+     var grand_parent = $(this).parent().parent().parent().attr("tag");
+     var parent = $(this).parent().parent().attr("tag");
+     var ix = $(this).index() + 1
+     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] td:nth-child("+ ix +")")
+	.style("background",color)
+//	.style("color","red");
+     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] th:nth-child("+ ix +")")
+	.style("background",color);
+
+  });
+
+
+  d3.selectAll(".hide td:not(:first-child)").on("mouseout",function() {
+     var grand_parent = $(this).parent().parent().parent().attr("tag");
+     var parent = $(this).parent().parent().attr("tag");
+     var ix = $(this).index() + 1
+     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] td:nth-child("+ ix +")")
+	.style("background","transparent")
+     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] th:nth-child("+ ix +")")
+	.style("background","transparent");
+
   });
 
 };
