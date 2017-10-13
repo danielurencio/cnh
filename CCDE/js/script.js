@@ -1,11 +1,11 @@
 $(document).ready(function() {
 
   // Todo ocurre aquí.
-  $.ajax({
-   url:"blueprints.json",
-   dataType:'json',
-   success:function(response) {
-
+//  $.ajax({
+//   url:"blueprints.json",
+//   dataType:'json',
+//   success:function(response) {
+$.get("blueprints.json",function(response) {
      $.get("prueba2.json", function(data) {
         data = formatoData(data);
 	Tabla(data);
@@ -19,9 +19,10 @@ $(document).ready(function() {
      });
 
      $("button#boton").on("click",descargar);
-   }
+})
+//   }
 
-  });
+//  });
 
 
 
