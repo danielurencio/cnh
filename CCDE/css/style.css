@@ -9,6 +9,21 @@ html,body {
  height:100%;
 }
 
+.lang:hover {
+ color:green;
+}
+
+select {
+ font-family:'Open Sans';
+ font-weight:300;
+ background:white;
+}
+
+div#tema_options>button {
+ font-weight:600;
+ font-family:"Open Sans";
+}
+
 div#tabla {
   margin:auto;
   text-align:center;
@@ -23,20 +38,20 @@ table {
   margin:auto;
 }
 
-tbody,div { width:100%; }
+tbody,div {
+ width:100%;
+}
 
 tr {
  width:100%;
 }
 
 .labels {
- background:rgb(227,242,237);
  color:rgb(74,155,131);
  font-weight:800;
- border: 1px solid black;
  border-collapse:separate;
  border-spacing:4px;
- font-size:16px;
+ font-size:18px;
  text-align:left;
 }
 
@@ -44,15 +59,23 @@ tbody.hide {
  display:table-row-group;
 }
 
+.hide {
+ left-padding:50px;
+}
+
 .hide>tr>td:first-child, hide>tr>th:first-child {
  text-align:left;
  width:200px;
 }
 
+.hide td:first-child,.hide th:first-child {
+ border-left:1px solid black;
+}
+
 td:nth-child(n+2),th:nth-child(n+2) {
- font-size:11px;
+ font-size:12px;
  width:50px;
- text-align:right;
+ text-align:center;
  border-right:1px solid black;
  border-left:1px solid black;
 }
@@ -67,6 +90,57 @@ th {
  font-size:12px;
 }
 
-tr:last-child {
+.hide tr:last-child {
  border-bottom:1px solid black;
 }
+
+label:hover {
+ color:green;
+}
+
+.hide>div.labels {
+ border:none;
+}
+
+#dist {
+ font-weight:400;
+ background:rgb(227,242,237);
+}
+
+.hide td:hover:not(:first-child) {
+  font-size:15px;
+  cursor:default;
+  font-weight:800;
+}
+
+tr#dist:hover, .hide>tr:not(:first-child):hover {
+ background:dodgerBlue;
+ color:white;
+ font-weight:600;
+}
+
+th {
+ font-size:14px;
+}
+
+th:nth-child(n+2) {
+ font-size:14px;
+}
+
+label {
+  font-size:22px;
+}
+
+.hide label {
+ font-size:16px;;
+}
+
+/*
+tbody#tabla>tbody.hide:first-child {
+ display:table-row-group;
+}
+
+tbody#tabla>tbody.hide:nth-child(n+2) {
+ display:none;
+}
+*/

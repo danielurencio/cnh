@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
  <head>
-  <title>Centro de Consumo de Datos Estadísticos</title>
+  <title>Centro de Consulta de Datos Estadísticos (CCDE)</title>
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -21,17 +21,25 @@
  &emsp;
 </div>
 
+<div style="padding-top:60px;padding-right:100px;text-align:right;width:100%;font-weight:700;color:rgb(13,180,190);font-size:10px;z-index:0;position:fixed;">
+<button  id="boton" style='font-family:"Open Sans";font-weight:600;font-size:11px;'>Descargar</button >&ensp;&ensp;&ensp;
+</div>
+
  <div style="height:100%;width:100%;">
   <div style="padding-top:10px;padding-bottom:5px;text-align:center;position:relative;height:20%;font-size:14px;font-weight:800;">
-   <div id="tema_text" style="position:absolute;left:0%;width:25%;"></div>
-   <div id="nivel_text" style="position:absolute;left:25%;width:25%;"></div>
+   <div id="tema_text" style="position:absolute;left:0%;width:50%;"></div>
+<!--   <div id="nivel_text" style="position:absolute;left:25%;width:25%;"></div>-->
    <div id="fecha_text" style="position:absolute;left:50%;width:25%;"></div>
-   <div id="tempo_text" style="position:absolute;left:75%;width:25%;"></div>
+   <div id="tempo_text" style="position:absolute;left:75%;width:25%;text-align:left;"></div>
   </div>
 
 
   <div style="height:80%;">
-   <div id="tema_options" style="text-align:center;position:absolute;width:25%;left:0%">
+   <div id="tema_options" style="text-align:center;position:absolute;width:50%;left:0%">
+   <button>Ubicación</button>&ensp;
+   <button>Régimen Contractual</button>&ensp;
+   <button>Campo</button>
+<!--
     <form action="">
      <select id="tema_options" style="font-family:'Open Sans'">
      </select>
@@ -43,7 +51,9 @@
      <select id="nivel_options">
      </select>
     </form>
+-->
    </div>
+
 
    <div id="fecha_options" style="position:absolute;width:25%;left:50%"> 
     <div style="position:absolute;width:50%;left:0%;text-align:right;">
@@ -67,22 +77,28 @@
      </form>
     </div>
 
+
    </div>
 
-   <div id="tempo_options" style="text-align:center;position:absolute;width:25%;left:75%">
+   <div id="tempo_options" style="text-align:left;position:absolute;width:25%;left:75%">
     <form action="">
-     <span id="month_text"></span><input type="radio" name="temporalidad" value="mensual" checked>
-     <span id="year_text"></span><input type="radio" name="temporalidad" value="anual"><span class="radio"></span>
+     <input type="radio" name="temporalidad" value="mensual" checked>
+     <span id="month_text"></span>
+     <br>
+     <input type="radio" name="temporalidad" value="anual">
+     <span id="year_text"></span>
     </form>
    </div>  
+
   </div>
 
  </div>
+
 </div>
 <!-- ################################# FILTROS ##################### (end)-->
 
 <!-- ################################# TABLA #####################(start) -->
-  <div id="tabla" style="width:100%;height:90%;padding-top:100px;z-index:50;">
+  <div id="tabla" style="width:100%;padding-top:100px;padding-left:10px;z-index:50;">
 
  <table style="height:100%;">
   <tbody id="tabla">
@@ -90,5 +106,6 @@
  </table>
   </div>
 <!-- ################################# TABLA #####################(end) -->
+ <div style='height:100px;width:100%'></div>
  </body>
 </html>

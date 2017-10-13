@@ -7,24 +7,116 @@ $(document).ready(function() {
    success:function(response) {
 
      $.get("prueba2.json", function(data) {
-	console.log(data);
+        data = formatoData(data);
 	Tabla(data);
-//	RenderTabla(data,segmentos,colapsables);
+        $("tbody#tabla>tbody.labels:nth-child(n+2)").click()
+
      })
 
      RenderWords(response,"esp");
      $("span.lang").on("click", function() {
 	RenderWords(response,this.id);
      });
+
+     $("button#boton").on("click",descargar);
    }
 
   });
 
 
-  // Agregar tabla.
-/*  $("div#tabla").load("produccion_cuencas.html",function() {
 
-  });*/
+function descargar() {
+  var csv = [];
+  var tbodys = document.querySelectorAll("tbody[download='1']");
+  var fecha = new Date();
+/*  var anio = fecha.getFullYear(), mes = fecha.getMonth(), dia = fecha.getDay()
+  console.log(anio,fecha.getMonth(),dia);
+  if( String(mes).length == 1 ) mes = "0" + mes;
+  if( String(dia).length == 1 ) dia = "0" + dia;
+  fecha = anio + "/" + mes + "/" + dia;
+  console.log(fecha);
+*/
+  var Header = [
+   "PRODUCCION",
+   "COMISION NACIONAL DE HIDROCARBUROS",
+   "Fecha de descarga: " + fecha.toLocaleString().replace(", "," - "),//fecha,
+   "\n",
+  ];
+
+  csv.push(Header.join("\n"));
+
+  for(var b=0; b<tbodys.length; b++) {
+    var rows = tbodys[b].querySelectorAll("tr");
+
+    if( b == 0 ) {
+      var headers = rows[0].querySelectorAll("th");
+      var row_set = []
+      for(var h = 0; h < headers.length; h++) {
+	row_set.push(headers[h].innerText);
+      }
+      csv.push(row_set.join(","));
+    };
+
+    csv.push("");
+    var parent_ = tbodys[b].parentNode.getAttribute("tag");
+    var current_ = tbodys[b].getAttribute("tag");
+    csv.push(parent_ + "  -  " + current_ + ":");
+
+    for(var r=1; r<rows.length; r++) {
+      var row_set = [];
+      var cols = rows[r].querySelectorAll("td");
+
+      for(var c = 0; c < cols.length; c++) {
+	row_set.push(cols[c].innerText);
+      }
+
+      csv.push(row_set.join(","));
+    }
+    csv.push("");
+  }
+
+  csv = csv.join("\n");
+  var csvFile = new Blob([csv], { 'type':'text/csv' });
+
+  if(window.navigator && window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveOrOpenBlob(csvFile,filename + ".csv");
+  } else {
+    var downloadLink = document.createElement("a");
+    downloadLink.download = "info.csv";
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    var s_a = document.getElementsByTagName("a");
+    for(var i=0; i<s_a.length; i++) {
+      s_a[i].parentNode.removeChild(s_a[i]);
+    }
+  }
+};
+
+
+function formatoData(data) {
+ for(var i in data) {
+   for(var j in data[i]) {
+     if(typeof(data[i][j]) == "object") {
+       data[i][j][Object.keys(data[i][j])[0]] =
+	data[i][j][Object.keys(data[i][j])[0]].replace(/(\d)-(\d)/g,"$1/$2")
+
+       data[i][j][Object.keys(data[i][j])[0]] =
+	data[i][j][Object.keys(data[i][j])[0]].replace(/-/g,"&nbsp;")
+
+       data[i][j][Object.keys(data[i][j])[0]] =
+	data[i][j][Object.keys(data[i][j])[0]].replace(/\<tr(\>\n.*)\(/g,'<tr id="dist"$1(')
+
+       data[i][j][Object.keys(data[i][j])[0]] =
+	data[i][j][Object.keys(data[i][j])[0]].replace(/¡/g,'í')
+
+     }
+   }
+ }
+ return data;
+};
+
 
 function Tabla(data) {
 
@@ -47,7 +139,7 @@ function Tabla(data) {
 	var str = "" +
 	"<tr style='width:100%'>" +
 	"<td style='width:100%'>" +
-	"<label style='cursor:pointer;width:100%'>&emsp;<span style='font-size:16px'>(-)&ensp;</span>" + selection.attr("tag") + "</label>" +
+	"<label style='cursor:pointer;width:100%'><span class='s' style='font-size:18px;font-weight:400;'>( - )&ensp;</span>" + selection.attr("tag") + "</label>" +
 	"</td>" + 
 	"</tr>" + 
 	"";
@@ -58,10 +150,9 @@ function Tabla(data) {
 	var tablas = seg.filter(function(d) { return typeof(d) == "object"; });
 
       for(var j in tablas) {
-	console.log(tablas[j]);
 	var str = "" +
 	"<thead style='width:100%'>" +
-	"<div style='cursor:pointer;width:100%'>&emsp;<span style='font-size:16px'>( - )&ensp;</span>" + Object.keys(tablas[j])[0] + "</div>" +
+	"<div style='width:100%'><label style='cursor:pointer;'>&ensp;<span class='s' style='font-weight:400;'>( - )&ensp;</span>&ensp;&ensp;" + Object.keys(tablas[j])[0] + "</label></div>" +
 	"</thead>";
 	selection.append("div")
 	  .attr("class","labels")
@@ -72,6 +163,7 @@ function Tabla(data) {
 	  .attr("class","hide")
 	  .style("width","100%")
 	  .attr("tag",Object.keys(tablas[j])[0])
+	  .attr("download","1")
 	  .attr("id","id_"+j)
 	  .html(tablas[j][Object.keys(tablas[j])[0]])
 
@@ -82,21 +174,21 @@ function Tabla(data) {
 
   d3.selectAll(".labels").on("click",function() {
     var tag = d3.select(this).attr("tag");
+    var span = d3.select($(this).find("span.s")[0]);
     var selection = d3.select("[tag='" + tag + "'].hide")
     var selection = d3.select($(this).next()[0])
-    console.log(selection);
     if(selection.style("display") == 'table-row-group') {
 	selection
 	.style("display","none")
-	console.log(selection.node())
+	span.html("( + )&ensp;")
     } else {
 	selection.style("display","table-row-group")
-	console.log(selection.node())
+	span.html("( - )&ensp;")
     }	
   });
- 
 
 };
+
 
 function RenderWords(obj,lang) {
   var titles = obj.A[lang].filtros.titles;
@@ -139,6 +231,7 @@ function RenderWords(obj,lang) {
     $("select#" + id_dates[i] + "_year").append(years_);
   }
 
+/*
   // Obtener los niveles de desagregación del tema o reporte seleccionado,
   // y colocarlos en el apartado de "Nivel".
   var niveles = options.filter(function(d) {
@@ -161,6 +254,7 @@ function RenderWords(obj,lang) {
     $("select#nivel_options").text("")
     $("div#nivel_options select").append(niveles);
   });
+*/
 
 };
 
