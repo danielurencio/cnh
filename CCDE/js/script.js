@@ -209,10 +209,18 @@ function Cubos(data) {
      var ix = $(this).index() + 1
      d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] td:nth-child("+ ix +")")
 	.style("background",color)
-//	.style("color","red");
      d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] th:nth-child("+ ix +")")
 	.style("background",color);
 
+  });
+
+  d3.selectAll('.hide tr').on('mouseover',function() {
+     var arr = [];
+     var childs = $(this).children();
+     for(var i in childs) {
+      arr.push(childs[i].innerHTML);
+     };
+     console.log(arr.filter(function(d) { return d; }));
   });
 
 
