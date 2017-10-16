@@ -119,8 +119,8 @@ function formatoData(data) {
        data[i][j][Object.keys(data[i][j])[0]] =
 	data[i][j][Object.keys(data[i][j])[0]].replace(/\<tr(\>\n.*)\(/g,'<tr id="dist"$1(')
 
-//       data[i][j][Object.keys(data[i][j])[0]] =
-//	data[i][j][Object.keys(data[i][j])[0]].replace(/\<td(\>.*[A-Z][A-Z]+?(?![0-0MMpcd]))/g,'<td id="dist_"$1')
+       data[i][j][Object.keys(data[i][j])[0]] =
+	data[i][j][Object.keys(data[i][j])[0]].replace(/\<td(\>.*(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
 
        data[i][j][Object.keys(data[i][j])[0]] =
 	data[i][j][Object.keys(data[i][j])[0]].replace(/Categor¡a/g,'')
