@@ -36,6 +36,7 @@ div#tema_options>button {
  font-family:"Open Sans";
  border: 1px solid black;
  background: white;
+ font-size:11px;
 }
 
 div#tema_options>button#on {
@@ -105,6 +106,9 @@ td:nth-child(n+2),th:nth-child(n+2) {
  word-wrap:break-word;
 }
 
+td:nth-child(2),th:nth-child(2) {
+ border-left:none;
+}
 
 .hide>div {
  text-align:left;
