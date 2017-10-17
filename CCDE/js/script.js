@@ -15,11 +15,12 @@ $.get("blueprints.json",function(response) {
     $("tbody#tabla").html("")
 
     $.get(tag + ".json", function(data) {
+      console.log(data);
        data = formatoData(data);
        Cubos(data);
        $("tbody#tabla>tbody.labels:nth-child(n+2)").click()
        if(tag == "campos") d3.selectAll("#dist").attr("id",null);
-    })
+    });
     
   });
 
@@ -36,7 +37,7 @@ $.get("blueprints.json",function(response) {
 
      $("button#boton").on("click",descargar);
 
-})
+});
 //   }
 
 //  });
@@ -175,6 +176,7 @@ function Cubos(data) {
 	  .attr("tag",Object.keys(tablas[j])[0])
 	  .attr("id","id_"+j)
 	  .html(str);
+
 	selection.append("tbody")
 	  .attr("class","hide")
 	  .style("width","100%")
@@ -214,15 +216,6 @@ function Cubos(data) {
 
   });
 
-  d3.selectAll('.hide tr').on('mouseover',function() {
-     var arr = [];
-     var childs = $(this).children();
-     for(var i in childs) {
-      arr.push(childs[i].innerHTML);
-     };
-     console.log(arr.filter(function(d) { return d; }));
-  });
-
 
   d3.selectAll(".hide td:not(:first-child)").on("mouseout",function() {
      var grand_parent = $(this).parent().parent().parent().attr("tag");
@@ -234,6 +227,22 @@ function Cubos(data) {
 	.style("background","transparent");
 
   });
+
+    var cubos = document.querySelectorAll("tbody.hide>tbody.hide");
+
+    for(var c in cubos) {
+      if(cubos[c].nodeName == "TBODY") {
+	var parent_tag = cubos[c].parentNode.getAttribute("tag");
+	var this_tag = cubos[c].getAttribute("tag");
+
+	var cubo_td = "tbody.hide[tag='"+ parent_tag +"']>tbody.hide[tag='"+ this_tag +"']>tr>td:first-child";
+	var cubo_th = "tbody.hide[tag='"+ parent_tag +"']>tbody.hide[tag='"+ this_tag +"']>tr>th:first-child";
+
+	$("<td><input type='checkbox'></input></td>").insertAfter(cubo_th)
+	$("<td><input type='checkbox'></input></td>").insertAfter(cubo_td)
+      };
+    }
+
 
 };
 
