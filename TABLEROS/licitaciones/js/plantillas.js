@@ -1542,6 +1542,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
    areaNoAdj = 0;
   };
 
+
   var inv_pmt = FILTRO1.map(function(d) { return d.PMT_TOTAL; }).reduce(SUM);
   var area = FILTRO1.map(function(d) { return d.AREA; }).reduce(SUM);
   var bloquesAdjudicados = FILTRO2.filter(function(d) {
@@ -1579,7 +1580,6 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
     cuentaOfertas.push(val.length);
   };
   ofertasValidas = d3.mean(cuentaOfertas).toFixed(1);
-
 
   pre = [
    { 'key':'Empresas participantes', 'val':empresas_participantes },
