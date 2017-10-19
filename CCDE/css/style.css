@@ -4,6 +4,7 @@
  --titulos:rgb(49,114,86);
  --filasYcols:rgba(82,191,144,0.15);
  --resaltar:rgb(82,91,144);
+ --resaltarFilas:rgba(73,171,129,0.35);
  --subtitulos:rgb(73,171,129);
  --temas:rgb(73,171,129);
 }
@@ -132,10 +133,22 @@ label:hover {
 /* background:var(--filasYcols);*/
 }
 
-.hide td:hover:not(:first-child) {
+.labels:hover {
+  color:var(--resaltar);
+  background:var(--resaltarFilas);
+  cursor:pointer;
+}
+
+.hide td:hover:not(:first-child):not(#p) {
   font-size:15px;
   cursor:default;
   font-weight:800;
+}
+
+td#p {
+ font-size:9px;
+ font-weight:700;
+ border-bottom: 1px solid lightGray;
 }
 
 .hide td:not(:frist-chid) {

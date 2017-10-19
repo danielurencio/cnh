@@ -42,7 +42,19 @@ $.get("blueprints.json",function(response) {
 
 //  });
 
+function descargar_selection() {
+  var css_selection = "input[type='checkbox']:checked:not(#principal)";
+  var checked = document.querySelectorAll(css_selection);
+  var rows = [];
 
+  for(var i in checked) {
+    if(checked[i].type == "checkbox") {
+      rows.push(checked[i].parentNode.parentNode);
+    }
+  };
+
+  console.log(rows);
+}
 
 function descargar() {
   var csv = [];
@@ -220,10 +232,14 @@ function Cubos(data) {
   d3.selectAll(".hide td:not(:first-child)").on("mouseout",function() {
      var grand_parent = $(this).parent().parent().parent().attr("tag");
      var parent = $(this).parent().parent().attr("tag");
-     var ix = $(this).index() + 1
-     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] td:nth-child("+ ix +")")
-	.style("background","transparent")
-     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] th:nth-child("+ ix +")")
+     var ix = $(this).index() + 1;
+
+     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] "+
+	"td:nth-child("+ ix +")")
+	.style("background","transparent");
+
+     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] "+
+	"th:nth-child("+ ix +")")
 	.style("background","transparent");
 
   });
@@ -235,15 +251,36 @@ function Cubos(data) {
 	var parent_tag = cubos[c].parentNode.getAttribute("tag");
 	var this_tag = cubos[c].getAttribute("tag");
 
-	var cubo_td = "tbody.hide[tag='"+ parent_tag +"']>tbody.hide[tag='"+ this_tag +"']>tr>td:first-child";
-	var cubo_th = "tbody.hide[tag='"+ parent_tag +"']>tbody.hide[tag='"+ this_tag +"']>tr>th:first-child";
+	var cubo_td = "tbody.hide[tag='"+ parent_tag +"']>"+
+	  "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child";
+	var cubo_th = "tbody.hide[tag='"+ parent_tag +"']>"+
+	  "tbody.hide[tag='"+ this_tag +"']>tr>th:first-child";
 
-	$("<td><input type='checkbox'></input></td>").insertAfter(cubo_th)
-	$("<td><input type='checkbox'></input></td>").insertAfter(cubo_td)
+	$("<td id='p'>Todos:<input id='principal' type='checkbox'></input></td>")
+	  .insertAfter(cubo_th);
+	$("<td><input type='checkbox'></input></td>")
+	  .insertAfter(cubo_td);
       };
     }
 
+    $("input#principal").on("click",function() {
+      var grandparent_tbody = this.parentNode.parentNode.parentNode.parentNode
+	.getAttribute("tag");
 
+      var parent_tbody = this.parentNode.parentNode.parentNode
+	.getAttribute("tag");
+
+      var child_boxes_str = "tbody[tag='"+ grandparent_tbody +"']>tbody[tag='"+ 
+	parent_tbody +"']>tr>td>input";
+
+      $(child_boxes_str).prop("checked",$(this).prop("checked"))
+	
+    });
+
+
+    $("button#selection").on("click",function() {
+	descargar_selection();
+    });
 };
 
 
