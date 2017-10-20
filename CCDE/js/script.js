@@ -15,7 +15,6 @@ $.get("blueprints.json",function(response) {
     $("tbody#tabla").html("")
 
     $.get(tag + ".json", function(data) {
-      console.log(data);
        data = formatoData(data);
        Cubos(data);
        $("tbody#tabla>tbody.labels:nth-child(n+2)").click()
@@ -35,25 +34,184 @@ $.get("blueprints.json",function(response) {
 	RenderWords(response,this.id);
      });
 
-     $("button#boton").on("click",descargar);
+//     $("button#boton").on("click",descargar);
+
+     $("button#selection").on("click",function() {
+       var series = obtener_series();
+
+       if(series && series.length == 0) {
+	 alert("Seleccione alguna serie.");
+       } else { if(series) descargar_selection(series); }
+
+     });
 
 });
 //   }
 
 //  });
 
-function descargar_selection() {
+
+function descargar_selection(series) {
+  var chunk = [];
+
+  var fecha = new Date();
+  var Header = [
+   "PRODUCCION",
+   "COMISION NACIONAL DE HIDROCARBUROS",
+   "Fecha de descarga: " + fecha.toLocaleString().replace(", "," - "),
+   "\n",
+  ];
+
+  chunk.push(Header.join("\n"));
+  chunk.push(",,");
+
+  chunk.push(",,,," + fechas_())
+  var familias = _.uniq( series.map(function(d) { return d.familia; }) );
+
+  familias.forEach(function(f) {
+    var pieces = [];
+    chunk.push(f)
+    var familia = series.filter(function(d) { return d.familia == f; });
+    var subfamilias = _.uniq( familia.map(function(d) { return d.subfamilia; }) );
+    
+    subfamilias.forEach(function(sf) {
+      chunk.push("," + sf);
+      var subfamilia = familia.filter(function(ff) {
+	return ff.subfamilia == sf;
+      });
+     
+      var tema = ''; 
+      subfamilia.forEach(function(ss) {
+	if( tema != ss.tema ) {
+	  tema = ss.tema;
+	  chunk.push(",," + tema);
+	}
+	var subtema = ss.subtema;
+	var serie_ = ss.serie.join(",").replace(/NaN/g,"");
+	if( subtema != "" ) chunk.push(",,," + subtema);
+	chunk.push(",,,," + serie_);
+      });
+
+    });
+    chunk.push(",,");
+    chunk.push(",,");
+
+  });
+
+  chunk = chunk.join("\n").toUpperCase();
+  chunk = chunk.replace(/Á/g,"A");
+  chunk = chunk.replace(/É/g,"E");
+  chunk = chunk.replace(/Í/g,"I");
+  chunk = chunk.replace(/Ó/g,"O");
+  chunk = chunk.replace(/Ú/g,"U");
+
+  var csvFile = new Blob([chunk], { 'type':'text/csv' });
+
+  if(window.navigator && window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveOrOpenBlob(csvFile,filename + ".csv");
+  } else {
+    var downloadLink = document.createElement("a");
+    downloadLink.download = "info.csv";
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    var s_a = document.getElementsByTagName("a");
+    for(var i=0; i<s_a.length; i++) {
+      s_a[i].parentNode.removeChild(s_a[i]);
+    }
+  }
+
+};
+
+
+function fechas_() {
+  var header = document.querySelector("tbody.hide>tbody.hide>tr")
+	.querySelectorAll("th");
+
+  var header_ = [];
+  for(var i in header) {
+    if(header[i].nodeName == "TH") header_.push(header[i].innerHTML);
+  };
+
+  header_ = header_.join(",").replace(/\s&nbsp;/g,"-");
+  header_ = header_.replace(/^,/g,"");
+
+  return header_;
+};
+
+function obtener_series() {
   var css_selection = "input[type='checkbox']:checked:not(#principal)";
   var checked = document.querySelectorAll(css_selection);
-  var rows = [];
 
-  for(var i in checked) {
+  if(checked.length > 50) {
+    alert("Su consulta excede el límite de 50 series.");
+  } else {
+   var series = [];
+   for(var i in checked) {
     if(checked[i].type == "checkbox") {
-      rows.push(checked[i].parentNode.parentNode);
+
+      var row = checked[i].parentNode.parentNode;
+      var parent_ = row.parentNode;
+      var grand_parent_ = parent_.parentNode;
+      var parent_tag = parent_.getAttribute("tag");
+      var grand_parent_tag = grand_parent_.getAttribute("tag");
+
+      var obj = {};
+      obj['familia'] = grand_parent_tag;
+      obj['subfamilia'] = parent_tag;
+
+      var row_set = [];
+      var cells = row.querySelectorAll("td:not(#n)");
+      var first_cell = cells[0].innerHTML;
+      first_cell = first_cell.replace(/&[a-z;\s]*/g,"");
+      first_cell = first_cell.replace(/^\s/g,"");
+
+      if(row.getAttribute('id')) {
+	obj['tema'] = first_cell;
+	obj['subtema'] = '';
+      } else {
+
+	obj['subtema'] = first_cell;
+	var ix = $(row).index();
+	var cond = false;
+
+	while(!cond) {
+	  var s = "tbody[tag='" + grand_parent_tag + "']>" +
+	   "tbody[tag='" + parent_tag + "']" +
+	   ">tr:nth-child(" + ix + ")";
+
+	  var dist = $(s).attr('id');
+	  var dist_ = $(s)[0].querySelector("td:first-child").getAttribute("id");
+
+	  if( dist || dist_ ) {
+	    var tema = $(s)[0].querySelector("td:first-child").innerHTML;
+	    tema = tema.replace(/&[a-z;\s]*/g,"");
+	    tema = tema.replace(/^\s/g,"");
+	    obj["tema"] = tema;
+	    cond = true;
+	  }
+	  ix -= 1;
+        }
+
+      };
+
+      for(var j=1; j<cells.length; j++) {
+	if(cells[j].nodeName == "TD") {
+	  var cell_content = cells[j].innerHTML;
+	  cell_content = +cell_content.replace(/,/g,"");
+	  row_set.push(cell_content);
+	}
+      };
+
+      obj["serie"] = row_set;
+      series.push(obj);
     }
   };
 
-  console.log(rows);
+  return series;
+ }
+
 }
 
 function descargar() {
@@ -63,7 +221,7 @@ function descargar() {
   var Header = [
    "PRODUCCION",
    "COMISION NACIONAL DE HIDROCARBUROS",
-   "Fecha de descarga: " + fecha.toLocaleString().replace(", "," - "),//fecha,
+   "Fecha de descarga: " + fecha.toLocaleString().replace(", "," - "),
    "\n",
   ];
 
@@ -252,13 +410,13 @@ function Cubos(data) {
 	var this_tag = cubos[c].getAttribute("tag");
 
 	var cubo_td = "tbody.hide[tag='"+ parent_tag +"']>"+
-	  "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child";
+	  "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child:not(#dist_)";
 	var cubo_th = "tbody.hide[tag='"+ parent_tag +"']>"+
 	  "tbody.hide[tag='"+ this_tag +"']>tr>th:first-child";
 
 	$("<td id='p'>Todos:<input id='principal' type='checkbox'></input></td>")
 	  .insertAfter(cubo_th);
-	$("<td><input type='checkbox'></input></td>")
+	$("<td id='n'><input type='checkbox'></input></td>")
 	  .insertAfter(cubo_td);
       };
     }
@@ -277,10 +435,6 @@ function Cubos(data) {
 	
     });
 
-
-    $("button#selection").on("click",function() {
-	descargar_selection();
-    });
 };
 
 
