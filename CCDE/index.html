@@ -7,12 +7,15 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="http://underscorejs.org/underscore-min.js"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/series-label.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
   <script src="js/script.js"></script>
  </head>
  <body>
 
 <!-- ################################# FILTROS ################### (start) -->
-<div id="filtros" style="width:100%;padding-top:0%;height:90px;position:fixed;background:white;border-bottom-style:solid;border-bottom-width:1px">
+<div id="filtros" style="width:100%;padding-top:0%;height:90px;position:fixed;background:white;border-bottom-style:solid;border-bottom-width:1px;z-index:50;">
 
 <div style="padding-top:0px;padding-bottom:0px;text-align:right;width:100%;font-weight:700;color:rgb(13,180,190);font-size:10px;z-index:50;position:fixed;" id=lang>
   <span id="esp" class="lang" style="cursor:pointer;">Español</span>
@@ -83,7 +86,7 @@
 
 </div>
 <!-- ################################# FILTROS ##################### (end)-->
-  <div style="text-align:left;width:100%;height:20px;top:90px;left:5px;position:fixed;background:white;padding-top:15px;padding-left:215px;z-index:0;border-top:1px solid black;padding-bottom:5px;">
+  <div style="text-align:left;width:100%;height:20px;top:90px;left:5px;position:fixed;background:white;padding-top:15px;padding-left:210px;z-index:1;border-top:1px solid black;padding-bottom:5px;">
    <button id="selection" style="font-family:'Open Sans';font-size:9px;font-weight:600">Descargar selección</button>
   </div>
 

@@ -45,10 +45,74 @@ $.get("blueprints.json",function(response) {
 
      });
 
+
 });
 //   }
 
 //  });
+
+
+function grapher(serie) {
+  var grapher_element = 
+"<div id='grapher'>" +
+  "<div id='chart'></div>" + 
+"</div>";
+
+  $('body').css("overflow","hidden");  
+  $('body').prepend(grapher_element);
+
+  $('#grapher').on("click",function() {
+    $("body").css("overflow","auto");
+    $("#grapher").remove();
+  });
+
+Highcharts.chart('chart', {
+    title: {
+        text: ''
+    },
+    subtitle: {
+        text: ''
+    },
+    yAxis: {
+        title: {
+            text: ''
+        }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            },
+            pointStart: 2010
+        }
+    },
+
+    series: [serie],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+});
+
+};
 
 
 function descargar_selection(series) {
@@ -416,8 +480,14 @@ function Cubos(data) {
 
 	$("<td id='p'>Todos:<input id='principal' type='checkbox'></input></td>")
 	  .insertAfter(cubo_th);
-	$("<td id='n'><input type='checkbox'></input></td>")
+	$("<td id='p'>Graficar:</td>")
+	  .insertAfter(cubo_th);
+
+	$("<td id='n' class='check'><input type='checkbox'></input></td>")
 	  .insertAfter(cubo_td);
+	$("<td id='n' class='graph''><img style='z-index:-1' src='img/graph.svg'></img></td>")
+	  .insertAfter(cubo_td);
+
       };
     }
 
@@ -435,6 +505,29 @@ function Cubos(data) {
 	
     });
 
+
+
+     $("td.graph>img").on("click",function() {
+	var row = this.parentNode.parentNode.querySelectorAll("td:not(#n)");
+	var values = []
+	var obj = {};
+	for(var i in row) {
+	  if(row[i].nodeName == "TD") {
+	    var val = row[i].innerHTML;
+	    if( i == 0) {
+		val = val.replace(/&[a-z;\s]*/g,"");
+		val = val.replace(/^\s/g,"");
+		obj["name"] = val;
+	    } else {
+		val = +val.replace(/,/g,"");
+		values.push(val);
+	    }
+	  }
+	};
+	obj["data"] = values;
+	console.log(obj);
+	grapher(obj);
+     });
 };
 
 
