@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:299,300i,400,400i,600,600i,700,700i,800,800i');
 
 :root {
  --titulos:rgb(49,114,86);
@@ -92,10 +92,16 @@ tbody.hide {
  display:table-row-group;
 }
 
+tbody.hide>tbody.hide {
+ overflow:scroll;
+}
+
 
 .hide>tr>td:first-child, hide>tr>th:first-child {
  text-align:left;
+ width:265px;
  min-width:265px;
+ position:absolute;
 }
 
 
@@ -110,6 +116,7 @@ td:nth-child(n+2),th:nth-child(n+2) {
 
 td:nth-child(2),th:nth-child(2) {
  border-left:none;
+ padding-left:265px;
 }
 
 .hide>div {
@@ -204,7 +211,7 @@ button.filtros {
   z-index:51;
 }
 
-#grapher>div {
+#grapher>div#chart {
  background:white;
  width:80%;
  height:80%;
@@ -214,6 +221,20 @@ button.filtros {
  left:10%;
  top:10%;
  border-radius:5px;
+}
+
+.close_chart {
+ position:absolute;
+ margin-top:5%;
+ top:-15px;
+ right:calc(10% - 15px);
+ z-index:1;
+ opacity:0.8;
+}
+
+.close_chart:hover {
+ opacity:1;
+ cursor:pointer;
 }
 
 td#n, td#p {
@@ -240,4 +261,12 @@ td.graph>img:hover {
 .highcharts-subtitle {
     font-weight: 600;
     font-family:'Open Sans';
+}
+
+.highcharts-contextmenu {
+  width: 200px;
+}
+
+.highcharts-menu-item:hover {
+ background:red;
 }

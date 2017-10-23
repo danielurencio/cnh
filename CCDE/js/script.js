@@ -55,13 +55,14 @@ $.get("blueprints.json",function(response) {
 function grapher(info) {
   var grapher_element = 
 "<div id='grapher'>" +
+  "<img class='close_chart' src='img/close.svg'></img>" +
   "<div id='chart'></div>" + 
 "</div>";
 
   $('body').css("overflow","hidden");  
   $('body').prepend(grapher_element);
 
-  $('#grapher').on("click",function() {
+  $('.close_chart').on("click",function() {
     $("body").css("overflow","auto");
     $("#grapher").remove();
   });
@@ -69,20 +70,49 @@ function grapher(info) {
   info.serie.showInLegend = false;
 
   var color = getComputedStyle(document.body).getPropertyValue('--subtitulos');
-  info.serie.color = color;
+  info.serie.color = color; console.log(color);
 
 Highcharts.chart('chart', {
+    lang: { 'img':'Descargar imagen' },
+    exporting: {
+      enabled:true,
+      buttons: {
+	contextButton: {
+	  symbolX:19,
+	  symbolY:18,
+	  symbol:'url(img/download.svg)',
+	  _titleKey:'img',
+	  menuItems:[{
+	   textKey:'downloadPNG',
+	   onclick:function() { this.exportChart() },
+	   text:"PNG"
+	  }]
+	}
+      }
+    },
     chart: {
       style: {
 	fontFamily:'Open Sans'
       }
     },
     tooltip: {
+      useHTML:true,
       backgroundColor:null,
       borderWidth:0,
       style: { fontWeight:800 },
+      formatter: function() {
+	var t =
+	"<div style='text-align:center;'>" +
+	 "<span style='font-size:11px;font-weight:800;color:"+ 'black' +";'>" +
+	  this.point.name + 
+	":</span>" +
+	  "<br>" +
+	"<span style='font-weight:300;font-size:18px;'>"
+	 + this.y.toLocaleString("es-MX") +
+	"</span></div>";
+	return t;//this.point.name + ": " + this.y;
+      }
     },
-    exporting: { enabled:false },
     credits: { enabled:false },
     title: {
         text: info.parent
@@ -98,6 +128,9 @@ Highcharts.chart('chart', {
     },
     yAxis: {
 	gridLineWidth:0,
+	labels: {
+	  formatter:function() { return this.value.toLocaleString('es-MX'); },
+	},
         title: {
 	    style: { fontWeight:700 },
             text: info.tema
@@ -549,7 +582,7 @@ function Cubos(data) {
 		obj["name"] = val;
 	    } else {
 		val = +val.replace(/,/g,"");
-		values.push([fechas[i],val]);
+		values.push([fechas[i-1],val]);
 	    }
 	  }
 	};
