@@ -195,7 +195,7 @@ function descargar_selection(series) {
   var csvFile = new Blob([chunk], { 'type':'text/csv' });
 
   if(window.navigator && window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveOrOpenBlob(csvFile,filename + ".csv");
+    window.navigator.msSaveOrOpenBlob(csvFile,"info.csv");
   } else {
     var downloadLink = document.createElement("a");
     downloadLink.download = "info.csv";
