@@ -232,3 +232,12 @@ td.graph>img:hover {
   opacity:1;
 }
 
+.highcharts-title {
+    font-weight: 800;
+    font-family:'Open Sans';
+}
+
+.highcharts-subtitle {
+    font-weight: 600;
+    font-family:'Open Sans';
+}

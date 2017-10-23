@@ -1,6 +1,5 @@
 import datetime
 import pandas as pd
-import scipy
 import requests
 import numpy as np
 

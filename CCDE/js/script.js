@@ -52,7 +52,7 @@ $.get("blueprints.json",function(response) {
 //  });
 
 
-function grapher(serie) {
+function grapher(info) {
   var grapher_element = 
 "<div id='grapher'>" +
   "<div id='chart'></div>" + 
@@ -66,35 +66,58 @@ function grapher(serie) {
     $("#grapher").remove();
   });
 
+  info.serie.showInLegend = false;
+
+  var color = getComputedStyle(document.body).getPropertyValue('--subtitulos');
+  info.serie.color = color;
+
 Highcharts.chart('chart', {
+    chart: {
+      style: {
+	fontFamily:'Open Sans'
+      }
+    },
+    tooltip: {
+      backgroundColor:null,
+      borderWidth:0,
+      style: { fontWeight:800 },
+    },
+    exporting: { enabled:false },
+    credits: { enabled:false },
     title: {
-        text: ''
+        text: info.parent
     },
     subtitle: {
-        text: ''
+        text: info.grandparent
+    },
+    xAxis: {
+      labels: {
+	enabled:true,
+	formatter: function() { return info.fechas[this.value]; }
+      }
     },
     yAxis: {
+	gridLineWidth:0,
         title: {
-            text: ''
+	    style: { fontWeight:700 },
+            text: info.tema
         }
     },
-    legend: {
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'middle'
-    },
-
     plotOptions: {
         series: {
             label: {
                 connectorAllowed: false
             },
-            pointStart: 2010
+//            pointStart: 2010,
+	    marker: {
+	      radius: 0,
+	      states: {
+		hover: {radius:5}
+	      }
+	    }
         }
     },
-
-    series: [serie],
-
+    series: [info.serie],
     responsive: {
         rules: [{
             condition: {
@@ -146,14 +169,14 @@ function descargar_selection(series) {
      
       var tema = ''; 
       subfamilia.forEach(function(ss) {
+	var serie_ = ss.serie.join(",").replace(/NaN/g,"");
 	if( tema != ss.tema ) {
 	  tema = ss.tema;
-	  chunk.push(",," + tema);
+	  chunk.push(",," + tema + ",," + serie_);
 	}
 	var subtema = ss.subtema;
-	var serie_ = ss.serie.join(",").replace(/NaN/g,"");
-	if( subtema != "" ) chunk.push(",,," + subtema);
-	chunk.push(",,,," + serie_);
+	if( subtema != "" ) chunk.push(",,," + subtema + "," + serie_);
+//	chunk.push(",,,," + serie_);
       });
 
     });
@@ -509,6 +532,12 @@ function Cubos(data) {
 
      $("td.graph>img").on("click",function() {
 	var row = this.parentNode.parentNode.querySelectorAll("td:not(#n)");
+	var grandparent_tag = this.parentNode.parentNode.parentNode.parentNode
+	  .getAttribute('tag');
+	var parent_tag = this.parentNode.parentNode.parentNode
+	  .getAttribute('tag');
+
+	var fechas = fechas_().split(",");
 	var values = []
 	var obj = {};
 	for(var i in row) {
@@ -520,13 +549,61 @@ function Cubos(data) {
 		obj["name"] = val;
 	    } else {
 		val = +val.replace(/,/g,"");
-		values.push(val);
+		values.push([fechas[i],val]);
 	    }
 	  }
 	};
+
 	obj["data"] = values;
-	console.log(obj);
-	grapher(obj);
+	var info = {
+	  'serie':obj,
+	  'grandparent':grandparent_tag,
+	  'parent':parent_tag
+	}
+
+
+	var row_ = this.parentNode.parentNode;
+
+      var cells = row_.querySelectorAll("td:not(#n)");
+      var first_cell = cells[0].innerHTML;
+      first_cell = first_cell.replace(/&[a-z;\s]*/g,"");
+      first_cell = first_cell.replace(/^\s/g,"");
+
+      if(row_.getAttribute('id')) {
+	info['tema'] = first_cell;
+	info['subtema'] = '';
+      } else {
+
+	info['subtema'] = first_cell;
+	var ix = $(row_).index();
+	var cond = false;
+
+	while(!cond) {
+	  var s = "tbody[tag='" + grandparent_tag + "']>" +
+	   "tbody[tag='" + parent_tag + "']" +
+	   ">tr:nth-child(" + ix + ")";
+
+	  var dist = $(s).attr('id');
+	  var dist_ = $(s)[0].querySelector("td:first-child").getAttribute("id");
+
+	  if( dist || dist_ ) {
+	    var tema = $(s)[0].querySelector("td:first-child").innerHTML;
+	    tema = tema.replace(/&[a-z;\s]*/g,"");
+	    tema = tema.replace(/^\s/g,"");
+	    info["tema"] = tema;
+	    if(dist_) {
+	     info["subtema"] = tema;
+	     info["tema"] = first_cell;
+	     info.serie.name = tema;
+	    }
+	    cond = true;
+	  }
+	  ix -= 1;
+        }
+       }
+	info.fechas = fechas_().split(",");
+	console.log(info);
+	grapher(info);
      });
 };
 
