@@ -17,8 +17,9 @@ $.get("blueprints.json",function(response) {
     $.get(tag + ".json", function(data) {
        data = formatoData(data);
        Cubos(data);
+
        $("tbody#tabla>tbody.labels:nth-child(n+2)").click()
-       if(tag == "campos") d3.selectAll("#dist").attr("id",null);
+       if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
     });
     
   });
@@ -70,9 +71,9 @@ function grapher(info) {
   info.serie.showInLegend = false;
 
   var color = getComputedStyle(document.body).getPropertyValue('--subtitulos');
-  info.serie.color = color; console.log(color);
+  info.serie.color = color;
 
-Highcharts.chart('chart', {
+  Highcharts.chart('chart', {
     lang: { 'img':'Descargar imagen' },
     exporting: {
       enabled:true,
@@ -166,7 +167,7 @@ Highcharts.chart('chart', {
         }]
     }
 
-});
+  });
 
 };
 
@@ -425,6 +426,9 @@ function formatoData(data) {
 
 function Cubos(data) {
   var color = getComputedStyle(document.body).getPropertyValue('--filasYcols');
+  var temas_fondo = getComputedStyle(document.body)
+	.getPropertyValue('--temas-fondo');
+
   var plus = "&plus;", minus = "&ndash;";
 
   d3.select("tbody#tabla").selectAll("tbody")
@@ -638,6 +642,12 @@ function Cubos(data) {
 	console.log(info);
 	grapher(info);
      });
+
+//    $("td#dist_").parent().attr("id","dist");
+
+    d3.selectAll("td#dist_").each(function() {
+      d3.select(this.parentNode).style("background",temas_fondo);
+    });
 };
 
 
