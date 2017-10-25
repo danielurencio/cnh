@@ -303,15 +303,6 @@ function RED(width,height) {
     var widthCintilla = d3.select("div#cintilla0")
 	.style("width").split("px")[0];
 
-    svgCintilla
-	.append("text")
-	.attr("x", widthCintilla-15)
-	.attr("y",16)
-	.attr("fill","black")
-	.attr("alignment-baseline","middle")
-	.attr("text-anchor","end")
-	.attr("font-weight",800)
-	.text("Licitaciones seleccionadas:") 
 
 /*-------------------NUEVO FILTRO------------------------------------------*/
 
