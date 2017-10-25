@@ -568,3 +568,17 @@ div#hacerClicDescarga {
 rect.highcharts-background {
  fill:transparent;
 }
+
+li#option_:hover {
+  background:orange;
+  color:white;
+  font-weight:700;
+}
+
+div#opciones:hover {
+  border:1px solid orange;
+}
+
+#opciones>span {
+  font-weight:600;
+}

@@ -501,9 +501,19 @@ function filtrarPorRonda(activacion,ronda,licRondas,data,lugar) {
 
    } else {
 /////////////////////// LUGAR NUEVO FILTRO///////////////////////////////////
-     var spans = d3.selectAll("li.search-choice>span")[0];
+//     var spans = d3.selectAll("li.search-choice>span")[0];
+     var spans = []
+     var spans_ = document.querySelectorAll('li#option_>input[type="checkbox"]:checked');
+     for(var i in spans_) {
+	if(spans_[i].nodeName == 'INPUT') {
+	  var a = spans_[i].parentNode.innerText;
+        a = "R" + a.split(" - ")[0].split(" ")[1] + "." +
+	  a.split(" - ")[1].split(" ")[1];
+	  spans.push(a)
+	}
+     }
      for(var i=0; i<spans.length; i++) {
-       var span = spans[i].innerText;
+       var span = spans[i]//.innerText;
        var r = span.split(".")[0].split("R")[1];
        var l = span.split(".")[1];
 
@@ -698,14 +708,76 @@ var coco =[]
 };
 
 function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
-  var nuevoFiltro = d3.select("[class='chosen-container chosen-container-multi']");
   var seleccionados = [];
+
+    $("._todos_").on("click",function() {
+      $("li#option_>input[type='checkbox']")
+	.prop("checked",$(this).prop("checked"));
+
+	select_checkboxes();
+    });
+
+   $("input[type='checkbox']:not(._todos_)").on("click",select_checkboxes)
+
+  function select_checkboxes() {
+    var chosen = [];
+
+    var sel = document.querySelectorAll("li#option_>input[type='checkbox']:checked")
+
+    for(var i in sel) {
+      if(sel[i].nodeName == 'INPUT') {
+	var inpt = sel[i].parentNode.innerText;
+        inpt = "R" + inpt.split(" - ")[0].split(" ")[1] + "." +
+	  inpt.split(" - ")[1].split(" ")[1];
+
+	chosen.push(inpt);
+      }
+    };
+
+      let seleccionados_ = chosen.map(function(d) {
+	let s = d.split(".");
+	var ronda = s[0].split("R")[1];
+	var lic = s[1];
+
+	return  { 'ronda':ronda, 'lic':lic };
+
+      });
+
+	if(seleccionados_.length == 0) {
+	  d3.select("div#titulo").html("Seleccione una o varias licitaciones para ver el resumen.")
+	  d3.select("div#graficos").html("")
+	} else {
+          filtrarPorRonda(undefined,seleccionados_,licRondas,data);
+          resumen(data,adj,licRondas,pmts,ofertas,seleccionados_,tabla,procesos);
+	}
+
+
+    d3.select("#ch").html("Licitaciones seleccionadas: " + sel.length);
+
+   };
+
+
+  var nuevoFiltro = d3.select("[class='chosen-container chosen-container-multi']");
 
   nuevoFiltro.on("click",function() {
     var chosen_drop = d3.selectAll(".chosen-drop>ul>li");
- 
-    chosen_drop.on("click",function() {
 
+    chosen_drop.on("click",PRUEBA)
+
+    chosen_drop.on("mousedown",function() {
+	var antes = this.innerHTML;
+	chosen_drop.on("mouseup",function() {
+	 var despues = this.innerHTML;
+	 if( antes != despues ) { 
+	   setTimeout(function() {
+	    $("a.search-choice-close:not(#ok)").click()
+	   },10);
+	 }
+	});
+    });
+
+function PRUEBA() {
+      console.log(d3.select(this));
       d3.selectAll("line.link")
 	.attr("stroke-width",function(d) {
 //	  let st;
@@ -716,8 +788,10 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 
       var bts = d3.selectAll("li.search-choice>span")
 	.html(function(d,i) {
+	  $(this).next().attr("id","ok")
 	  var text;
 	  var patt = new RegExp(" - ")
+	 
 	  if(patt.test(this.innerHTML)) {
 	    var html_ = this.innerHTML.split(" - ");
 	    var ronda = html_[0].split(" ")[1];
@@ -726,14 +800,12 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	  } else {
 	    text = this.innerHTML;
 	  }
-//	  if(text == "RPEMEX.Trion") text = "PEMEX.Trion"
 	  return text;
 	});
 
-
       var sel = d3.select(this)[0][0].innerText;
 
-      sel = "R" + sel.split(" - ")[0].split(" ")[1] + "." + sel.split(" - ")[1].split(" ")[1]
+      sel = "R" + sel.split(" - ")[0].split(" ")[1] + "." + sel.split(" - ")[1].split(" ")[1];
 
       if(seleccionados.indexOf(sel) < 0) seleccionados.push(sel);
 
@@ -742,10 +814,6 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	var ronda = s[0].split("R")[1];
 	var lic = s[1];
 
-/*	let s = d.split(" - ");
-        var ronda = s[0].split(" ")[1];
-	var lic = s[1].split(" ")[1];
-*/
 	return  { 'ronda':ronda, 'lic':lic };
 
       });
@@ -795,7 +863,7 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
       });
 
 
-    });
+    }//);
 
   });
 };

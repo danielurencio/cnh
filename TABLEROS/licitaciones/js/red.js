@@ -165,8 +165,7 @@ function RED(width,height) {
   };
 //==============================================================================|
   queue()
-//    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
-    .defer(d3.csv,'csv1/tabla.csv')
+    .defer(d3.csv,'https://portaltest02.cnih.cnh.gob.mx/api/licitaciones_data.py')
     .await(getDATA);
 
   function getDATA(err,bloques_ofertas) {
@@ -206,7 +205,7 @@ function RED(width,height) {
    var asoc__ = ron_lic.indexOf("Ronda ASOCIACIÓN - Licitación ASOCIACIÓN")
    ron_lic.splice(asoc__,1)
 */
-
+/*
     d3.select("#opciones>select").selectAll("option")
      .data(ron_lic).enter()
      .append("option")
@@ -215,6 +214,66 @@ function RED(width,height) {
 
     $(".chosen-select-no-results")
      .chosen({ 'no_results_text': "Resultado no encontrado..." })
+*/
+
+  d3.select("#cintilla0>tag").style("color","black")
+
+  d3.select("#opciones").html("<span id='ch'>Seleccione una o varias licitaciones.</span>")
+
+    var opciones = d3.select("#opciones").append("div")
+	  .style("margin-top","0px")
+	  .style("display","none")
+	  .style("background-color","white")
+	  .style("opacity","0.95")
+	  .style("position","relative")
+	  .style("width","calc(100% + 1px)")
+	  .style("z-index",10000)
+	  .style("border","1px solid lightGray")
+	  .style("border-top","none")
+	  .append("ul")
+	  .style("width","100%");
+/*
+    opciones.append("li")
+	.style("background","black")
+	.html("<span style='color:white;font-weight:800;'>SELECCIONAR TODO</span><input type='checkbox' class='_todos_' style='float:right;'>")
+*/
+    opciones.selectAll("li")
+	   .data(ron_lic).enter()
+	    .append("li")
+	      .style("font-family","Open Sans")
+	      .style("width","100%")
+	      .style("cursor","default")
+	      .attr("id","option_")
+		.html(function(d) {
+		 var str=d+"<input style='float:right;' type='checkbox'></input>";
+		 return str;
+		});
+
+    $("div#opciones>div>ul").prepend("<li style='background:rgba(0,0,0,0.9);'><span style='color:white;font-weight:800;'>SELECCIONAR TODO</span><input type='checkbox' class='_todos_'; style='float:right;'></input></li>")
+
+//   $("input[type='checkbox']").on("click",function() {
+//    var li = $(this).parent().text();
+//    console.log(li);
+//   });
+
+   d3.selectAll("#option_")
+	.on("click",function() {
+//	  d3.select("#opciones").append("div").html("hola")
+	  d3.select("#opciones>div").style("display","none")
+	})
+
+   d3.select("#opciones")
+	.on("click",function() {
+	  d3.select("#opciones>div").style("display","block");
+	});
+
+    $("body *>*:not(#opciones)")
+	.on("click",function() {
+	  d3.select("#opciones>div")
+	   .style("display","none")
+	});
+
+
 
     d3.select("div[class='chosen-container chosen-container-multi']")
      .attr({
@@ -570,7 +629,7 @@ function RED(width,height) {
 var svg_canvas = d3.select("div#red")
 var red_WIDTH = +svg_canvas.style("width").split("px")[0];
 var red_HEIGHT = svg_canvas.style("height").split("px")[0];
-console.log("red_WIDTH")
+
 d3.select("svg#canvas")
   .attr("viewBox","-20 -20 " + (red_WIDTH) + " " + red_HEIGHT)
   .attr("preserveAspectRatio","xMinYMid meet")

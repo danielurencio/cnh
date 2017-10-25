@@ -739,6 +739,13 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	  .append("tr")
 	.attr("class","datosMod")
 	.attr("id","new")
+	.attr("tag",function(d) {
+	  var ganadora;
+	  if(d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ) {
+	    ganadora = "ganadora";
+	  }
+	  return ganadora;
+	})
 	  .style("color",function(d) {
 	    var color = "black";
 	    if(d.VALIDEZ == "DESECHADA") {
@@ -796,9 +803,9 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 	  if(VPO == 0) VPO = "-"
 	   
-	   var str = "<th>" + ron_lic +"</th>" +
+	   var str = "<th>" + ron_lic.replace(/[/]/g," ") +"</th>" +
 
-		     "<th>" + bloque + "</th>" +
+		     "<th>" + bloque.replace(/[/]/g," ") + "</th>" +
 //		     "<th>"+ d.HIDRO_PRINCIPAL +"</th>"+
   "<th id='licitantes' style='width:"+widLic+"; font-size:12px; padding-left:20px'>"+ nombresLics +"</th>"+
 //	"<th style='width:" + widLic + "'>"+ nombresLics +"</th>"+
@@ -1179,6 +1186,13 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 	  .append("tr")
 	.attr("class","datosMod")
 	.attr("id","new")
+	.attr("tag",function(d) {
+	  var ganadora;
+	  if(d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ) {
+	    ganadora = "ganadora";
+	  }
+	  return ganadora;
+	})
 	  .style("color",function(d) {
 	    var color;
 	    if(d.VALIDEZ == 'DESECHADA') {
@@ -1234,8 +1248,8 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 */
 	    if(VPO == 0) VPO = "-"
 	   
-	    var str = "<th>"+ ron_lic +"</th>" +
-		     "<th>" + bloque + "</th>" +
+	    var str = "<th>"+ ron_lic.replace(/[/]/g," ") +"</th>" +
+		     "<th>" + bloque.replace(/[/]/g," ") + "</th>" +
 //		     "<th>"+ HIDRO_PRINCIPAL +"</th>"+
   "<th id='licitantes' style='width:"+widLic+"; font-size:12px; padding-left:20px'>"+ nombresLics +"</th>"+
 		     "<th>"+ d.VAR_ADJ1.toLocaleString('es-MX') +"</th>" +
@@ -1542,7 +1556,6 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
    areaNoAdj = 0;
   };
 
-
   var inv_pmt = FILTRO1.map(function(d) { return d.PMT_TOTAL; }).reduce(SUM);
   var area = FILTRO1.map(function(d) { return d.AREA; }).reduce(SUM);
   var bloquesAdjudicados = FILTRO2.filter(function(d) {
@@ -1581,6 +1594,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
   };
   ofertasValidas = d3.mean(cuentaOfertas).toFixed(1);
 
+
   pre = [
    { 'key':'Empresas participantes', 'val':empresas_participantes },
    { 'key':'Empresas que adjudicaron', 'val':empresas_adj_uniq },
@@ -1609,7 +1623,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 };
 
   function descargar_CSV() {
-    var csv = ["RONDA-LICITACION,BLOQUE,LICITANTE,VARIABLE DE ADJUDICACION 1,VARIABLE DE ADJUDICACION 2,VPO,BONO (DOLARES)"];
+    var csv = ["RONDA-LICITACION,BLOQUE,LICITANTE,VARIABLE DE ADJUDICACION 1,VARIABLE DE ADJUDICACION 2,VPO,BONO (DOLARES),OFERTA GANADORA"];
     var rows = document.querySelectorAll("table tr.datosMod");
     var ronda_ = [];
 
@@ -1646,9 +1660,10 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
   
 	}
 	row.push(celda);
-	if(j == 0) { ronda_.push(celda) };
-      }
+	if(j == 0) { ronda_.push(celda); };
+      };
 
+      if( rows[i].getAttribute("tag") == "ganadora" ) row.push("SI");
       csv.push(row.join(","));
     }
     ronda_ = _.uniq(ronda_).sort().join(";").replace(/-/g,".");
