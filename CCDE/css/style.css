@@ -15,8 +15,10 @@ html,body {
  font-weight:300;
  font-size:12px;
  margin:0;
+ padding:0;
  width:100%;
  height:100%;
+ max-width:100%;
 }
 
 .lang:hover {
@@ -298,3 +300,21 @@ div.overflow {
  width:calc(100% - 400px);
  margin-left:335px;
 }
+
+.overflow::-webkit-scrollbar {
+    width: 12px;
+    height:10px;
+}
+ 
+.overflow::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 0px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+    background:rgb(230,230,230);
+}
+ 
+.overflow::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:white;
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+

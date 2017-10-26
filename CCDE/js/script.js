@@ -450,7 +450,7 @@ function Cubos(data) {
 	var str = "" +
 	"<tr style='width:100%'>" +
 	"<td style='width:100%'>" +
-	"<label style='cursor:pointer;width:100%'><span class='s' id='uno' style='font-weight:400;'>" + minus + "&ensp;</span>" + selection.attr("tag") + "</label>" +
+	"<label style='cursor:pointer;width:100%'>&ensp;<span class='s' id='uno' style='font-weight:400;'>" + minus + "&ensp;</span>" + selection.attr("tag") + "</label>" +
 	"</td>" + 
 	"</tr>" + 
 	"";
@@ -463,7 +463,7 @@ function Cubos(data) {
       for(var j in tablas) {
 	var str = "" +
 	"<thead style='width:100%'>" +
-	"<div style='width:100%'><label style='cursor:pointer;'>&ensp;<span id='dos' class='s' style='font-weight:400;'>" + minus + "&ensp;</span>&ensp;&ensp;" + Object.keys(tablas[j])[0] + "</label></div>" +
+	"<div style='width:100%'>&nbsp;&nbsp;<label style='cursor:pointer;'>&ensp;<span id='dos' class='s' style='font-weight:400;'>" + minus + "&ensp;</span>&ensp;&ensp;" + Object.keys(tablas[j])[0] + "</label></div>" +
 	"</thead>";
 	selection.append("div")
 	  .attr("class","labels")
@@ -506,27 +506,29 @@ function Cubos(data) {
   });
 
   d3.selectAll(".hide td:not(:first-child)").on("mouseover",function() {
-     var grand_parent = $(this).parent().parent().parent().attr("tag");
+     var grand_parent = $(this).parent().parent().parent()
+	.parent().parent().attr("tag");
      var parent = $(this).parent().parent().attr("tag");
      var ix = $(this).index() + 1
-     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] td:nth-child("+ ix +")")
+     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] td:nth-child("+ ix +")")
 	.style("background",color)
-     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] th:nth-child("+ ix +")")
+     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] th:nth-child("+ ix +")")
 	.style("background",color);
 
   });
 
 
   d3.selectAll(".hide td:not(:first-child)").on("mouseout",function() {
-     var grand_parent = $(this).parent().parent().parent().attr("tag");
+     var grand_parent = $(this).parent().parent().parent()
+	.parent().parent().attr("tag");
      var parent = $(this).parent().parent().attr("tag");
      var ix = $(this).index() + 1;
 
-     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] "+
+     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] "+
 	"td:nth-child("+ ix +")")
 	.style("background","transparent");
 
-     d3.selectAll("tbody[tag='" + grand_parent + "']>tbody[tag='"+parent+"'] "+
+     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] "+
 	"th:nth-child("+ ix +")")
 	.style("background","transparent");
 
