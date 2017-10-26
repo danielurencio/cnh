@@ -89,21 +89,41 @@ tr {
 }
 
 tbody.hide {
- display:table-row-group;
+ display:block;
 }
 
 tbody.hide>tbody.hide {
  overflow:scroll;
+ max-width:500px;
 }
 
 
-.hide>tr>td:first-child, hide>tr>th:first-child {
+.hide>tr>td:first-child, .hide>tr>th:first-child {
  text-align:left;
- width:265px;
- min-width:265px;
+ width:335px;
  position:absolute;
+ left:0;
 }
 
+.hide>tr>td:nth-child(2), .hide>tr>th:nth-child(2) {
+ position:absolute;
+ margin-left:-70px;
+ min-width:45px;
+ width:45px;
+ border-left:1px solid lightGray;
+ margin-bottom:2px;
+}
+
+.hide>tr>td:nth-child(3), .hide>tr>th:nth-child(3) {
+ position:absolute;
+ margin-left:-40px;
+ min-width:45px;
+ width:45px;
+ border-left:none;
+ float:middle;
+ margin-bottom:2px;
+
+}
 
 td:nth-child(n+2),th:nth-child(n+2) {
  font-size:11px;
@@ -116,10 +136,10 @@ td:nth-child(n+2),th:nth-child(n+2) {
 
 td:nth-child(2),th:nth-child(2) {
  border-left:none;
- padding-left:265px;
+/* padding-left:265px;*/
 }
 
-.hide>div {
+.hide>div:not(.overflow) {
  text-align:left;
  font-weight:700;
  font-size:12px;
@@ -159,7 +179,7 @@ label:hover {
 td#p {
  font-size:9px;
  font-weight:700;
- border-bottom: 1px solid lightGray;
+ width:45px;
 }
 
 .hide td:not(:frist-chid) {
@@ -271,4 +291,10 @@ td.graph>img:hover {
 
 .highcharts-menu-item:hover {
  background:red;
+}
+
+div.overflow {
+ overflow-x:scroll;
+ width:calc(100% - 400px);
+ margin-left:335px;
 }

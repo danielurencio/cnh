@@ -247,7 +247,7 @@ function descargar_selection(series) {
 
 
 function fechas_() {
-  var header = document.querySelector("tbody.hide>tbody.hide>tr")
+  var header = document.querySelector("tbody.hide>div>table>tbody.hide>tr")
 	.querySelectorAll("th");
 
   var header_ = [];
@@ -274,7 +274,7 @@ function obtener_series() {
 
       var row = checked[i].parentNode.parentNode;
       var parent_ = row.parentNode;
-      var grand_parent_ = parent_.parentNode;
+      var grand_parent_ = parent_.parentNode.parentNode.parentNode;
       var parent_tag = parent_.getAttribute("tag");
       var grand_parent_tag = grand_parent_.getAttribute("tag");
 
@@ -298,7 +298,7 @@ function obtener_series() {
 	var cond = false;
 
 	while(!cond) {
-	  var s = "tbody[tag='" + grand_parent_tag + "']>" +
+	  var s = "tbody[tag='" + grand_parent_tag + "']>div>table>" +
 	   "tbody[tag='" + parent_tag + "']" +
 	   ">tr:nth-child(" + ix + ")";
 
@@ -471,9 +471,15 @@ function Cubos(data) {
 	  .attr("id","id_"+j)
 	  .html(str);
 
-	selection.append("tbody")
+	selection.append("div")
+	.attr("class","overflow")
+	.attr("tag",tag)
+	.style("display","block")
+	.style("overflow-x","scroll")
+	 .append("table")
+	 .append("tbody")
 	  .attr("class","hide")
-	  .style("width","100%")
+//	  .style("width","100%")
 	  .attr("tag",Object.keys(tablas[j])[0])
 	  .attr("download","1")
 	  .attr("id","id_"+j)
@@ -482,19 +488,19 @@ function Cubos(data) {
       }
     }
 
-  })
+  });
 
   d3.selectAll(".labels").on("click",function() {
     var tag = d3.select(this).attr("tag");
     var span = d3.select($(this).find("span.s")[0]);
     var selection = d3.select("[tag='" + tag + "'].hide")
     var selection = d3.select($(this).next()[0])
-    if(selection.style("display") == 'table-row-group') {
+    if(selection.style("display") == 'block') {
 	selection
 	.style("display","none")
 	span.html(plus + "&ensp;")
     } else {
-	selection.style("display","table-row-group")
+	selection.style("display","block")
 	span.html(minus + "&ensp;")
     }	
   });
@@ -526,21 +532,21 @@ function Cubos(data) {
 
   });
 
-    var cubos = document.querySelectorAll("tbody.hide>tbody.hide");
+    var cubos = document.querySelectorAll("tbody.hide>div>table>tbody.hide");
 
     for(var c in cubos) {
       if(cubos[c].nodeName == "TBODY") {
-	var parent_tag = cubos[c].parentNode.getAttribute("tag");
+	var parent_tag = cubos[c].parentNode.parentNode.parentNode.getAttribute("tag");
 	var this_tag = cubos[c].getAttribute("tag");
 
-	var cubo_td = "tbody.hide[tag='"+ parent_tag +"']>"+
+	var cubo_td = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
 	  "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child:not(#dist_)";
-	var cubo_th = "tbody.hide[tag='"+ parent_tag +"']>"+
+	var cubo_th = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
 	  "tbody.hide[tag='"+ this_tag +"']>tr>th:first-child";
 
-	$("<td id='p'>Todos:<input id='principal' type='checkbox'></input></td>")
+	$("<td id='p'><input id='principal' type='checkbox'></input></td>")
 	  .insertAfter(cubo_th);
-	$("<td id='p'>Graficar:</td>")
+	$("<td id='p'></td>")
 	  .insertAfter(cubo_th);
 
 	$("<td id='n' class='check'><input type='checkbox'></input></td>")
@@ -552,13 +558,14 @@ function Cubos(data) {
     }
 
     $("input#principal").on("click",function() {
-      var grandparent_tbody = this.parentNode.parentNode.parentNode.parentNode
+      var grandparent_tbody = this.parentNode.parentNode.parentNode
+	.parentNode.parentNode
 	.getAttribute("tag");
 
       var parent_tbody = this.parentNode.parentNode.parentNode
 	.getAttribute("tag");
 
-      var child_boxes_str = "tbody[tag='"+ grandparent_tbody +"']>tbody[tag='"+ 
+      var child_boxes_str = "tbody[tag='"+ grandparent_tbody +"']>div>table>tbody[tag='"+ 
 	parent_tbody +"']>tr>td>input";
 
       $(child_boxes_str).prop("checked",$(this).prop("checked"))
@@ -569,7 +576,8 @@ function Cubos(data) {
 
      $("td.graph>img").on("click",function() {
 	var row = this.parentNode.parentNode.querySelectorAll("td:not(#n)");
-	var grandparent_tag = this.parentNode.parentNode.parentNode.parentNode
+	var grandparent_tag = this.parentNode.parentNode.parentNode
+	 .parentNode.parentNode.parentNode
 	  .getAttribute('tag');
 	var parent_tag = this.parentNode.parentNode.parentNode
 	  .getAttribute('tag');
@@ -616,9 +624,11 @@ function Cubos(data) {
 	var cond = false;
 
 	while(!cond) {
-	  var s = "tbody[tag='" + grandparent_tag + "']>" +
+	  var s = "tbody[tag='" + grandparent_tag + "']>div>table>" +
 	   "tbody[tag='" + parent_tag + "']" +
 	   ">tr:nth-child(" + ix + ")";
+
+console.log($(s))
 
 	  var dist = $(s).attr('id');
 	  var dist_ = $(s)[0].querySelector("td:first-child").getAttribute("id");
@@ -639,7 +649,6 @@ function Cubos(data) {
         }
        }
 	info.fechas = fechas_().split(",");
-	console.log(info);
 	grapher(info);
      });
 
