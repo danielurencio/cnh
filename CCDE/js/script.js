@@ -8,18 +8,24 @@ $(document).ready(function() {
 $.get("blueprints.json",function(response) {
 
   $("button.filtros").click(function() {
+    $("body").css("cursor","progress")
+
     $("button.filtros").attr("id","off")
     $(this).attr("id","on")
 
     var tag = $(this).attr("tag")
     $("tbody#tabla").html("")
+       $("body").prepend("<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>")
+
+
 
     $.get(tag + ".json", function(data) {
        data = formatoData(data);
        Cubos(data);
-
        $("tbody#tabla>tbody.labels:nth-child(n+2)").click()
        if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
+       $("div.wait").remove();
+       $("body").css("cursor","default")
     });
     
   });
@@ -35,7 +41,7 @@ $.get("blueprints.json",function(response) {
 	RenderWords(response,this.id);
      });
 
-//     $("button#boton").on("click",descargar);
+     $("button#boton").on("click",descargar);
 
      $("button#selection").on("click",function() {
        var series = obtener_series();
