@@ -15,8 +15,7 @@ $.get("blueprints.json",function(response) {
 
     var tag = $(this).attr("tag")
     $("tbody#tabla").html("")
-       $("body").prepend("<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>")
-
+       $("body").prepend("<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>");
 
 
     $.get(tag + ".json", function(data) {
@@ -485,7 +484,7 @@ function Cubos(data) {
 	 .append("table")
 	 .append("tbody")
 	  .attr("class","hide")
-//	  .style("width","100%")
+	  .style("width","100%")
 	  .attr("tag",Object.keys(tablas[j])[0])
 	  .attr("download","1")
 	  .attr("id","id_"+j)
@@ -515,12 +514,14 @@ function Cubos(data) {
      var grand_parent = $(this).parent().parent().parent()
 	.parent().parent().attr("tag");
      var parent = $(this).parent().parent().attr("tag");
-     var ix = $(this).index() + 1
-     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] td:nth-child("+ ix +")")
-	.style("background",color)
-     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] th:nth-child("+ ix +")")
-	.style("background",color);
+     var ix = $(this).index() + 1;
 
+     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" +
+	parent+"'] td:nth-child("+ ix +")").style("background",color);
+     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" +
+	parent+"'] th:nth-child("+ ix +")").style("background",color);
+
+     $(this.parentNode.children[0]).css("background",color)
   });
 
 
@@ -537,6 +538,10 @@ function Cubos(data) {
      d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] "+
 	"th:nth-child("+ ix +")")
 	.style("background","transparent");
+
+     var color_1 = "transparent" // <-- IMPORTANTE.
+	
+     $(this.parentNode.children[0]).css("background",color_1)
 
   });
 

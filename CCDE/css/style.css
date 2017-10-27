@@ -166,6 +166,10 @@ label:hover {
  background:var(--temas-fondo);
 }
 
+#dist>td:first-child {
+/* background:var(--temas-fondo); /*IMPORTANTE*/
+}
+
 .labels:hover {
   color:var(--resaltar);
   background:var(--resaltarFilas);
@@ -193,6 +197,10 @@ tr#dist:hover, .hide>tr:not(:first-child):hover {
  color:black;
  font-weight:600;
 /* text-shadow:2px 0 0 black, -2px 0 0 black, 0 2px 0 black, 0 -2px 0 black, 1px 1px black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;*/
+}
+
+tr#dist>td:first-child:hover {
+ background:var(--filasYcols)
 }
 
 th {
