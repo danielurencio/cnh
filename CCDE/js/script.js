@@ -8,14 +8,15 @@ $(document).ready(function() {
 $.get("blueprints.json",function(response) {
 
   $("button.filtros").click(function() {
-    $("body").css("cursor","progress")
+    $("body").css("cursor","progress");
 
     $("button.filtros").attr("id","off")
     $(this).attr("id","on")
 
     var tag = $(this).attr("tag")
     $("tbody#tabla").html("")
-       $("body").prepend("<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>");
+    var loading_text = "<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>"
+    $("body").prepend(loading_text);
 
 
     $.get(tag + ".json", function(data) {
@@ -250,22 +251,6 @@ function descargar_selection(series) {
 
 };
 
-
-function fechas_() {
-  var header = document.querySelector("tbody.hide>div>table>tbody.hide>tr")
-	.querySelectorAll("th");
-
-  var header_ = [];
-  for(var i in header) {
-    if(header[i].nodeName == "TH") header_.push(header[i].innerHTML);
-  };
-
-  header_ = header_.join(",").replace(/\s&nbsp;/g,"-");
-  header_ = header_.replace(/^,/g,"");
-
-  return header_;
-};
-
 function obtener_series() {
   var css_selection = "input[type='checkbox']:checked:not(#principal)";
   var checked = document.querySelectorAll(css_selection);
@@ -459,7 +444,7 @@ function Cubos(data) {
 	"</td>" + 
 	"</tr>" + 
 	"";
-	selection.html(str)
+	selection.html(str);
     } else {
 	var tag = selection.attr("tag");
 	var seg = data.filter(function(d) { return d[0] == tag; })[0];
@@ -488,12 +473,20 @@ function Cubos(data) {
 	  .attr("tag",Object.keys(tablas[j])[0])
 	  .attr("download","1")
 	  .attr("id","id_"+j)
-	  .html(tablas[j][Object.keys(tablas[j])[0]] + "<br>")
+	  .html(tablas[j][Object.keys(tablas[j])[0]] + "<br>");
 
       }
     }
 
   });
+
+
+  var scroll_id_header = fechas_().replace(/-/g," ").split(",")
+	.map(function(d) { return "<th>" + d + "</th>"; });
+
+  scroll_id_header = ["<th style='min-width:333px'></th>"].concat(scroll_id_header).join("");
+  $("tr.scroll_aid_header").html(scroll_id_header)
+
 
   d3.selectAll(".labels").on("click",function() {
     var tag = d3.select(this).attr("tag");
@@ -539,7 +532,9 @@ function Cubos(data) {
 	"th:nth-child("+ ix +")")
 	.style("background","transparent");
 
-     var color_1 = "transparent" // <-- IMPORTANTE.
+     var color_cond = this.parentNode.getAttribute("id") == "dist" ||
+	this.parentNode.children[0].getAttribute("id") == "dist_";
+     var color_1 = color_cond ? temas_fondo : "transparent";
 	
      $(this.parentNode.children[0]).css("background",color_1)
 
@@ -581,7 +576,7 @@ function Cubos(data) {
       var child_boxes_str = "tbody[tag='"+ grandparent_tbody +"']>div>table>tbody[tag='"+ 
 	parent_tbody +"']>tr>td>input";
 
-      $(child_boxes_str).prop("checked",$(this).prop("checked"))
+      $(child_boxes_str).prop("checked",$(this).prop("checked"));
 	
     });
 
@@ -641,8 +636,6 @@ function Cubos(data) {
 	   "tbody[tag='" + parent_tag + "']" +
 	   ">tr:nth-child(" + ix + ")";
 
-console.log($(s))
-
 	  var dist = $(s).attr('id');
 	  var dist_ = $(s)[0].querySelector("td:first-child").getAttribute("id");
 
@@ -664,8 +657,6 @@ console.log($(s))
 	info.fechas = fechas_().split(",");
 	grapher(info);
      });
-
-//    $("td#dist_").parent().attr("id","dist");
 
     d3.selectAll("td#dist_").each(function() {
       d3.select(this.parentNode).style("background",temas_fondo);
@@ -718,3 +709,19 @@ function RenderWords(obj,lang) {
 
 
 	});
+
+
+function fechas_() {
+  var header = document.querySelector("tbody.hide>div>table>tbody.hide>tr")
+	.querySelectorAll("th");
+
+  var header_ = [];
+  for(var i in header) {
+    if(header[i].nodeName == "TH") header_.push(header[i].innerHTML);
+  };
+
+  header_ = header_.join(",").replace(/\s&nbsp;/g,"-");
+  header_ = header_.replace(/^,/g,"");
+
+  return header_;
+};
