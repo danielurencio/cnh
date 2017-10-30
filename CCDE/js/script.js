@@ -8,6 +8,9 @@ $(document).ready(function() {
 $.get("blueprints.json",function(response) {
 
   $("button.filtros").click(function() {
+    $(".scroll_aid_header th").css("color","white");
+    $(".scroll_aid_header th").css("border-color","white")
+
     $("body").css("cursor","progress");
 
     $("button.filtros").attr("id","off")
@@ -481,13 +484,6 @@ function Cubos(data) {
   });
 
 
-  var scroll_id_header = fechas_().replace(/-/g," ").split(",")
-	.map(function(d) { return "<th>" + d + "</th>"; });
-
-  scroll_id_header = ["<th style='min-width:333px'></th>"].concat(scroll_id_header).join("");
-  $("tr.scroll_aid_header").html(scroll_id_header)
-
-
   d3.selectAll(".labels").on("click",function() {
     var tag = d3.select(this).attr("tag");
     var span = d3.select($(this).find("span.s")[0]);
@@ -661,6 +657,27 @@ function Cubos(data) {
     d3.selectAll("td#dist_").each(function() {
       d3.select(this.parentNode).style("background",temas_fondo);
     });
+
+
+// ---------CALCULAR TAMAÑO DE CELDAS PARA EL ENCABEZADO-SCROLLER ----
+  var cell_Width = $("tbody.hide")[0].querySelectorAll("th")[1].offsetWidth-1;
+
+  var scroll_id_header = fechas_().replace(/-/g," ").split(",")
+	.map(function(d) { return "<th style='width:"+cell_Width+"px;min-width:"+cell_Width+"px;padding:0px'>" + d + "</th>"; });
+
+  scroll_id_header = ["<th style='min-width:333px'></th>"].concat(scroll_id_header).join("");
+  $("tr.scroll_aid_header").html(scroll_id_header)
+
+// ----------- CALCULAR TAMAÑO DE TBODY PARA EL SCROLLER_HEADER ----------
+  var tbody_Width = document.querySelectorAll("table>.hide")[0].offsetWidth;
+  $(".scroll_header").css("width","calc( 100% - "+ 65 +"px)");
+
+// -------------------- MOVER DIVS SIMULTÁNEAMENTE ------------------
+  $('div.overflow').on('scroll', function () {
+    $('div.scroll_header').scrollLeft($(this).scrollLeft());
+  });
+
+
 };
 
 
@@ -706,7 +723,6 @@ function RenderWords(obj,lang) {
   }
 
 };
-
 
 	});
 

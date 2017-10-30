@@ -133,12 +133,13 @@ tbody.hide>tbody.hide {
 
 td:nth-child(n+2),th:nth-child(n+2) {
  font-size:11px;
- min-width:42px;
- width:42px;
+ min-width:45px;
+ width:45px;
  text-align:center;
  border-left:1px solid lightGray;
  word-wrap:break-word;
 }
+
 
 td:nth-child(2),th:nth-child(2) {
  border-left:none;
@@ -225,10 +226,11 @@ tr:not(.scroll_aid_header)>th:nth-child(n+2) {
 }
 
 tr.scroll_aid_header>th:nth-child(n+2) {
+ color:white;
+ border:1px solid;
  text-align:center;
  font-size:13px;
  font-weight:800;
- border:none;
 }
 
 
