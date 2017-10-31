@@ -223,7 +223,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	  colors: ['rgba(0,0,0,0.2)','rgba(0,0,0,0.35)','rgba(8,109,115,0.7)','rgba(8,109,115,1)']
 	});
 
-	var empresas_precalif = Highcharts.chart({ 
+	var empresas_precalif = Highcharts.chart({
 	    lang: { Descargar:'Descargar' },
 	    exporting: {
 		enabled:true,
@@ -250,7 +250,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	    credits: { enabled:false },
             chart: {
                 renderTo: 'mitad1',
-                type: 'pie'
+                type: 'pie',
             },
            title: {
                 text: "CONTRATOS",
@@ -275,15 +275,15 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
             series: [{
                 name: 'Empresas',
                 data:serieEmpresas,
-                size: '90%',
+                size: '72%',
                 innerSize: '65%',
                 showInLegend:true,
                 dataLabels: {
                     enabled: true,
-		    distance:2,
+		    distance:0,
 		    style: {
 		      'font-family':'Open Sans, sans-serif',
-		      'font-size':7,
+		      'fontSize':"10px",
 		      'color':"black",
 		      'stroke-width':"0px"
 		    },
