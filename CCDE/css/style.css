@@ -327,24 +327,29 @@ td.graph>img:hover {
  background:red;
 }
 
-div.overflow {
+div.overflow, #footer {
  overflow-x:scroll;
  width:calc(100% - 400px);
  margin-left:335px;
 }
 
-.overflow::-webkit-scrollbar {
+#footer {
+  overflow-y:hidden;
+  display:none;
+}
+
+.overflow::-webkit-scrollbar, #footer::-webkit-scrollbar {
     width: 10px;
     height:10px;
 }
  
-.overflow::-webkit-scrollbar-track {
+.overflow::-webkit-scrollbar-track, #footer::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 0px rgba(0,0,0,0.3); 
     border-radius: 10px;
     background:rgb(230,230,230);
 }
  
-.overflow::-webkit-scrollbar-thumb {
+.overflow::-webkit-scrollbar-thumb, #footer::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background:white;
     -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 

@@ -63,4 +63,24 @@ window.onscroll = function() {
 	.css("background","white");
   };
 
+  if($(".overflow:visible")[0]) {
+    var table_bottom = $(".overflow:visible")[0]
+	.getBoundingClientRect().bottom;
+    var scroll_h_bottom = $(".scroll_header")[0]
+	.getBoundingClientRect().bottom; 
+
+    if(table_bottom <= scroll_h_bottom) {
+      $("tr.scroll_aid_header").attr("visible","no");
+      $("tr.scroll_aid_header>th").css("color","white");
+      $("tr.scroll_aid_header>th:not(:first-child)")
+	.css("border","1px solid white");    
+    }
+
+    if(table_bottom > window.innerHeight) {
+	$("#footer").css("display","block");
+    } else {
+	$("#footer").css("display","none");
+    }
+  }
+
 };
