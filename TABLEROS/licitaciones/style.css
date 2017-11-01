@@ -570,9 +570,14 @@ rect.highcharts-background {
 }
 
 li#option_:hover {
-  background:orange;
+  background:rgb(8,109,115);
   color:white;
   font-weight:700;
+}
+
+div#opciones {
+  background:lightGray;
+  cursor:default;
 }
 
 div#opciones:hover {

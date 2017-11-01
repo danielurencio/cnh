@@ -1,5 +1,5 @@
 function listaEmpresas(adj,data,licRondas,pmts,force,links,tabla,procesos,ofertas,OFERTAS_) {
-
+  var colorBarras = "rgb(13,180,190)";
   var lista = d3.select("#filtroEmpresas");
 
   lista.append("svg").attr("id","verLista")
@@ -75,9 +75,9 @@ function mostrarLista() {
 	      .style("border-style","solid")
 	      .style("border-width","0.5px")
 	      .style("background-color","transparent")
-	      .style("background",'url(img/glass.svg) no-repeat 1px 1px')
+	      .style("background",'url(img/glass_.svg) no-repeat 1px 1px')
 	      .style("padding-left","25px")
-	      .style("color","orange")
+	      .style("color",colorBarras)
 	      .style("width","inherit");
 
 	    lista.append("ol")
@@ -117,7 +117,7 @@ function mostrarLista() {
 	      })
 	      .on("mouseover",function(l) {
 		var sel = d3.select(this)
-		if(!sel.attr("class")) sel.style("color","orange");
+		if(!sel.attr("class")) sel.style("color",colorBarras);
 	      })
 	      .on("mouseout",function(l) {
 		var sel = d3.select(this)
@@ -133,7 +133,7 @@ function mostrarLista() {
 	        d3.select(this)
 		  .attr("class","on")
 		  .style("color","white")
-		  .style("background-color","rgba(255,165,0,0.85)");
+		  .style("background-color",colorBarras);
 		selectNODES(d);
   plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERTAS_);
   GraficosEmpresa(d.id,data,tabla,OFERTAS_,ofertas)

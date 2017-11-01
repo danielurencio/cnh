@@ -201,20 +201,6 @@ function RED(width,height) {
     };
 
    ron_lic.sort();
-/* quitar asociacion
-   var asoc__ = ron_lic.indexOf("Ronda ASOCIACIÓN - Licitación ASOCIACIÓN")
-   ron_lic.splice(asoc__,1)
-*/
-/*
-    d3.select("#opciones>select").selectAll("option")
-     .data(ron_lic).enter()
-     .append("option")
-     .attr("id",function(d) { return d; })
-    .html(function(d) { return d; }) 
-
-    $(".chosen-select-no-results")
-     .chosen({ 'no_results_text': "Resultado no encontrado..." })
-*/
 
   d3.select("#cintilla0>tag").style("color","black")
 
@@ -232,33 +218,24 @@ function RED(width,height) {
 	  .style("border-top","none")
 	  .append("ul")
 	  .style("width","100%");
-/*
-    opciones.append("li")
-	.style("background","black")
-	.html("<span style='color:white;font-weight:800;'>SELECCIONAR TODO</span><input type='checkbox' class='_todos_' style='float:right;'>")
-*/
+
     opciones.selectAll("li")
 	   .data(ron_lic).enter()
 	    .append("li")
 	      .style("font-family","Open Sans")
 	      .style("width","100%")
-	      .style("cursor","default")
+//	      .style("cursor","default")
 	      .attr("id","option_")
 		.html(function(d) {
 		 var str=d+"<input style='float:right;' type='checkbox'></input>";
 		 return str;
 		});
 
-    $("div#opciones>div>ul").prepend("<li style='background:rgba(0,0,0,0.9);'><span style='color:white;font-weight:800;'>SELECCIONAR TODO</span><input type='checkbox' class='_todos_'; style='float:right;'></input></li>")
+    $("div#opciones>div>ul").prepend("<li style='background:rgba(0,0,0,0.9);'><span style='color:white;font-weight:800;' id='_TODOS_'>SELECCIONAR TODO</span><input type='checkbox' class='_todos_'; style='float:right;'></input></li>")
 
-//   $("input[type='checkbox']").on("click",function() {
-//    var li = $(this).parent().text();
-//    console.log(li);
-//   });
 
    d3.selectAll("#option_")
 	.on("click",function() {
-//	  d3.select("#opciones").append("div").html("hola")
 	  d3.select("#opciones>div").style("display","none")
 	})
 
@@ -311,12 +288,6 @@ function RED(width,height) {
 	return d.ID_LICITANTE_ADJ == d.ID_LICITANTE_OFERTA;
      });
 
-/*
-     procesos.forEach(function(d) {
-	d.DATAROOM = +d.DATAROOM;
-	d.PRECALIF = +d.PRECALIF;
-     });
-*/
      /*PROCESAR LICITANTES POR RONDA*/
      licRondas = licRondas.filter(function(d) {
 	return d.RONDA && d.LICITACION;
@@ -325,13 +296,6 @@ function RED(width,height) {
        if(d) d.LICITANTE = d.LICITANTE.split(";")
      });
      /*-----------------------------*/
-/*
-    var continentes = data.map(function(d) { return d.CONTINENTE; })
-     .reduce(function(a,b) { 
-      if(a.indexOf(b) < 0 ) { a.push(b); }
-      return a;
-    },[]);
-*/
      /*-----------------------------*/
 
     /*¿CUÁL ES EL MÁXIMO VALOR ADJUDICADO?*/
@@ -439,11 +403,10 @@ function RED(width,height) {
 	  var nAdj = /*adj*/pmts.filter(function(a) {
 	    return a.id == d.id;
 	  })
-	  .map(function(d) { return d.pmt});//+d.ADJUDICADOS; });
+	  .map(function(d) { return d.pmt });
 
 	  function sum(a,b) { return a + b; };
 
-	 // nAdj = nAdj.length > 0 ? nAdj.reduce(sum) : 0;
 	  var radiuScale = d3.scale.linear()
 	      .domain(d3.extent(pmts,function(d) { return d.pmt; }))
 	      .range([5,35]);
@@ -492,14 +455,13 @@ function RED(width,height) {
 
 	var style = {
 	  'x':width-20,
-	  'y':25,//graphH - 40,
+	  'y':25,
 	  'font-size':16,
 	  'font-family':'Open Sans',
 	  'id':'nombreEmpresa',
 	  'font-weight':800,
 	  'text-anchor':'end',
 	  'fill':'rgb(8,109,115)',
-	 // 'transform':'rotate(90,'+(width-30)+','+0+')'
 	};
 
 	d3.select("g#red").append("text")
@@ -514,15 +476,13 @@ function RED(width,height) {
        })
        .on("click", function(d) {
 //-------INTERACCIÓN IZQUIERDA-----------------------------------------------|
-//	  d3.selectAll("circle.node")
-//	    .attr("stroke","rgb"
 
 	  d3.selectAll("#selected")
 	    .attr("id",null)
 	    .attr("stroke",function(d) {
 	      var TAG = d3.select(this).attr('noAdj');
 	      var COLOR = TAG ? "black" : null;
-	      return COLOR//'rgb(8,109,115)';
+	      return COLOR;
 	    })
 	    .attr("stroke-width",1)
 	    .attr("opacity",mainOpacity);

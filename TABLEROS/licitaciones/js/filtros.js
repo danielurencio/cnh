@@ -63,7 +63,7 @@ function Filtros(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
    .on("mouseover",function(d) {
      if(d == "Total") {
 	d3.select(this)
-	.attr("fill","orange")
+	.attr("fill","rgb(8,109,115)")
 	.style("cursor","pointer")
      }
    })
@@ -717,6 +717,20 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 	select_checkboxes();
     });
 
+    $("#_TODOS_").on("click",function() {
+      if($("._todos_").prop("checked") == false) {
+	$("._todos_").prop("checked",true)
+      } else {
+	$("._todos_").prop("checked",false)
+      };
+
+      $("li#option_>input[type='checkbox']")
+	.prop("checked",$("._todos_").prop("checked"));
+
+	select_checkboxes();
+    });
+
+
    $("input[type='checkbox']:not(._todos_)").on("click",select_checkboxes)
 
   function select_checkboxes() {
@@ -754,8 +768,41 @@ function NuevoFiltro(licRondas,data,adj,pmts,ofertas,tabla,procesos) {
 
     d3.select("#ch").html("Licitaciones seleccionadas: " + sel.length);
 
-   };
 
+   };
+////////////////////////////CHECKBOXES AL HACER CLIC//////////////////////////
+   $("li#option_").on("click", function() {
+	let sel = $(this).children()
+	if(sel.prop("checked") == true) {
+	  sel.prop("checked",false);
+	} else {
+	  sel.prop("checked",true)
+	}
+
+        var all_inputs = $("li#option_>input:not(._todos_)").length;
+        var all_checked = $("li#option_>input:checked:not(._todos_)").length;
+
+	if(all_inputs == all_checked) {
+	  $("input._todos_").prop("checked",true)
+	} else {
+	  $("input._todos_").prop("checked",false)
+	}
+
+	select_checkboxes();
+   });
+
+   $("li#option_>input").on("click", function() {
+	let sel = $(this)
+	if(sel.prop("checked") == true) {
+	  sel.prop("checked",false);
+	} else {
+	  sel.prop("checked",true)
+	}
+	select_checkboxes();
+   });
+
+
+////////////////////////////CHECKBOXES AL HACER CLIC//////////////////////////
 
   var nuevoFiltro = d3.select("[class='chosen-container chosen-container-multi']");
 
