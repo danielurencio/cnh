@@ -23,10 +23,8 @@ $.get("blueprints.json",function(response) {
 
 
     $.get(tag + ".json", function(data) {
-       $("button#principal").attr("todos","no");
-       data = formatoData(data);
        Cubos(data,tag);
-       $("tbody#tabla>tbody.labels:nth-child(1)").click();
+       $("tbody#tabla>tbody.labels").click();
        $($("tbody#tabla>tbody.hide")[0].querySelectorAll("div.labels:nth-child(1)")).click();
        if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
        $("div.wait").remove();
@@ -38,7 +36,7 @@ $.get("blueprints.json",function(response) {
      $.get("cuencas.json", function(data) {
         data = formatoData(data);
 	Cubos(data);
-        $("tbody#tabla>tbody.labels:nth-child(1)").click();
+        $("tbody#tabla>tbody.labels").click();
         $($("tbody#tabla>tbody.hide")[0].querySelectorAll("div.labels:nth-child(1)")).click();
      })
 
@@ -421,6 +419,12 @@ function formatoData(data) {
 
 
 function Cubos(data,tag) {
+///////////ESTO EVITA BUGS CON EL SCROLLER DEL HEADER/////////////////////////
+       $('.scroll_aid_header').attr("visible","no");
+       $(".scroll_header").scrollLeft(0);
+       $("button#principal").attr("todos","no");
+       data = formatoData(data);
+///////////////////////////////////////////////////////////////////////////7
   var color = getComputedStyle(document.body).getPropertyValue('--filasYcols');
   var temas_fondo = getComputedStyle(document.body)
 	.getPropertyValue('--temas-fondo');
@@ -512,6 +516,9 @@ function Cubos(data,tag) {
     }
 
     if(this.nodeName == "DIV") {
+          $(".overflow").scrollLeft(0);
+          $(".scroll_header").scrollLeft(0);
+
 	  var tbody_hide = $(this).next()[0].querySelector(".hide");
 	  var this_overflow = d3.select($(this).next()[0]);
 	  var span = d3.select($(this).find("span.s")[0]);
