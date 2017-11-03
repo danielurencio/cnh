@@ -1589,9 +1589,11 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
   for(var k in ofertasValidas) {
     var val = ofertasValidas[k].filter(function(d) {
       return d.VALIDEZ == 'VALIDA';
-    });
+    }).map(function(d) { return d.ID_LICITANTE_OFERTA; });
+    val = _.uniq(val);
     cuentaOfertas.push(val.length);
   };
+  
   ofertasValidas = d3.mean(cuentaOfertas).toFixed(1);
 
 
