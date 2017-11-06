@@ -47,13 +47,14 @@ window.onscroll = function() {
       $("tr.scroll_aid_header").attr("visible","yes");
       $("tr.scroll_aid_header>th").css("color",color);
       $("tr.scroll_aid_header>th:not(:first-child)")
-	.css("border","1px solid lightGray");
+	.css("border","1px solid lightGray")
 
     } else if(!(els.every(allTrue) && all_Equal != 0 && largeOnesCond)) {
       $("tr.scroll_aid_header").attr("visible","no");
       $("tr.scroll_aid_header>th").css("color","white");
       $("tr.scroll_aid_header>th:not(:first-child)")
-	.css("border","1px solid white");
+	.css("border","1px solid white")
+
     }
 
   }
@@ -73,7 +74,8 @@ window.onscroll = function() {
       $("tr.scroll_aid_header").attr("visible","no");
       $("tr.scroll_aid_header>th").css("color","white");
       $("tr.scroll_aid_header>th:not(:first-child)")
-	.css("border","1px solid white");    
+	.css("border","1px solid white")
+
     }
 
     if(table_bottom > window.innerHeight) {

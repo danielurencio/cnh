@@ -1,4 +1,20 @@
 $(document).ready(function() {
+///////////////prevenir zoom//////////////////////////////////////////////////
+  function zoomShortcut(e){
+    if(e.ctrlKey){             //[ctrl] está presionado?
+      event.preventDefault(); // prevenir zoom
+      if(e.deltaY<0){        // scrolling up?
+        return false;	    // hacer nada
+      }
+      if(e.deltaY>0){        //scrolling down?
+        return false;
+      }
+    }
+  };
+
+  document.body.addEventListener("wheel", zoomShortcut); //add the event
+
+///////////////prevenir zoom//////////////////////////////////////////////////
 
   // Todo ocurre aquí.
 //  $.ajax({
@@ -422,7 +438,7 @@ function Cubos(data,tag) {
 ///////////ESTO EVITA BUGS CON EL SCROLLER DEL HEADER/////////////////////////
        $('.scroll_aid_header').attr("visible","no");
        $(".scroll_header").scrollLeft(0);
-       $("#footer").scrollLeft(0);
+       $("#footer_").scrollLeft(0);
        $("button#principal").attr("todos","no");
        data = formatoData(data);
 ///////////////////////////////////////////////////////////////////////////7
@@ -788,7 +804,7 @@ function Cubos(data,tag) {
         $('div.scroll_header').scrollLeft($(this).scrollLeft());
       });
 
-      $('#footer').on('scroll', function () {
+      $('#footer_').on('scroll', function () {
         $('div.scroll_header').scrollLeft($(this).scrollLeft());
         $('div.overflow').scrollLeft($(this).scrollLeft());
       });
