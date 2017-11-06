@@ -107,7 +107,7 @@ function mostrarLista() {
 		    var currentTag = nodoActivo[0][i].getAttribute("tag");
 		    var c1 = nodoActivo[0][i].getAttribute("stroke") == actual;
 		    if(+currentTag == +d.id && c1) {
-		      color = "rgba(255,165,0,0.85)";
+		      color = colorBarras;
 		      d3.select(this).attr("class","on");
 		      d3.select(this).style("color","white");
 		    };

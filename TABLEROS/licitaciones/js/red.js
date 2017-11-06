@@ -165,7 +165,8 @@ function RED(width,height) {
   };
 //==============================================================================|
   queue()
-    .defer(d3.csv,'https://portaltest02.cnih.cnh.gob.mx/api/licitaciones_data.py')
+//    .defer(d3.csv,'https://portaltest02.cnih.cnh.gob.mx/api/licitaciones_data.py')
+    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
     .await(getDATA);
 
   function getDATA(err,bloques_ofertas) {
