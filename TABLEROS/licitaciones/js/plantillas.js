@@ -121,7 +121,6 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
     .html(plantilla);
 
 
-
 //------CÁLCULO DE SUMAS--------------//
 var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //-----------------------------------//
@@ -1625,7 +1624,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 };
 
   function descargar_CSV() {
-    var csv = ["RONDA-LICITACION,BLOQUE,LICITANTE,VARIABLE DE ADJUDICACION 1,VARIABLE DE ADJUDICACION 2,VPO,BONO (DOLARES),OFERTA GANADORA"];
+    var csv = ["RONDA-LICITACION,BLOQUE,LICITANTE,VARIABLE DE ADJUDICACION 1,VARIABLE DE ADJUDICACION 2,VPO,BONO (DOLARES),OFERTA GANADORA,OFERTA VALIDA"];
     var rows = document.querySelectorAll("table tr.datosMod");
     var ronda_ = [];
 
@@ -1664,8 +1663,20 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 	row.push(celda);
 	if(j == 0) { ronda_.push(celda); };
       };
+// ---- ¿Es la oferta ganadora? -----
+      if( rows[i].getAttribute("tag") == "ganadora" ) { 
+	row.push("SI");
+      } else { 
+	row.push("NO");
+      }
 
-      if( rows[i].getAttribute("tag") == "ganadora" ) row.push("SI");
+// ---- ¿Es la oferta válida? --
+      if( $(rows[i]).css('color') == 'rgb(128, 128, 128)' ) {
+	row.push("NO")
+      } else {
+	row.push("SI")
+      }
+
       csv.push(row.join(","));
     }
     ronda_ = _.uniq(ronda_).sort().join(";").replace(/-/g,".");
