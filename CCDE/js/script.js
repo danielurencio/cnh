@@ -1,3 +1,5 @@
+       var activacion = false;
+
 $(document).ready(function() {
 ///////////////prevenir zoom//////////////////////////////////////////////////
   function zoomShortcut(e){
@@ -15,6 +17,7 @@ $(document).ready(function() {
   document.body.addEventListener("wheel", zoomShortcut); //add the event
 
 ///////////////prevenir zoom//////////////////////////////////////////////////
+
 
   // Todo ocurre aquí.
 //  $.ajax({
@@ -39,6 +42,8 @@ $.get("blueprints.json",function(response) {
 
 
     $.get(tag + ".json", function(data) {
+       activacion = true;
+
        Cubos(data,tag);
        $("tbody#tabla>tbody.labels").click();
        $($("tbody#tabla>tbody.hide")[0].querySelectorAll("div.labels:nth-child(1)")).click();
@@ -46,6 +51,7 @@ $.get("blueprints.json",function(response) {
        $("div.wait").remove();
        $("body").css("cursor","default")
     });
+
     
   });
 
@@ -544,6 +550,9 @@ function Cubos(data,tag) {
 	    d3.select(tbody_hide).html("");
 	    span.html(plus + "&ensp;");
 	  } else {
+	    //// <--- !
+	    console.log(activacion)
+	    Espere(activacion);
 	    var parentTag = this.parentNode.getAttribute("tag");
 	    var Tag = this.getAttribute("tag");
 	    var tableData = data.filter(function(d) {
@@ -572,6 +581,25 @@ function Cubos(data,tag) {
 ///////////////////////////////////////////////////////////////////////////
 /////////////////^^ EXPANDIR PARA ESCRIBIR EN DOM ^^//////////////////////
 /////////////////////////////////////////////////////////////////////////
+
+ function Espere(activacion) {
+  if(activacion) {
+    var espere = 
+     "<div id='espere'>" +
+      "<div class='espere'>" +
+	'<div class="container">' +
+	    '<div class="helper">'+
+        	'<div class="content">'+
+            	'<p>Consultando información</p>'+
+	        '</div>'+
+	    '</div>'+
+	'</div>'+
+      "</div>" +
+     "</div>";
+
+     $('body').prepend(espere);
+  }
+ };
 
  function colcol() {
   d3.selectAll(".hide td:not(:first-child)").on("mouseover",function() {

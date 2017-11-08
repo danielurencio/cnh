@@ -86,7 +86,7 @@ function mostrarLista() {
 	    .style("padding-righ","25px")
 	    .style("padding-top","0px")
 	    .style("padding-left","30px")
-	    .style("padding-bottom","0px")
+	    .style("margin-bottom","50px")
 	    .style("list-style","decimal")
 	    .style("text-align","left")
 	    .selectAll("li")
@@ -152,7 +152,6 @@ function mostrarLista() {
 
   function hideLista(d) {
    var verLista = d3.select("svg#verLista")[0][0];
-//   d3.select("g#tituloRed_").transition().duration(800).attr("opacity",1)
 
     d3.select("div#filtroEmpresas").style("overflow","hidden")
 
