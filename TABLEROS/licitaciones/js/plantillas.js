@@ -80,7 +80,7 @@ function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
   var paisesData = [];
 
   for (var k in paises) {
-    paisesData.push([k, paises[k]]);
+    if(k != "") paisesData.push([k, paises[k]]);
   }
 
   paisesData.sort(function(a, b) {
@@ -384,126 +384,6 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
    return txt;
   });
 
-/*
-//  medio.style("background-color","rgba(0,0,0,0.1");
-
-  var figuras = medio.append("g").append("text").selectAll("tspan")
-   .data(valores).enter()
-   .append("tspan")
-   .attr({
-    'id':'numInv',
-    'opacity':0,
-    'fill':function(d,i) { 
-      var c = i == 1 ? colorBarras : 'black';
-      return c;
-    },
-    'text-anchor':'middle',
-    'alignment-baseline':'text-after-edge',
-    'x':function() {
-      var x = +d3.select('#mitad2').style("width").split("px")[0];
-      return x/2;
-    },
-    'y':function(d,i) {
-      var y = +d3.select('#mitad2').style("height").split("px")[0];
-      //var Y = i == 0 ? (y/4) : (y/4)*3;
-      var val = (y/valores.length*(i+1)) - (y/valores.length/2);
-      if(d.key == 'Inversión') val = val - 14;
-      return val;
-    },
-    'font-weight':function(d,i) {
-      var w = i == 1 ? 800 : 800;
-      return w;
-    },
-    'font-size':function(d,i) {
-      var s = i == 1 ? 30 : 22;
-      return s;
-    }
-   })
-   .html(function(d,i) {
-	var val = Number(d.val).toLocaleString('es-MX');
-	if (d.key == "Inversión") val = "$" + val;
-        return val;
-   });
-
-  figuras.transition().duration(1000).attr("opacity",1);
-
-  medio.append("g").selectAll("text")
-   .data(valores).enter()
-   .append("text")
-   .attr("tag",function(d) { return d.key; })
-   .attr({
-    'fill':function(d,i) { 
-      var c = i == 1 ? colorBarras : 'black';
-      return c;
-    },
-    'text-anchor':'middle',
-    'alignment-baseline':'text-before-edge',
-    'x':function() {
-      var x = +d3.select('#mitad2').style("width").split("px")[0];
-      return x/2;
-    },
-    'y':function(d,i) {
-      var y = +d3.select('#mitad2').style("height").split("px")[0];
-      //var Y = i == 0 ? (y/4) : (y/4)*3;
-      var val = (y/valores.length*(i+1)) - (y/valores.length/2);
-      if(d.key == 'Inversión') val = val - 18;
-      return val;
-    },
-    'font-weight':function(d,i) {
-      var w = i == 1 ? 700 : 400;
-      return w;
-    },
-    'font-size':function(d,i) {
-      var s = i == 1 ? 14 : 11;
-      return s;
-    }
-   })
-   .html(function(d,i) {
-        var val = d.key;
-        if(val == 'Inversión') val = val + "*"
-	return val;
-   });
-
-  var MM_ = d3.select('text[tag="Inversión"]')
-	.node()
-
-  var millones = d3.select(MM_.parentNode).append("text")
-  .attr("id","millones")
-  .attr("text-anchor","middle")
-  .attr('alignment-baseline','text-before-edge')
-  .attr('font-weight',600)
-  .attr('font-size',12)
-  .attr('fill',colorBarras)
-  .attr("x",function() {
-    var x = +d3.select('#mitad2').style("width").split("px")[0];
-    return x/2;
-  })
-  .attr("y",MM_.getBBox().y + MM_.getBBox().height + 2)
-  .html("(millones de dólares)");
-
-  d3.select(MM_.parentNode).append("text")
-    .attr("fill","rgb(8,109,115)")
-    .attr("alignment-baseline","text-before-edge")
-    .attr("font-family","Open Sans")
-    .attr("font-size",9)
-    .attr("y",function() {
-	var offset = millones.node().getBBox().height;
-	var y = millones.node().getBBox().y;
-	return offset + y + 3;
-    })
-    .selectAll("tspan")
-    .data([
-'* La inversión corresponde a los programas de','inversión aprobados y, en caso de no contar','con éste, a la inversión comprometida.'
-]).enter()
-    .append("tspan")
-    .attr("text-anchor","middle")
-    .attr("x",function() {
-      var x = +d3.select('#mitad2').style("width").split("px")[0];
-      return x/2;
-    })
-    .attr("dy","1.0em")
-    .text(function(d) { return d; });
-*/
 //////////////////////////////////////////////////////////////////////////
 	Highcharts.setOptions({
 	  colors: [colorBarras,'rgba(0,0,0,0.35)']
@@ -740,7 +620,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	.attr("id","new")
 	.attr("tag",function(d) {
 	  var ganadora;
-	  if(d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ) {
+	  if(d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ) { 
 	    ganadora = "ganadora";
 	  }
 	  return ganadora;
@@ -749,7 +629,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	    var color = "black";
 	    if(d.VALIDEZ == "DESECHADA") {
 		color = "gray";
-	    } else if(d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ) {
+	    } else if(d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ && d.ID_LICITANTE_ADJ != 0) {
 		color = colorBarras;
 	    } else { color = "black" };
 
@@ -757,12 +637,21 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	  })
 	  .style("font-weight",function(d) {
 	    var weight;
-	    if(d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ) {
+	    if(d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ && d.ID_LICITANTE_ADJ != 0) {
 		weight = 700;
 	    } else {
 		weight = 300
 	    };
 	    return weight;
+	  })
+	  .style("display",function(d) {
+	    var dis;
+	    if(d.ID_LICITANTE_ADJ == 0) {
+		dis = "none"
+	    } else {
+	        dis = "auto"
+	    }
+	     return dis;
 	  })
 	  .html(function(d,i) {
 
@@ -801,7 +690,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 	   var VPO = Number(d.VPO).toFixed(1);
 
 	  if(VPO == 0) VPO = "-"
-	   
+	  
 	   var str = "<th>" + ron_lic.replace(/[/]/g," ") +"</th>" +
 
 		     "<th>" + bloque.replace(/[/]/g," ") + "</th>" +
@@ -1477,7 +1366,12 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
     return a;
   },[]);
 
+  var noDesiertas = FILTRO6.filter(function(d) {
+	return d.ID_LICITANTE_ADJ != 0;
+  })
 
+//  FILTRO6 = JSON.parse(JSON.stringify(noDesiertas, null, ' '));
+  
   var ing = FILTRO6
 	.map(function(d) {
 	   return {
@@ -1536,12 +1430,17 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
   });
 
   var bloqs_ = _.uniq(FILTRO6,'ID_BLOQUE');
+  var areaAdj;
 
-  var areaAdj = bloqs_.filter(function(d) {
-    return d.ID_LICITANTE_ADJ != "";
-  })
-  .map(function(d) { return d.AREA; })
-  .reduce(function(a,b) { return +a + +b; });
+  if(bloqs_.length > 0) {
+    areaAdj = bloqs_.filter(function(d) {
+      return d.ID_LICITANTE_ADJ != "";
+    })
+    .map(function(d) { return d.AREA; })
+    .reduce(function(a,b) { return +a + +b; });
+  } else {
+    areaAdj = 0
+  }
 
   var areaNoAdj = bloqs_.filter(function(d) {
     return d.ID_LICITANTE_ADJ == "";
@@ -1561,13 +1460,21 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
     return d.ID_LICITANTE_ADJ != "";
   });
 
+  bloquesAdjudicados = bloquesAdjudicados.filter(function(d) {
+    return d.ID_LICITANTE_ADJ != 0;
+  });
+
   var empresas_adj = FILTRO6.filter(function(d) {
     return d.ID_LICITANTE_OFERTA == d.ID_LICITANTE_ADJ;
   }).map(function(e) { return e.EMPRESA; });
 
-  var empresas_adj_uniq = _.uniq(empresas_adj).length;
+  
+  var filtrarEmpresasAdj = empresas_adj.filter(function(d) { return d != 0; });
+  filtrarEmpresasAdj = _.uniq(filtrarEmpresasAdj).length
+  var empresas_adj_uniq = filtrarEmpresasAdj//_.uniq(empresas_adj).length;
 
   var EmpS_ = FILTRO6.map(function(d) { return d.EMPRESA; });
+  EmpS_ = EmpS_.filter(function(d) { return d != 0; })
   var empresas_participantes = _.uniq(EmpS_).length;
   var EmpS = _.uniq(FILTRO4,"EMPRESA");
 
@@ -1581,7 +1488,6 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
     return d.DATAROOM == 1;
   }).length;
 
-
   var ofertasValidas = _.groupBy(FILTRO6,"ID_BLOQUE");
 
   var cuentaOfertas = [];
@@ -1592,9 +1498,12 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
     val = _.uniq(val);
     cuentaOfertas.push(val.length);
   };
-  
-  ofertasValidas = d3.mean(cuentaOfertas).toFixed(1);
 
+  if(cuentaOfertas.length > 0) { 
+    ofertasValidas = d3.mean(cuentaOfertas).toFixed(1);
+  } else {
+    ofertasValidas = 0;
+  }
 
   pre = [
    { 'key':'Empresas participantes', 'val':empresas_participantes },
@@ -1620,6 +1529,14 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
    { 'key':'Promedio de ofertas por bloque', 'val':ofertasValidas }
   ];
 
+// Fix para licitaciones desiertas.
+//  if(after.filter(function(d) { return d.key == "Inversión"; })[0].val == 0) {
+//    pre[0].val = 0
+//    pre[1].val = 0
+
+//  }
+
+// Fix para licitaciones desiertas.
   return { 'pre': pre, 'after':after };
 };
 

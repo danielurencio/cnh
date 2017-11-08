@@ -365,12 +365,15 @@ function RED(width,height) {
      return a;
     },[]);
 
+//    arr = arr.filter(function(d) { return d != 0; });
     var links = Procesar.edges(sets,arr);
 
     for(var i in arr) {
       arr[i] = { 'id':arr[i] };
     }
 /*-------ANALIZAR----------------------------*/
+
+//    arr = arr.filter(function(d) { return d.id != 0; });
 
     var datos = {'nodes':arr,'links':links};
 
@@ -411,7 +414,9 @@ function RED(width,height) {
 	  var radiuScale = d3.scale.linear()
 	      .domain(d3.extent(pmts,function(d) { return d.pmt; }))
 	      .range([5,35]);
-	  return radiuScale(nAdj)
+	  var RADIOS = d.id == 0 ? 0 : radiuScale(nAdj)
+	  
+	  return RADIOS;
 	})
 	.attr("opacity",mainOpacity)
 	.attr("noAdj",function(d) {

@@ -47,6 +47,8 @@ function mostrarLista() {
        empresas[i] = doc;
       };
 
+  empresas = empresas.filter(function(d) { return d.id != 0; });
+
   var emps_ = data.map(function(d) {
     var obj = {};
     obj["EMPRESA"] = d.EMPRESA;
