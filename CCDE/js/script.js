@@ -1,6 +1,8 @@
-       var activacion = false;
+var noOfRows;
+var ScrollHeader;
 
 $(document).ready(function() {
+  ScrollHeader = $('div.scroll_header')[0].getBoundingClientRect().bottom;
 ///////////////prevenir zoom//////////////////////////////////////////////////
   function zoomShortcut(e){
     if(e.ctrlKey){             //[ctrl] está presionado?
@@ -38,17 +40,15 @@ $.get("blueprints.json",function(response) {
     var tag = $(this).attr("tag");
     $("tbody#tabla").html("");
     var loading_text = "<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>"
-    $("body").prepend(loading_text);
+//    $("body").prepend(loading_text);
 
 
     $.get(tag + ".json", function(data) {
-       activacion = true;
-
        Cubos(data,tag);
        $("tbody#tabla>tbody.labels").click();
        $($("tbody#tabla>tbody.hide")[0].querySelectorAll("div.labels:nth-child(1)")).click();
        if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
-       $("div.wait").remove();
+//       $("div.wait").remove();
        $("body").css("cursor","default")
     });
 
@@ -513,6 +513,7 @@ function Cubos(data,tag) {
 	  .attr("download","1")
 	  .attr("id","id_"+j)
 	  .html(contenido_tabla);
+
       }
     }
 
@@ -523,7 +524,8 @@ function Cubos(data,tag) {
 /////////////////////////////////////////////////////////////////////////
   
   /*Un IF-STATEMENT podría diferenciar entre niveles*/
-  d3.selectAll(".labels").on("click",function() {
+  $(".labels").on("click",function(d) {
+
     var tag = d3.select(this).attr("tag");
     var span = d3.select($(this).find("span.s")[0]);
     var selection = d3.select("[tag='" + tag + "'].hide")
@@ -551,29 +553,78 @@ function Cubos(data,tag) {
 	    span.html(plus + "&ensp;");
 	  } else {
 	    //// <--- !
-	    console.log(activacion)
-	    Espere(activacion);
-	    var parentTag = this.parentNode.getAttribute("tag");
-	    var Tag = this.getAttribute("tag");
-	    var tableData = data.filter(function(d) {
-	      return d[0] == parentTag;
-	    })[0].filter(function(d) {
-	      return typeof(d) == "object" && d[Tag];
-	    })[0][Tag];
-	    tableData = formatoData(tableData);
-	    d3.selectAll("div>label>span.s").html(plus + "&ensp;");
-	    span.html(minus + "&ensp;");
-	    d3.selectAll("div.overflow").style("display","none");
-	    d3.selectAll("div.overflow>table>tbody").html("")
-	    d3.select(tbody_hide.parentNode.parentNode)
-	     .style("display","block");
-	    d3.select(tbody_hide).html(tableData)
-	    icons();
+	    var algo = this;
+
+	    function nuevaTabla(algo,callback) {
+	      var parentTag = algo.parentNode.getAttribute("tag");
+	      var Tag = algo.getAttribute("tag");
+
+	      var tableData = data.filter(function(d) {
+	        return d[0] == parentTag;
+	      })[0].filter(function(d) {
+	        return typeof(d) == "object" && d[Tag];
+	      })[0][Tag];
+
+	      tableData = formatoData(tableData);
+
+	      var parser = new DOMParser();
+	      var docTable = parser.parseFromString(tableData,"text/html");
+	      docTable = docTable.querySelector("table");
+
+
+	      d3.selectAll("div>label>span.s").html(plus + "&ensp;");
+	      span.html(minus + "&ensp;");
+	      d3.selectAll("div.overflow").style("display","none");
+	      d3.selectAll("div.overflow>table>tbody").html("")
+
+	      var viewStart = algo.getBoundingClientRect().bottom;
+	      var viewEnd = window.innerHeight;
+	      noOfRows = Math.ceil((viewEnd-viewStart)/17)*1.5;
+
+	      var arr = docTable.querySelectorAll("tr");
+
+		for(var i=0; i<arr.length; i++) {
+		  if(i>noOfRows) {
+		    arr[i]//.remove()
+		.style.display = "none";
+		    $(arr[i]).attr("tag","ocult")
+		  }
+		}
+
+
+	      d3.select(tbody_hide.parentNode.parentNode)
+	       .style("display","block");
+	      d3.select(tbody_hide).html(docTable.innerHTML)
+
+	      icons();
 	   // seleccionarCheckboxes();
-	    enableGraphs();
-	    corregirRenglones();
-	    headerScroll();
-	    colcol();
+	      enableGraphs();
+	      corregirRenglones();
+	      headerScroll();
+	      colcol();
+	      callback();
+            };
+
+	    function mensajeEspera() {
+var start = new Date().getTime();
+
+	      $("div#espere").css("visibility","visible")
+	      window.setTimeout(function() {
+	        nuevaTabla(algo,function() {
+	          $("div#espere").css("visibility","hidden")
+var end = new Date().getTime();
+
+//	console.log(end-start);
+	
+	        });
+	      },10);
+
+	    }
+
+
+	    mensajeEspera();
+
+
 	 }
     }
 
@@ -581,25 +632,6 @@ function Cubos(data,tag) {
 ///////////////////////////////////////////////////////////////////////////
 /////////////////^^ EXPANDIR PARA ESCRIBIR EN DOM ^^//////////////////////
 /////////////////////////////////////////////////////////////////////////
-
- function Espere(activacion) {
-  if(activacion) {
-    var espere = 
-     "<div id='espere'>" +
-      "<div class='espere'>" +
-	'<div class="container">' +
-	    '<div class="helper">'+
-        	'<div class="content">'+
-            	'<p>Consultando información</p>'+
-	        '</div>'+
-	    '</div>'+
-	'</div>'+
-      "</div>" +
-     "</div>";
-
-     $('body').prepend(espere);
-  }
- };
 
  function colcol() {
   d3.selectAll(".hide td:not(:first-child)").on("mouseover",function() {
