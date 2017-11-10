@@ -587,7 +587,7 @@ function Cubos(data,tag) {
 		  if(i>noOfRows) {
 		    arr[i]//.remove()
 		.style.display = "none";
-		    $(arr[i]).attr("tag","ocult")
+		    $(arr[i]).attr("tag","ocult");
 		  }
 		}
 
@@ -646,8 +646,13 @@ var end = new Date().getTime();
        }
      }
 
+// Colorear columnas
 //     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" +
 //	parent+"'] td:nth-child("+ ix +")").style("background",color);
+
+// Colorear filas
+     $(this.parentNode.children).css("background",color);
+
      d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" +
 	parent+"'] th:nth-child("+ ix +")").style("background",color);
 
@@ -668,6 +673,11 @@ var end = new Date().getTime();
        }
      }
 
+// Descolorear filas
+     $(this.parentNode.children).css("background","transparent");
+
+
+// Desolorear columnas
 //     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] "+
 //	"td:nth-child("+ ix +")")
 //	.style("background","transparent");

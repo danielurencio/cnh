@@ -95,13 +95,16 @@ window.onscroll = function() {
     return $(this).css("display") != "none";
   });
 
-  rows_ = Array.prototype.slice.call(rows);
+  var rows_ = Array.prototype.slice.call(rows);
 
   if(rows.length > 0) {
-    var lastRow = computeLastRow()
+    var lastRow = computeLastRow()[1];
+    var firstRow = computeLastRow()[0];
+
     var htmlScroll = document.documentElement.scrollHeight;
-    console.log("last row: " + lastRow,"window: " + window.innerHeight);
-    var diff = lastRow - window.innerHeight;
+
+    var diff_first = ScrollHeader - firstRow;
+    var diff_last = lastRow - window.innerHeight;
 
 // Cuando la última fila esté por arriba del fondo de la ventana, que aparezca
 // una fila más. Es así como, naturalmente, van a ir apareciendo las nuevas filas.
@@ -111,7 +114,7 @@ window.onscroll = function() {
 	.attr("tag",null)
 	.style("display","block");
 
-      lastRow = computeLastRow();
+      lastRow = computeLastRow()[1];
     }
 
 // Si la diferencia entre la última fila y el alto de la ventana es negativa
@@ -120,15 +123,15 @@ window.onscroll = function() {
 // fluido el scroll y que para el usuario no parezca que ya llego al final de
 // la tabla.
 
-    if(diff < 0) {
-      var count = Math.abs(diff) / 17;
+    if(diff_last < 0) {
+      var count = Math.abs(diff_last) / 17;
 
       for(var i=0; i<count; i++) {
 	d3.select("tr[tag='ocult']")
 	  .attr("tag",null)
 	  .style("display","block");
       }
-      lastRow = computeLastRow();
+      lastRow = computeLastRow()[1];
     }
 
 
@@ -143,15 +146,85 @@ window.onscroll = function() {
   } // <-- If-statement para corroborar que existen filas en la pantalla!
 
 
+/////////////////////////////////////////////////////////////////////////////
+//////////// Desaparecer filas según la posición del scroll ////////////////
+///////////////////////////////////////////////////////////////////////////
+
+// Todas las filas que estén arriba de la posición n (n=500) serán ocultadas.
+  var n = 1000;
+
   var upOcult = rows.filter(function(d) {
-    return $(this)[0].getBoundingClientRect().bottom < ScrollHeader;
+    return $(this)[0].getBoundingClientRect().bottom < -n//ScrollHeader;
   });
 
-  var upOcult_ = Array.prototype.slice.call(upOcult);
-  for(var i in upOcult_) {
-    $(upOcult_[i]).css("dispaly","none");
+  d3.selectAll(upOcult)
+    .style("display","none")
+    .attr("tag","arriba");
+
+
+
+// Si la primera fila de la tabla es
+
+  var arriba = $("div.overflow tr").filter(function(d) {
+    return $(this).attr("tag") == "arriba" && $(this).css("display") == "none";
+  });
+
+  if(firstRow > -n) {
+      d3.select(arriba[arriba.length-1])
+	.attr("tag",null)
+	.style("display","block");
+
+      firstRow = computeLastRow()[0];
   }
 
+
+    if(diff_first < 0) {
+      var count_ = Math.abs(diff_first) / 17;
+
+      for(var i=1; i<=count_+1; i++) {
+	if(arriba[arriba.length - i]) {
+	  d3.select(arriba[arriba.length - i])
+	    .attr("tag",null)
+	    .style("display","block");
+        }
+      }
+      firstRow = computeLastRow()[0];
+    }
+
+
+    if(document.querySelectorAll("div.overflow").length > 0) {
+     try {
+        var tableTitle = $("div.overflow").filter(function() {
+           return $(this).css("display") == "block"
+        })[0]
+       .parentNode.children[0]
+       .getBoundingClientRect().bottom;
+
+        if(tableTitle > ScrollHeader) {
+           d3.selectAll(arriba)   // <-- No todas, sólo algunas!
+	    .attr("tag",null)
+	    .style("display","block");
+        }
+
+      } catch(err) {
+	console.log(err);
+      }
+
+    }
+
+
+// Las filtas de abajo que no estén ocultas se ocultarán cuando se haga scroll
+// hacia arriba.
+
+    var abajo = rows.filter(function() {
+      return $(this)[0].getBoundingClientRect().top > window.innerHeight
+    });
+
+    d3.selectAll(abajo)
+      .attr("tag","ocult")
+      .style("display","none")
+
+//  console.log(rows);
 };
 
 
@@ -161,7 +234,8 @@ function computeLastRow() {
   });
 
   var rows_ = Array.prototype.slice.call(rows);
+  var firstRow = rows_[1].getBoundingClientRect().bottom;
   var lastRow = rows_[rows_.length - 1].getBoundingClientRect().bottom;
 
-  return lastRow;
+  return [firstRow,lastRow];
 };
