@@ -2,6 +2,7 @@ var noOfRows;
 var ScrollHeader;
 
 $(document).ready(function() {
+  document.body.style.zoom = 1.0; 
   ScrollHeader = $('div.scroll_header')[0].getBoundingClientRect().bottom;
 ///////////////prevenir zoom//////////////////////////////////////////////////
   function zoomShortcut(e){
