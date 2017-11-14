@@ -516,6 +516,7 @@ function Cubos(data,tag) {
 	  .html(contenido_tabla);
 
       }
+
     }
 
   });
@@ -635,7 +636,9 @@ var end = new Date().getTime();
 /////////////////////////////////////////////////////////////////////////
 
  function colcol() {
+
   d3.selectAll(".hide td:not(:first-child)").on("mouseover",function() {
+
      var grand_parent = $(this).parent().parent().parent()
 	.parent().parent().attr("tag");
      var parent = $(this).parent().parent().attr("tag");
@@ -657,11 +660,17 @@ var end = new Date().getTime();
      d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" +
 	parent+"'] th:nth-child("+ ix +")").style("background",color);
 
-     $(this.parentNode.children[0]).css("background",color)
+     //$(this.parentNode.children[0]).css("background",color)
+
   });
 
 
   d3.selectAll(".hide td:not(:first-child)").on("mouseout",function() {
+     var color_cond = this.parentNode.getAttribute("id") == "dist" ||
+	this.parentNode.children[0].getAttribute("id") == "dist_";
+     var color_1 = color_cond ? temas_fondo : "transparent";
+
+
      var grand_parent = $(this).parent().parent().parent()
 	.parent().parent().attr("tag");
      var parent = $(this).parent().parent().attr("tag");
@@ -675,8 +684,9 @@ var end = new Date().getTime();
      }
 
 // Descolorear filas
-     $(this.parentNode.children).css("background","transparent");
-
+     var color_tag = $(this.parentNode).attr("color_tag");
+     var color_tag_ = color_tag ? color_tag : "transparent";
+     $(this.parentNode.children).css("background","");
 
 // Desolorear columnas
 //     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] "+
@@ -688,11 +698,12 @@ var end = new Date().getTime();
 	.style("background","transparent");
 
 
-     var color_cond = this.parentNode.getAttribute("id") == "dist" ||
-	this.parentNode.children[0].getAttribute("id") == "dist_";
-     var color_1 = color_cond ? temas_fondo : "transparent";
-	
-     $(this.parentNode.children[0]).css("background",color_1)
+     if(color_cond) {	
+       $(this.parentNode.children[0]).css("background",color_1)
+     } else {
+       $(this.parentNode.children[0]).css("background",color_tag_)
+     }
+
 
   });
 
@@ -709,6 +720,17 @@ var end = new Date().getTime();
   } else {
     $("#footer").css("display","none");
   }
+
+
+
+      var evenRows = document.querySelectorAll("div.overflow tr:nth-child(even)");
+      evenRows = $(evenRows);
+
+      evenRows.each(function() {
+	let color = $(this).css("background-color");
+	$(this).attr("color_tag",color);
+	$(this.children[0]).css("background",color)
+      });
 
 }
 //////////////////////////////////////////////////////////////////////////////

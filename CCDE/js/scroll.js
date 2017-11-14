@@ -3,7 +3,7 @@ window.onscroll = function() {
   var tr = document.querySelectorAll("tbody.hide>tr:first-child");
 
   var els = [];
-  var offset = 132-38;
+  var offset = 132-38+20;
 
   for(var i in tr) {
     if(tr[i].nodeName == "TR") {
