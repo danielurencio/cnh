@@ -20,6 +20,151 @@ $(document).ready(function() {
   document.body.addEventListener("wheel", zoomShortcut); //add the event
 
 ///////////////prevenir zoom//////////////////////////////////////////////////
+  function filtrarSeries(data) {
+    var str_;
+    function regexCheck(patt) {
+	return patt.test(str_);
+    };
+
+    var color = getComputedStyle(document.body)
+	.getPropertyValue('--subtitulos');
+    var color_ = getComputedStyle(document.body)
+	.getPropertyValue('--temas-fondo');
+
+    var data_ = JSON.parse(JSON.stringify(data));
+    var parser = new DOMParser();
+    var arr = [];
+    
+    for(var i in data_) {
+      for(var j in data_[i]) {
+	if(typeof(data_[i][j]) == 'object') {
+	  let key = Object.keys(data_[i][j])[0];
+	  data_[i][j][key] = data_[i][j][key].replace(/&....;/g,"");
+	  var tabla = parser.parseFromString(data_[i][j][key],"text/html");
+	  var rows = tabla.querySelectorAll("tr>td:first-child");
+          rows = Array.prototype.slice.call(rows);
+	  rows = rows.map(function(d) { return d.textContent; });
+	  rows.forEach(function(d) {
+	    arr.push([data_[i][0],key,d].join(">"));
+	  });
+        }
+      }
+    };
+
+
+    d3.select("input#filtroSerie").on("input",function(d) {
+      var matches = [];
+      var text = document.getElementById("filtroSerie").value.split(" ");
+
+      if(text.length > 0) {
+	var patts = []	
+	var patt = new RegExp(text,"i");
+
+	text.forEach(function(d) {
+	  var rx = new RegExp(d,"i");
+	  patts.push(rx);
+	});
+
+	matches = arr.filter(function(d) {
+	  str_ = d;
+	  return patts.every(regexCheck);
+	})
+
+	matches = matches.map(function(d) {
+	  return d.replace(/€/g," <span id='aquo'>&rsaquo;</span> ");
+	});
+
+
+	matches = matches.map(function(d) {
+	  var val = d;
+/*
+	  for(var i=0; i<patts.length; i++) {
+	    var replacement = "<span class='matching'>"
+	      +text[i]+ "</span>";
+
+	    val = val.replace(patts[i],replacement);
+	  }
+*/
+	  var text_ = new RegExp(text.join("|"),"ig");
+	  val = d.replace(text_,function(n) {
+	    return "<span class='matching'>" + n + "</span>";
+	  });
+	  
+	  return val;//d.replace(patt,replacement);
+	});
+
+
+        $("div#dropDown").css("display","block");
+
+	if(document.querySelector("div#dropDown>div")) {
+	  d3.select("div#dropDown>div").remove();
+	}
+
+	if(matches.length > 0) {
+
+	  var series = d3.select("div#dropDown")
+	   .append("div")
+	    .selectAll("li").data(matches).enter()
+	   .append("div")
+	   .html(function(d) { return /*"&bull; " +*/ d; });
+
+	  series
+	   .style("font-weight","300")
+	   .style("padding-left","20px")
+	   .style("cursor","pointer")
+	   .style("font-family","Open Sans")
+	   .on("mouseover",function() {
+	     d3.select(this)
+	      .style("color","rgb(250,250,250)")
+	      .style("font-weight","400")
+	      .style("background",color);
+
+	     var matching_child = Array.prototype.slice.call(this.children);
+
+	     matching_child = matching_child.filter(function(d) {
+		return d.getAttribute("class") == "matching";
+	     });
+
+	     $(matching_child)
+		.css("color","white");
+	   })
+	   .on("mouseout",function() {
+	     d3.select(this)
+	      .style("color","black")
+	      .style("font-weight","300")
+	      .style("background","");
+
+	     var matching_child = Array.prototype.slice.call(this.children);
+
+	     matching_child = matching_child.filter(function(d) {
+		return d.getAttribute("class") == "matching";
+	     });
+
+	     $(matching_child).css("color","");
+
+	   })
+	   .on("click",function() {
+		console.log(this);
+	   });
+	
+	} else if(matches.length == 0){
+	  d3.select("div#dropDown>div").remove();
+	}
+
+      } else {
+	d3.selectAll("div#dropDown>div").remove();
+        $("div#dropDown").css("display","none");
+      }
+
+    });
+
+    $("body *>*:not(div#dropDown)").on("click",function() {
+      d3.selectAll("div#dropDown>div").remove();
+      d3.selectAll("div#dropDown").style("display","none");
+      document.querySelector("input#filtroSerie").value = "";
+    });
+  };
+
 
 
   // Todo ocurre aquí.
@@ -50,7 +195,8 @@ $.get("blueprints.json",function(response) {
        $($("tbody#tabla>tbody.hide")[0].querySelectorAll("div.labels:nth-child(1)")).click();
        if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
 //       $("div.wait").remove();
-       $("body").css("cursor","default")
+       $("body").css("cursor","default");
+       filtrarSeries(data);
     });
 
     
@@ -61,6 +207,7 @@ $.get("blueprints.json",function(response) {
 	Cubos(data);
         $("tbody#tabla>tbody.labels").click();
         $($("tbody#tabla>tbody.hide")[0].querySelectorAll("div.labels:nth-child(1)")).click();
+	filtrarSeries(data);
      })
 
      RenderWords(response,"esp");
