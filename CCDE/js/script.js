@@ -45,7 +45,7 @@ $(document).ready(function() {
           rows = Array.prototype.slice.call(rows);
 	  rows = rows.map(function(d) { return d.textContent; });
 	  rows.forEach(function(d) {
-	    arr.push([data_[i][0],key,d].join(">"));
+	    arr.push([data_[i][0],key,d].join(" > "));
 	  });
         }
       }
@@ -68,7 +68,7 @@ $(document).ready(function() {
 	matches = arr.filter(function(d) {
 	  str_ = d;
 	  return patts.every(regexCheck);
-	})
+	});
 
 	matches = matches.map(function(d) {
 	  return d.replace(/€/g," <span id='aquo'>&rsaquo;</span> ");
@@ -77,20 +77,12 @@ $(document).ready(function() {
 
 	matches = matches.map(function(d) {
 	  var val = d;
-/*
-	  for(var i=0; i<patts.length; i++) {
-	    var replacement = "<span class='matching'>"
-	      +text[i]+ "</span>";
-
-	    val = val.replace(patts[i],replacement);
-	  }
-*/
 	  var text_ = new RegExp(text.join("|"),"ig");
 	  val = d.replace(text_,function(n) {
 	    return "<span class='matching'>" + n + "</span>";
 	  });
 	  
-	  return val;//d.replace(patt,replacement);
+	  return val;
 	});
 
 
@@ -106,7 +98,11 @@ $(document).ready(function() {
 	   .append("div")
 	    .selectAll("li").data(matches).enter()
 	   .append("div")
-	   .html(function(d) { return /*"&bull; " +*/ d; });
+	   .html(function(d) {
+		var val = d;
+//		val = val.replace(/>/g," &rsaquo; ");
+		return val;
+	   });
 
 	  series
 	   .style("font-weight","300")
@@ -144,7 +140,8 @@ $(document).ready(function() {
 
 	   })
 	   .on("click",function() {
-		console.log(this);
+	    var txt = this.textContent.split(" > ");
+	    irAserie(txt);
 	   });
 	
 	} else if(matches.length == 0){
@@ -165,6 +162,37 @@ $(document).ready(function() {
     });
   };
 
+  function irAserie(txt,callback) {
+    var titulo = txt[0];
+    var titulo_label = $("tbody.labels[tag='" + titulo + "']");
+    var titulo_hide = $("tbody.hide[tag='" + titulo + "']");
+
+    if(titulo_hide.css("display") == "none") {
+      titulo_label.click()
+    }
+
+
+    var subtitulo = txt[1];
+    var subtitulo_label = $("tbody.hide[tag='" + titulo + "']>div.labels[tag='"
+	+ subtitulo + "']");
+    var subtitulo_overflow = subtitulo_label.next()
+
+    if(subtitulo_overflow.css("display") == "none") {
+      subtitulo_label.click();
+    }
+
+    var tds = Array.prototype.slice
+	.call(document.querySelectorAll("div.overflow td:first-child"));
+
+    tds = tds.filter(function(d) {
+      return d.textContent.replace(/\s/g,"") == txt[2].replace(/\s/g,"");
+    });
+
+    console.log([txt[2]]);
+    console.log(tds);
+
+     console.log( tds[0].getBoundingClientRect() );
+  };
 
 
   // Todo ocurre aquí.
@@ -755,26 +783,15 @@ function Cubos(data,tag) {
             };
 
 	    function mensajeEspera() {
-var start = new Date().getTime();
-
 	      $("div#espere").css("visibility","visible")
 	      window.setTimeout(function() {
 	        nuevaTabla(algo,function() {
 	          $("div#espere").css("visibility","hidden")
-var end = new Date().getTime();
-
-//	console.log(end-start);
-	
 	        });
 	      },10);
-
 	    }
-
-
 	    mensajeEspera();
-
-
-	 }
+	 };
     }
 
   });
