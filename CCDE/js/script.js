@@ -358,7 +358,7 @@ $(document).ready(function() {
 //   success:function(response) {
 $.get("blueprints.json",function(response) {
 
-  $("select.filtros").click(function() {
+  $("select.filtros").change(function() {
 //    $(".scroll_aid_header th").css("color","white");
 //    $(".scroll_aid_header th").css("border-color","white")
 
