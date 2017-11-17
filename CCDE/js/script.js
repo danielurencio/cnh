@@ -162,6 +162,7 @@ $(document).ready(function() {
     });
   };
 
+
   function irAserie(txt,callback) {
     var titulo = txt[0];
     var titulo_label = $("tbody.labels[tag='" + titulo + "']");
@@ -171,29 +172,165 @@ $(document).ready(function() {
       titulo_label.click()
     }
 
-
     var subtitulo = txt[1];
     var subtitulo_label = $("tbody.hide[tag='" + titulo + "']>div.labels[tag='"
 	+ subtitulo + "']");
     var subtitulo_overflow = subtitulo_label.next()
 
     if(subtitulo_overflow.css("display") == "none") {
-      subtitulo_label.click();
+    /* Función anónima que (a) hace click en la tabla solicitada y, de manera
+       'asíncrona', (b) obtiene la celda buscada para (c) alimentarla en una
+       función que desplazará el viewport hasta encontrar la celda... */
+      (function () {
+       subtitulo_label.click(); 	    // <-- (a)
+
+       window.setTimeout(function() { /*------------------Async--*/
+	  var el_ = selected_TD(txt[2])[0]; // <-- (b)
+	  asyncScrollingSearch(el_);	    // <-- (c)
+       },10);			     /*-------------------Async--*/
+
+      })();
+
+    } else {
+      var el_ = selected_TD(txt[2])[0] 
+      asyncScrollingSearch(el_)
+//      el_.scrollIntoView();
     }
 
+  };
+
+////////////////////////////////////////////////////////////////////////
+///////// Búsqueda de celda específica a través del filtro...
+////////////////////////////////////////////////////////////////////////
+  function selected_TD(txt) {
     var tds = Array.prototype.slice
 	.call(document.querySelectorAll("div.overflow td:first-child"));
 
     tds = tds.filter(function(d) {
-      return d.textContent.replace(/\s/g,"") == txt[2].replace(/\s/g,"");
+      return d.textContent.replace(/\s/g,"") == txt.replace(/\s/g,"");
     });
 
-    console.log([txt[2]]);
-    console.log(tds);
+    return tds 
+  }
 
-     console.log( tds[0].getBoundingClientRect() );
-  };
+////////////////////////////////////////////////////////////////////////////
+//////////// Al buscar una celda, esto 'escrolea' hasta encontrarla
+/////////////////////////////////////////////////////////////////////////
+  function asyncScrollingSearch(el) {
+   var selection_ = document.querySelectorAll("td[selection]");
+   if(selection_.length > 0) {
+     $(selection_).css("border","none")
+   }
 
+   var elDisp = $(el.parentNode).css("display");
+   $(el.parentNode.children).filter(function(i,d) {
+	return i == 0 || i > 2;
+    })
+	.css("border-top","1px solid black")
+	.css("border-bottom","1px solid black")
+	.attr("selection","1");
+
+   var filas = el.parentNode.parentNode.querySelectorAll('tr');
+   var scroll_header_bottom = document.querySelector('div.scroll_header')
+	.getBoundingClientRect().bottom;
+
+   var viewP = window.innerHeight - scroll_header_bottom;
+   var fittingCells = Math.ceil(viewP / 17);
+
+   if(filas.length < fittingCells) {
+    /*Si la fila en la que está la celda no está visible, scroll hasta
+	encontrarla !! */
+      if(elDisp == 'none') {
+       console.log("tabla chica: ir a fila que no está dibujada");
+	 var ss = setInterval(function() {
+    	   window.scrollTo(0,document.body.scrollHeight);
+	   elDisp = $(el.parentNode).css("display");
+
+	   if(elDisp != "none") {
+	    clearInterval(ss);
+	   }
+	 },50);
+
+      } else {
+	console.log("tabla chica: ir a fila que ya está dibujada",elDisp);
+	var mult,elPosition;
+
+	var ss_ = setInterval(function() {
+	   elPosition = el.getBoundingClientRect().top;
+	   mult = elPosition > 300 ? 1 : -1;
+	   var f = Math.log(Math.abs(elPosition-160)) * 20
+	   console.log(f);
+    	   window.scrollBy(0,mult*f);
+	   if( elPosition-20 < window.innerHeight && elPosition > 150) {
+	    console.log(elPosition);
+	    clearInterval(ss_);
+	   }
+	},50);
+
+      }
+
+   } else {
+	console.log("TABLAS GRANDES");
+	var elLoc = $(filas).map(function(i,d) {
+	  var val = this.children[0].textContent.replace(/\s*/g,"");
+          val = val == el.textContent.replace(/\s*/g,"") ? i : null;
+	  return val;
+	})[0];
+
+        var arriba = $(filas).filter(function(i,d) {
+	  return i < elLoc - 60;
+	});
+
+        var block = $(filas).filter(function(i,d) {
+	  return i > elLoc - 60 && i < elLoc + fittingCells*1.5;
+	});
+
+	window.scrollTo(0,document.body.scrollHeight);
+
+	var elPosition = el.getBoundingClientRect().top;
+	console.log(elPosition,elLoc);
+
+	/*Si la fila está muy abajo hay q darle un empujón al scroll*/
+	if(elLoc*17 > window.innerHeight - 150) {
+	  console.log("esto sólo debe de imprimirse cuando es hacia abajo!");
+	  window.scrollTo(0,document.body.scrollHeight);
+	}
+
+	arriba.css("display","none");
+	arriba.attr("tag","arriba");
+	block.css("display","block");
+	block.css("tag",null);
+
+	var mult;
+
+	var ss_ = setInterval(function() {
+	   elPosition = el.getBoundingClientRect().top;
+	   mult = elPosition > 300 ? 1 : -1;
+	   var f = Math.log(Math.abs(elPosition-160)) * 20
+	   console.log(f);
+    	   window.scrollBy(0,mult*f);
+	   if( elPosition-20 < window.innerHeight && elPosition > 150) {
+	    console.log(elPosition);
+	    clearInterval(ss_);
+	   }
+	},50);
+
+/*
+	var ss_ = setInterval(function() {
+	   elPosition = el.getBoundingClientRect().top;
+	   mult = elPosition > 0 ? 1 : -1;
+
+    	   window.scrollBy(0,mult*20);
+
+	   if( elPosition < window.innerHeight && elPosition > 300 ) {
+	    clearInterval(ss_);
+	   }
+	},100);
+*/	
+   }
+
+  }
+/////////////////////////////////////////////////////////////////////////////
 
   // Todo ocurre aquí.
 //  $.ajax({
@@ -896,6 +1033,8 @@ function Cubos(data,tag) {
 	$(this.children[0]).css("background",color)
       });
 
+  $("div.overflow tr>td").css("height","15");
+  $("div.overflow tbody>tr:first-child>td").css("display","none");
 }
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////vv HABILITAR ÍCONOS POR TABLA vv////////////////////////

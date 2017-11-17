@@ -150,7 +150,7 @@ window.onscroll = function() {
 //////////// Desaparecer filas según la posición del scroll ////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-// Todas las filas que estén arriba de la posición n (n=500) serán ocultadas.
+// Todas las filas que estén arriba de la posición n (n=1000) serán ocultadas.
   var n = 1000;
 
   var upOcult = rows.filter(function(d) {
