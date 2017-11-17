@@ -259,7 +259,6 @@ $(document).ready(function() {
 	   elPosition = el.getBoundingClientRect().top;
 	   mult = elPosition > 300 ? 1 : -1;
 	   var f = Math.log(Math.abs(elPosition-160)) * 20
-	   console.log(f);
     	   window.scrollBy(0,mult*f);
 	   if( elPosition-20 < window.innerHeight && elPosition > 150) {
 	    console.log(elPosition);
@@ -316,8 +315,6 @@ $(document).ready(function() {
 	   elBottom = el.getBoundingClientRect().bottom;
 	   elDisp = $(el.parentNode).css("display");
 
-	   console.log("selección: " + elLoc,"visible: " + firstVisible);
-//	   mult = elPosition > 300 ? 1 : -1;
 	   if(elPosition > 300) {
 		mult = 1;
 	   } else if(elPosition < 300 && elPosition != 0 && elBottom != 0 ) {
@@ -330,11 +327,11 @@ $(document).ready(function() {
 
 	   var f = Math.log(Math.abs(elPosition-160)) * 30
     	   window.scrollBy(0,mult*f);
-	   console.log(elPosition);
+
 	   if( elPosition < window.innerHeight-20 && elPosition > 150) {
 	    clearInterval(ss_);
-	    console.log([el.parentNode]);
 	   }
+
 	},50);
 
 /*
@@ -361,16 +358,16 @@ $(document).ready(function() {
 //   success:function(response) {
 $.get("blueprints.json",function(response) {
 
-  $("button.filtros").click(function() {
-    $(".scroll_aid_header th").css("color","white");
-    $(".scroll_aid_header th").css("border-color","white")
+  $("select.filtros").click(function() {
+//    $(".scroll_aid_header th").css("color","white");
+//    $(".scroll_aid_header th").css("border-color","white")
 
     $("body").css("cursor","progress");
 
-    $("button.filtros").attr("id","off");
-    $(this).attr("id","on");
+//    $("button.filtros").attr("id","off");
+//    $(this).attr("id","on");
 
-    var tag = $(this).attr("tag");
+    var tag = $(this).find(":selected").attr("tag");
     $("tbody#tabla").html("");
     var loading_text = "<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>"
 //    $("body").prepend(loading_text);
@@ -1093,7 +1090,7 @@ function Cubos(data,tag) {
 ////////////////////////////////////////////////////////////////////////////
 
     function seleccionarCheckboxes() {
-      $("button#principal").on("click",function() {
+      $("input#principal").on("click",function() {
         //var grandparent_tbody = this.parentNode.parentNode.parentNode
 	  //.parentNode.parentNode
 	  //.getAttribute("tag");
@@ -1104,8 +1101,8 @@ function Cubos(data,tag) {
        // var child_boxes_str = "tbody[tag='"+ grandparent_tbody +
 	//"']>div>table>tbody[tag='"+ parent_tbody +"']>tr>td>input";
 	var child_boxes_str = "input[type='checkbox']:not(#principal)";
-//        $(child_boxes_str).prop("checked",$(this).prop("checked"));
-	d3.selectAll(child_boxes_str).attr("checked","checked");
+        $(child_boxes_str).prop("checked",$(this).prop("checked"));
+//	d3.selectAll(child_boxes_str).attr("checked","checked");
       });
     };
 
@@ -1248,10 +1245,10 @@ function RenderWords(obj,lang) {
   // Colocar los nombres de reporte en el apartado de "Temas".
   var temas = options.map(function(d) {
 	return "<option>" + d.tema + "</option>";
-  }).join("");
+ }).join("");
 
-  $("div#tema_options select").text("");
-  $("div#tema_options select").append(temas);
+//  $("div#tema_options select").text("");
+//  $("div#tema_options select").append(temas);
 
   // Colocar los meses y los años.
   months = months.map(function(d) {
