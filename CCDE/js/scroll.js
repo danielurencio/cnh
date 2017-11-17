@@ -90,7 +90,7 @@ window.onscroll = function() {
 /////////////////////////////////////////////////////////////////////
 ///////////// Aparecer y desaparecer filas según el viewport
 /////////////////////////////////////////////////////////////////////
-
+if(SS_){
   var rows = $("div.overflow tr").filter(function(d) {
     return $(this).css("display") != "none";
   });
@@ -225,6 +225,7 @@ window.onscroll = function() {
       .style("display","none")
 
 //  console.log(rows);
+ }
 };
 
 

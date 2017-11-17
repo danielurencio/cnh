@@ -1,5 +1,6 @@
 var noOfRows;
 var ScrollHeader;
+var SS_ = true;
 
 $(document).ready(function() {
   document.body.style.zoom = 1.0; 
@@ -201,6 +202,7 @@ $(document).ready(function() {
   };
 
   function mostrar(el) {
+    SS_ = false;
     d3.selectAll("div.overflow tr").style("display","none");
     $(document.querySelectorAll("div.overflow tr")[0]).css("display","block");
     $(el.parentNode).css("display","block");
@@ -782,6 +784,7 @@ function formatoData(data) {
 
 
 function Cubos(data,tag) {
+  SS_ = true;
 ///////////ESTO EVITA BUGS CON EL SCROLLER DEL HEADER/////////////////////////
        $('.scroll_aid_header').attr("visible","no");
        $(".scroll_header").scrollLeft(0);
