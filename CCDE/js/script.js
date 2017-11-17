@@ -186,18 +186,27 @@ $(document).ready(function() {
 
        window.setTimeout(function() { /*------------------Async--*/
 	  var el_ = selected_TD(txt[2])[0]; // <-- (b)
-	  asyncScrollingSearch(el_);	    // <-- (c)
+//	  asyncScrollingSearch(el_);	    // <-- (c)
+	  mostrar(el_);
        },10);			     /*-------------------Async--*/
 
       })();
 
     } else {
       var el_ = selected_TD(txt[2])[0] 
-      asyncScrollingSearch(el_)
-//      el_.scrollIntoView();
+//      asyncScrollingSearch(el_)
+	mostrar(el_);
     }
 
   };
+
+  function mostrar(el) {
+    d3.selectAll("div.overflow tr").style("display","none");
+    $(document.querySelectorAll("div.overflow tr")[0]).css("display","block");
+    $(el.parentNode).css("display","block");
+    var pos = el.parentNode.parentNode.parentNode.parentNode.parentNode.offsetTop;
+//    window.scrollTo(0,pos-30)
+  }
 
 ////////////////////////////////////////////////////////////////////////
 ///////// Búsqueda de celda específica a través del filtro...
