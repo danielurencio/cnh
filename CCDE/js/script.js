@@ -288,6 +288,7 @@ $(document).ready(function() {
 	window.scrollTo(0,document.body.scrollHeight);
 
 	var elPosition = el.getBoundingClientRect().top;
+	var elDisp = $(el.parentNode).css("display");
 	console.log(elPosition,elLoc);
 
 	/*Si la fila está muy abajo hay q darle un empujón al scroll*/
@@ -301,17 +302,38 @@ $(document).ready(function() {
 	block.css("display","block");
 	block.css("tag",null);
 
-	var mult;
+	var mult, firstVisible;
 
 	var ss_ = setInterval(function() {
+
+	   firstVisible = $("div.overflow tr").map(function(i,d) {
+    	    var a = this.getBoundingClientRect().bottom > 150;
+            var val = a ? i : null; return val;
+           })[0];
+
+
 	   elPosition = el.getBoundingClientRect().top;
-	   mult = elPosition > 300 ? 1 : -1;
-	   var f = Math.log(Math.abs(elPosition-160)) * 20
-	   console.log(f);
+	   elBottom = el.getBoundingClientRect().bottom;
+	   elDisp = $(el.parentNode).css("display");
+
+	   console.log("selección: " + elLoc,"visible: " + firstVisible);
+//	   mult = elPosition > 300 ? 1 : -1;
+	   if(elPosition > 300) {
+		mult = 1;
+	   } else if(elPosition < 300 && elPosition != 0 && elBottom != 0 ) {
+		mult = -1;
+	   } else if(elPosition == 0 && elBottom == 0 && elLoc > firstVisible) {
+		mult = 1;
+	   } else if(elPosition == 0 && elBottom == 0 && elLoc < firstVisible) {
+		mult = -1;
+	   }
+
+	   var f = Math.log(Math.abs(elPosition-160)) * 30
     	   window.scrollBy(0,mult*f);
-	   if( elPosition-20 < window.innerHeight && elPosition > 150) {
-	    console.log(elPosition);
+	   console.log(elPosition);
+	   if( elPosition < window.innerHeight-20 && elPosition > 150) {
 	    clearInterval(ss_);
+	    console.log([el.parentNode]);
 	   }
 	},50);
 
