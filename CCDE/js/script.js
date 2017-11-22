@@ -21,6 +21,22 @@ $(document).ready(function() {
   document.body.addEventListener("wheel", zoomShortcut); //add the event
 
 ///////////////prevenir zoom//////////////////////////////////////////////////
+
+//////////////Quitar filtro de búsqueda //////////////////////////
+ $("div#quitarFiltro").on("click",function() {
+   var tablaVisible = $("div.overflow").filter(function() {
+     return $(this).css("display") == "block";
+   });
+
+   var inx = tablaVisible.index();
+   var subtitulo_ = tablaVisible[0].parentNode.children[inx-1];
+   subtitulo_.click();
+//   $(this).css("display","none");
+   subtitulo_.click();
+ });
+//////////////Quitar filtro de búsqueda //////////////////////////
+
+
   function filtrarSeries(data) {
     var str_;
     function regexCheck(patt) {
@@ -142,7 +158,9 @@ $(document).ready(function() {
 	   })
 	   .on("click",function() {
 	    var txt = this.textContent.split(" > ");
+
 	    irAserie(txt);
+	    $("div#quitarFiltro").css("display","block")
 	   });
 	
 	} else if(matches.length == 0){
@@ -431,7 +449,29 @@ $.get("blueprints.json",function(response) {
 function grapher(info) {
   var grapher_element = 
 "<div id='grapher'>" +
+  "<button class='datos_grapher' tag='off'>"+
+     "Datos <span id='flecha'>></span>"+
+  "</button>" +
   "<img class='close_chart' src='img/close.svg'></img>" +
+
+  "<div class='chart_expandible'>"+
+
+   "<div id='header_expandible' style='position:absolute;top:35px;width:100%;'>"+
+     "<table>"+
+	"<tr style='font-weight:700;'>"+
+	  "<td style='width:90px;min-width:90px;display:inline-block;padding:0px;'>FECHA</td>"+
+	  "<td style='width:90px;min-width:90px;display:inline-block;padding:0px;'>DATO</td>"+
+	"</tr>"+
+     "</table>" +
+   "</div>" +
+
+   "<div id='tabla_expandible' style='width:100%;height:calc(100% - 110px);margin-top:60px;overflow-y:scroll;'>" +
+     "<table></table>" +
+   "</div>" +
+
+   "<button style='margin-left:20px;margin-top:15px;width:calc(100% - 50px);'>Descargar</button>" +
+
+  "</div>" +
   "<div id='chart'></div>" + 
 "</div>";
 
@@ -481,7 +521,7 @@ function grapher(info) {
 	"<div style='text-align:center;'>" +
 	 "<span style='font-size:11px;font-weight:800;color:"+ 'black' +";'>" +
 	  this.point.name + 
-	":</span>" +
+	"</span>" +
 	  "<br>" +
 	"<span style='font-weight:300;font-size:18px;'>"
 	 + this.y.toLocaleString("es-MX") +
@@ -540,6 +580,65 @@ function grapher(info) {
                 }
             }
         }]
+    }
+
+  });
+
+
+  d3.select("button.datos_grapher").on("click",function() {
+    var datos_tabla_ = info.serie.data;
+    console.log(datos_tabla_);
+
+    var tag_boton = $(this).attr("tag");
+    var new_tag_boton = tag_boton == 'off' ? 'on' : 'off';
+    var chart_container = "#grapher>div#chart";
+    var exp_size = "200px";
+
+    if(tag_boton == 'off') {
+      
+      resizeHighchart(exp_size,tag_boton);
+      $("span#flecha").html("<")
+
+      d3.select("#grapher>div.chart_expandible")
+	.style("display","block")
+	.style("width",exp_size);
+ 
+      $(chart_container)
+//	.css("display","block")
+	.css("width","calc(80% - " + exp_size + ")");
+
+      d3.select("div#tabla_expandible>table").selectAll("tr")
+	.data(datos_tabla_).enter()
+	.append("tr")
+	 .each(function(d) {
+	  var val_ = d.map(function(t) {
+	    return "<td style='height:22px;min-height:22px;width:90px;min-width:90px;padding:0px;display:inline-block;border-top:1px solid rgba(0,0,0,0.08);'>" + t + "</td>";
+	  }).join("");
+	  d3.select(this).html(val_);
+	});
+
+      var tExp_w= $("div#tabla_expandible").css("width");
+      $("div#header_expandible").css("width",tExp_w);
+      console.log(tExp_w);
+
+      $(this).attr("tag",new_tag_boton);
+
+    } else {
+      d3.select("div#tabla_expandible>table").html("");
+
+      $("span#flecha").html(">")
+    
+      d3.select("#grapher>div.chart_expandible")
+	.style("display","none")
+	.style("width","0px");
+
+      $(chart_container)
+	.css("width","80%");
+
+      resizeHighchart(exp_size,tag_boton);
+
+      $(this).attr("tag",new_tag_boton);
+
     }
 
   });
@@ -784,7 +883,6 @@ function formatoData(data) {
 
 
 function Cubos(data,tag) {
-  SS_ = true;
 ///////////ESTO EVITA BUGS CON EL SCROLLER DEL HEADER/////////////////////////
        $('.scroll_aid_header').attr("visible","no");
        $(".scroll_header").scrollLeft(0);
@@ -870,6 +968,8 @@ function Cubos(data,tag) {
   
   /*Un IF-STATEMENT podría diferenciar entre niveles*/
   $(".labels").on("click",function(d) {
+    SS_= true;
+    $("div#quitarFiltro").css("display","none");
 
     var tag = d3.select(this).attr("tag");
     var span = d3.select($(this).find("span.s")[0]);
@@ -1195,6 +1295,7 @@ function Cubos(data,tag) {
        }
 	info.fechas = fechas_().split(",");
 	grapher(info);
+
      });
     };
 
@@ -1303,4 +1404,38 @@ function fechas_() {
   return header_;
 };
 
+function resizeHighchart(exp_size,activ) {
+    var w_, l_;
+//    var activ = $("button.datos_grapher").attr("tag")
 
+    if(activ == 'off') {
+      w_ = "calc(80% - " + exp_size + ")";
+      l_ = "calc(10% + " + exp_size + ")";
+    } else if(activ == 'on') {
+      w_ = "80%";
+      l_ = "10%";
+    }
+
+    var chart_container = "#grapher>div#chart";
+
+    $(chart_container).css("width",w_);
+    $(chart_container).css("left",l_);
+
+    var chart = $(chart_container).highcharts();
+    var new_width = $(chart_container).css("width").split("px")[0];
+    var new_height = $(chart_container).css("height").split("px")[0];
+
+    chart.setSize(+new_width,+new_height)
+}
+
+window.onresize = function() {
+  var tag_boton = $("button.datos_grapher").attr("tag");
+  var new_tag_boton = tag_boton == 'off' ? 'on' : 'off';
+
+  try {
+    resizeHighchart("200px",new_tag_boton);
+  } catch(err) {
+    console.log(err);
+  }
+
+}

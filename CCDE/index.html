@@ -29,12 +29,14 @@
 <!-- ################################# FILTROS ################### (start) -->
 <div id="filtros" style="width:100%;padding-top:0%;height:90px;position:fixed;background:white;border-bottom-style:solid;border-bottom-width:1px;z-index:50;">
 
+<!--
 <div style="padding-top:0px;padding-bottom:0px;text-align:right;width:100%;font-weight:700;color:rgb(13,180,190);font-size:10px;z-index:50;position:fixed;" id=lang>
   <span id="esp" class="lang" style="cursor:pointer;">Español</span>
   &nbsp; / &nbsp;
  <span id="eng" class="lang" style="cursor:pointer;">English</span>
  &emsp;
 </div>
+-->
 
 <div style="padding-top:60px;padding-right:100px;text-align:right;width:100%;font-weight:700;color:rgb(13,180,190);font-size:10px;z-index:0;position:fixed;display:none;">
 <button  id="boton" style='font-family:"Open Sans";font-weight:600;font-size:11px;'>Descargar</button >&ensp;&ensp;&ensp;
@@ -128,6 +130,9 @@
    <!--<div style='position:fixed;height:40px;top:90px;width:100%;'>hola</div>-->
    <div style='position:fixed;height:60px;top:90px;z-index:1;background:white;color:white;overflow-x:hidden' class='scroll_header'>
     <div style='left:335px;position:fixed;width:100%;height:40px;z-index:3;color:black;'><input id="filtroSerie" style='z-index:3;margin-top:10px;width:40%;border:1px solid lightGray;'></input>
+
+   <div id="quitarFiltro" style='font-weight:700;position:fixed;left:calc(40% + 345px);top:102px;color:white;width:100px;text-align:center;background-color:var(--subtitulos);border-radius:2px;display:none;'>Remover filtro</div>
+
       <div id="dropDown" style='position:fixed;top:118px;width:40%;left:335px;background:rgba(255,255,255,0.85);z-index:3;max-height:150px;border:1px solid lightGray;display:none;overflow:scroll;overflow-x:hidden;'></div>
    </div>
     <div style='height:100%;width:100%;position:absolute;'>
