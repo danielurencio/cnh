@@ -447,6 +447,10 @@ $.get("blueprints.json",function(response) {
 
 
 function grapher(info) {
+  var fake_tag = [ info.grandparent, info.parent, info.tema, info.subtema ];
+  if(fake_tag[3] == "") { fake_tag = fake_tag.slice(0,3); }
+  fake_tag = fake_tag.join(" - ");
+
   var grapher_element = 
 "<div id='grapher'>" +
   "<button class='datos_grapher' tag='off'>"+
@@ -454,7 +458,7 @@ function grapher(info) {
   "</button>" +
   "<img class='close_chart' src='img/close.svg'></img>" +
 
-  "<div class='chart_expandible'>"+
+  "<div class='chart_expandible' tag='"+ fake_tag +"'>"+
 
    "<div id='header_expandible' style='position:absolute;top:35px;width:100%;'>"+
      "<table>"+
@@ -469,7 +473,7 @@ function grapher(info) {
      "<table></table>" +
    "</div>" +
 
-   "<button style='margin-left:20px;margin-top:15px;width:calc(100% - 50px);'>Descargar</button>" +
+   "<button style='margin-left:20px;margin-top:15px;width:calc(100% - 50px);' onclick='descargarSerie()'>Descargar</button>" +
 
   "</div>" +
   "<div id='chart'></div>" + 
@@ -502,6 +506,11 @@ function grapher(info) {
 	   textKey:'downloadPNG',
 	   onclick:function() { this.exportChart() },
 	   text:"PNG"
+	  },
+	  {
+	   textKey:'downloadCSV',
+	   onclick:descargarSerie,
+	   text:"CSV"
 	  }]
 	}
       }
@@ -584,10 +593,27 @@ function grapher(info) {
 
   });
 
+////////////////////// AGREGAR TABLA PARA DESCARGA ////////////////////////////
+    var datos_tabla_ = info.serie.data.reverse();
+
+    d3.select("div#tabla_expandible>table").selectAll("tr")
+	.data(datos_tabla_).enter()
+	.append("tr")
+	 .each(function(d) {
+	  var val_ = d.map(function(t) {
+	    var v = String(t);
+	    if(v == "NaN") v = "";
+	    return "<td style='height:22px;min-height:22px;width:90px;min-width:90px;padding:0px;display:inline-block;border-top:1px solid rgba(0,0,0,0.08);'>" + v + "</td>";
+	  }).join("");
+	  d3.select(this).html(val_);
+	});
+
+    var tExp_w= $("div#tabla_expandible").css("width");
+    $("div#header_expandible").css("width",tExp_w);
+/////////////////////// AGREGAR TABLA PARA DESCARGA /////////////////////////
 
   d3.select("button.datos_grapher").on("click",function() {
-    var datos_tabla_ = info.serie.data;
-    console.log(datos_tabla_);
+//    var datos_tabla_ = info.serie.data.reverse();
 
     var tag_boton = $(this).attr("tag");
     var new_tag_boton = tag_boton == 'off' ? 'on' : 'off';
@@ -607,6 +633,7 @@ function grapher(info) {
 //	.css("display","block")
 	.css("width","calc(80% - " + exp_size + ")");
 
+/*
       d3.select("div#tabla_expandible>table").selectAll("tr")
 	.data(datos_tabla_).enter()
 	.append("tr")
@@ -619,12 +646,11 @@ function grapher(info) {
 
       var tExp_w= $("div#tabla_expandible").css("width");
       $("div#header_expandible").css("width",tExp_w);
-      console.log(tExp_w);
-
+*/
       $(this).attr("tag",new_tag_boton);
 
     } else {
-      d3.select("div#tabla_expandible>table").html("");
+//      d3.select("div#tabla_expandible>table").html("");
 
       $("span#flecha").html(">")
     
@@ -889,7 +915,7 @@ function Cubos(data,tag) {
        $("#footer_").scrollLeft(0);
        $("button#principal").attr("todos","no");
        data = formatoData(data);
-///////////////////////////////////////////////////////////////////////////7
+/////////////////////////////////////////////////////////////////////////////
   var color = getComputedStyle(document.body).getPropertyValue('--filasYcols');
   var temas_fondo = getComputedStyle(document.body)
 	.getPropertyValue('--temas-fondo');
@@ -1015,7 +1041,7 @@ function Cubos(data,tag) {
 	      var parser = new DOMParser();
 	      var docTable = parser.parseFromString(tableData,"text/html");
 	      docTable = docTable.querySelector("table");
-
+console.log(docTable);
 
 	      d3.selectAll("div>label>span.s").html(plus + "&ensp;");
 	      span.html(minus + "&ensp;");
@@ -1029,6 +1055,13 @@ function Cubos(data,tag) {
 	      var arr = docTable.querySelectorAll("tr");
 
 		for(var i=0; i<arr.length; i++) {
+		  if(i % 2 == 0 && i != 0) {
+			$(arr[i]).attr("even",1)
+			$(arr[i]).attr("color_tag","rgba(73,171,129,0.1)");
+			$(arr[i].children)
+			  .css("background","rgba(73,171,129,0.1)");
+			
+	          }
 		  if(i>noOfRows) {
 		    arr[i]//.remove()
 		.style.display = "none";
@@ -1136,6 +1169,12 @@ function Cubos(data,tag) {
        $(this.parentNode.children[0]).css("background",color_tag_)
      }
 
+     var firstC = $(this.parentNode.children[0]).css("background-color");
+
+     if($(this.parentNode).attr("even") == 1) {
+       $(this.parentNode.children).css("background-color",firstC)
+     }
+     console.log(firstC);
 
   });
 
@@ -1316,7 +1355,7 @@ function Cubos(data,tag) {
 	.map(function(d) { return "<th style='width:"+cell_Width+
 	"px;min-width:"+cell_Width+"px;padding:0px'>" + d + "</th>"; });
 
-      var scroll_id_header_ = ["<th style='min-width:333px'></th>"]
+      var scroll_id_header_ = ["<th style='min-width:333px;'></th>"]
 	.concat(scroll_id_header).join("");
       $("tr.scroll_aid_header").html(scroll_id_header_)
 
@@ -1439,3 +1478,65 @@ window.onresize = function() {
   }
 
 }
+
+function descargarSerie() {
+  var titulo = document.querySelector('.chart_expandible').getAttribute("tag");
+
+  titulo = titulo.toUpperCase();
+  titulo = titulo.replace(/Á/g,"A");
+  titulo = titulo.replace(/É/g,"E");
+  titulo = titulo.replace(/Í/g,"I");
+  titulo = titulo.replace(/Ó/g,"O");
+  titulo = titulo.replace(/Ú/g,"U");
+
+  var fecha = new Date();
+  var Header = [
+   titulo,
+   "COMISION NACIONAL DE HIDROCARBUROS",
+   "Fecha de descarga: " + fecha.toLocaleString().replace(", "," - "),
+   "\n",
+  ];
+
+  Header = Header.join("\n")
+
+  var csv = [];
+  csv.push(Header);
+  csv.push("FECHA,DATO")
+  var filas = document.querySelectorAll("div#tabla_expandible>table>tr");
+
+  for(var i in filas) {
+    var rows = []
+    if(filas[i].nodeName == "TR") {
+      var cells = filas[i].querySelectorAll("td")
+      for(var j in cells) {
+	if(cells[j].nodeName == "TD") {
+	  var row = cells[j].textContent;
+	  rows.push(row);
+	}
+      }
+      rows = rows.join(",")
+      csv.push(rows);
+    }
+  }
+  csv = csv.join("\n");
+  csv = csv.replace(/NaN/g,"");
+
+  var csvFile = new Blob([csv], { 'type':'text/csv' });
+
+  if(window.navigator && window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveOrOpenBlob(csvFile,"info.csv");
+  } else {
+    var downloadLink = document.createElement("a");
+    downloadLink.download = "serie.csv";
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    var s_a = document.getElementsByTagName("a");
+    for(var i=0; i<s_a.length; i++) {
+      s_a[i].parentNode.removeChild(s_a[i]);
+    }
+  }
+
+}
+

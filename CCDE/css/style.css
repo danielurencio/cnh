@@ -411,9 +411,14 @@ div.overflow {
     -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
 }
 
-
+/*
 div.overflow tr:nth-child(even) {
   background:var(--nones);
+}
+*/
+
+div.overflow tr[even] {
+ background:"red";
 }
 
 span.matching {

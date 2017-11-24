@@ -47,7 +47,7 @@ window.onscroll = function() {
       $("tr.scroll_aid_header").attr("visible","yes");
       $("tr.scroll_aid_header>th").css("color",color);
       $("tr.scroll_aid_header>th:not(:first-child)")
-	.css("border","1px solid lightGray")
+	.css("border","1px solid lightGray");
 
     } else if(!(els.every(allTrue) && all_Equal != 0 && largeOnesCond)) {
       $("tr.scroll_aid_header").attr("visible","no");
@@ -110,9 +110,14 @@ if(SS_){
 // una fila más. Es así como, naturalmente, van a ir apareciendo las nuevas filas.
 
     if(lastRow < window.innerHeight) {
-      d3.select("tr[tag='ocult']")
+      var ff = d3.select("tr[tag='ocult']")
 	.attr("tag",null)
 	.style("display","block");
+
+
+/////////////////// COLOR FIX //////////////////////////////////////////////
+      colorFIX(ff);
+/////////////////// COLOR FIX //////////////////////////////////////////////
 
       lastRow = computeLastRow()[1];
     }
@@ -127,9 +132,15 @@ if(SS_){
       var count = Math.abs(diff_last) / 17;
 
       for(var i=0; i<count; i++) {
-	d3.select("tr[tag='ocult']")
+	var ff = d3.select("tr[tag='ocult']")
 	  .attr("tag",null)
-	  .style("display","block");
+	  .style("display","block")
+
+
+/////////////////// COLOR FIX //////////////////////////////////////////////
+	colorFIX(ff);
+/////////////////// COLOR FIX //////////////////////////////////////////////
+
       }
       lastRow = computeLastRow()[1];
     }
@@ -170,9 +181,14 @@ if(SS_){
   });
 
   if(firstRow > -n) {
-      d3.select(arriba[arriba.length-1])
+      var ff = d3.select(arriba[arriba.length-1])
 	.attr("tag",null)
 	.style("display","block");
+
+
+/////////////////// COLOR FIX //////////////////////////////////////////////
+	colorFIX(ff);
+/////////////////// COLOR FIX //////////////////////////////////////////////
 
       firstRow = computeLastRow()[0];
   }
@@ -183,9 +199,14 @@ if(SS_){
 
       for(var i=1; i<=count_+1; i++) {
 	if(arriba[arriba.length - i]) {
-	  d3.select(arriba[arriba.length - i])
+	  var ff = d3.select(arriba[arriba.length - i])
 	    .attr("tag",null)
 	    .style("display","block");
+
+/////////////////// COLOR FIX //////////////////////////////////////////////
+	  colorFIX(ff);
+/////////////////// COLOR FIX //////////////////////////////////////////////
+
         }
       }
       firstRow = computeLastRow()[0];
@@ -201,9 +222,14 @@ if(SS_){
        .getBoundingClientRect().bottom;
 
         if(tableTitle > ScrollHeader) {
-           d3.selectAll(arriba)   // <-- No todas, sólo algunas!
+           var ff = d3.selectAll(arriba)   // <-- No todas, sólo algunas!
 	    .attr("tag",null)
 	    .style("display","block");
+
+/////////////////// COLOR FIX //////////////////////////////////////////////
+	   colorFIX(ff);
+/////////////////// COLOR FIX //////////////////////////////////////////////
+
         }
 
       } catch(err) {
@@ -240,3 +266,19 @@ function computeLastRow() {
 
   return [firstRow,lastRow];
 };
+
+
+function colorFIX(rows) {
+/*
+      var appearingRow = $(rows._groups[0][0]);
+      var color_TAG = appearingRow.first().css("background-color");
+//      var color_TAG = appearingRow.attr("color_tag");
+      if(appearingRow[0]) {
+//        $(appearingRow[0].querySelectorAll("td")).css("background","transparent");
+	appearingRow.css("background-color","transparent");
+        $(appearingRow[0].querySelectorAll("td")).css("background",color_TAG);
+      }
+*/
+    
+
+}
