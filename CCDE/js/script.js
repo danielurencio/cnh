@@ -449,7 +449,8 @@ $.get("blueprints.json",function(response) {
 function grapher(info) {
   var fake_tag = [ info.grandparent, info.parent, info.tema, info.subtema ];
   if(fake_tag[3] == "") { fake_tag = fake_tag.slice(0,3); }
-  fake_tag = fake_tag.join(" - ");
+  fake_tag = fake_tag.join(" - ");console.log([fake_tag,info.subtema])
+  fake_tag = fake_tag.replace(/A /g,"A"); console.log(fake_tag);
 
   var grapher_element = 
 "<div id='grapher'>" +
@@ -1041,7 +1042,6 @@ function Cubos(data,tag) {
 	      var parser = new DOMParser();
 	      var docTable = parser.parseFromString(tableData,"text/html");
 	      docTable = docTable.querySelector("table");
-console.log(docTable);
 
 	      d3.selectAll("div>label>span.s").html(plus + "&ensp;");
 	      span.html(minus + "&ensp;");
@@ -1087,7 +1087,10 @@ console.log(docTable);
 	      $("div#espere").css("visibility","visible")
 	      window.setTimeout(function() {
 	        nuevaTabla(algo,function() {
-	          $("div#espere").css("visibility","hidden")
+	          $("div#espere").css("visibility","hidden");
+		// Quitar espacio blanco de primera celda.
+		  $("tbody.hide>tr:nth-child(2)>td:first-child")
+			.css("height","16px");
 	        });
 	      },10);
 	    }
@@ -1172,9 +1175,10 @@ console.log(docTable);
      var firstC = $(this.parentNode.children[0]).css("background-color");
 
      if($(this.parentNode).attr("even") == 1) {
-       $(this.parentNode.children).css("background-color",firstC)
+       $(this.parentNode.children).filter(function() {
+	return $(this).attr("id") != "n";
+       }).css("background-color",firstC);
      }
-     console.log(firstC);
 
   });
 
@@ -1296,9 +1300,11 @@ console.log(docTable);
 	var row_ = this.parentNode.parentNode;
 
       var cells = row_.querySelectorAll("td:not(#n)");
-      var first_cell = cells[0].innerHTML;
+
+      var first_cell = cells[0].innerHTML.replace(/\s&....;/g,"");
       first_cell = first_cell.replace(/&[a-z;\s]*/g,"");
       first_cell = first_cell.replace(/^\s/g,"");
+//      first_cell = first_cell.replace(/ /g,"");
 
       if(row_.getAttribute('id')) {
 	info['tema'] = first_cell;

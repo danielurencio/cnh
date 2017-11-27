@@ -243,7 +243,7 @@ if(SS_){
 // hacia arriba.
 
     var abajo = rows.filter(function() {
-      return $(this)[0].getBoundingClientRect().top > window.innerHeight
+      return $(this)[0].getBoundingClientRect().top > window.innerHeight + 50;
     });
 
     d3.selectAll(abajo)
