@@ -49,6 +49,8 @@ window.onscroll = function() {
       $("tr.scroll_aid_header>th:not(:first-child)")
 	.css("border","1px solid lightGray");
 
+console.log("!!");
+
     } else if(!(els.every(allTrue) && all_Equal != 0 && largeOnesCond)) {
       $("tr.scroll_aid_header").attr("visible","no");
       $("tr.scroll_aid_header>th").css("color","white");

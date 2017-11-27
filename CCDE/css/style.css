@@ -449,3 +449,7 @@ span#aquo {
 div#quitarFiltro:hover {
   cursor:pointer;
 }
+
+div#tabla_expandible>table>tr:hover {
+  background-color: var(--filasYcols);
+}
