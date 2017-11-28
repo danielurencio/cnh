@@ -1226,6 +1226,9 @@ function Cubos(data,tag) {
 	    "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child:not(#dist_)";
 	  var cubo_th = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
 	    "tbody.hide[tag='"+ this_tag +"']>tr>th:first-child";
+	  var cubo_dist_ = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
+	    "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child#dist_";
+	  
 
 	  $("<td id='p'><input id='principal' style='display:none;' type='checkbox'></input></td>")
 	    .insertAfter(cubo_th);
@@ -1236,6 +1239,12 @@ function Cubos(data,tag) {
 	    .insertAfter(cubo_td);
 	  $("<td id='n' class='graph'><img style='z-index:-1' src='img/graph.svg'></img></td>")
 	    .insertAfter(cubo_td);
+
+	  $("<td id='n' class='check'></td>")
+	    .insertAfter(cubo_dist_);
+	  $("<td id='n' class='graph'></td>")
+	    .insertAfter(cubo_dist_);
+
         };
       }
    };
