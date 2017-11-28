@@ -1149,6 +1149,11 @@ function Cubos(data,tag) {
 		  $("tbody.hide>tr:nth-child(2)>td:nth-child(3)")
 			.css("height","16px");
 
+		  var maxWidth = $("div.overflow>table>tbody.hide>tr:nth-child(2)>td:nth-child(4)").css("width");
+
+		 $(".scroll_aid_header>th:nth-child(n+2)")
+			.css("max-width",maxWidth) 
+
 	        });
 	      },10);
 	    }
@@ -1444,8 +1449,8 @@ function Cubos(data,tag) {
   function headerScroll() {
     var first_th = $("tbody.hide")[0].querySelectorAll("th")[1];
     if(first_th) {
-//      var cell_Width = first_th.offsetWidth - 1;	
-      var cell_Width = $(first_th).css("width").split("px")[0];
+      var cell_Width = first_th.offsetWidth - 1;	
+//      var cell_Width = $(first_th).css("width").split("px")[0];
 //console.log(cell_Width);
       var scroll_id_header = fechas_().replace(/-/g," ").split(",")
 	.map(function(d) { return "<th style='width:"+ cell_Width +
