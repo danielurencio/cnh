@@ -191,13 +191,17 @@ label:hover {
  border:none;
 }
 
-#dist, #dist_ {
+#dist>td {
+ font-weight:700;
+}
+
+#dist_,#dist>td {
  font-weight:700;
  color:var(--temas);
 }
 
-#dist {
- background:var(--temas-fondo);
+#dist>td {
+/* background:var(--temas-fondo);*/
 }
 
 #dist>td:first-child {
@@ -205,7 +209,7 @@ label:hover {
 }
 
 #dist_ {
- background:var(--temas-fondo);
+/* background:var(--temas-fondo);*/
 }
 
 .labels:hover {
@@ -226,15 +230,16 @@ td#p {
  width:45px;
 }
 
+/*
 .hide td:not(:frist-chid) {
   font-size:10px;
 }
+*/
 
 tr#dist:hover, .hide>tr:not(:first-child):hover {
 /* background:var(--filasYcols);*/
  color:black;
  font-weight:600;
-/* text-shadow:2px 0 0 black, -2px 0 0 black, 0 2px 0 black, 0 -2px 0 black, 1px 1px black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;*/
 }
 
 tr#dist>td:first-child:hover {
@@ -437,12 +442,12 @@ div.overflow {
 div.overflow tr:nth-child(even) {
   background:var(--nones);
 }
-*/
+
 
 div.overflow tr[even] {
  background:"red";
 }
-
+*/
 span.matching {
   color: var(--temas);
   font-weight:700;

@@ -1052,23 +1052,61 @@ function Cubos(data,tag) {
 	      noOfRows = Math.ceil((viewEnd-viewStart)/17)*1.5;
 
 	      var arr = docTable.querySelectorAll("tr");
+// "rgba(73,171,129,0.25)"
 
 		for(var i=0; i<arr.length; i++) {
+		  if(arr[i].children[0].getAttribute("id") == "dist_") {
+		    $(arr[i].children)
+			.css("background","rgba(73,171,129,0.25)")
+		  }
+
 		  if(i % 2 == 0 && i != 0) {
+		    if(arr[i].children[0].getAttribute("id") != "dist_") {
 			$(arr[i]).attr("even",1)
 			$(arr[i]).attr("color_tag","rgba(73,171,129,0.1)");
 			$(arr[i].children)
 			  .css("background","rgba(73,171,129,0.1)");
-			
+		    }
+
+		    if(arr[i].children[0].getAttribute("id") == "dist_") {
+			$(arr[i].children)
+			  .css("background","rgba(73,171,129,0.25)");
+		    }
+
+		    if(arr[i].getAttribute("id") == "dist"
+			&& !docTable.querySelectorAll("td#dist_").length
+		    ) {
+			$(arr[i].children)
+			.css("background","rgba(73,171,129,0.25)");
+		      }
+	
 	          }
+
+		  if(i % 2 != 0 && i != 0) {
+		    if(arr[i].children[0].getAttribute("id") == "dist_") {
+			$(arr[i].children)
+			  .css("background","rgba(73,171,129,0.25)");
+		    }
+
+		    if(arr[i].getAttribute("id") == "dist" 
+			&& !docTable.querySelectorAll("td#dist_").length
+		    ) {
+			$(arr[i].children)
+			.css("background","rgba(73,171,129,0.25)");
+		      }
+
+		  }
+
 		  if(i>noOfRows) {
 		    arr[i]//.remove()
 		.style.display = "none";
 		    $(arr[i]).attr("tag","ocult");
 		  }
+
+
 		}
 
-
+	      
 	      d3.select(tbody_hide.parentNode.parentNode)
 	       .style("display","block");
 	      d3.select(tbody_hide).html(docTable.innerHTML)
@@ -1080,6 +1118,14 @@ function Cubos(data,tag) {
 	      headerScroll();
 	      colcol();
 	      callback();
+
+	      $("td#n").each(function() {
+		let color = $(this.parentNode.children[0])
+		  .css("background-color");
+		$(this).css("background",color);
+	      });
+
+
             };
 
 	    function mensajeEspera() {
@@ -1087,9 +1133,16 @@ function Cubos(data,tag) {
 	      window.setTimeout(function() {
 	        nuevaTabla(algo,function() {
 	          $("div#espere").css("visibility","hidden");
-		// Quitar espacio blanco de primera celda.
+		// Quitar espacio blanco de 1ra,2da y 3ra celda.
 		  $("tbody.hide>tr:nth-child(2)>td:first-child")
 			.css("height","16px");
+
+		  $("tbody.hide>tr:nth-child(2)>td:nth-child(2)")
+			.css("height","16px");
+
+		  $("tbody.hide>tr:nth-child(2)>td:nth-child(3)")
+			.css("height","16px");
+
 	        });
 	      },10);
 	    }
@@ -1167,6 +1220,13 @@ function Cubos(data,tag) {
 
      if(color_cond) {	
        $(this.parentNode.children[0]).css("background",color_1)
+	if(this.parentNode.children[0].getAttribute("id") == "dist_") {
+	  $(this.parentNode.children).css("background",color_1);
+	}
+	if(this.parentNode.getAttribute("id") == "dist") {
+	  $(this.parentNode.children).css("background",color_1);
+	}
+
      } else {
        $(this.parentNode.children[0]).css("background",color_tag_)
      }
@@ -1174,9 +1234,12 @@ function Cubos(data,tag) {
      var firstC = $(this.parentNode.children[0]).css("background-color");
 
      if($(this.parentNode).attr("even") == 1) {
-       $(this.parentNode.children).filter(function() {
-	return $(this).attr("id") != "n";
-       }).css("background-color",firstC);
+       $(this.parentNode.children)
+//.filter(function() {
+//	return $(this).attr("id") != "n";
+//       })
+	.css("background-color",firstC);
+
      }
 
   });
@@ -1202,8 +1265,20 @@ function Cubos(data,tag) {
 
       evenRows.each(function() {
 	let color = $(this).css("background-color");
-	$(this).attr("color_tag",color);
-	$(this.children[0]).css("background",color)
+	if(this.children[0].getAttribute("id") == "dist_") {
+	  $(this).attr("color_tag", "rgba(73,171,129,0.25)");
+	  $(this.children[0]).css("background","rgba(73,171,129,0.25)");
+	} else {
+	  if($(this).attr("id") != "dist") {
+	    $(this).attr("color_tag",color);
+	    $(this.children[0]).css("background",color)
+	  } else {
+	    $(this).attr("color_tag", "rgba(73,171,129,0.25)");
+	    $(this.children[0]).css("background","rgba(73,171,129,0.25)");
+	  }
+
+	}
+	
       });
 
   $("div.overflow tr>td").css("height","15");
@@ -1354,7 +1429,7 @@ function Cubos(data,tag) {
 
     function corregirRenglones() {
       d3.selectAll("td#dist_").each(function() {
-        d3.select(this.parentNode).style("background",temas_fondo);
+//        $(this).css("background",temas_fondo);
       });
     };
 
@@ -1363,7 +1438,6 @@ function Cubos(data,tag) {
   function headerScroll() {
     var first_th = $("tbody.hide")[0].querySelectorAll("th")[1];
     if(first_th) {
-	console.log([first_th]);
 //      var cell_Width = first_th.offsetWidth - 1;	
       var cell_Width = $(first_th).css("width").split("px")[0];
 //console.log(cell_Width);
