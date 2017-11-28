@@ -461,7 +461,7 @@ function grapher(info) {
   "<div class='chart_expandible' tag='"+ fake_tag +"'>"+
 
    "<div id='header_expandible' style='position:absolute;top:35px;width:100%;'>"+
-     "<table>"+
+     "<table style='table-layout:fixed;'>"+
 	"<tr style='font-weight:700;'>"+
 	  "<td style='width:90px;min-width:90px;display:inline-block;padding:0px;'>FECHA</td>"+
 	  "<td style='width:90px;min-width:90px;display:inline-block;padding:0px;'>DATO</td>"+
@@ -470,7 +470,7 @@ function grapher(info) {
    "</div>" +
 
    "<div id='tabla_expandible' style='width:100%;height:calc(100% - 110px);margin-top:60px;overflow-y:scroll;'>" +
-     "<table></table>" +
+     "<table style='table-layout:fixed;'></table>" +
    "</div>" +
 
    "<button style='margin-left:20px;margin-top:15px;width:calc(100% - 50px);' onclick='descargarSerie()'>Descargar</button>" +
@@ -973,7 +973,7 @@ function Cubos(data,tag) {
 	.style("display","none")
 	.attr("on","0")
 	.style("overflow-x","scroll")
-	 .append("table")
+	 .append("table").style("table-layout","fixed")
 	 .append("tbody")
 	  .attr("class","hide")
 	  .style("width","100%")
@@ -1041,6 +1041,12 @@ function Cubos(data,tag) {
 	      var parser = new DOMParser();
 	      var docTable = parser.parseFromString(tableData,"text/html");
 	      docTable = docTable.querySelector("table");
+	      $(docTable).css("table-layout","fixed");
+
+//	      $(docTable.querySelectorAll("td"))
+//		.css("width","75px")
+//		.css("min-width","75px")
+//		.css("max-width","75px")
 
 	      d3.selectAll("div>label>span.s").html(plus + "&ensp;");
 	      span.html(minus + "&ensp;");
