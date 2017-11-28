@@ -1157,11 +1157,19 @@ function Cubos(data,tag) {
   
   var CellOffsetWidth = cellHide[0].offsetWidth//.css("width"); 
   var jqueryWidth = cellHide.css("width"); 
-  
+
   console.log("Tamaño de celda 'offset':",CellOffsetWidth);
   console.log("Tamaño de celda 'jQuery':",jqueryWidth);
-
+ 
   cellHead.css("max-width",jqueryWidth) 
+  cellHead.css("width",jqueryWidth) 
+  cellHead.css("min-width",jqueryWidth) 
+
+  d3.selectAll(".scroll_aid_header>th:nth-child(n+2)")
+	.style("max-width",jqueryWidth)
+	.style("width",jqueryWidth)
+	.style("min-width",jqueryWidth)
+
   console.log("Tamaño después de cambio:",cellHead.css("width"))
 
 	        });
