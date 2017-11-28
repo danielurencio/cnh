@@ -1365,12 +1365,11 @@ function Cubos(data,tag) {
     if(first_th) {
 	console.log([first_th]);
 //      var cell_Width = first_th.offsetWidth - 1;	
-//      cell_Width = cell_Width;
       var cell_Width = $(first_th).css("width").split("px")[0];
-console.log(cell_Width);
+//console.log(cell_Width);
       var scroll_id_header = fechas_().replace(/-/g," ").split(",")
 	.map(function(d) { return "<th style='width:"+ cell_Width +
-	"px;max-width:"+ cell_Width +"px;left-padding:1px;right-padding:1px;top-padding:0px;bottom-padding:0px;'>" + d + "</th>"; });
+	"px;min-width:"+ cell_Width +"px;max-width:"+cell_Width+"px'>" + d + "</th>"; });
 
       var scroll_id_header_ = ["<th style='min-width:333px;'></th>"]
 	.concat(scroll_id_header).join("");
