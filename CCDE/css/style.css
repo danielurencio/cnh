@@ -128,9 +128,12 @@ tbody.hide>tr:nth-child(2)>td:first-child {
  height:16px;
 }
 
+
+/*---------------------REGLAS PARA CHECKBOX Y GRÁFICA--------------------*/
 .hide>tr>td:nth-child(2), .hide>tr>th:nth-child(2) {
  position:absolute;
- margin-left:-55px;
+/* margin-left:-55px;*/
+ left:280px;
  min-width:75px;
  width:75px;
  border-left:1px solid lightGray;
@@ -139,7 +142,8 @@ tbody.hide>tr:nth-child(2)>td:first-child {
 
 .hide>tr>td:nth-child(3), .hide>tr>th:nth-child(3) {
  position:absolute;
- margin-left:-27px;
+/* margin-left:-27px;*/
+ left:308px;
  min-width:45px;
  width:45px;
  border-left:none;
@@ -147,6 +151,8 @@ tbody.hide>tr:nth-child(2)>td:first-child {
  margin-bottom:2px;
  border-right:1px solid lightGray;
 }
+/*---------------------REGLAS PARA CHECKBOX Y GRÁFICA--------------------*/
+
 
 td:nth-child(n+2),th:nth-child(n+2) {
  font-size:11px;
