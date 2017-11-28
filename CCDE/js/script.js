@@ -1149,10 +1149,20 @@ function Cubos(data,tag) {
 		  $("tbody.hide>tr:nth-child(2)>td:nth-child(3)")
 			.css("height","16px");
 
-		  var maxWidth = $("div.overflow>table>tbody.hide>tr:nth-child(2)>td:nth-child(4)").css("width");
 
-		 $(".scroll_aid_header>th:nth-child(n+2)")
-			.css("max-width",maxWidth) 
+
+  var cellHide = $("div.overflow>table>tbody.hide>tr:nth-child(2)>td:nth-child(4)")
+  var cellHead = $(".scroll_aid_header>th:nth-child(n+2)");
+  console.log("Tamaño de celda en head:",cellHead.css("width"))
+  
+  var CellOffsetWidth = cellHide[0].offsetWidth//.css("width"); 
+  var jqueryWidth = cellHide.css("width"); 
+  
+  console.log("Tamaño de celda 'offset':",CellOffsetWidth);
+  console.log("Tamaño de celda 'jQuery':",jqueryWidth);
+
+  cellHead.css("max-width",jqueryWidth) 
+  console.log("Tamaño después de cambio:",cellHead.css("width"))
 
 	        });
 	      },10);
