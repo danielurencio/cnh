@@ -1150,7 +1150,7 @@ function Cubos(data,tag) {
 			.css("height","16px");
 
 
-
+///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
   var cellHide = $("div.overflow>table>tbody.hide>tr:nth-child(2)>td:nth-child(4)")
   var cellHead = $(".scroll_aid_header>th:nth-child(n+2)");
   console.log("Tamaño de celda en head:",cellHead.css("width"))
@@ -1174,6 +1174,9 @@ function Cubos(data,tag) {
 	.style("min-width",jqueryWidth)
 
   console.log("Tamaño después de cambio con D3:",cellHead.css("width"))
+
+  $(".scroll_aid_header>th:first-child").css("min-width","333px");
+///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
 
 	        });
 	      },10);
