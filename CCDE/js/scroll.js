@@ -44,12 +44,18 @@ window.onscroll = function() {
     var largeOnesCond = elsCopy.every(allTrue) && elsCopy < els;
 
     if((els.every(allTrue) && all_Equal != 0) || largeOnesCond) {
-      $("tr.scroll_aid_header").attr("visible","yes");
-      $("tr.scroll_aid_header>th").css("color",color);
-      $("tr.scroll_aid_header>th:not(:first-child)")
-	.css("border","1px solid lightGray");
+      var overflows_ = document.querySelectorAll("div.overflow");
+      overflows_ = !Array.prototype.slice.call(overflows_).filter(function(d) {
+	return d.style.display != "none";
+      })[0].offsetHeight;
 
-console.log("!!");
+      if(!overflows_) {
+        $("tr.scroll_aid_header").attr("visible","yes");
+        $("tr.scroll_aid_header>th").css("color",color);
+        $("tr.scroll_aid_header>th:not(:first-child)")
+	  .css("border","1px solid lightGray");
+      }
+
 
     } else if(!(els.every(allTrue) && all_Equal != 0 && largeOnesCond)) {
       $("tr.scroll_aid_header").attr("visible","no");
@@ -152,8 +158,10 @@ if(SS_){
 
     if(lastRow  > window.innerHeight) {
 	$("#footer").css("display","block");
+console.log("footer!");
     } else {
 	$("#footer").css("display","none");
+console.log("no footer!");
     }
 
   } // <-- If-statement para corroborar que existen filas en la pantalla!

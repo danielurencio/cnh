@@ -390,6 +390,11 @@ $.get("blueprints.json",function(response) {
   $("select.filtros").change(function() {
 //    $(".scroll_aid_header th").css("color","white");
 //    $(".scroll_aid_header th").css("border-color","white")
+      $("tr.scroll_aid_header").attr("visible","no");
+      $("tr.scroll_aid_header>th").css("color","white");
+      $("tr.scroll_aid_header>th:not(:first-child)")
+        .css("border","1px solid white")
+
 
     $("body").css("cursor","progress");
 
