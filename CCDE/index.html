@@ -11,6 +11,7 @@
   <script src="https://code.highcharts.com/modules/series-label.js"></script>
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
   <script src="js/script.js"></script>
+
  </head>
  <body>
 
@@ -27,17 +28,11 @@
 </div>
 
 <!-- ################################# FILTROS ################### (start) -->
+
+
+
 <div id="filtros" style="width:100%;padding-top:0%;height:90px;position:fixed;background:white;border-bottom-style:solid;border-bottom-width:1px;z-index:50;">
-
 <!--
-<div style="padding-top:0px;padding-bottom:0px;text-align:right;width:100%;font-weight:700;color:rgb(13,180,190);font-size:10px;z-index:50;position:fixed;" id=lang>
-  <span id="esp" class="lang" style="cursor:pointer;">Español</span>
-  &nbsp; / &nbsp;
- <span id="eng" class="lang" style="cursor:pointer;">English</span>
- &emsp;
-</div>
--->
-
 <div style="padding-top:60px;padding-right:100px;text-align:right;width:100%;font-weight:700;color:rgb(13,180,190);font-size:10px;z-index:0;position:fixed;display:none;">
 <button  id="boton" style='font-family:"Open Sans";font-weight:600;font-size:11px;'>Descargar</button >&ensp;&ensp;&ensp;
 </div>
@@ -45,7 +40,6 @@
  <div style="height:100%;width:100%;">
   <div style="padding-top:10px;padding-bottom:5px;text-align:center;position:relative;height:20%;font-size:14px;font-weight:800;">
    <div id="tema_text" style="position:absolute;left:0%;width:50%;"></div>
-<!--   <div id="nivel_text" style="position:absolute;left:25%;width:25%;"></div>-->
    <div id="fecha_text" style="position:absolute;left:50%;width:25%;"></div>
    <div id="tempo_text" style="position:absolute;left:75%;width:25%;text-align:left;"></div>
   </div>
@@ -61,19 +55,14 @@
   </select>
 
 
-<!--
-   <button class="filtros" id="on" tag="cuencas">Cuenca</button>&ensp;
-   <button class="filtros" id="off" tag="contratos">Régimen Contractual</button>&ensp;
-   <button class="filtros" id="off" tag="campos">Campo</button>
--->
   </div>
 
 
    <div id="fecha_options" style="position:absolute;width:25%;left:50%"> 
     <div style="position:absolute;width:50%;left:0%;text-align:right;">
      <form action="">
-      <span id="start_text"></span>&nbsp;<select id="start_year" style="width:60px">
-      </select>
+      <span id="start_text"></span>&nbsp;
+      <select id="start_year" style="width:60px"></select>
      </form>
      <form style="padding-top:2px;" action="">
       <span id="end_text"></span>&nbsp;<select id="end_year" style="width:60px">
@@ -107,8 +96,73 @@
   </div>
 
  </div>
+-->
+<div style='width:100%; background-color:white;height:10%;'></div>
+ <div style="width: 100%; display:table;height:90%;">
+  <div style="display: table-row;height:100%;">
+   <div class='cell a'>
+    <div class='titulo_cont'>Tema</div>
+     <div id='tema_options' style='text-align:center;'>
+      <form>
+       <select class="filtros" style="width:60%;">
+	<option tag="cuencas">Cuenca</option>
+	<option tag="contratos">Régimen Contractual</option>
+	<option tag="campos">Campo</option>
+       </select>
+      </form>
+     </div>
+   </div>
+   <div class='cell b'>
+    <div class='titulo_cont'>Fecha</div>
+    <div style="width:100%; display:table; height:45px">
+     <div style='display:table-row;'>
+      <div class='cell i_fechas' style='text-align:right;'>
+	<div style='width:100%;display:table;height:100%'>
+	 <div style='display:table-row;height:100%;'>
+          <div class='cell i_fechas'>
+	   <div>Inicio:</div>
+	   <div>Fin:</div>
+	  </div>
+          <div class='cell i_fechas'>
+	   <form><select style="width:90%;"></select></form>
+	   <form><select style="width:90%;"></select></form>
+	  </div>
+	 </div>
+	</div>
+      </div>
+      <div class='cell i_fechas'>
+	<form><select style="width:65%;"></select></form>
+	<form><select style="width:65%;"></select></form>
+      </div>
+     </div>
+    </div>
+   </div>
 
+   <div class='cell c'>
+    <div class='titulo_cont'>Periodicidad</div>
+    <div style="width:100%; display:table; height:40px">
+     <div style='display:table-row;'>
+      <div class='cell i_fechas' style='text-align:right;'>
+       <form action>
+        <div>
+	 <input type='radio' name='periodicidad' value='mensual' checked></input>
+        </div>
+        <div>
+	 <input type='radio' name='periodicidad' value='anual'></input>
+        </div>
+       </form>
+      </div>
+      <div class='cell i_fechas'>
+	<div>Mensual</div>
+	<div>Anual</div>
+      </div>
+     </div>
+
+   </div>
+  </div>
+ </div> 
 </div>
+
 <!-- ################################# FILTROS ##################### (end)-->
 	  <div id='scroll_aid' style="text-align:left;width:335px;height:59px;top:90px;left:0px;position:fixed;background:white;padding-top:0px;padding-left:0px;z-index:2;border-top:1px solid black;padding-bottom:0px;">
    <div style='position:fixed;margin-top:10px;margin-left:285px;width:45px;'>Buscar:</div>

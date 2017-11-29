@@ -27,6 +27,31 @@ html,body {
  color:var(--resaltar);
 }
 
+
+div.cell {
+ display:table-cell;
+ height:100%;
+ width: 33.33%;
+}
+
+.a, .b, .c { height:100%; }
+
+.i_fechas {
+ display:table-cell;
+ height:100%;
+ background-color:white;
+ border-left:1px solid white;
+ width:50%;
+}
+
+.titulo_cont {
+ height:25px;
+ text-align:center;
+ font-size:15px;
+ font-weight:700;
+}
+
+
 select {
  font-family:'Open Sans';
  font-weight:300;

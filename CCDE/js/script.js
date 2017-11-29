@@ -1195,12 +1195,12 @@ function Cubos(data,tag) {
 
   $(".scroll_aid_header>th:first-child").css("min-width","333px");
 
-  if(posHeader.left < posHide.left) {
+  if(posHeader.left != posHide.left) {
     console.log(posHide);
     console.log(posHeader);
 
-    $(".scroll_aid_header>th:first-child")
-	.css("min-width",posHeader.left+"px");    
+    d3.select(".scroll_aid_header>th:first-child")
+	.style("min-width",posHeader.left+"px");    
   }
 
 
