@@ -1156,7 +1156,7 @@ function Cubos(data,tag) {
   console.log("Tamaño de celda en head:",cellHead.css("width"))
   
   var CellOffsetWidth = cellHide[0].offsetWidth//.css("width"); 
-  var jqueryWidth = cellHide.css("width"); 
+  var jqueryWidth = "75px";//cellHide.css("width"); 
 
   console.log("Tamaño de celda 'offset':",CellOffsetWidth);
   console.log("Tamaño de celda 'jQuery':",jqueryWidth);
@@ -1165,12 +1165,15 @@ function Cubos(data,tag) {
   cellHead.css("width",jqueryWidth) 
   cellHead.css("min-width",jqueryWidth) 
 
+
+  console.log("Tamaño después de cambio con jQuery:",cellHead.css("width"))
+
   d3.selectAll(".scroll_aid_header>th:nth-child(n+2)")
 	.style("max-width",jqueryWidth)
 	.style("width",jqueryWidth)
 	.style("min-width",jqueryWidth)
 
-  console.log("Tamaño después de cambio:",cellHead.css("width"))
+  console.log("Tamaño después de cambio con D3:",cellHead.css("width"))
 
 	        });
 	      },10);
@@ -1474,7 +1477,7 @@ function Cubos(data,tag) {
 	.map(function(d) { return "<th style='width:"+ cell_Width +
 	"px;min-width:"+ cell_Width +"px;max-width:"+cell_Width+"px'>" + d + "</th>"; });
 
-      var scroll_id_header_ = ["<th style='min-width:333px;'></th>"]
+      var scroll_id_header_ = ["<th style='min-width:333px;padding:1px;'></th>"]
 	.concat(scroll_id_header).join("");
       $("tr.scroll_aid_header").html(scroll_id_header_)
 
