@@ -158,10 +158,8 @@ if(SS_){
 
     if(lastRow  > window.innerHeight) {
 	$("#footer").css("display","block");
-console.log("footer!");
     } else {
 	$("#footer").css("display","none");
-console.log("no footer!");
     }
 
   } // <-- If-statement para corroborar que existen filas en la pantalla!

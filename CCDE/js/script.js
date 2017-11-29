@@ -102,6 +102,9 @@ $(document).ready(function() {
 	  return val;
 	});
 
+	matches = matches.filter(function(d,i) {
+	  return i <50;
+        });
 
         $("div#dropDown").css("display","block");
 
@@ -207,6 +210,7 @@ $(document).ready(function() {
 	  var el_ = selected_TD(txt[2])[0]; // <-- (b)
 //	  asyncScrollingSearch(el_);	    // <-- (c)
 	  mostrar(el_);
+	  $("#footer").css("display","none");
        },10);			     /*-------------------Async--*/
 
       })();
@@ -226,6 +230,11 @@ $(document).ready(function() {
     $(el.parentNode).css("display","block");
     var pos = el.parentNode.parentNode.parentNode.parentNode.parentNode.offsetTop;
 //    window.scrollTo(0,pos-30)
+
+    $(window).scrollTop(
+      $(el).offset().top - 180
+    );
+
   }
 
 ////////////////////////////////////////////////////////////////////////
@@ -1158,29 +1167,43 @@ function Cubos(data,tag) {
 ///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
   var cellHide = $("div.overflow>table>tbody.hide>tr:nth-child(2)>td:nth-child(4)")
   var cellHead = $(".scroll_aid_header>th:nth-child(n+2)");
-  console.log("Tamaño de celda en head:",cellHead.css("width"))
+//  console.log("Tamaño de celda en head:",cellHead.css("width"))
   
   var CellOffsetWidth = cellHide[0].offsetWidth//.css("width"); 
   var jqueryWidth = "75px";//cellHide.css("width"); 
 
-  console.log("Tamaño de celda 'offset':",CellOffsetWidth);
-  console.log("Tamaño de celda 'jQuery':",jqueryWidth);
+//  console.log("Tamaño de celda 'offset':",CellOffsetWidth);
+//  console.log("Tamaño de celda 'jQuery':",jqueryWidth);
  
   cellHead.css("max-width",jqueryWidth) 
   cellHead.css("width",jqueryWidth) 
   cellHead.css("min-width",jqueryWidth) 
 
 
-  console.log("Tamaño después de cambio con jQuery:",cellHead.css("width"))
+//  console.log("Tamaño después de cambio con jQuery:",cellHead.css("width"))
 
   d3.selectAll(".scroll_aid_header>th:nth-child(n+2)")
 	.style("max-width",jqueryWidth)
 	.style("width",jqueryWidth)
 	.style("min-width",jqueryWidth)
 
-  console.log("Tamaño después de cambio con D3:",cellHead.css("width"))
+//  console.log("Tamaño después de cambio con D3:",cellHead.css("width"))
+  var posHeader = document.querySelector(".scroll_aid_header>th:nth-child(2)")
+	.getBoundingClientRect();
+
+  var posHide = cellHide[0].getBoundingClientRect();
 
   $(".scroll_aid_header>th:first-child").css("min-width","333px");
+
+  if(posHeader.left < posHide.left) {
+    console.log(posHide);
+    console.log(posHeader);
+
+    $(".scroll_aid_header>th:first-child")
+	.css("min-width",posHeader.left+"px");    
+  }
+
+
 ///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
 
 	        });
