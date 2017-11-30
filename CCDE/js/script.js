@@ -711,7 +711,6 @@ function descargar_selection(series) {
   ];
 
 var fechatest_ = fecha.toLocaleString('es-MX').replace(", "," - ")
-console.log(fechatest_);
 
   chunk.push(Header.join("\n"));
   chunk.push(",,");
@@ -757,7 +756,7 @@ console.log(fechatest_);
   chunk = chunk.replace(/Ú/g,"U");
 
   var csvFile = new Blob(["\ufeff",chunk], { 'type':'text/csv' });
-console.log(chunk)
+
   if(window.navigator && window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveOrOpenBlob(csvFile,"info.csv");
   } else {
@@ -893,7 +892,7 @@ function descargar() {
   }
 
   csv = csv.join("\n");
-  var csvFile = new Blob([csv], { 'type':'text/csv' });
+  var csvFile = new Blob(["\ufeff",csv], { 'type':'text/csv' });
 
   if(window.navigator && window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveOrOpenBlob(csvFile,filename + ".csv");
@@ -1723,7 +1722,7 @@ function descargarSerie() {
   csv = csv.join("\n");
   csv = csv.replace(/NaN/g,"");
 
-  var csvFile = new Blob([csv], { 'type':'text/csv' });
+  var csvFile = new Blob(["\ufeff",csv], { 'type':'text/csv' });
 
   if(window.navigator && window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveOrOpenBlob(csvFile,"info.csv");
