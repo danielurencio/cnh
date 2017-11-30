@@ -710,6 +710,8 @@ function descargar_selection(series) {
    "\n",
   ];
 
+var fechatest_ = fecha.toLocaleString('es-MX').replace(", "," - ")
+console.log(fechatest_);
 
   chunk.push(Header.join("\n"));
   chunk.push(",,");
