@@ -706,9 +706,10 @@ function descargar_selection(series) {
   var Header = [
    "PRODUCCION",
    "COMISION NACIONAL DE HIDROCARBUROS",
-   "Fecha de descarga: " + fecha.toLocaleString().replace(", "," - "),
+   "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
    "\n",
   ];
+
 
   chunk.push(Header.join("\n"));
   chunk.push(",,");
@@ -853,7 +854,7 @@ function descargar() {
   var Header = [
    "PRODUCCION",
    "COMISION NACIONAL DE HIDROCARBUROS",
-   "Fecha de descarga: " + fecha.toLocaleString().replace(", "," - "),
+   "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
    "\n",
   ];
 
@@ -1692,7 +1693,7 @@ function descargarSerie() {
   var Header = [
    titulo,
    "COMISION NACIONAL DE HIDROCARBUROS",
-   "Fecha de descarga: " + fecha.toLocaleString().replace(", "," - "),
+   "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
    "\n",
   ];
 
