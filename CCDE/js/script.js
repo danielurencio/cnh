@@ -253,6 +253,7 @@ $(document).ready(function() {
 ////////////////////////////////////////////////////////////////////////////
 //////////// Al buscar una celda, esto 'escrolea' hasta encontrarla
 /////////////////////////////////////////////////////////////////////////
+/*
   function asyncScrollingSearch(el) {
    var selection_ = document.querySelectorAll("td[selection]");
    if(selection_.length > 0) {
@@ -275,8 +276,6 @@ $(document).ready(function() {
    var fittingCells = Math.ceil(viewP / 17);
 
    if(filas.length < fittingCells) {
-    /*Si la fila en la que está la celda no está visible, scroll hasta
-	encontrarla !! */
       if(elDisp == 'none') {
        console.log("tabla chica: ir a fila que no está dibujada");
 	 var ss = setInterval(function() {
@@ -308,8 +307,8 @@ $(document).ready(function() {
    } else {
 	console.log("TABLAS GRANDES");
 	var elLoc = $(filas).map(function(i,d) {
-	  var val = this.children[0].textContent.replace(/\s*/g,"");
-          val = val == el.textContent.replace(/\s*/g,"") ? i : null;
+	  var val = this.children[0].textContent.replace(/\s/g,"");
+          val = val == el.textContent.replace(/\s/g,"") ? i : null;
 	  return val;
 	})[0];
 
@@ -327,7 +326,6 @@ $(document).ready(function() {
 	var elDisp = $(el.parentNode).css("display");
 	console.log(elPosition,elLoc);
 
-	/*Si la fila está muy abajo hay q darle un empujón al scroll*/
 	if(elLoc*17 > window.innerHeight - 150) {
 	  console.log("esto sólo debe de imprimirse cuando es hacia abajo!");
 	  window.scrollTo(0,document.body.scrollHeight);
@@ -374,61 +372,79 @@ $(document).ready(function() {
    }
 
   }
+*/
+
+/////////////////////////////////////////////////////////////////////////////
+//                          |                                              //
+// Todo ocurre aquí.------- V                                              //
+//                                                                         //
 /////////////////////////////////////////////////////////////////////////////
 
-  // Todo ocurre aquí.
 //  $.ajax({
 //   url:"blueprints.json",
 //   dataType:'json',
 //   success:function(response) {
 $.get("blueprints.json",function(response) {
 
-  $("select.filtros").change(function() {
-//    $(".scroll_aid_header th").css("color","white");
-//    $(".scroll_aid_header th").css("border-color","white")
+  $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
+/*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
       $("tr.scroll_aid_header").attr("visible","no");
       $("tr.scroll_aid_header>th").css("color","white");
       $("tr.scroll_aid_header>th:not(:first-child)")
         .css("border","1px solid white")
-
+/*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
 
     $("body").css("cursor","progress");
 
-//    $("button.filtros").attr("id","off");
-//    $(this).attr("id","on");
 
     var tag = $(this).find(":selected").attr("tag");
     $("tbody#tabla").html("");
-    var loading_text = "<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>"
-//    $("body").prepend(loading_text);
+    var loading_text = "<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>";
 
-
+///////////////////////////////////////////////////////////////////////////////
+//////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
+///////////////////////////////////////////////////////////////////////////////
     $.get(tag + ".json", function(data) {
        Cubos(data,tag);
        $("tbody#tabla>tbody.labels").click();
-       $($("tbody#tabla>tbody.hide")[0].querySelectorAll("div.labels:nth-child(1)")).click();
+       $($("tbody#tabla>tbody.hide")[0]
+	.querySelectorAll("div.labels:nth-child(1)")).click();
+
        if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
+
        $("body").css("cursor","default");
+
        filtrarSeries(data);
     });
-
+///////////////////////////////////////////////////////////////////////////////
+//////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
+///////////////////////////////////////////////////////////////////////////////
     
-  });
+  });  // <------- CAMBIO DE TEMA...
 
+     RenderWords(response,"esp");
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////////// AJAX - tabla default - ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
      $.get("cuencas.json", function(data) {
         data = formatoData(data);
 	Cubos(data);
         $("tbody#tabla>tbody.labels").click();
-        $($("tbody#tabla>tbody.hide")[0].querySelectorAll("div.labels:nth-child(1)")).click();
+        $($("tbody#tabla>tbody.hide")[0]
+	  .querySelectorAll("div.labels:nth-child(1)")).click();
 	filtrarSeries(data);
-     })
+     });
+///////////////////////////////////////////////////////////////////////////////
+//////////////////// AJAX - tabla default - ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
-     RenderWords(response,"esp");
+
      $("span.lang").on("click", function() {
 	RenderWords(response,this.id);
      });
 
-     $("button#boton").on("click",descargar);
+//     $("button#boton").on("click",descargar);
 
      $("button#selection").on("click",function() {
        var series = obtener_series();
@@ -1561,6 +1577,39 @@ function RenderWords(obj,lang) {
     $("select#" + id_dates[i] + "_month").append(months);
     $("select#" + id_dates[i] + "_year").append(years_);
   }
+
+  var start_year = document.getElementById("start_year").children;
+  start_year = Array.prototype.slice.call(start_year).map(function(d) {
+    return d.textContent;
+  });
+
+  var start_month = document.getElementById("start_month").children;
+  start_month = Array.prototype.slice.call(start_month).map(function(d) {
+    return d.textContent;
+  });
+
+
+  function addMonths(date, months) {
+    date.setMonth(date.getMonth() + months);
+    var month = String(date.getMonth());
+    if( month.length == 1 ) month = "0" + month;
+    var year = String(date.getFullYear());
+    return [month,year];
+  };
+
+  var dateBefore = addMonths(new Date(),-12);
+  var dateNow = addMonths(new Date(),0);
+
+  var s_Year = start_year.indexOf(dateBefore[1]);
+  var e_Year = start_year.indexOf(dateNow[1]);
+  var s_Month = start_month.indexOf(dateBefore[0]);
+  var e_Month = start_month.indexOf(dateNow[0]);
+
+  document.getElementById("start_year").selectedIndex = s_Year;
+  document.getElementById("end_year").selectedIndex = e_Year;
+  document.getElementById("start_month").selectedIndex = s_Month;
+  document.getElementById("end_month").selectedIndex = e_Month;
+
 
 };
 

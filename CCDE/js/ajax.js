@@ -1,7 +1,7 @@
 $(function() {
   $("button#consultar").on("click",function() {
     var params = {};
-    params['tema'] = $("select.filtros").find(":selected").text();
+    params['topic'] = $("select.filtros").find(":selected").text();
     params['start_year'] = $("select#start_year").find(":selected").text();
     params['end_year'] = $("select#end_year").find(":selected").text();
     params['start_month'] = $("select#start_month").find(":selected").text();
