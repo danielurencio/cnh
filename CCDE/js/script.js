@@ -757,7 +757,7 @@ console.log(fechatest_);
   chunk = chunk.replace(/Ú/g,"U");
 
   var csvFile = new Blob([chunk], { 'type':'text/csv' });
-
+console.log(chunk)
   if(window.navigator && window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveOrOpenBlob(csvFile,"info.csv");
   } else {
