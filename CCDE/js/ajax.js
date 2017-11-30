@@ -7,6 +7,8 @@ $(function() {
     params['start_month'] = $("select#start_month").find(":selected").text();
     params['end_month'] = $("select#end_month").find(":selected").text();
     params['period'] = $('input[name=periodicidad]:checked').val();
+    params['title'] = '';
+    params['subtitle'] = '';
 
     var str = "AJAX!\n\n"
 
@@ -21,6 +23,18 @@ $(function() {
       str += k + spcs + params[k] + "\n";
     }
 
-    alert(str);
-  })
+//    alert(str);
+
+     $.ajax({
+        url: "http://172.16.24.57/cubos_produccion.py",
+        type: "post",
+        datatype:"json",
+        data: params,
+        success: function(response){
+          console.log(response);
+        }
+     });
+
+
+  });
 })

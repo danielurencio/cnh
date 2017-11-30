@@ -380,13 +380,18 @@ $(document).ready(function() {
 //                                                                         //
 /////////////////////////////////////////////////////////////////////////////
 
-//  $.ajax({
-//   url:"blueprints.json",
-//   dataType:'json',
-//   success:function(response) {
-$.get("blueprints.json",function(response) {
-  RenderWords(response,"esp");
+$.ajax({
+   url:"http://172.16.24.57/cubos_temas.py",
+   dataType:'json',
+   data:{'section':'PRODUCCION'},
+   success:function(temas) {
+   
+    var TEMAS = JSON.parse(temas);
+    var temas_nombres = TEMAS.map(function(d) { return d.tema; });
 
+ $.get("blueprints.json",function(response) {
+  RenderWords(response,"esp",temas_nombres);
+//console.log(response);
   $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
 /*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
       $("tr.scroll_aid_header").attr("visible","no");
@@ -438,7 +443,10 @@ $.get("blueprints.json",function(response) {
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////// AJAX - tabla default - ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+/*
      $.get("cuencas.json", function(data) {
+	console.log(data);
         data = formatoData(data);
 	Cubos(data);
         $("tbody#tabla>tbody.labels").click();
@@ -446,6 +454,38 @@ $.get("blueprints.json",function(response) {
 	  .querySelectorAll("div.labels:nth-child(1)")).click();
 	filtrarSeries(data);
      });
+*/
+
+    var params = {};
+    params['topic'] = "Cuenca"//$("select.filtros").find(":selected").text();
+    params['start_year'] = "2016"//$("select#start_year").find(":selected").text();
+    params['end_year'] = "2017"//$("select#end_year").find(":selected").text();
+    params['start_month'] = "1"//$("select#start_month").find(":selected").text();
+    params['end_month'] = "12"//$("select#end_month").find(":selected").text();
+    params['period'] = 'annually'//$('input[name=periodicidad]:checked').val();
+    params['title'] = '';
+    params['subtitle'] = '';
+
+
+     $.ajax({
+        url: "http://172.16.24.57/cubos_produccion.py",
+        type: "post",
+        datatype:"json",
+        data: params,
+        success: function(data){
+//	  $("div#espere").css("visibility
+          console.log(data);
+          data = formatoData(data);
+	  Cubos(data);
+          $("tbody#tabla>tbody.labels").click();
+          $($("tbody#tabla>tbody.hide")[0]
+	   .querySelectorAll("div.labels:nth-child(1)")).click();
+	  filtrarSeries(data);
+
+        }
+     });
+
+
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////// AJAX - tabla default - ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -467,10 +507,10 @@ $.get("blueprints.json",function(response) {
      });
 
 
-});
-//   }
+  });
+ }
 
-//  });
+}); // <-- PRIMER AJAX!
 
 
 function grapher(info) {
@@ -1550,11 +1590,15 @@ function Cubos(data,tag) {
 };
 
 
-function RenderWords(obj,lang) {
+function RenderWords(obj,lang,temas) {
   var titles = obj.A[lang].filtros.titles;
   var months = obj.A[lang].filtros.months;
   var years = obj.A[lang].filtros.years;
   var options = obj.A[lang].filtros.options;
+
+  d3.select("select.filtros").selectAll("option")
+    .data(temas).enter().append("option")
+    .html(function(d) { return d; });
 
   // Colocar cada uno de los títulos en su respectivo lugar.
   for( var k in titles ) {
