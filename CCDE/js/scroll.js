@@ -62,14 +62,37 @@ window.onscroll = function() {
       $("tr.scroll_aid_header>th").css("color","white");
       $("tr.scroll_aid_header>th:not(:first-child)")
 	.css("border","1px solid white")
-
     }
 
   }
 
+/*---------------------------Fix-----------------------------------------*/
+/*Evita celda coloreada cuando mouseover y scroll hacia abajo*/
+  var THs_color = $("tr.scroll_aid_header>th").map(function() {
+    return $(this).css("background-color");
+  })
+
+  THs_color = Array.prototype.slice.call(THs_color).filter(function(d) {
+    return d != "rgb(255, 255, 255)" && d != "rgba(0, 0, 0, 0)";
+  });
+
+
+  var edgePosition = $("div.overflow").filter(function() {
+	return $(this).css("display") == "block";
+  })[0].getBoundingClientRect().bottom;
+
+
+  if(edgePosition && edgePosition > 0 && edgePosition < 150) {
+    if(THs_color.length > 0) {
+     $("tr.scroll_aid_header>th").css("background-color","white");
+    }
+  }
+/*--------------------------Fix-------------------------------------------*/
+
   if($("tr.scroll_aid_header").attr("visible") == "no") {
     $("tr.scroll_aid_header[visible='no']>th")
-	.css("background","white");
+	.css("background-color","white");
+
   };
 
   if($(".overflow:visible")[0]) {
@@ -86,13 +109,10 @@ window.onscroll = function() {
 
     }
 
-/* // Si el fondo de la tabla es mayor al tamaño de la ventama, que salga scroll.
-    if(table_bottom > window.innerHeight) {
-	$("#footer").css("display","block");
-    } else {
-	$("#footer").css("display","none");
-    }
-*/
+    /*Fix*/
+
+
+    
   }
 
 /////////////////////////////////////////////////////////////////////
