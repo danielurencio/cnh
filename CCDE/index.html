@@ -68,9 +68,15 @@
 	 </div>
 	</div>
       </div>
-      <div class='cell i_fechas'>
-	<form><select id='start_month' style="width:45%;"></select></form>
-	<form><select id='end_month' style="width:45%;"></select></form>
+      <div class='cell i_fechas' style='position:relative;'>
+	<div id='HP' style='width:45%;height:calc(100% - 1px);position:absolute;z-index:-1;background-color:black;opacity:0.1;border-radius:3px;'>
+        </div>
+	  <form>
+	    <select class='_month' id='start_month' style="width:45%;"></select>
+          </form>
+	  <form>
+	    <select class='_month' id='end_month' style="width:45%;"></select>
+	  </form>
       </div>
      </div>
     </div>

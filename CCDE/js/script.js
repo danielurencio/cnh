@@ -385,6 +385,7 @@ $(document).ready(function() {
 //   dataType:'json',
 //   success:function(response) {
 $.get("blueprints.json",function(response) {
+  RenderWords(response,"esp");
 
   $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
 /*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
@@ -422,7 +423,17 @@ $.get("blueprints.json",function(response) {
     
   });  // <------- CAMBIO DE TEMA...
 
-     RenderWords(response,"esp");
+  $('input[type=radio][name=periodicidad]').change(function() {
+      var HP = $("div#HP");
+      var _month = $("._month");
+    if(this.value == 'yearly') {
+      HP.css("z-index","1");
+      _month.css("opacity","0.18");
+    } else {
+      HP.css("z-index","-1");
+      _month.css("opacity","1");
+    }
+  })
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////// AJAX - tabla default - ///////////////////////////////////
@@ -1597,7 +1608,7 @@ function RenderWords(obj,lang) {
     return [month,year];
   };
 
-  var dateBefore = addMonths(new Date(),-12);
+  var dateBefore = addMonths(new Date(),-11);
   var dateNow = addMonths(new Date(),0);
 
   var s_Year = start_year.indexOf(dateBefore[1]);
