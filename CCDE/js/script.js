@@ -1554,7 +1554,7 @@ function RenderWords(obj,lang) {
   var months = obj.A[lang].filtros.months;
   var years = obj.A[lang].filtros.years;
   var options = obj.A[lang].filtros.options;
-console.log(months);
+
   // Colocar cada uno de los títulos en su respectivo lugar.
   for( var k in titles ) {
     var selector = "#" + k + "_text";
@@ -1573,7 +1573,7 @@ console.log(months);
   months = months.map(function(d) {
     return "<option>" + d + "</option>";
   }).join("");
-console.log(months);
+
   var years_ = [];
   for(var i=years[0]; i<=years[1]; i++) {
     years_.push(i);
