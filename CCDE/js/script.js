@@ -392,8 +392,8 @@ $.ajax({
  $.get("blueprints.json",function(response) {
   RenderWords(response,"esp",TEMAS);
 
-  $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
-//      $("div#espere").css("visibility","visible");
+  $("button#consultar").on("click",function() {
+      $("div#espere").css("visibility","visible");
 /*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
       $("tr.scroll_aid_header").attr("visible","no");
       $("tr.scroll_aid_header>th").css("color","white");
@@ -401,8 +401,34 @@ $.ajax({
         .css("border","1px solid white")
 /*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
 
-//    $("body").css("cursor","progress");
+    var tag = $(this).find(":selected").attr("tag");
+    $("tbody#tabla").html("");
+    var loading_text = "<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>";
 
+
+     var params = parametros();
+
+     $.ajax({
+        url: "http://172.16.24.57/cubos_produccion.py",
+        type: "post",
+        datatype:"json",
+        data: params,
+        success: function(data){
+          ajaxFunction(data,Cubos,filtrarSeries);
+        }
+
+     });
+
+  });
+
+  $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
+      $("div#espere").css("visibility","visible");
+/*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
+      $("tr.scroll_aid_header").attr("visible","no");
+      $("tr.scroll_aid_header>th").css("color","white");
+      $("tr.scroll_aid_header>th:not(:first-child)")
+        .css("border","1px solid white")
+/*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
 
     var tag = $(this).find(":selected").attr("tag");
     $("tbody#tabla").html("");
@@ -512,6 +538,7 @@ $.get("cuencas.json", function(data) {
   });
  }
 }); // <-- PRIMER AJAX!
+
 
 
 function grapher(info) {
@@ -1251,132 +1278,129 @@ d3.select(".scroll_aid_header>th:first-child")
 
 function colcol() {
 
-d3.selectAll(".hide td:not(:first-child)").on("mouseover",function() {
+  d3.selectAll(".hide td:not(:first-child)").on("mouseover",function() {
 
-var grand_parent = $(this).parent().parent().parent()
-.parent().parent().attr("tag");
-var parent = $(this).parent().parent().attr("tag");
-var ix = $(this).index() + 1;
-var aid_cell = d3.select("tr.scroll_aid_header>th:nth-child("+ (ix-2) +")")
-if(aid_cell) {
-if($("tr.scroll_aid_header").attr("visible") == "yes") {
- aid_cell.style("background",color);
-}
-}
+  var grand_parent = $(this).parent().parent().parent()
+    .parent().parent().attr("tag");
+  var parent = $(this).parent().parent().attr("tag");
+  var ix = $(this).index() + 1;
+  var aid_cell = d3.select("tr.scroll_aid_header>th:nth-child("+ (ix-2) +")")
+  if(aid_cell) {
+    if($("tr.scroll_aid_header").attr("visible") == "yes") {
+      aid_cell.style("background",color);
+    }
+  }
 
 // Colorear columnas
 //     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" +
 //	parent+"'] td:nth-child("+ ix +")").style("background",color);
 
 // Colorear filas
-$(this.parentNode.children).css("background",color);
+  $(this.parentNode.children).css("background",color);
 
-d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" +
-parent+"'] th:nth-child("+ ix +")").style("background",color);
+  d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" +
+    parent+"'] th:nth-child("+ ix +")").style("background",color);
 
 //$(this.parentNode.children[0]).css("background",color)
 
-});
+  });
 
 
-d3.selectAll(".hide td:not(:first-child)").on("mouseout",function() {
-var color_cond = this.parentNode.getAttribute("id") == "dist" ||
-this.parentNode.children[0].getAttribute("id") == "dist_";
-var color_1 = color_cond ? temas_fondo : "transparent";
+  d3.selectAll(".hide td:not(:first-child)").on("mouseout",function() {
+    var color_cond = this.parentNode.getAttribute("id") == "dist" ||
+      this.parentNode.children[0].getAttribute("id") == "dist_";
+    var color_1 = color_cond ? temas_fondo : "transparent";
 
 
-var grand_parent = $(this).parent().parent().parent()
-.parent().parent().attr("tag");
-var parent = $(this).parent().parent().attr("tag");
-var ix = $(this).index() + 1;
-var aid_cell = d3.select("tr.scroll_aid_header>th:nth-child("+ (ix-2) +")")
+    var grand_parent = $(this).parent().parent().parent()
+      .parent().parent().attr("tag");
+    var parent = $(this).parent().parent().attr("tag");
+    var ix = $(this).index() + 1;
+    var aid_cell = d3.select("tr.scroll_aid_header>th:nth-child("+ (ix-2) +")")
 
-if(aid_cell) {
-if($('tr.scroll_aid_header').attr("visible") == "yes") {
- aid_cell.style("background","white")
-}
-}
+    if(aid_cell) {
+      if($('tr.scroll_aid_header').attr("visible") == "yes") {
+        aid_cell.style("background","white")
+      }
+    }
 
 // Descolorear filas
-var color_tag = $(this.parentNode).attr("color_tag");
-var color_tag_ = color_tag ? color_tag : "transparent";
-$(this.parentNode.children).css("background","");
+    var color_tag = $(this.parentNode).attr("color_tag");
+    var color_tag_ = color_tag ? color_tag : "transparent";
+    $(this.parentNode.children).css("background","");
 
 // Desolorear columnas
 //     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] "+
 //	"td:nth-child("+ ix +")")
 //	.style("background","transparent");
 
-d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] "+
-"th:nth-child("+ ix +")")
-.style("background","transparent");
+    d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] "+
+    "th:nth-child("+ ix +")")
+    .style("background","transparent");
 
 
-if(color_cond) {	
-$(this.parentNode.children[0]).css("background",color_1)
-if(this.parentNode.children[0].getAttribute("id") == "dist_") {
-  $(this.parentNode.children).css("background",color_1);
-}
-if(this.parentNode.getAttribute("id") == "dist") {
-  $(this.parentNode.children).css("background",color_1);
-}
+    if(color_cond) {	
+      $(this.parentNode.children[0]).css("background",color_1)
+      if(this.parentNode.children[0].getAttribute("id") == "dist_") {
+        $(this.parentNode.children).css("background",color_1);
+      }
+      if(this.parentNode.getAttribute("id") == "dist") {
+        $(this.parentNode.children).css("background",color_1);
+      }
 
-} else {
-$(this.parentNode.children[0]).css("background",color_tag_)
-}
+    } else {
+      $(this.parentNode.children[0]).css("background",color_tag_)
+    }
 
-var firstC = $(this.parentNode.children[0]).css("background-color");
+    var firstC = $(this.parentNode.children[0]).css("background-color");
 
-if($(this.parentNode).attr("even") == 1) {
-$(this.parentNode.children)
-//.filter(function() {
-//	return $(this).attr("id") != "n";
-//       })
-.css("background-color",firstC);
+    if($(this.parentNode).attr("even") == 1) {
+      $(this.parentNode.children)
+        .css("background-color",firstC);
 
-}
+    }
 
-});
+  });
 
-if(tag) {
-if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
-}
-
-
-var table_bottom = $(".overflow:visible")[0]
-.getBoundingClientRect().bottom;
-
-if(table_bottom > window.innerHeight) {
-$("#footer").css("display","block");
-} else {
-$("#footer").css("display","none");
-}
-
-
-
-var evenRows = document.querySelectorAll("div.overflow tr:nth-child(even)");
-evenRows = $(evenRows);
-
-evenRows.each(function() {
-let color = $(this).css("background-color");
-if(this.children[0].getAttribute("id") == "dist_") {
-  $(this).attr("color_tag", "rgba(73,171,129,0.25)");
-  $(this.children[0]).css("background","rgba(73,171,129,0.25)");
-} else {
-  if($(this).attr("id") != "dist") {
-    $(this).attr("color_tag",color);
-    $(this.children[0]).css("background",color)
-  } else {
-    $(this).attr("color_tag", "rgba(73,171,129,0.25)");
-    $(this.children[0]).css("background","rgba(73,171,129,0.25)");
+  if(tag) {
+    if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
   }
 
-}
 
-});
+  var table_bottom = $(".overflow:visible")[0]
+    .getBoundingClientRect().bottom;
 
-$("div.overflow tr>td").css("height","15");
-$("div.overflow tbody>tr:first-child>td").css("display","none");
+  if(table_bottom > window.innerHeight) {
+    $("#footer").css("display","block");
+  } else {
+    $("#footer").css("display","none");
+  }
+
+
+
+  var evenRows = document.querySelectorAll("div.overflow tr:nth-child(even)");
+  evenRows = $(evenRows);
+
+  evenRows.each(function() {
+    let color = $(this).css("background-color");
+    if(this.children[0].getAttribute("id") == "dist_") {
+      $(this).attr("color_tag", "rgba(73,171,129,0.25)");
+      $(this.children[0]).css("background","rgba(73,171,129,0.25)");
+    } else {
+      if($(this).attr("id") != "dist") {
+        $(this).attr("color_tag",color);
+        $(this.children[0]).css("background",color)
+      } else {
+        $(this).attr("color_tag", "rgba(73,171,129,0.25)");
+        $(this.children[0]).css("background","rgba(73,171,129,0.25)");
+      }
+
+    }
+
+  });
+
+  $("div.overflow tr>td").css("height","15");
+  $("div.overflow tbody>tr:first-child>td").css("display","none");
 }
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////vv HABILITAR ÍCONOS POR TABLA vv////////////////////////
