@@ -4,14 +4,14 @@
   <title>Centro de Consulta de Datos Estadísticos (CCDE)</title>
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="css/style.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="http://underscorejs.org/underscore-min.js"></script>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://code.highcharts.com/modules/series-label.js"></script>
-  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="libs/jquery.min.js"></script>
+  <script src="libs/d3.v4.min.js"></script>
+  <script src="libs/underscore-min.js"></script>
+  <script src="libs/highcharts.js"></script>
+  <script src="libs/series-label.js"></script>
+  <script src="libs/exporting.js"></script>
   <script src="js/script.js"></script>
-
+  <script src="js/ajax.js"></script>
  </head>
  <body>
 
@@ -29,80 +29,17 @@
 
 <!-- ################################# FILTROS ################### (start) -->
 
-
-
 <div id="filtros" style="width:100%;padding-top:0%;height:90px;position:fixed;background:white;border-bottom-style:solid;border-bottom-width:1px;z-index:50;">
-<!--
-<div style="padding-top:60px;padding-right:100px;text-align:right;width:100%;font-weight:700;color:rgb(13,180,190);font-size:10px;z-index:0;position:fixed;display:none;">
-<button  id="boton" style='font-family:"Open Sans";font-weight:600;font-size:11px;'>Descargar</button >&ensp;&ensp;&ensp;
-</div>
 
- <div style="height:100%;width:100%;">
-  <div style="padding-top:10px;padding-bottom:5px;text-align:center;position:relative;height:20%;font-size:14px;font-weight:800;">
-   <div id="tema_text" style="position:absolute;left:0%;width:50%;"></div>
-   <div id="fecha_text" style="position:absolute;left:50%;width:25%;"></div>
-   <div id="tempo_text" style="position:absolute;left:75%;width:25%;text-align:left;"></div>
-  </div>
+<div style='width:100%; background-color:white;height:2%;'></div>
 
-
-  <div style="height:80%;">
-   <div id="tema_options" style="text-align:center;position:absolute;width:50%;left:0%">
-
-  <select class="filtros">
-    <option tag="cuencas">Cuenca</option>
-    <option tag="contratos">Régimen Contractual</option>
-    <option tag="campos">Campo</option>
-  </select>
-
-
-  </div>
-
-
-   <div id="fecha_options" style="position:absolute;width:25%;left:50%"> 
-    <div style="position:absolute;width:50%;left:0%;text-align:right;">
-     <form action="">
-      <span id="start_text"></span>&nbsp;
-      <select id="start_year" style="width:60px"></select>
-     </form>
-     <form style="padding-top:2px;" action="">
-      <span id="end_text"></span>&nbsp;<select id="end_year" style="width:60px">
-      </select>
-     </form>
-    </div>
-    <div style="position:absolute;width:50%;left:50%;padding-left:2px">
-     <form action="">
-      <select id="start_month" style="width:85px">
-      </select>
-     </form>
-     <form style="padding-top:2px;" action="">
-      <select id="end_month" style="width:85px">
-      </select>
-     </form>
-    </div>
-
-
-   </div>
-
-   <div id="tempo_options" style="text-align:left;position:absolute;width:15%;left:75%">
-    <form action="">
-     <input type="radio" name="temporalidad" value="mensual" checked>
-     <span id="month_text"></span>
-     <br>
-     <input type="radio" name="temporalidad" value="anual">
-     <span id="year_text"></span>
-    </form>
-   </div>  
-
-  </div>
-
- </div>
--->
-<div style='width:100%; background-color:white;height:10%;'></div>
  <div style="width: 100%; display:table;height:90%;">
   <div style="display: table-row;height:100%;">
+
    <div class='cell a'>
     <div class='titulo_cont'>Tema</div>
-     <div id='tema_options' style='text-align:center;'>
+    <div style='width:100%;height:7px;'></div>
+    <div id='tema_options' style='text-align:center;'>
       <form>
        <select class="filtros" style="width:60%;">
 	<option tag="cuencas">Cuenca</option>
@@ -110,8 +47,9 @@
 	<option tag="campos">Campo</option>
        </select>
       </form>
-     </div>
+    </div>
    </div>
+
    <div class='cell b'>
     <div class='titulo_cont'>Fecha</div>
     <div style="width:100%; display:table; height:45px">
@@ -124,15 +62,15 @@
 	   <div>Fin:</div>
 	  </div>
           <div class='cell i_fechas'>
-	   <form><select style="width:90%;"></select></form>
-	   <form><select style="width:90%;"></select></form>
+	   <form><select id='start_year' style="width:90%;"></select></form>
+	   <form><select id='end_year' style="width:90%;"></select></form>
 	  </div>
 	 </div>
 	</div>
       </div>
       <div class='cell i_fechas'>
-	<form><select style="width:65%;"></select></form>
-	<form><select style="width:65%;"></select></form>
+	<form><select id='start_month' style="width:65%;"></select></form>
+	<form><select id='end_month' style="width:65%;"></select></form>
       </div>
      </div>
     </div>
@@ -157,10 +95,18 @@
 	<div>Anual</div>
       </div>
      </div>
-
    </div>
   </div>
- </div> 
+
+  <div class='cell c'>
+   <div style='position:relative;left:calc(50% - 45px);top:calc(50% - 13px);'>
+    <button id='consultar' style="height:30px;width:90px;font-family:'Open Sans';font-size:14px;font-weight:600;">Consultar</button>
+   </div>
+  </div>
+
+  </div>
+ </div>
+ 
 </div>
 
 <!-- ################################# FILTROS ##################### (end)-->
@@ -170,18 +116,11 @@
      <button id="selection" style="font-family:'Open Sans';font-size:9px;font-weight:600;margin-top:10px;">Descargar selección</button>
      <input id="principal" type="checkbox" style="margin-left:40px">Selección</input>
 </div>
-<!--  <div style='float:left;word-wrap:break;min-width:50px;'>
-    <span style='font-size:9px;'>Seleccionar todo</span>
-    <input id="principal" type="checkbox"></input>
--->
-<!--  <button style="font-family:'Open Sans';font-size:9px;font-weight:600;" id="principal" todos="no">Seleccionar todo</button>
--->
 
   </div>
   </div>
 
 <!-- ########################### HEADER ###############################(start) -->
-   <!--<div style='position:fixed;height:40px;top:90px;width:100%;'>hola</div>-->
    <div style='position:fixed;height:60px;top:90px;z-index:1;background:white;color:white;overflow-x:hidden;overflow-y:hidden;' class='scroll_header'>
     <div style='left:335px;position:fixed;width:100%;height:40px;z-index:3;color:black;'><input id="filtroSerie" style='z-index:3;margin-top:10px;width:40%;border:1px solid lightGray;'></input>
 
@@ -202,8 +141,7 @@
 
 <!-- ################################# TABLA #####################(start) -->
   <div id="tabla" style="width:100%;padding-top:150px;padding-left:0px;z-index:50;">
-
- <table style="height:100%;table-layout:fixed;">
+ <table style="height:100%;table-layout:fixed;width:100%;">
   <tbody id="tabla" style="width:100%">
   </tbody>
  </table>

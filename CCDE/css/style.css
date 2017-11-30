@@ -31,10 +31,12 @@ html,body {
 div.cell {
  display:table-cell;
  height:100%;
- width: 33.33%;
+ width: 25%;
 }
 
-.a, .b, .c { height:100%; }
+/*.d { width:20%; }*/
+
+.a, .b, .c, .d { height:100%; }
 
 .i_fechas {
  display:table-cell;

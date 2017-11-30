@@ -120,7 +120,6 @@ $(document).ready(function() {
 	   .append("div")
 	   .html(function(d) {
 		var val = d;
-//		val = val.replace(/>/g," &rsaquo; ");
 		return val;
 	   });
 
@@ -372,18 +371,6 @@ $(document).ready(function() {
 
 	},50);
 
-/*
-	var ss_ = setInterval(function() {
-	   elPosition = el.getBoundingClientRect().top;
-	   mult = elPosition > 0 ? 1 : -1;
-
-    	   window.scrollBy(0,mult*20);
-
-	   if( elPosition < window.innerHeight && elPosition > 300 ) {
-	    clearInterval(ss_);
-	   }
-	},100);
-*/	
    }
 
   }
@@ -421,7 +408,6 @@ $.get("blueprints.json",function(response) {
        $("tbody#tabla>tbody.labels").click();
        $($("tbody#tabla>tbody.hide")[0].querySelectorAll("div.labels:nth-child(1)")).click();
        if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
-//       $("div.wait").remove();
        $("body").css("cursor","default");
        filtrarSeries(data);
     });
@@ -940,7 +926,7 @@ function Cubos(data,tag) {
    .data(data).enter()
   .append("tbody")
    .style("width","100%")
-   .attr("class","labels")
+   .attr("class","labels").style("display","table")
    .attr("tag",function(d) { return d[0]; })
    .each(function(d) {
      $("<tbody class='hide' tag='"+ d[0] +"'></tbody>").insertAfter(this);
@@ -955,7 +941,7 @@ function Cubos(data,tag) {
 	var str = "" +
 	"<tr style='width:100%'>" +
 	"<td style='width:100%'>" +
-	"<label style='cursor:pointer;width:100%'>&ensp;<span class='s' id='uno' style='font-weight:400;'>" + plus + "&ensp;</span>" + selection.attr("tag") + "</label>" +
+	"<label style='cursor:pointer;width:100%'>&nbsp;<span class='s' id='uno' style='font-weight:400;'>" + plus + "&ensp;</span>" + selection.attr("tag") + "</label>" +
 	"</td>" + 
 	"</tr>" + 
 	"";
