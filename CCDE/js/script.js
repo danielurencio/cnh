@@ -982,157 +982,161 @@ s_a[i].parentNode.removeChild(s_a[i]);
 
 function Cubos(data,tag) {
 ///////////ESTO EVITA BUGS CON EL SCROLLER DEL HEADER/////////////////////////
-$('.scroll_aid_header').attr("visible","no");
-$(".scroll_header").scrollLeft(0);
-$("#footer_").scrollLeft(0);
-$("button#principal").attr("todos","no");
-data = formatoData(data);
+  $('.scroll_aid_header').attr("visible","no");
+  $(".scroll_header").scrollLeft(0);
+  $("#footer_").scrollLeft(0);
+  $("button#principal").attr("todos","no");
+  data = formatoData(data);
 /////////////////////////////////////////////////////////////////////////////
-var color = getComputedStyle(document.body).getPropertyValue('--filasYcols');
-var temas_fondo = getComputedStyle(document.body)
-.getPropertyValue('--temas-fondo');
+  var color = getComputedStyle(document.body).getPropertyValue('--filasYcols');
+  var temas_fondo = "white"
+	//getComputedStyle(document.body).getPropertyValue('--temas-fondo');
 
-var plus = "&plus;", minus = "&ndash;";
+  var plus = "&plus;", minus = "&ndash;";
 
-d3.select("tbody#tabla").selectAll("tbody")
-.data(data).enter()
-.append("tbody")
-.style("width","100%")
-.attr("class","labels").style("display","table")
-.attr("tag",function(d) { return d[0]; })
-.each(function(d) {
-$("<tbody class='hide' tag='"+ d[0] +"'></tbody>").insertAfter(this);
-});
+  d3.select("tbody#tabla").selectAll("tbody")
+    .data(data).enter()
+   .append("tbody")
+    .style("width","100%")
+    .attr("class","labels").style("display","table")
+    .attr("tag",function(d) { return d[0]; })
+    .each(function(d) {
+	$("<tbody class='hide' tag='"+ d[0] +"'></tbody>").insertAfter(this);
+    });
 
-d3.selectAll("tbody#tabla > tbody")
-.each(function(d,i) {
-var selection = d3.select(this);
-selection.style("width","100%");
-var id = selection.attr("tag");
-if(selection.attr("class") == "labels") {
-var str = "" +
-"<tr style='width:100%'>" +
-"<td style='width:100%'>" +
-"<label style='cursor:pointer;width:100%'>&nbsp;<span class='s' id='uno' style='font-weight:400;'>" + plus + "&ensp;</span>" + selection.attr("tag") + "</label>" +
-"</td>" + 
-"</tr>" + 
-"";
-selection.html(str);
-} else {
-selection.style("display","none")
-var tag = selection.attr("tag");
-var seg = data.filter(function(d) { return d[0] == tag; })[0];
-var tablas = seg.filter(function(d) { return typeof(d) == "object"; });
+    d3.selectAll("tbody#tabla > tbody")
+     .each(function(d,i) {
+	var selection = d3.select(this);
+	selection.style("width","100%");
+	var id = selection.attr("tag");
+	if(selection.attr("class") == "labels") {
+	  var str = "" +
+	  "<tr style='width:100%'>" +
+	  "<td style='width:100%'>" +
+	  "<label style='cursor:pointer;width:100%'>&nbsp;<span class='s' id='uno' style='font-weight:400;'>" + plus + "&ensp;</span>" + selection.attr("tag") + "</label>" +
+	  "</td>" + 
+	  "</tr>" + 
+	  "";
+	  selection.html(str);
+	} else {
+	  selection.style("display","none")
+	  var tag = selection.attr("tag");
+	  var seg = data.filter(function(d) { return d[0] == tag; })[0];
+	  var tablas = seg.filter(function(d) { return typeof(d) == "object"; });
 
-for(var j in tablas) {
-var str = "" +
-"<thead style='width:100%'>" +
-"<div style='width:100%'>&nbsp;&nbsp;<label style='cursor:pointer;'>&ensp;<span id='dos' class='s' style='font-weight:400;'>" + plus + "&ensp;</span>&ensp;&ensp;" + Object.keys(tablas[j])[0] + "</label></div>" +
-"</thead>";
+	for(var j in tablas) {
+	  var str = "" +
+	  "<thead style='width:100%'>" +
+	  "<div style='width:100%'>&nbsp;&nbsp;<label style='cursor:pointer;'>&ensp;<span id='dos' class='s' style='font-weight:400;'>" + plus + "&ensp;</span>&ensp;&ensp;" + Object.keys(tablas[j])[0] + "</label></div>" +
+	  "</thead>";
 
-var contenido_tabla; // <-- Solo pegar en DOM la primera tabla! 
-contenido_tabla = ""//j == 0 && i == 1 ? tablas[j][Object.keys(tablas[j])[0]] +
+	  var contenido_tabla; // <-- Solo pegar en DOM la primera tabla! 
+	  contenido_tabla = ""//j == 0 && i == 1 ? tablas[j][Object.keys(tablas[j])[0]] +
 //	  "<br>" : "";
-selection.append("div")
-  .attr("class","labels")
-  .attr("tag",Object.keys(tablas[j])[0])
-  .attr("id","id_"+j)
-  .html(str);
+	  selection.append("div")
+	    .attr("class","labels")
+	    .attr("tag",Object.keys(tablas[j])[0])
+	    .attr("id","id_"+j)
+	    .html(str);
 
-selection.append("div")
-.attr("class","overflow")
-.attr("tag",tag)
-.style("display","none")
-.attr("on","0")
-.style("overflow-x","scroll")
- .append("table").style("table-layout","fixed")
- .append("tbody")
-  .attr("class","hide")
-  .style("width","100%")
-  .attr("tag",Object.keys(tablas[j])[0])
-  .attr("download","1")
-  .attr("id","id_"+j)
-  .html(contenido_tabla);
+	  selection.append("div")
+	   .attr("class","overflow")
+	   .attr("tag",tag)
+	   .style("display","none")
+	   .attr("on","0")
+	   .style("overflow-x","scroll")
+	  .append("table").style("table-layout","fixed")
+	  .append("tbody")
+	   .attr("class","hide")
+	   .style("width","100%")
+	   .attr("tag",Object.keys(tablas[j])[0])
+	   .attr("download","1")
+	   .attr("id","id_"+j)
+	   .html(contenido_tabla);
 
-}
+	}
 
-}
+     }
 
-});
+  });
 
 ///////////////////////////////////////////////////////////////////////////
 /////////////////vv EXPANDIR PARA ESCRIBIR EN DOM vv//////////////////////
 /////////////////////////////////////////////////////////////////////////
 
 /*Un IF-STATEMENT podría diferenciar entre niveles*/
-$(".labels").on("click",function(d) {
-SS_= true;
-$("div#quitarFiltro").css("display","none");
+  $(".labels").on("click",function(d) {
+    SS_= true;
+    $("div#quitarFiltro").css("display","none");
 
-var tag = d3.select(this).attr("tag");
-var span = d3.select($(this).find("span.s")[0]);
-var selection = d3.select("[tag='" + tag + "'].hide")
-var selection = d3.select($(this).next()[0])
-if(selection.style("display") == 'block' && this.nodeName == "TBODY") {
-selection
-.style("display","none");
-span.html(plus + "&ensp;");
-}
-else if( selection.style("display") != "block" && this.nodeName == "TBODY" ) {
-selection.style("display","block");
-span.html(minus + "&ensp;");
-}
+    var tag = d3.select(this).attr("tag");
+    var span = d3.select($(this).find("span.s")[0]);
+    var selection = d3.select("[tag='" + tag + "'].hide")
+    var selection = d3.select($(this).next()[0])
+    if(selection.style("display") == 'block' && this.nodeName == "TBODY") {
+	selection
+	 .style("display","none");
+	 span.html(plus + "&ensp;");
+    }
+    else if( selection.style("display") != "block" && this.nodeName == "TBODY" ) {
+      selection.style("display","block");
+      span.html(minus + "&ensp;");
+    }
 
-if(this.nodeName == "DIV") {
-  $(".overflow").scrollLeft(0);
-  $(".scroll_header").scrollLeft(0);
+    if(this.nodeName == "DIV") {
+      $(".overflow").scrollLeft(0);
+      $(".scroll_header").scrollLeft(0);
 
-  var tbody_hide = $(this).next()[0].querySelector(".hide");
-  var this_overflow = d3.select($(this).next()[0]);
-  var span = d3.select($(this).find("span.s")[0]);
-  if(this_overflow.style("display") == "block") {
-    this_overflow.style("display","none");
-    d3.select(tbody_hide).html("");
-    span.html(plus + "&ensp;");
-  } else {
+      var tbody_hide = $(this).next()[0].querySelector(".hide");
+      var this_overflow = d3.select($(this).next()[0]);
+      var span = d3.select($(this).find("span.s")[0]);
+      if(this_overflow.style("display") == "block") {
+        this_overflow.style("display","none");
+        d3.select(tbody_hide).html("");
+        span.html(plus + "&ensp;");
+      } else {
     //// <--- !
-    var algo = this;
+      var algo = this;
 
-    function nuevaTabla(algo,callback) {
-      var parentTag = algo.parentNode.getAttribute("tag");
-      var Tag = algo.getAttribute("tag");
+      function nuevaTabla(algo,callback) {
+        var parentTag = algo.parentNode.getAttribute("tag");
+        var Tag = algo.getAttribute("tag");
 
-      var tableData = data.filter(function(d) {
-	return d[0] == parentTag;
-      })[0].filter(function(d) {
-	return typeof(d) == "object" && d[Tag];
-      })[0][Tag];
+        var tableData = data.filter(function(d) {
+	  return d[0] == parentTag;
+        })[0].filter(function(d) {
+	  		return typeof(d) == "object" && d[Tag];
+        })[0][Tag];
 
-      tableData = formatoData(tableData);
+        tableData = formatoData(tableData);
 
-      var parser = new DOMParser();
-      var docTable = parser.parseFromString(tableData,"text/html");
-      docTable = docTable.querySelector("table");
-      $(docTable).css("table-layout","fixed");
+        var parser = new DOMParser();
+        var docTable = parser.parseFromString(tableData,"text/html");
+        docTable = docTable.querySelector("table");
+        $(docTable).css("table-layout","fixed");
 
 //	      $(docTable.querySelectorAll("td"))
 //		.css("width","75px")
 //		.css("min-width","75px")
 //		.css("max-width","75px")
 
-      d3.selectAll("div>label>span.s").html(plus + "&ensp;");
-      span.html(minus + "&ensp;");
-      d3.selectAll("div.overflow").style("display","none");
-      d3.selectAll("div.overflow>table>tbody").html("")
+        d3.selectAll("div>label>span.s").html(plus + "&ensp;");
+        span.html(minus + "&ensp;");
+        d3.selectAll("div.overflow").style("display","none");
+        d3.selectAll("div.overflow>table>tbody").html("")
 
-      var viewStart = algo.getBoundingClientRect().bottom;
-      var viewEnd = window.innerHeight;
-      noOfRows = Math.ceil((viewEnd-viewStart)/17)*1.5;
+        var viewStart = algo.getBoundingClientRect().bottom;
+        var viewEnd = window.innerHeight;
+        noOfRows = Math.ceil((viewEnd-viewStart)/17)*1.5;
 
-      var arr = docTable.querySelectorAll("tr");
+        var arr = docTable.querySelectorAll("tr");
 // "rgba(73,171,129,0.25)"
 
 	for(var i=0; i<arr.length; i++) {
+/*petición Mendoza*/
+/*Colores para filas pares, títulos subtítulos y así...*/
+
+/*
 	  if(arr[i].children[0].getAttribute("id") == "dist_") {
 	    $(arr[i].children)
 		.css("background","rgba(73,171,129,0.25)")
@@ -1174,7 +1178,7 @@ if(this.nodeName == "DIV") {
 	      }
 
 	  }
-
+*/
 	  if(i>noOfRows) {
 	    arr[i]//.remove()
 	.style.display = "none";
@@ -1185,23 +1189,24 @@ if(this.nodeName == "DIV") {
 	}
 
       
-      d3.select(tbody_hide.parentNode.parentNode)
-       .style("display","block");
-      d3.select(tbody_hide).html(docTable.innerHTML)
+        d3.select(tbody_hide.parentNode.parentNode)
+         .style("display","block");
+        d3.select(tbody_hide).html(docTable.innerHTML)
 
-      icons();
+        icons();
    // seleccionarCheckboxes();
-      enableGraphs();
-      corregirRenglones();
-      headerScroll();
-      colcol();
-      callback();
+        enableGraphs();
+        corregirRenglones();
+        headerScroll();
+        colcol();
+        callback();
 
-      $("td#n").each(function() {
-	let color = $(this.parentNode.children[0])
-	  .css("background-color");
-	$(this).css("background",color);
-      });
+        $("td#n").each(function() {
+	  let color = $(this.parentNode.children[0])
+	    .css("background-color");
+/*petición Mendoza*/
+//	  $(this).css("background",color);
+        });
 
 
     };
@@ -1223,43 +1228,44 @@ if(this.nodeName == "DIV") {
 
 
 ///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
-var cellHide = $("div.overflow>table>tbody.hide>tr:nth-child(2)>td:nth-child(4)")
-var cellHead = $(".scroll_aid_header>th:nth-child(n+2)");
+	  var cellHide = $("div.overflow>table>tbody.hide>tr:nth-child(2)>td:nth-child(4)")
+	  var cellHead = $(".scroll_aid_header>th:nth-child(n+2)");
 //  console.log("Tamaño de celda en head:",cellHead.css("width"))
 
-var CellOffsetWidth = cellHide[0].offsetWidth//.css("width"); 
-var jqueryWidth = "75px";//cellHide.css("width"); 
+	  var CellOffsetWidth = cellHide[0].offsetWidth//.css("width"); 
+	  var jqueryWidth = "75px";//cellHide.css("width"); 
 
 //  console.log("Tamaño de celda 'offset':",CellOffsetWidth);
 //  console.log("Tamaño de celda 'jQuery':",jqueryWidth);
 
-cellHead.css("max-width",jqueryWidth) 
-cellHead.css("width",jqueryWidth) 
-cellHead.css("min-width",jqueryWidth) 
+	  cellHead.css("max-width",jqueryWidth) 
+	  cellHead.css("width",jqueryWidth) 
+	  cellHead.css("min-width",jqueryWidth) 
 
 
 //  console.log("Tamaño después de cambio con jQuery:",cellHead.css("width"))
 
-d3.selectAll(".scroll_aid_header>th:nth-child(n+2)")
-.style("max-width",jqueryWidth)
-.style("width",jqueryWidth)
-.style("min-width",jqueryWidth)
+	  d3.selectAll(".scroll_aid_header>th:nth-child(n+2)")
+	    .style("max-width",jqueryWidth)
+	    .style("width",jqueryWidth)
+	    .style("min-width",jqueryWidth)
 
 //  console.log("Tamaño después de cambio con D3:",cellHead.css("width"))
-var posHeader = document.querySelector(".scroll_aid_header>th:nth-child(2)")
-.getBoundingClientRect();
+	  var posHeader = document
+		.querySelector(".scroll_aid_header>th:nth-child(2)")
+		.getBoundingClientRect();
 
-var posHide = cellHide[0].getBoundingClientRect();
+	  var posHide = cellHide[0].getBoundingClientRect();
 
-$(".scroll_aid_header>th:first-child").css("min-width","333px");
+	  $(".scroll_aid_header>th:first-child").css("min-width","333px");
 
-if(posHeader.left != posHide.left) {
-console.log(posHide);
-console.log(posHeader);
+	  if(posHeader.left != posHide.left) {
+	    console.log(posHide);
+	    console.log(posHeader);
 
-d3.select(".scroll_aid_header>th:first-child")
-.style("min-width",posHeader.left+"px");    
-}
+	    d3.select(".scroll_aid_header>th:first-child")
+	      .style("min-width",posHeader.left+"px");    
+	  }
 
 
 ///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
@@ -1296,10 +1302,13 @@ function colcol() {
 //	parent+"'] td:nth-child("+ ix +")").style("background",color);
 
 // Colorear filas
+/*petición Mendoza*/
   $(this.parentNode.children).css("background",color);
 
   d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" +
-    parent+"'] th:nth-child("+ ix +")").style("background",color);
+    parent+"'] th:nth-child("+ ix +")")
+	/*petición Mendoza*/
+	.style("background",color);
 
 //$(this.parentNode.children[0]).css("background",color)
 
@@ -1356,7 +1365,7 @@ function colcol() {
 
     if($(this.parentNode).attr("even") == 1) {
       $(this.parentNode.children)
-        .css("background-color",firstC);
+//        .css("background-color",firstC);
 
     }
 
@@ -1392,7 +1401,9 @@ function colcol() {
         $(this.children[0]).css("background",color)
       } else {
         $(this).attr("color_tag", "rgba(73,171,129,0.25)");
-        $(this.children[0]).css("background","rgba(73,171,129,0.25)");
+        $(this.children[0])
+	/*Petición Mendoza*/
+	//.css("background","rgba(73,171,129,0.25)");
       }
 
     }

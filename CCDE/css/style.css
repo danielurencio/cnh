@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:299,300i,400,400i,600,600i,700,700i,800,800i');
 
 :root {
- --titulos:rgb(49,114,86);
+ --titulos:rgba(0,0,0,0.68);/*rgb(49,114,86);*/
  --filasYcols:rgba(82,191,144,0.25);
  --resaltar:rgb(82,91,144);
  --resaltarFilas:rgba(73,171,129,0.5);
- --subtitulos:rgb(73,171,129);
+ --subtitulos:gray;/*rgb(73,171,129);*/
  --temas:rgb(73,171,129);
  --temas-fondo:rgba(73,171,129,0.25);
  --nones:rgba(73,171,129,0.1);
@@ -25,6 +25,10 @@ html,body {
 
 .lang:hover {
  color:var(--resaltar);
+}
+
+div.overflow td {
+ border-bottom: 1px solid lightGray;
 }
 
 
@@ -188,12 +192,12 @@ td:nth-child(n+2),th:nth-child(n+2) {
  max-width:75px;
  text-align:center;
  border-left:1px solid lightGray;
- border-right:1px solid lightGray;
+ /*border-right:1px solid lightGray;*/
  word-wrap:break-word;
 }
 
 th:nth-child(n+2) {
- border-top:1px solid lightGray;
+/* border-top:1px solid lightGray;*/
 }
 
 td:nth-child(2),th:nth-child(2) {
@@ -233,8 +237,9 @@ label:hover {
 /* background:var(--temas-fondo);*/
 }
 
+/*petición Mendoza*/
 #dist>td:first-child {
- background:var(--temas-fondo); /*IMPORTANTE*/
+ /*background:var(--temas-fondo); /*IMPORTANTE*/
 }
 
 #dist_ {
@@ -495,3 +500,7 @@ div#tabla_expandible>table>tr:hover {
   background-color: var(--filasYcols);
 }
 
+
+div.overflow tr>td:last-child { border-right: 1px solid white; }
+
+div.overflow tr:last-child, div.overflow tr:last-child>td { border-bottom:1px solid white; }
