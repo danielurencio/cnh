@@ -1661,7 +1661,7 @@ return d.textContent;
 
 function addMonths(date, months) {
   date.setMonth(date.getMonth() + months);
-  var month = String(date.getMonth());
+  var month = String(date.getMonth() + 1);
 //if( month.length == 1 ) month = "0" + month;
   var year = String(date.getFullYear());
   return [month,year];
@@ -1674,7 +1674,7 @@ var s_Year = start_year.indexOf(dateBefore[1]);
 var e_Year = start_year.indexOf(dateNow[1]);
 var s_Month = start_month.indexOf(dateBefore[0]);
 var e_Month = start_month.indexOf(dateNow[0]);
-
+console.log(start_month)
 document.getElementById("start_year").selectedIndex = s_Year;
 document.getElementById("end_year").selectedIndex = e_Year;
 document.getElementById("start_month").selectedIndex = s_Month;
