@@ -1660,16 +1660,16 @@ return d.textContent;
 
 
 function addMonths(date, months) {
-date.setMonth(date.getMonth() + months);
-var month = String(date.getMonth());
-if( month.length == 1 ) month = "0" + month;
-var year = String(date.getFullYear());
-return [month,year];
+  date.setMonth(date.getMonth() + months);
+  var month = String(date.getMonth());
+//if( month.length == 1 ) month = "0" + month;
+  var year = String(date.getFullYear());
+  return [month,year];
 };
 
-var dateBefore = addMonths(new Date(),-11);
+var dateBefore = addMonths(new Date(),-12);
 var dateNow = addMonths(new Date(),0);
-
+//console.log(s);
 var s_Year = start_year.indexOf(dateBefore[1]);
 var e_Year = start_year.indexOf(dateNow[1]);
 var s_Month = start_month.indexOf(dateBefore[0]);
@@ -1816,6 +1816,7 @@ function parametros() {
 
   params['title'] = '';
   params['subtitle'] = '';
+  console.log(params);
   return params;
 };
 
