@@ -521,6 +521,24 @@ for(var j in selectors_) {
       if(anio_final - anio_inicio > 10) {
 	$("input[type=radio][value=annually]")[0].checked = true
 	$("div#HP").css('z-index',"1")
+
+	$(".i_fechas>div")
+	  .filter(function(d) {
+	    return this.textContent == "Mensual"
+	  }).css("opacity",0.2);
+
+	$("input[type=radio][value=monthly]")
+	  .css("opacity",0.2);
+
+      } else {
+	$(".i_fechas>div")
+	  .filter(function(d) {
+	    return this.textContent == "Mensual"
+	  }).css("opacity",1);
+
+	$("input[type=radio][value=monthly]")
+	  .css("opacity",1);
+
       }
 
     }
