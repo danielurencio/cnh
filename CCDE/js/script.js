@@ -434,6 +434,15 @@ $.ajax({
   });
 
   $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
+      _parametros_ = parametros();
+
+      boton_consulta
+	.css("background-color","rgb(221,221,221)")
+        .css("border","2px outset rgb(221,221,221)")
+	.css("color","black")
+	.css("border-radius","0px")
+	.css("font-weight","600");
+
       $("div#espere").css("visibility","visible");
 /*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
       $("tr.scroll_aid_header").attr("visible","no");
