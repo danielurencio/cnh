@@ -1,6 +1,7 @@
 var noOfRows;
 var ScrollHeader;
 var SS_ = true;
+var _parametros_;
 
 $(document).ready(function() {
   document.body.style.zoom = 1.0; 
@@ -393,6 +394,15 @@ $.ajax({
   RenderWords(response,"esp",TEMAS);
 
   $("button#consultar").on("click",function() {
+      _parametros_ = parametros();
+
+      boton_consulta
+	.css("background-color","rgb(221,221,221)")
+        .css("border","2px outset rgb(221,221,221)")
+	.css("color","black")
+	.css("border-radius","0px")
+	.css("font-weight","600");
+
       $("div#espere").css("visibility","visible");
 /*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
       $("tr.scroll_aid_header").attr("visible","no");
@@ -405,9 +415,10 @@ $.ajax({
     $("tbody#tabla").html("");
     var loading_text = "<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>";
 
-
+     
      var params = parametros();
 
+/*------------------AJAX con botón de consultar-------------------------------*/
      $.ajax({
         url: "http://172.16.24.57/cubos_produccion.py",
         type: "post",
@@ -418,6 +429,7 @@ $.ajax({
         }
 
      });
+/*------------------AJAX con botón de consultar-------------------------------*/
 
   });
 
@@ -481,8 +493,46 @@ $('input[type=radio][name=periodicidad]').change(function() {
     HP.css("z-index","-1");
 //    _month.css("opacity","1");
   }
+  var newParams = parametros();
 
-})
+});
+
+
+var boton_consulta = $("button#consultar");
+var selectors_ = ["select#start_year","select#end_year","select#start_month","select#end_month","input[type=radio][name=periodicidad]"];
+
+for(var j in selectors_) {
+  $(selectors_[j]).change(function() {
+    var cambio_ = false;
+    var newParams = parametros();
+
+    for(var k in newParams) {
+      if(newParams[k] != _parametros_[k]) {
+	cambio_= true;
+	break;
+      }
+    }
+
+    if(cambio_) {
+      boton_consulta
+	.css("background-color","rgb(13,180,190)")
+	.css("border","none")
+	.css("color","white")
+	.css("border-radius","3px")
+	.css("font-weight","800");
+    } else {
+      boton_consulta
+	.css("background-color","rgb(221,221,221)")
+        .css("border","2px outset rgb(221,221,221)")
+	.css("color","black")
+	.css("border-radius","0px")
+	.css("font-weight","600");
+
+    }
+
+  });
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////// AJAX - tabla default - ///////////////////////////////////
@@ -501,6 +551,7 @@ $.get("cuencas.json", function(data) {
 */
 
  var params = parametros();
+ _parametros_ = parametros();
 
  $.ajax({
    url: "http://172.16.24.57/cubos_produccion.py",
@@ -1351,7 +1402,9 @@ function colcol() {
     if(color_cond) {	
       $(this.parentNode.children[0]).css("background",color_1)
       if(this.parentNode.children[0].getAttribute("id") == "dist_") {
-        $(this.parentNode.children).css("background",color_1);
+        $(this.parentNode.children)
+/*petición Mendoza*/
+	//.css("background",color_1);
       }
       if(this.parentNode.getAttribute("id") == "dist") {
         $(this.parentNode.children).css("background",color_1);
@@ -1372,7 +1425,7 @@ function colcol() {
   });
 
   if(tag) {
-    if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
+//    if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
   }
 
 
@@ -1394,7 +1447,9 @@ function colcol() {
     let color = $(this).css("background-color");
     if(this.children[0].getAttribute("id") == "dist_") {
       $(this).attr("color_tag", "rgba(73,171,129,0.25)");
-      $(this.children[0]).css("background","rgba(73,171,129,0.25)");
+      $(this.children[0])
+	/*petición Mendoza*/
+	//.css("background","rgba(73,171,129,0.25)");
     } else {
       if($(this).attr("id") != "dist") {
         $(this).attr("color_tag",color);
@@ -1427,7 +1482,7 @@ if(cubos[c].nodeName == "TBODY") {
   var this_tag = cubos[c].getAttribute("tag");
 
   var cubo_td = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
-    "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child:not(#dist_)";
+    "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child"//:not(#dist_)";
   var cubo_th = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
     "tbody.hide[tag='"+ this_tag +"']>tr>th:first-child";
   var cubo_dist_ = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
@@ -1669,12 +1724,12 @@ function addMonths(date, months) {
 
 var dateBefore = addMonths(new Date(),-11);
 var dateNow = addMonths(new Date(),0);
-//console.log(s);
+
 var s_Year = start_year.indexOf(dateBefore[1]);
 var e_Year = start_year.indexOf(dateNow[1]);
 var s_Month = start_month.indexOf(dateBefore[0]);
 var e_Month = start_month.indexOf(dateNow[0]);
-console.log(dateBefore[0])
+
 document.getElementById("start_year").selectedIndex = s_Year;
 document.getElementById("end_year").selectedIndex = e_Year;
 document.getElementById("start_month").selectedIndex = s_Month;
@@ -1816,7 +1871,6 @@ function parametros() {
 
   params['title'] = '';
   params['subtitle'] = '';
-  console.log(params);
   return params;
 };
 
@@ -1847,7 +1901,7 @@ function formatoData(data) {
 
       data[i][j][Object.keys(data[i][j])[0]] =
         data[i][j][Object.keys(data[i][j])[0]]
-	.replace(/\<td(\>.*(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
+//	.replace(/\<td(\>.*(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
 
       data[i][j][Object.keys(data[i][j])[0]] =
         data[i][j][Object.keys(data[i][j])[0]]
