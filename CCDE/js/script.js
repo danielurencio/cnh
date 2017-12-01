@@ -2,6 +2,7 @@ var noOfRows;
 var ScrollHeader;
 var SS_ = true;
 var _parametros_;
+var TitulosParams = false;
 
 $(document).ready(function() {
   document.body.style.zoom = 1.0; 
@@ -512,6 +513,19 @@ var selectors_ = ["select#start_year","select#end_year","select#start_month","se
 
 for(var j in selectors_) {
   $(selectors_[j]).change(function() {
+
+    if(true) {
+      let anio_inicio = $("select#start_year").val();
+      let anio_final  = $("select#end_year").val();
+
+      if(anio_final - anio_inicio > 10) {
+	$("input[type=radio][value=annually]")[0].checked = true
+	$("div#HP").css('z-index',"1")
+      }
+
+    }
+
+
     var cambio_ = false;
     var newParams = parametros();
 
@@ -538,6 +552,9 @@ for(var j in selectors_) {
 	.css("font-weight","600");
 
     }
+
+    var selCond = selectors_[j] == "select#start_year" ||
+		  selectors_[j] == "select#end_year";
 
   });
 
@@ -977,65 +994,65 @@ return series;
 }
 
 function descargar() {
-var csv = [];
-var tbodys = document.querySelectorAll("tbody[download='1']");
-var fecha = new Date();
-var Header = [
-"PRODUCCION",
-"COMISION NACIONAL DE HIDROCARBUROS",
-"Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
-"\n",
-];
+  var csv = [];
+  var tbodys = document.querySelectorAll("tbody[download='1']");
+  var fecha = new Date();
+  var Header = [
+    "PRODUCCION",
+    "COMISION NACIONAL DE HIDROCARBUROS",
+    "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
+    "\n",
+  ];
 
-csv.push(Header.join("\n"));
+  csv.push(Header.join("\n"));
 
-for(var b=0; b<tbodys.length; b++) {
-var rows = tbodys[b].querySelectorAll("tr");
+  for(var b=0; b<tbodys.length; b++) {
+    var rows = tbodys[b].querySelectorAll("tr");
 
-if( b == 0 ) {
-var headers = rows[0].querySelectorAll("th");
-var row_set = []
-for(var h = 0; h < headers.length; h++) {
-row_set.push(headers[h].innerText);
-}
-csv.push(row_set.join(","));
-};
+    if( b == 0 ) {
+      var headers = rows[0].querySelectorAll("th");
+      var row_set = []
+      for(var h = 0; h < headers.length; h++) {
+        row_set.push(headers[h].innerText);
+      }
+      csv.push(row_set.join(","));
+    };
 
-csv.push("");
-var parent_ = tbodys[b].parentNode.getAttribute("tag");
-var current_ = tbodys[b].getAttribute("tag");
-csv.push(parent_ + "  -  " + current_ + ":");
+    csv.push("");
+    var parent_ = tbodys[b].parentNode.getAttribute("tag");
+    var current_ = tbodys[b].getAttribute("tag");
+    csv.push(parent_ + "  -  " + current_ + ":");
 
-for(var r=1; r<rows.length; r++) {
-var row_set = [];
-var cols = rows[r].querySelectorAll("td");
+    for(var r=1; r<rows.length; r++) {
+      var row_set = [];
+      var cols = rows[r].querySelectorAll("td");
 
-for(var c = 0; c < cols.length; c++) {
-row_set.push(cols[c].innerText);
-}
+      for(var c = 0; c < cols.length; c++) {
+	row_set.push(cols[c].innerText);
+      }
 
-csv.push(row_set.join(","));
-}
-csv.push("");
-}
+      csv.push(row_set.join(","));
+    }
+    csv.push("");
+  }
 
-csv = csv.join("\n");
-var csvFile = new Blob(["\ufeff",csv], { 'type':'text/csv' });
+  csv = csv.join("\n");
+  var csvFile = new Blob(["\ufeff",csv], { 'type':'text/csv' });
 
-if(window.navigator && window.navigator.msSaveOrOpenBlob) {
-window.navigator.msSaveOrOpenBlob(csvFile,filename + ".csv");
-} else {
-var downloadLink = document.createElement("a");
-downloadLink.download = "info.csv";
-downloadLink.href = window.URL.createObjectURL(csvFile);
-downloadLink.style.display = "none";
-document.body.appendChild(downloadLink);
-downloadLink.click();
-var s_a = document.getElementsByTagName("a");
-for(var i=0; i<s_a.length; i++) {
-s_a[i].parentNode.removeChild(s_a[i]);
-}
-}
+  if(window.navigator && window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveOrOpenBlob(csvFile,filename + ".csv");
+  } else {
+    var downloadLink = document.createElement("a");
+    downloadLink.download = "info.csv";
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    var s_a = document.getElementsByTagName("a");
+    for(var i=0; i<s_a.length; i++) {
+      s_a[i].parentNode.removeChild(s_a[i]);
+    }
+  }
 };
 
 
@@ -1125,7 +1142,7 @@ function Cubos(data,tag) {
 /////////////////////////////////////////////////////////////////////////
 
 /*Un IF-STATEMENT podría diferenciar entre niveles*/
-  $(".labels").on("click",function(d) {
+  $(".labels:not(#especial)").on("click",function(d) {
     SS_= true;
     $("div#quitarFiltro").css("display","none");
 
@@ -1159,6 +1176,7 @@ function Cubos(data,tag) {
       var algo = this;
 
       function nuevaTabla(algo,callback) {
+
         var parentTag = algo.parentNode.getAttribute("tag");
         var Tag = algo.getAttribute("tag");
 
@@ -1166,7 +1184,10 @@ function Cubos(data,tag) {
 	  return d[0] == parentTag;
         })[0].filter(function(d) {
 	  		return typeof(d) == "object" && d[Tag];
-        })[0][Tag];
+        })
+
+if(tableData[0]) {
+        tableData = tableData[0][Tag];
 
         tableData = formatoData(tableData);
 
@@ -1175,10 +1196,6 @@ function Cubos(data,tag) {
         docTable = docTable.querySelector("table");
         $(docTable).css("table-layout","fixed");
 
-//	      $(docTable.querySelectorAll("td"))
-//		.css("width","75px")
-//		.css("min-width","75px")
-//		.css("max-width","75px")
 
         d3.selectAll("div>label>span.s").html(plus + "&ensp;");
         span.html(minus + "&ensp;");
@@ -1268,7 +1285,7 @@ function Cubos(data,tag) {
 //	  $(this).css("background",color);
         });
 
-
+  }
     };
 
     function mensajeEspera() {
@@ -1884,12 +1901,21 @@ function parametros() {
 };
 
 function ajaxFunction(data,Cubos,filtrarSeries) {
+     var key_ = Object.keys(data[0][1])[0];
+     var tableString = data[0][1];
      data = formatoData(data);
      Cubos(data);
      $("tbody#tabla>tbody.labels").click();
-     $($("tbody#tabla>tbody.hide")[0]
-       .querySelectorAll("div.labels:nth-child(1)")).click();
+
+     if(tableString[key_]) {
+       $($("tbody#tabla>tbody.hide")[0]
+         .querySelectorAll("div.labels:nth-child(1)")).click();
+     } else {
+	console.log("caso especial");
+	$("tbody.hide>div.labell").attr("id","especial");
+     }
      filtrarSeries(data);
+     $("div#espere").css("visibility","hidden");
 };
 
 function formatoData(data) {
