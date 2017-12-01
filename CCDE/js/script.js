@@ -476,10 +476,10 @@ $('input[type=radio][name=periodicidad]').change(function() {
   var _month = $("._month");
   if(this.value == 'annually') {
     HP.css("z-index","1");
-    _month.css("opacity","0.18");
+//    _month.css("opacity","0.18");
   } else {
     HP.css("z-index","-1");
-    _month.css("opacity","1");
+//    _month.css("opacity","1");
   }
 
 })
