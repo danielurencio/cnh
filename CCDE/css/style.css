@@ -325,6 +325,7 @@ button.filtros {
   z-index:51;
 }
 
+#espere { height:calc(100% - 90px); top:90px; }
 
 #grapher>div#chart {
  background:white;

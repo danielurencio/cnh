@@ -1827,7 +1827,7 @@ function formatoData(data) {
 
       data[i][j][Object.keys(data[i][j])[0]] =
         data[i][j][Object.keys(data[i][j])[0]]
-	.replace(/-/g,"&ensp;&nbsp;")
+	.replace(/#/g,"&ensp;&nbsp;")
 
       data[i][j][Object.keys(data[i][j])[0]] =
         data[i][j][Object.keys(data[i][j])[0]]
