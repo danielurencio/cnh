@@ -1629,52 +1629,52 @@ return "<option>" + d.tema + "</option>";
 
 // Colocar los meses y los años.
 months = months.map(function(d) {
-return "<option>" + d + "</option>";
+  return "<option>" + d + "</option>";
 }).join("");
 
 var years_ = [];
 for(var i=years[0]; i<=years[1]; i++) {
-years_.push(i);
+  years_.push(i);
 }
 years_ = years_.map(function(d) {
-return "<option>" + d + "</option>";
+  return "<option>" + d + "</option>";
 });
 
 var id_dates = ["start","end"];
 for( var i in id_dates ) {
-$("select#" + id_dates[i] + "_month").text("");
-$("select#" + id_dates[i] + "_year").text("");
-$("select#" + id_dates[i] + "_month").append(months);
-$("select#" + id_dates[i] + "_year").append(years_);
+  $("select#" + id_dates[i] + "_month").text("");
+  $("select#" + id_dates[i] + "_year").text("");
+  $("select#" + id_dates[i] + "_month").append(months);
+  $("select#" + id_dates[i] + "_year").append(years_);
 }
 
 var start_year = document.getElementById("start_year").children;
 start_year = Array.prototype.slice.call(start_year).map(function(d) {
-return d.textContent;
+  return d.textContent;
 });
 
 var start_month = document.getElementById("start_month").children;
 start_month = Array.prototype.slice.call(start_month).map(function(d) {
-return d.textContent;
+  return d.textContent;
 });
 
 
 function addMonths(date, months) {
   date.setMonth(date.getMonth() + months);
   var month = String(date.getMonth() + 1);
-//if( month.length == 1 ) month = "0" + month;
+  if( month.length == 1 ) month = "0" + month;
   var year = String(date.getFullYear());
   return [month,year];
 };
 
-var dateBefore = addMonths(new Date(),-12);
+var dateBefore = addMonths(new Date(),-11);
 var dateNow = addMonths(new Date(),0);
 //console.log(s);
 var s_Year = start_year.indexOf(dateBefore[1]);
 var e_Year = start_year.indexOf(dateNow[1]);
 var s_Month = start_month.indexOf(dateBefore[0]);
 var e_Month = start_month.indexOf(dateNow[0]);
-console.log(start_month)
+console.log(dateBefore[0])
 document.getElementById("start_year").selectedIndex = s_Year;
 document.getElementById("end_year").selectedIndex = e_Year;
 document.getElementById("start_month").selectedIndex = s_Month;
