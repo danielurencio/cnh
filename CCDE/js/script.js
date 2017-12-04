@@ -2,7 +2,8 @@ var noOfRows;
 var ScrollHeader;
 var SS_ = true;
 var _parametros_;
-var TitulosParams = false;
+var params_especiales = null;
+var caso_especial = false;
 
 $(document).ready(function() {
   document.body.style.zoom = 1.0; 
@@ -387,10 +388,10 @@ $.ajax({
    dataType:'json',
    data:{'section':'PRODUCCION'},
    success:function(temas) {
-   
+  
     var TEMAS = JSON.parse(temas);
     //var temas_nombres = TEMAS.map(function(d) { return d.tema; });
-
+console.log(TEMAS);
  $.get("blueprints.json",function(response) {
   RenderWords(response,"esp",TEMAS);
 
@@ -426,7 +427,7 @@ $.ajax({
         datatype:"json",
         data: params,
         success: function(data){
-          ajaxFunction(data,Cubos,filtrarSeries);
+          ajaxFunction(data,Cubos,filtrarSeries,params_especiales);
         }
 
      });
@@ -1179,13 +1180,16 @@ function Cubos(data,tag) {
     }
 
     if(this.nodeName == "DIV" && $(this).attr("especial") == "1") {
-//	$("div#espere").css("visibility","visible")
+//	$("div#espere").css("visibility","visible");
+
 	var title = this.parentNode.getAttribute("tag");
 	var subtitle = this.getAttribute("tag");
+
+	params_especiales = { 'title':title,'subtitle':subtitle };
+
 	var params = parametros();
 	params["title"] = title;
 	params["subtitle"] = subtitle;
-	console.log(params);
 	var algo_ = this;
 
 	$.ajax({
@@ -1196,11 +1200,16 @@ function Cubos(data,tag) {
 		tabla_respuesta = formatoData(tabla_respuesta);
 		TableLogistics(algo_,tabla_respuesta);
 	   } 
-	})
+	});
 
     }
 
     if(this.nodeName == "DIV" && $(this).attr("especial") != "1") {
+	var title = this.parentNode.getAttribute("tag");
+	var subtitle = this.getAttribute("tag");
+
+	params_especiales = { 'title':title,'subtitle':subtitle };
+console.log(params_especiales);
 	TableLogistics(this,data);
     }
 
@@ -1336,7 +1345,6 @@ if(tableData[0]) {
     };
 
     function mensajeEspera() {
-console.log("función: 'mensajeEspera()' ejecutándose...");
       $("div#espere").css("visibility","visible")
       window.setTimeout(function() {
 	nuevaTabla(algo,function() {
@@ -1945,22 +1953,54 @@ function parametros() {
   return params;
 };
 
-function ajaxFunction(data,Cubos,filtrarSeries) {
+function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
+  var consulta;
      var key_ = Object.keys(data[0][1])[0];
      var tableString = data[0][1];
      data = formatoData(data);
      Cubos(data);
+console.log(caso_especial);
+//try {
+
+  if(special_params) {
+//    if(!caso_especial) {
+      consulta = $("tbody[tag='" + special_params.title + "'].hide")[0]
+	.querySelector("div[tag='" + special_params.subtitle + "']");
+/*    } else {
+      console.log("botón de consulta en caso especial");
+      consulta = $($("tbody#tabla>tbody.hide")[0]
+         .querySelectorAll("div.labels:nth-child(1)"));
+    }*/
+  } else {
+    consulta = $($("tbody#tabla>tbody.hide")[0]
+         .querySelectorAll("div.labels:nth-child(1)"));
+  }
+
      $("tbody#tabla>tbody.labels").click();
 
      if(tableString[key_]) {
-       $($("tbody#tabla>tbody.hide")[0]
-         .querySelectorAll("div.labels:nth-child(1)")).click();
+       caso_especial = false;
+
+       consulta.click();
      } else {
 	console.log("caso especial");
 	$("tbody.hide>div.labels").attr("especial","1");
+	console.log("Hacer clic en el primero durante el caso especial",caso_especial);
+//	if(caso_especial) {
+
+          $(window).scrollTop(
+            $(consulta).offset().top - 180
+          );
+	  consulta.click();
+//	}
+//	caso_especial = true;
      }
      filtrarSeries(data);
      $("div#espere").css("visibility","hidden");
+  
+//  } catch(err) {
+//    $("div.helper>div.content").html("Seleccione alguna tabla.")
+//  }
 };
 
 function formatoData(data) {

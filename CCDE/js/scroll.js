@@ -67,6 +67,7 @@ window.onscroll = function() {
   }
 
 /*---------------------------Fix-----------------------------------------*/
+try {
 /*Evita celda coloreada cuando mouseover y scroll hacia abajo*/
   var THs_color = $("tr.scroll_aid_header>th").map(function() {
     return $(this).css("background-color");
@@ -87,6 +88,7 @@ window.onscroll = function() {
      $("tr.scroll_aid_header>th").css("background-color","white");
     }
   }
+} catch(err) { console.log(err); }
 /*--------------------------Fix-------------------------------------------*/
 
   if($("tr.scroll_aid_header").attr("visible") == "no") {
