@@ -1160,7 +1160,7 @@ function Cubos(data,tag) {
 /////////////////////////////////////////////////////////////////////////
 
 /*Un IF-STATEMENT podría diferenciar entre niveles*/
-  $(".labels:not(#especial)").on("click",function(d) {
+  $(".labels").on("click",function(d) {
     SS_= true;
     $("div#quitarFiltro").css("display","none");
 
@@ -1178,20 +1178,50 @@ function Cubos(data,tag) {
       span.html(minus + "&ensp;");
     }
 
-    if(this.nodeName == "DIV") {
+    if(this.nodeName == "DIV" && $(this).attr("especial") == "1") {
+//	$("div#espere").css("visibility","visible")
+	var title = this.parentNode.getAttribute("tag");
+	var subtitle = this.getAttribute("tag");
+	var params = parametros();
+	params["title"] = title;
+	params["subtitle"] = subtitle;
+	console.log(params);
+	var algo_ = this;
+
+	$.ajax({
+	   url:"http://172.16.24.57/cubos_produccion.py",
+	   dataType:'json',
+	   data:params,
+	   success:function(tabla_respuesta) {
+		tabla_respuesta = formatoData(tabla_respuesta);
+		TableLogistics(algo_,tabla_respuesta);
+	   } 
+	})
+
+    }
+
+    if(this.nodeName == "DIV" && $(this).attr("especial") != "1") {
+	TableLogistics(this,data);
+    }
+
+});
+///////////////////////////////////////////////////////////////////////////
+/////////////////^^ EXPANDIR PARA ESCRIBIR EN DOM ^^//////////////////////
+/////////////////////////////////////////////////////////////////////////
+function TableLogistics(sth,data) {
       $(".overflow").scrollLeft(0);
       $(".scroll_header").scrollLeft(0);
 
-      var tbody_hide = $(this).next()[0].querySelector(".hide");
-      var this_overflow = d3.select($(this).next()[0]);
-      var span = d3.select($(this).find("span.s")[0]);
+      var tbody_hide = $(sth).next()[0].querySelector(".hide");
+      var this_overflow = d3.select($(sth).next()[0]);
+      var span = d3.select($(sth).find("span.s")[0]);
       if(this_overflow.style("display") == "block") {
         this_overflow.style("display","none");
         d3.select(tbody_hide).html("");
         span.html(plus + "&ensp;");
       } else {
     //// <--- !
-      var algo = this;
+      var algo = sth;
 
       function nuevaTabla(algo,callback) {
 
@@ -1225,7 +1255,6 @@ if(tableData[0]) {
         noOfRows = Math.ceil((viewEnd-viewStart)/17)*1.5;
 
         var arr = docTable.querySelectorAll("tr");
-// "rgba(73,171,129,0.25)"
 
 	for(var i=0; i<arr.length; i++) {
 /*petición Mendoza*/
@@ -1266,7 +1295,7 @@ if(tableData[0]) {
 	    }
 
 	    if(arr[i].getAttribute("id") == "dist" 
-		&& !docTable.querySelectorAll("td#dist_").length
+		&& !docTable.querySelectorAll("t#dist_").length
 	    ) {
 		$(arr[i].children)
 		.css("background","rgba(73,171,129,0.25)");
@@ -1303,10 +1332,11 @@ if(tableData[0]) {
 //	  $(this).css("background",color);
         });
 
-  }
+  } else { console.log("no hay tabla"); }
     };
 
     function mensajeEspera() {
+console.log("función: 'mensajeEspera()' ejecutándose...");
       $("div#espere").css("visibility","visible")
       window.setTimeout(function() {
 	nuevaTabla(algo,function() {
@@ -1372,10 +1402,7 @@ if(tableData[0]) {
  };
 }
 
-});
-///////////////////////////////////////////////////////////////////////////
-/////////////////^^ EXPANDIR PARA ESCRIBIR EN DOM ^^//////////////////////
-/////////////////////////////////////////////////////////////////////////
+
 
 function colcol() {
 
@@ -1930,7 +1957,7 @@ function ajaxFunction(data,Cubos,filtrarSeries) {
          .querySelectorAll("div.labels:nth-child(1)")).click();
      } else {
 	console.log("caso especial");
-	$("tbody.hide>div.labell").attr("id","especial");
+	$("tbody.hide>div.labels").attr("especial","1");
      }
      filtrarSeries(data);
      $("div#espere").css("visibility","hidden");

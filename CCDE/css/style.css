@@ -230,7 +230,7 @@ label:hover {
 
 #dist_,#dist>td {
  font-weight:700;
- color:var(--temas);
+ color:rgb(13,180,190);/*var(--temas);*/
 }
 
 #dist>td {
