@@ -4,6 +4,7 @@ var SS_ = true;
 var _parametros_;
 var params_especiales = null;
 var caso_especial = false;
+var init_year;
 
 $(document).ready(function() {
   document.body.style.zoom = 1.0; 
@@ -390,8 +391,7 @@ $.ajax({
    success:function(temas) {
   
     var TEMAS = JSON.parse(temas);
-    //var temas_nombres = TEMAS.map(function(d) { return d.tema; });
-console.log(TEMAS);
+
  $.get("blueprints.json",function(response) {
   RenderWords(response,"esp",TEMAS);
 
@@ -442,6 +442,29 @@ if(fecha_VALIDA) {
   });
 
   $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
+      $("input[type=radio][value=monthly]").click()
+      var sel_ = $("select.filtros").find(":selected").attr("tag");
+      var init_year = TEMAS.filter(function(d) {
+	return d.json_arg == sel_;
+      })[0].init_year;
+
+      var current_year = Number(new Date().getFullYear());
+      var year_set = [];
+
+      for(var i=init_year; i <= current_year; i++) {
+	year_set.push(i);
+      }
+
+      $("select#start_year").html("");
+
+      d3.select("select#start_year")
+	.selectAll("option").data(year_set).enter()
+	.append("option")
+	.html(function(d) { return d; });
+
+
+      document.getElementById("start_year").selectedIndex = document.getElementById("start_year").children.length - 1;
+
       _parametros_ = parametros();
 
       boton_consulta
@@ -1774,83 +1797,83 @@ $('div.overflow').scrollLeft($(this).scrollLeft());
 
 
 function RenderWords(obj,lang,temas) {
-var titles = obj.A[lang].filtros.titles;
-var months = obj.A[lang].filtros.months;
-var years = obj.A[lang].filtros.years;
-var options = obj.A[lang].filtros.options;
+  var titles = obj.A[lang].filtros.titles;
+  var months = obj.A[lang].filtros.months;
+  var years = obj.A[lang].filtros.years;
+  var options = obj.A[lang].filtros.options;
 
-d3.select("select.filtros").selectAll("option")
-.data(temas).enter()
-.append("option")
-.attr("tag",function(d) { return d['json_arg']; })
-.html(function(d) { return d.tema; });
+  d3.select("select.filtros").selectAll("option")
+   .data(temas).enter()
+   .append("option")
+   .attr("tag",function(d) { return d['json_arg']; })
+   .html(function(d) { return d.tema; });
 
 // Colocar cada uno de los títulos en su respectivo lugar.
-for( var k in titles ) {
-var selector = "#" + k + "_text";
-$(selector).text(titles[k]);
-}
+  for( var k in titles ) {
+    var selector = "#" + k + "_text";
+    $(selector).text(titles[k]);
+  }
 
 // Colocar los nombres de reporte en el apartado de "Temas".
-var temas = options.map(function(d) {
-return "<option>" + d.tema + "</option>";
-}).join("");
+  var temas = options.map(function(d) {
+    return "<option>" + d.tema + "</option>";
+  }).join("");
 
 //  $("div#tema_options select").text("");
 //  $("div#tema_options select").append(temas);
 
 // Colocar los meses y los años.
-months = months.map(function(d) {
-  return "<option>" + d + "</option>";
-}).join("");
+  months = months.map(function(d) {
+    return "<option>" + d + "</option>";
+  }).join("");
 
-var years_ = [];
-for(var i=years[0]; i<=years[1]; i++) {
-  years_.push(i);
-}
-years_ = years_.map(function(d) {
-  return "<option>" + d + "</option>";
-});
+  var years_ = [];
+  for(var i=years[0]; i<=years[1]; i++) {
+    years_.push(i);
+  }
+  years_ = years_.map(function(d) {
+    return "<option>" + d + "</option>";
+  });
 
-var id_dates = ["start","end"];
-for( var i in id_dates ) {
-  $("select#" + id_dates[i] + "_month").text("");
-  $("select#" + id_dates[i] + "_year").text("");
-  $("select#" + id_dates[i] + "_month").append(months);
-  $("select#" + id_dates[i] + "_year").append(years_);
-}
+  var id_dates = ["start","end"];
+  for( var i in id_dates ) {
+    $("select#" + id_dates[i] + "_month").text("");
+    $("select#" + id_dates[i] + "_year").text("");
+    $("select#" + id_dates[i] + "_month").append(months);
+    $("select#" + id_dates[i] + "_year").append(years_);
+  }
 
-var start_year = document.getElementById("start_year").children;
-start_year = Array.prototype.slice.call(start_year).map(function(d) {
-  return d.textContent;
-});
+  var start_year = document.getElementById("start_year").children;
+  start_year = Array.prototype.slice.call(start_year).map(function(d) {
+    return d.textContent;
+  });
 
-var start_month = document.getElementById("start_month").children;
-start_month = Array.prototype.slice.call(start_month).map(function(d) {
-  return d.textContent;
-});
+  var start_month = document.getElementById("start_month").children;
+  start_month = Array.prototype.slice.call(start_month).map(function(d) {
+    return d.textContent;
+  });
 
 
-function addMonths(date, months) {
-  date.setMonth(date.getMonth() + months);
-  var month = String(date.getMonth() + 1);
-  if( month.length == 1 ) month = "0" + month;
-  var year = String(date.getFullYear());
-  return [month,year];
-};
+  function addMonths(date, months) {
+    date.setMonth(date.getMonth() + months);
+    var month = String(date.getMonth() + 1);
+    if( month.length == 1 ) month = "0" + month;
+    var year = String(date.getFullYear());
+    return [month,year];
+  };
 
-var dateBefore = addMonths(new Date(),-11);
-var dateNow = addMonths(new Date(),0);
+  var dateBefore = addMonths(new Date(),-11);
+  var dateNow = addMonths(new Date(),0);
 
-var s_Year = start_year.indexOf(dateBefore[1]);
-var e_Year = start_year.indexOf(dateNow[1]);
-var s_Month = start_month.indexOf(dateBefore[0]);
-var e_Month = start_month.indexOf(dateNow[0]);
+  var s_Year = start_year.indexOf(dateBefore[1]);
+  var e_Year = start_year.indexOf(dateNow[1]);
+  var s_Month = start_month.indexOf(dateBefore[0]);
+  var e_Month = start_month.indexOf(dateNow[0]);
 
-document.getElementById("start_year").selectedIndex = s_Year;
-document.getElementById("end_year").selectedIndex = e_Year;
-document.getElementById("start_month").selectedIndex = s_Month;
-document.getElementById("end_month").selectedIndex = e_Month;
+  document.getElementById("start_year").selectedIndex = s_Year;
+  document.getElementById("end_year").selectedIndex = e_Year;
+  document.getElementById("start_month").selectedIndex = s_Month;
+  document.getElementById("end_month").selectedIndex = e_Month;
 
 
 };
@@ -1859,18 +1882,18 @@ document.getElementById("end_month").selectedIndex = e_Month;
 
 
 function fechas_() {
-var header = document.querySelector("tbody.hide>div>table>tbody.hide>tr")
-.querySelectorAll("th");
+  var header = document.querySelector("tbody.hide>div>table>tbody.hide>tr")
+    .querySelectorAll("th");
 
-var header_ = [];
-for(var i in header) {
-if(header[i].nodeName == "TH") header_.push(header[i].innerHTML);
-};
+  var header_ = [];
+  for(var i in header) {
+    if(header[i].nodeName == "TH") header_.push(header[i].innerHTML);
+  };
 
-header_ = header_.join(",").replace(/\s&nbsp;/g,"-");
-header_ = header_.replace(/^,/g,"");
+  header_ = header_.join(",").replace(/\s&nbsp;/g,"-");
+  header_ = header_.replace(/^,/g,"");
 
-return header_;
+  return header_;
 };
 
 function resizeHighchart(exp_size,activ) {
@@ -2022,7 +2045,6 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
      var tableString = data[0][1];
      data = formatoData(data);
      Cubos(data);
-console.log(caso_especial);
 //try {
 
   if(special_params) {
