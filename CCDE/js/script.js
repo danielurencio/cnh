@@ -401,7 +401,6 @@ $.ajax({
   var fecha_VALIDA = +_parametros_['start_year'] <= +_parametros_['end_year'];
       
 if(fecha_VALIDA) {
-  console.log(_parametros_);
       boton_consulta
 	.css("background-color","rgb(221,221,221)")
         .css("border","2px outset rgb(221,221,221)")
@@ -464,6 +463,8 @@ if(fecha_VALIDA) {
 
 
       document.getElementById("start_year").selectedIndex = document.getElementById("start_year").children.length - 1;
+      document.getElementById("end_year").selectedIndex = document.getElementById("end_year").children.length - 1;
+
 
       _parametros_ = parametros();
 
@@ -543,7 +544,7 @@ var selectors_ = ["select#start_year","select#end_year","select#start_month","se
 
 for(var j in selectors_) {
   $(selectors_[j]).change(function() {
-
+/*
     if(true) {
       let anio_inicio = $("select#start_year").val();
       let anio_final  = $("select#end_year").val();
@@ -572,7 +573,7 @@ for(var j in selectors_) {
       }
 
     }
-
+*/
 
     var cambio_ = false;
     var newParams = parametros();
@@ -1862,8 +1863,8 @@ function RenderWords(obj,lang,temas) {
     return [month,year];
   };
 
-  var dateBefore = addMonths(new Date(),-11);
-  var dateNow = addMonths(new Date(),0);
+  var dateBefore = addMonths(new Date(),-12);
+  var dateNow = addMonths(new Date(),-1);
 
   var s_Year = start_year.indexOf(dateBefore[1]);
   var e_Year = start_year.indexOf(dateNow[1]);
@@ -2066,7 +2067,6 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
 
      if(tableString[key_]) {
        caso_especial = false;
-
        consulta.click();
      } else {
 	caso_especial = true;
@@ -2080,7 +2080,7 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
 	  consulta.click();
      }
      filtrarSeries(data);
-     $("div#espere").css("visibility","hidden");
+//     $("div#espere").css("visibility","hidden");
   
 };
 
