@@ -398,9 +398,11 @@ $.ajax({
   $("button#consultar").on("click",function() {
       _parametros_ = parametros();
 
-  var fecha_VALIDA = +_parametros_['start_year'] <= +_parametros_['end_year'];
+  var fecha_VALIDA_1 = +_parametros_['start_year'] <= +_parametros_['end_year']
+  var fecha_VALIDA_2 = +_parametros_['start_year'] == +_parametros_['end_year']
+	&& +_parametros_['end_month'] < +_parametros_['start_month'];
       
-if(fecha_VALIDA) {
+if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
       boton_consulta
 	.css("background-color","rgb(221,221,221)")
         .css("border","2px outset rgb(221,221,221)")
@@ -435,12 +437,15 @@ if(fecha_VALIDA) {
 
      });
 /*------------------AJAX con botón de consultar-------------------------------*/
-} else {
+} else if(!fecha_VALIDA_1) {
+  alert("Seleccione una fecha válida.");
+} else if(fecha_VALIDA_2) {
   alert("Seleccione una fecha válida.");
 }
   });
 
   $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
+/*--------------------Resetear último rango de fecha válido-----------------*/
       $("input[type=radio][value=monthly]").click()
       var sel_ = $("select.filtros").find(":selected").attr("tag");
       var init_year = TEMAS.filter(function(d) {
@@ -455,16 +460,52 @@ if(fecha_VALIDA) {
       }
 
       $("select#start_year").html("");
+      $("select#end_year").html("");
+
 
       d3.select("select#start_year")
 	.selectAll("option").data(year_set).enter()
 	.append("option")
 	.html(function(d) { return d; });
 
+      d3.select("select#end_year")
+	.selectAll("option").data(year_set).enter()
+	.append("option")
+	.html(function(d) { return d; });
 
-      document.getElementById("start_year").selectedIndex = document.getElementById("start_year").children.length - 1;
-      document.getElementById("end_year").selectedIndex = document.getElementById("end_year").children.length - 1;
 
+  var start_year = document.getElementById("start_year").children;
+  start_year = Array.prototype.slice.call(start_year).map(function(d) {
+    return d.textContent;
+  });
+
+  var start_month = document.getElementById("start_month").children;
+  start_month = Array.prototype.slice.call(start_month).map(function(d) {
+    return d.textContent;
+  });
+
+  function addMonths(date, months) {
+    date.setMonth(date.getMonth() + months);
+    var month = String(date.getMonth() + 1);
+    if( month.length == 1 ) month = "0" + month;
+    var year = String(date.getFullYear());
+    return [month,year];
+  };
+
+  var dateBefore = addMonths(new Date(),-12);
+  var dateNow = addMonths(new Date(),-1);
+
+  var s_Year = start_year.indexOf(dateBefore[1]);
+  var e_Year = start_year.indexOf(dateNow[1]);
+  var s_Month = start_month.indexOf(dateBefore[0]);
+  var e_Month = start_month.indexOf(dateNow[0]);
+
+  document.getElementById("start_year").selectedIndex = s_Year;
+  document.getElementById("end_year").selectedIndex = e_Year;
+  document.getElementById("start_month").selectedIndex = s_Month;
+  document.getElementById("end_month").selectedIndex = e_Month;
+
+/*--------------------Resetear último rango de fecha válido-----------------*/
 
       _parametros_ = parametros();
 
