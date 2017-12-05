@@ -398,6 +398,10 @@ console.log(TEMAS);
   $("button#consultar").on("click",function() {
       _parametros_ = parametros();
 
+  var fecha_VALIDA = +_parametros_['start_year'] < +_parametros_['end_year'];
+      
+if(fecha_VALIDA) {
+  console.log(_parametros_);
       boton_consulta
 	.css("background-color","rgb(221,221,221)")
         .css("border","2px outset rgb(221,221,221)")
@@ -432,7 +436,9 @@ console.log(TEMAS);
 
      });
 /*------------------AJAX con botón de consultar-------------------------------*/
-
+} else {
+  alert("Seleccione una fecha válida.");
+}
   });
 
   $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
@@ -794,7 +800,7 @@ d3.select("div#tabla_expandible>table").selectAll("tr")
   var val_ = d.map(function(t) {
     var v = String(t);
     if(v == "NaN") v = "";
-    return "<td style='height:22px;min-height:22px;width:90px;min-width:90px;padding:0px;display:inline-block;border-top:1px solid rgba(0,0,0,0.08);'>" + v + "</td>";
+    return "<td style='height:22px;min-height:42px;width:90px;min-width:90px;padding:0px;display:inline-block;border-top:1px solid rgba(0,0,0,0.08);'>" + v + "</td>";
   }).join("");
   d3.select(this).html(val_);
 });
@@ -1209,7 +1215,6 @@ function Cubos(data,tag) {
 	var subtitle = this.getAttribute("tag");
 
 	params_especiales = { 'title':title,'subtitle':subtitle };
-console.log(params_especiales);
 	TableLogistics(this,data);
     }
 
@@ -1390,7 +1395,11 @@ if(tableData[0]) {
 
 	  var posHide = cellHide[0].getBoundingClientRect();
 
-	  $(".scroll_aid_header>th:first-child").css("min-width","333px");
+	  $(".scroll_aid_header>th:first-child").css("padding","1px");
+	  $(".scroll_aid_header>th:first-child").css("min-width","413px");
+	  $("div.overflow tr>td").css("border-bottom","0px solid white");
+	  $("div.overflow tr>td").css("border-top","1px solid lightGray");
+//	  $("div.overflow tr>td:first-child").css("min-width","600px")
 
 	  if(posHeader.left != posHide.left) {
 	    console.log(posHide);
@@ -1403,11 +1412,29 @@ if(tableData[0]) {
 
 ///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
 
+/*-----------------Quitar scroller horizontal si no se necesita--------------*/
+          
+	 var tabla_overflow_X = $("div.overflow").filter(function() {
+	    return $(this).css("display") == "block";
+	 });
+
+	 var row_length_ = tabla_overflow_X[0]
+	  .querySelector("tr:first-child")
+	  .getBoundingClientRect().right;
+
+         if(row_length_ < window.innerWidth) {
+	   tabla_overflow_X.css("overflow-x","hidden")
+	 } else {
+	   tabla_overflow_X.css("overflow-x","scroll")
+	 }
+/*-----------------Quitar scroller horizontal si no se necesita--------------*/
+
 	});
       },10);
     }
     mensajeEspera();
  };
+
 }
 
 
@@ -1448,6 +1475,7 @@ function colcol() {
   d3.selectAll(".hide td:not(:first-child)").on("mouseout",function() {
     var color_cond = this.parentNode.getAttribute("id") == "dist" ||
       this.parentNode.children[0].getAttribute("id") == "dist_";
+
     var color_1 = color_cond ? temas_fondo : "transparent";
 
 
@@ -1507,16 +1535,26 @@ function colcol() {
 //    if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
   }
 
-
   var table_bottom = $(".overflow:visible")[0]
     .getBoundingClientRect().bottom;
 
-  if(table_bottom > window.innerHeight) {
-    $("#footer").css("display","block");
-  } else {
-    $("#footer").css("display","none");
-  }
+  var tabla_overflow_X = $("div.overflow").filter(function() {
+     return $(this).css("display") == "block";
+  });
 
+  var row_length_ = tabla_overflow_X[0]
+     .querySelector("tr:first-child")
+     .getBoundingClientRect().right;
+
+  if(row_length_ > window.innerWidth) {
+    tabla_overflow_X.css("overflow-x","hidden")
+
+    if(table_bottom > window.innerHeight) {
+      $("#footer").css("display","block");
+    } else {
+      $("#footer").css("display","none");
+    }
+  }
 
 
   var evenRows = document.querySelectorAll("div.overflow tr:nth-child(even)");
@@ -1708,7 +1746,7 @@ var scroll_id_header = fechas_().replace(/-/g," ").split(",")
 .map(function(d) { return "<th style='width:"+ cell_Width +
 "px;min-width:"+ cell_Width +"px;max-width:"+cell_Width+"px'>" + d + "</th>"; });
 
-var scroll_id_header_ = ["<th style='min-width:333px;padding:1px;'></th>"]
+var scroll_id_header_ = ["<th style='min-width:413px;padding:1px;'></th>"]
 .concat(scroll_id_header).join("");
 $("tr.scroll_aid_header").html(scroll_id_header_)
 
@@ -1836,25 +1874,25 @@ return header_;
 };
 
 function resizeHighchart(exp_size,activ) {
-var w_, l_;
+  var w_, l_;
 //    var activ = $("button.datos_grapher").attr("tag")
 
-if(activ == 'off') {
-w_ = "calc(80% - " + exp_size + ")";
-l_ = "calc(10% + " + exp_size + ")";
-} else if(activ == 'on') {
-w_ = "80%";
-l_ = "10%";
-}
+  if(activ == 'off') {
+    w_ = "calc(80% - " + exp_size + ")";
+    l_ = "calc(10% + " + exp_size + ")";
+  } else if(activ == 'on') {
+    w_ = "80%";
+    l_ = "10%";
+  }
 
-var chart_container = "#grapher>div#chart";
+  var chart_container = "#grapher>div#chart";
 
-$(chart_container).css("width",w_);
-$(chart_container).css("left",l_);
+  $(chart_container).css("width",w_);
+  $(chart_container).css("left",l_);
 
-var chart = $(chart_container).highcharts();
-var new_width = $(chart_container).css("width").split("px")[0];
-var new_height = $(chart_container).css("height").split("px")[0];
+  var chart = $(chart_container).highcharts();
+  var new_width = $(chart_container).css("width").split("px")[0];
+  var new_height = $(chart_container).css("height").split("px")[0];
 
     chart.setSize(+new_width,+new_height)
 }
@@ -1869,6 +1907,31 @@ window.onresize = function() {
     console.log(err);
   }
 
+
+/*-------Mostrar y ocultar el scroller-x bajo demanda------------------------*/
+  try {
+	 var tabla_overflow_X = $("div.overflow").filter(function() {
+	    return $(this).css("display") == "block";
+	 });
+
+	 var row_length_ = tabla_overflow_X[0]
+	  .querySelector("tr:first-child")
+	  .getBoundingClientRect().right;
+
+         if(row_length_ < window.innerWidth) {
+	   $("#footer").css("display","none");
+	   tabla_overflow_X.css("overflow-x","hidden");
+	 } else {
+	     tabla_overflow_X.css("overflow-x","scroll");
+	     var lastRow = computeLastRow()[1]
+	     if(lastRow >= window.innerHeight) {
+	       $("#footer").css("display","block");
+	     }
+	 }
+  } catch(err) {
+     console.log(err);
+  }
+/*-------Mostrar y ocultar el scroller-x bajo demanda------------------------*/
 }
 
 function descargarSerie() {
@@ -1963,14 +2026,15 @@ console.log(caso_especial);
 //try {
 
   if(special_params) {
-//    if(!caso_especial) {
+    if($("tbody[tag='"+special_params.title+"']")[0]) {
       consulta = $("tbody[tag='" + special_params.title + "'].hide")[0]
 	.querySelector("div[tag='" + special_params.subtitle + "']");
-/*    } else {
-      console.log("botón de consulta en caso especial");
-      consulta = $($("tbody#tabla>tbody.hide")[0]
+    } else {
+
+    consulta = $($("tbody#tabla>tbody.hide")[0]
          .querySelectorAll("div.labels:nth-child(1)"));
-    }*/
+    }
+
   } else {
     consulta = $($("tbody#tabla>tbody.hide")[0]
          .querySelectorAll("div.labels:nth-child(1)"));
@@ -1983,24 +2047,19 @@ console.log(caso_especial);
 
        consulta.click();
      } else {
+	caso_especial = true;
 	console.log("caso especial");
 	$("tbody.hide>div.labels").attr("especial","1");
 	console.log("Hacer clic en el primero durante el caso especial",caso_especial);
-//	if(caso_especial) {
 
           $(window).scrollTop(
             $(consulta).offset().top - 180
           );
 	  consulta.click();
-//	}
-//	caso_especial = true;
      }
      filtrarSeries(data);
      $("div#espere").css("visibility","hidden");
   
-//  } catch(err) {
-//    $("div.helper>div.content").html("Seleccione alguna tabla.")
-//  }
 };
 
 function formatoData(data) {

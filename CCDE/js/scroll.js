@@ -110,10 +110,7 @@ try {
 	.css("border","1px solid white")
 
     }
-
     /*Fix*/
-
-
     
   }
 
@@ -121,6 +118,7 @@ try {
 ///////////// Aparecer y desaparecer filas según el viewport
 /////////////////////////////////////////////////////////////////////
 if(SS_){
+ if(!caso_especial) { // <--No hay desaparición de filas en el caso especial.
   var rows = $("div.overflow tr").filter(function(d) {
     return $(this).css("display") != "none";
   });
@@ -178,10 +176,24 @@ if(SS_){
 
 //  Si la última fila está despues del alto de la ventana, scroll aid!
 
-    if(lastRow  > window.innerHeight) {
+
+   var tabla_overflow_X = $("div.overflow").filter(function() {
+     return $(this).css("display") == "block";
+   });
+
+   var row_length_ = tabla_overflow_X[0]
+     .querySelector("tr:first-child")
+     .getBoundingClientRect().right;
+
+   if(row_length_ > window.innerWidth) {
+//     tabla_overflow_X.css("overflow-x","hidden")
+
+      if(lastRow  > window.innerHeight) {
 	$("#footer").css("display","block");
-    } else {
+      } else {
 	$("#footer").css("display","none");
+      }
+
     }
 
   } // <-- If-statement para corroborar que existen filas en la pantalla!
@@ -197,6 +209,8 @@ if(SS_){
   var upOcult = rows.filter(function(d) {
     return $(this)[0].getBoundingClientRect().bottom < -n//ScrollHeader;
   });
+
+ 
 
   d3.selectAll(upOcult)
     .style("display","none")
@@ -281,7 +295,9 @@ if(SS_){
       .style("display","none")
 
 //  console.log(rows);
+  }
  }
+ checkOcurrente();
 };
 
 
@@ -309,6 +325,29 @@ function colorFIX(rows) {
         $(appearingRow[0].querySelectorAll("td")).css("background",color_TAG);
       }
 */
-    
-
 }
+
+function checkOcurrente() {
+  try {
+    var headerOcurrente = document
+	.querySelector("tr.scroll_aid_header")
+	.getAttribute("visible") == "yes";
+
+    var headerNormal = $("div.overflow").filter(function() {
+	return $(this).css("display") == "block"; })[0]
+		  .querySelector("tr:first-child")
+		  .getBoundingClientRect().top > 180
+
+    var bugExists = headerOcurrente && headerNormal;
+
+    if(bugExists) {
+//      console.log("BUGG!!");
+      $(".scroll_aid_header>th")
+	.css("color","white")
+	.css("border","white");
+    }
+  } catch(err) {
+     
+  }
+}
+

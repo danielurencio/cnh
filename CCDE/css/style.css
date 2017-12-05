@@ -146,7 +146,7 @@ tbody.hide>tbody.hide {
 
 .hide>tr>td:first-child, .hide>tr>th:first-child {
  text-align:left;
- width:280px;
+ width:360px; /*nombres largos*/
  position:absolute;
  left:0;
 }
@@ -164,7 +164,7 @@ tbody.hide>tr:nth-child(2)>td:first-child {
 .hide>tr>td:nth-child(2), .hide>tr>th:nth-child(2) {
  position:absolute;
 /* margin-left:-55px;*/
- left:280px;
+ left:360px; /*nombres largos*/
  min-width:75px;
  width:75px;
  border-left:1px solid lightGray;
@@ -174,7 +174,7 @@ tbody.hide>tr:nth-child(2)>td:first-child {
 .hide>tr>td:nth-child(3), .hide>tr>th:nth-child(3) {
  position:absolute;
 /* margin-left:-27px;*/
- left:308px;
+ left:388px; /*nombres largos*/
  min-width:45px;
  width:45px;
  border-left:none;
@@ -447,8 +447,8 @@ td.graph>img:hover {
 
 div.overflow {
  overflow-x:scroll;
- width:calc(100% - 400px);
- margin-left:335px;
+ width:calc(100% - 480px);
+ margin-left:415px;
 }
 
 #footer {
