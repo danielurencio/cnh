@@ -1493,7 +1493,8 @@ if(tableData[0]) {
 	   tabla_overflow_X.css("overflow-x","scroll")
 	 }
 /*-----------------Quitar scroller horizontal si no se necesita--------------*/
-
+	 PrincipalCheckBox();
+//$("#scroll_aid").prepend("<input type='checkbox' style='position:absolute;left:392px'></input>")
 	});
       },10);
     }
@@ -1654,39 +1655,39 @@ function colcol() {
 /////////////////////vv HABILITAR ÍCONOS POR TABLA vv////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 function icons() {
-var cubos = document.querySelectorAll("tbody.hide>div>table>tbody.hide");
+  var cubos = document.querySelectorAll("tbody.hide>div>table>tbody.hide");
 
-for(var c in cubos) {
-if(cubos[c].nodeName == "TBODY") {
-  var parent_tag = cubos[c].parentNode.parentNode.parentNode
-    .getAttribute("tag");
+  for(var c in cubos) {
+    if(cubos[c].nodeName == "TBODY") {
+      var parent_tag = cubos[c].parentNode.parentNode.parentNode
+        .getAttribute("tag");
 
-  var this_tag = cubos[c].getAttribute("tag");
+      var this_tag = cubos[c].getAttribute("tag");
 
-  var cubo_td = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
-    "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child"//:not(#dist_)";
-  var cubo_th = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
-    "tbody.hide[tag='"+ this_tag +"']>tr>th:first-child";
-  var cubo_dist_ = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
-    "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child#dist_";
+      var cubo_td = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
+        "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child"//:not(#dist_)";
+      var cubo_th = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
+        "tbody.hide[tag='"+ this_tag +"']>tr>th:first-child";
+      var cubo_dist_ = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
+        "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child#dist_";
   
 
-  $("<td id='p'><input id='principal' style='display:none;' type='checkbox'></input></td>")
-    .insertAfter(cubo_th);
-  $("<td id='p'></td>")
-    .insertAfter(cubo_th);
+      $("<td id='p'><input style='display:none;' type='checkbox'></input></td>")
+        .insertAfter(cubo_th);
+      $("<td id='p'></td>")
+        .insertAfter(cubo_th);
 
-  $("<td id='n' class='check'><input type='checkbox' style='margin:0px;'></input></td>")
-    .insertAfter(cubo_td);
-  $("<td id='n' class='graph'><img style='z-index:-1' src='img/graph.svg'></img></td>")
-    .insertAfter(cubo_td);
+      $("<td id='n' class='check'><input type='checkbox' style='margin:0px;'></input></td>")
+        .insertAfter(cubo_td);
+      $("<td id='n' class='graph'><img style='z-index:-1' src='img/graph.svg'></img></td>")
+        .insertAfter(cubo_td);
 
-  $("<td id='n' class='check'></td>")
-    .insertAfter(cubo_dist_);
-  $("<td id='n' class='graph'></td>")
-    .insertAfter(cubo_dist_);
+      $("<td id='n' class='check'></td>")
+        .insertAfter(cubo_dist_);
+      $("<td id='n' class='graph'></td>")
+        .insertAfter(cubo_dist_);
 
-};
+   };
 }
 };
 //////////////////////////////////////////////////////////////////////////////
@@ -2111,9 +2112,7 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
        consulta.click();
      } else {
 	caso_especial = true;
-	console.log("caso especial");
 	$("tbody.hide>div.labels").attr("especial","1");
-	console.log("Hacer clic en el primero durante el caso especial",caso_especial);
 
           $(window).scrollTop(
             $(consulta).offset().top - 180
@@ -2155,3 +2154,23 @@ function formatoData(data) {
  return data;
 };
 
+function PrincipalCheckBox() {
+	 var first_th_ = $("div.overflow").filter(function() {
+	    return $(this).css("display") == "block";
+	 })[0]
+	   .querySelector("tr:first-child>th:first-child");
+
+	 var el_pad = +$($("td.check")[0])
+		.css("padding").split("px")[0];
+	 var marginLeft = $("td.check>input")[0]
+		.getBoundingClientRect().left;
+
+	  var displace = marginLeft - el_pad;
+	 $(first_th_).html("<input type='checkbox' style='margin-left:"+
+		displace+"px;' id='principal'></input>")
+
+	 $("input#principal").on("click",function() {
+	   var child_boxes_str = "input[type='checkbox']:not(#principal)";
+	   $(child_boxes_str).prop("checked",$(this).prop("checked"));
+	 });
+}
