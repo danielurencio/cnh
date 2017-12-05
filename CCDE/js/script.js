@@ -398,7 +398,7 @@ console.log(TEMAS);
   $("button#consultar").on("click",function() {
       _parametros_ = parametros();
 
-  var fecha_VALIDA = +_parametros_['start_year'] < +_parametros_['end_year'];
+  var fecha_VALIDA = +_parametros_['start_year'] <= +_parametros_['end_year'];
       
 if(fecha_VALIDA) {
   console.log(_parametros_);

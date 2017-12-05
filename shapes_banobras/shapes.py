@@ -4,7 +4,7 @@ import os
 
 file_ = sys.argv[1]
 dir_ = file_.split("/")[0]
-feat = u'\xc1rea_co_1'
+feat = "Asignacion"#'AGRU_1008'#'Area_Cntr'#u'\xc1rea_co_1'
 
 attrs = gpd.read_file(file_)
 areas = attrs[feat].values.tolist()
