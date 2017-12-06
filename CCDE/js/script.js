@@ -708,230 +708,7 @@ $.get("cuencas.json", function(data) {
 
 
 
-function grapher(info) {
-var fake_tag = [ info.grandparent, info.parent, info.tema, info.subtema ];
-if(fake_tag[3] == "") { fake_tag = fake_tag.slice(0,3); }
-fake_tag = fake_tag.join(" - ");
 
-var grapher_element = 
-"<div id='grapher'>" +
-"<button class='datos_grapher' tag='off'>"+
-"Datos <span id='flecha'>></span>"+
-"</button>" +
-"<img class='close_chart' src='img/close.svg'></img>" +
-
-"<div class='chart_expandible' tag='"+ fake_tag +"'>"+
-
-"<div id='header_expandible' style='position:absolute;top:35px;width:100%;'>"+
-"<table style='table-layout:fixed;'>"+
-"<tr style='font-weight:700;'>"+
-  "<td style='width:90px;min-width:90px;display:inline-block;padding:0px;'>FECHA</td>"+
-  "<td style='width:90px;min-width:90px;display:inline-block;padding:0px;'>DATO</td>"+
-"</tr>"+
-"</table>" +
-"</div>" +
-
-"<div id='tabla_expandible' style='width:100%;height:calc(100% - 110px);margin-top:60px;overflow-y:scroll;'>" +
-"<table style='table-layout:fixed;'></table>" +
-"</div>" +
-
-"<button style='margin-left:20px;margin-top:15px;width:calc(100% - 50px);' onclick='descargarSerie()'>Descargar</button>" +
-
-"</div>" +
-"<div id='chart'></div>" + 
-"</div>";
-
-$('body').css("overflow","hidden");  
-$('body').prepend(grapher_element);
-
-$('.close_chart').on("click",function() {
-$("body").css("overflow","auto");
-$("#grapher").remove();
-});
-
-info.serie.showInLegend = false;
-
-var color = "rgb(13,180,190)"//getComputedStyle(document.body).getPropertyValue('--subtitulos');
-info.serie.color = color;
-
-Highcharts.chart('chart', {
-  lang: { 'img':'Descargar imagen' },
-  exporting: {
-  enabled:true,
-  buttons: {
-   contextButton: {
-    symbolX:19,
-    symbolY:18,
-    symbol:'url(img/download.svg)',
-    _titleKey:'img',
-    menuItems:[{
-      textKey:'downloadPNG',
-      onclick:function() { this.exportChart() },
-      text:"PNG"
-    },
-    {
-     textKey:'downloadCSV',
-     onclick:descargarSerie,
-     text:"CSV"
-    }]
-   }
-  }
- },
- chart: {
- style: {
-   fontFamily:'Open Sans'
- }
- },
- tooltip: {
-  useHTML:true,
-  backgroundColor:null,
-  borderWidth:0,
-  style: { fontWeight:800 },
-  formatter: function() {
-   var t =
-   "<div style='text-align:center;'>" +
-   "<span style='font-size:11px;font-weight:800;color:"+ 'black' +";'>" +
-   this.point.name + 
-   "</span>" +
-   "<br>" +
-   "<span style='font-weight:300;font-size:18px;'>"
-   + this.y.toLocaleString("es-MX") +
-   "</span></div>";
-   return t;//this.point.name + ": " + this.y;
-  }
- },
- credits: { enabled:false },
- title: {
-  text: info.subtema ? info.subtema : info.tema
- },
- subtitle: {
-  text: info.grandparent + " - " + info.parent
- },
- xAxis: {
-  labels: {
-   enabled:true,
-   formatter: function() { return info.fechas[this.value]; }
-  }
- },
- yAxis: {
- gridLineWidth:0,
- labels: {
-  formatter:function() { return this.value.toLocaleString('es-MX'); },
- },
- title: {
-    style: { fontWeight:700 },
-    text: info.tema
- }
- },
- plotOptions: {
- series: {
-    label: {
-	connectorAllowed: false
-    },
-//            pointStart: 2010,
-    marker: {
-      radius: 0,
-      states: {
-	hover: {radius:5}
-      }
-    }
-}
-},
-series: [info.serie],
-responsive: {
-rules: [{
-    condition: {
-	maxWidth: 500
-    },
-    chartOptions: {
-	legend: {
-	    layout: 'horizontal',
-	    align: 'center',
-	    verticalAlign: 'bottom'
-	}
-    }
-}]
-}
-
-});
-
-////////////////////// AGREGAR TABLA PARA DESCARGA ////////////////////////////
-var datos_tabla_ = info.serie.data.reverse();
-
-d3.select("div#tabla_expandible>table").selectAll("tr")
-.data(datos_tabla_).enter()
-.append("tr")
- .each(function(d) {
-  var val_ = d.map(function(t) {
-    var v = String(t);
-    if(v == "NaN") v = "";
-    return "<td style='font-size:12px;height:22px;min-height:25px;width:90px;min-width:90px;padding:0px;display:inline-block;border-top:1px solid rgba(0,0,0,0.08);'>" + v + "</td>";
-  }).join("");
-  d3.select(this).html(val_);
-});
-
-var tExp_w= $("div#tabla_expandible").css("width");
-$("div#header_expandible").css("width",tExp_w);
-/////////////////////// AGREGAR TABLA PARA DESCARGA /////////////////////////
-
-d3.select("button.datos_grapher").on("click",function() {
-//    var datos_tabla_ = info.serie.data.reverse();
-
-var tag_boton = $(this).attr("tag");
-var new_tag_boton = tag_boton == 'off' ? 'on' : 'off';
-var chart_container = "#grapher>div#chart";
-var exp_size = "200px";
-
-if(tag_boton == 'off') {
-
-resizeHighchart(exp_size,tag_boton);
-$("span#flecha").html("<")
-
-d3.select("#grapher>div.chart_expandible")
-.style("display","block")
-.style("width",exp_size);
-
-$(chart_container)
-//	.css("display","block")
-.css("width","calc(80% - " + exp_size + ")");
-
-/*
-d3.select("div#tabla_expandible>table").selectAll("tr")
-.data(datos_tabla_).enter()
-.append("tr")
- .each(function(d) {
-  var val_ = d.map(function(t) {
-    return "<td style='height:22px;min-height:22px;width:90px;min-width:90px;padding:0px;display:inline-block;border-top:1px solid rgba(0,0,0,0.08);'>" + t + "</td>";
-  }).join("");
-  d3.select(this).html(val_);
-});
-
-var tExp_w= $("div#tabla_expandible").css("width");
-$("div#header_expandible").css("width",tExp_w);
-*/
-$(this).attr("tag",new_tag_boton);
-
-} else {
-//      d3.select("div#tabla_expandible>table").html("");
-
-$("span#flecha").html(">")
-
-d3.select("#grapher>div.chart_expandible")
-.style("display","none")
-.style("width","0px");
-
-$(chart_container)
-.css("width","80%");
-
-resizeHighchart(exp_size,tag_boton);
-
-$(this).attr("tag",new_tag_boton);
-
-}
-
-});
-
-};
 
 
 
@@ -1253,7 +1030,7 @@ if(tableData[0]) {
 
         icons();
    // seleccionarCheckboxes();
-        enableGraphs();
+        //enableGraphs();
         corregirRenglones();
         headerScroll();
         colcol();
@@ -1355,6 +1132,8 @@ if(tableData[0]) {
 	   d3.selectAll("tr#dist").attr("id",null);
 	 }
 
+         contratosPemexFIX(); // <-- Arregla "coloreados no controlados".
+	 enableGraphs();
 	});
       },10);
     }
@@ -1573,86 +1352,6 @@ $(child_boxes_str).prop("checked",$(this).prop("checked"));
 
 seleccionarCheckboxes();
 
-function enableGraphs() {
-$("td.graph>img").on("click",function() {
-var row = this.parentNode.parentNode.querySelectorAll("td:not(#n)");
-var grandparent_tag = this.parentNode.parentNode.parentNode
- .parentNode.parentNode.parentNode
-  .getAttribute('tag');
-var parent_tag = this.parentNode.parentNode.parentNode
-  .getAttribute('tag');
-
-var fechas = fechas_().split(",");
-var values = []
-var obj = {};
-for(var i in row) {
-  if(row[i].nodeName == "TD") {
-    var val = row[i].innerHTML;
-    if( i == 0) {
-	val = val.replace(/&[a-z;\s]*/g,"");
-	val = val.replace(/^\s/g,"");
-	obj["name"] = val;
-    } else {
-	val = +val.replace(/,/g,"");
-	values.push([fechas[i-1],val]);
-    }
-  }
-};
-
-obj["data"] = values;
-var info = {
-  'serie':obj,
-  'grandparent':grandparent_tag,
-  'parent':parent_tag
-}
-
-
-var row_ = this.parentNode.parentNode;
-
-var cells = row_.querySelectorAll("td:not(#n)");
-
-var first_cell = cells[0].innerHTML.replace(/\s&....;/g,"");
-first_cell = first_cell.replace(/&[a-z;\s]*/g,"");
-first_cell = first_cell.replace(/^\s/g,"");
-//      first_cell = first_cell.replace(/ /g,"");
-
-if(row_.getAttribute('id')) {
-info['tema'] = first_cell;
-info['subtema'] = '';
-} else {
-
-info['subtema'] = first_cell;
-var ix = $(row_).index();
-var cond = false;
-
-while(!cond) {
-  var s = "tbody[tag='" + grandparent_tag + "']>div>table>" +
-   "tbody[tag='" + parent_tag + "']" +
-   ">tr:nth-child(" + ix + ")";
-
-  var dist = $(s).attr('id');
-  var dist_ = $(s)[0].querySelector("td:first-child").getAttribute("id");
-
-  if( dist || dist_ ) {
-    var tema = $(s)[0].querySelector("td:first-child").innerHTML;
-    tema = tema.replace(/&[a-z;\s]*/g,"");
-    tema = tema.replace(/^\s/g,"");
-    info["tema"] = tema;
-    if(dist_) {
-     info["subtema"] = tema;
-     info["tema"] = first_cell;
-     info.serie.name = tema;
-    }
-    cond = true;
-  }
-  ix -= 1;
-}
-}
-info.fechas = fechas_().split(",");
-grapher(info);
-
-});
-};
 
 function corregirRenglones() {
   d3.selectAll("td#dist_").each(function() {
@@ -2011,7 +1710,7 @@ function formatoData(data) {
       data[i][j][key] =
         data[i][j][key]
 	//.replace(/\<td(\>.*(?!CNH-M1-EK-BALAM\/2017)(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
-	.replace(/\<td(\>.*(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
+	.replace(/\<td(\>.*(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd])(?![2017]))/g,'<td id="dist_"$1')
 
 
       data[i][j][key] =
@@ -2210,6 +1909,339 @@ function descargar_selection(series) {
       s_a[i].parentNode.removeChild(s_a[i]);
     }
   }
+
+};
+
+function contratosPemexFIX() {
+  var t = $("div.overflow").filter(function() {
+	return $(this).css("display") == "block";
+  })[0];
+
+  var dist_ = t.querySelectorAll("td#dist_")
+  dist_ = Array.prototype.slice.call(dist_);
+
+  var patt = /CNH-M1/;
+
+  var validation = !dist_.map(function(d) { return patt.test(d.textContent); })
+	.filter(function(d) { return true; })
+	.every(function(d) { return d == false});
+
+  if(validation) {
+    d3.selectAll(dist_).attr("id",null);
+    var ixs = dist_.map(function(d) { return $(d.parentNode).index() - 1; });
+    var trs = Array.prototype.slice.call(t.querySelectorAll("tr"));
+
+    var filtered = [];
+
+    for(var j in ixs) {
+      var tr_0 = trs.filter(function(d,i) { return i == ixs[j]; })[0];
+      var tr_1 = trs.filter(function(d,i) { return i == ixs[j] + 1; })[0];
+      filtered.push(tr_0);
+      $(tr_1.querySelector("td.graph"))
+	.html('<img style="z-index:-1" src="img/graph.svg">')
+
+      $(tr_1.querySelector("td.check"))
+	.html('<input type="checkbox" style="margin:0px;">');
+    }
+
+    $(filtered).attr("id","dist");
+    console.log(filtered);
+  }
+
+};
+
+
+
+function enableGraphs() {
+  $("td.graph>img").on("click",function() {
+    var row = this.parentNode.parentNode.querySelectorAll("td:not(#n)");
+    var grandparent_tag = this.parentNode.parentNode.parentNode
+     .parentNode.parentNode.parentNode
+     .getAttribute('tag');
+    var parent_tag = this.parentNode.parentNode.parentNode
+     .getAttribute('tag');
+
+    var fechas = fechas_().split(",");
+    var values = []
+    var obj = {};
+    for(var i in row) {
+      if(row[i].nodeName == "TD") {
+        var val = row[i].innerHTML;
+        if( i == 0) {
+	  val = val.replace(/&[a-z;\s]*/g,"");
+	  val = val.replace(/^\s/g,"");
+	  obj["name"] = val;
+        } else {
+	  val = +val.replace(/,/g,"");
+	  values.push([fechas[i-1],val]);
+        }
+      }
+    };
+
+    obj["data"] = values;
+    var info = {
+      'serie':obj,
+      'grandparent':grandparent_tag,
+      'parent':parent_tag
+    }
+
+
+    var row_ = this.parentNode.parentNode;
+
+    var cells = row_.querySelectorAll("td:not(#n)");
+
+    var first_cell = cells[0].innerHTML.replace(/\s&....;/g,"");
+    first_cell = first_cell.replace(/&[a-z;\s]*/g,"");
+    first_cell = first_cell.replace(/^\s/g,"");
+//      first_cell = first_cell.replace(/ /g,"");
+
+    if(row_.getAttribute('id')) {
+      info['tema'] = first_cell;
+      info['subtema'] = '';
+    } else {
+
+      info['subtema'] = first_cell;
+      var ix = $(row_).index();
+      var cond = false;
+
+      while(!cond) {
+        var s = "tbody[tag='" + grandparent_tag + "']>div>table>" +
+        "tbody[tag='" + parent_tag + "']" +
+        ">tr:nth-child(" + ix + ")";
+
+        var dist = $(s).attr('id');
+        var dist_ = $(s)[0].querySelector("td:first-child").getAttribute("id");
+
+        if( dist || dist_ ) {
+          var tema = $(s)[0].querySelector("td:first-child").innerHTML;
+          tema = tema.replace(/&[a-z;\s]*/g,"");
+          tema = tema.replace(/^\s/g,"");
+          info["tema"] = tema;
+          if(dist_) {
+            info["subtema"] = tema;
+            info["tema"] = first_cell;
+            info.serie.name = tema;
+          }
+          cond = true;
+       }
+       ix -= 1;
+     }
+    }
+    info.fechas = fechas_().split(",");
+    grapher(info);
+
+  });
+};
+
+
+function grapher(info) {
+  var fake_tag = [ info.grandparent, info.parent, info.tema, info.subtema ];
+  if(fake_tag[3] == "") { fake_tag = fake_tag.slice(0,3); }
+  fake_tag = fake_tag.join(" - ");
+
+  var grapher_element = 
+   "<div id='grapher'>" +
+     "<button class='datos_grapher' tag='off'>"+
+       "Datos <span id='flecha'>></span>"+
+     "</button>" +
+     "<img class='close_chart' src='img/close.svg'></img>" +
+
+     "<div class='chart_expandible' tag='"+ fake_tag +"'>"+
+
+       "<div id='header_expandible' style='position:absolute;top:35px;width:100%;'>"+
+         "<table style='table-layout:fixed;'>"+
+           "<tr style='font-weight:700;'>"+
+            "<td style='width:90px;min-width:90px;display:inline-block;padding:0px;'>FECHA</td>"+
+            "<td style='width:90px;min-width:90px;display:inline-block;padding:0px;'>DATO</td>"+
+           "</tr>"+
+         "</table>" +
+      "</div>" +
+
+      "<div id='tabla_expandible' style='width:100%;height:calc(100% - 110px);margin-top:60px;overflow-y:scroll;'>" +
+        "<table style='table-layout:fixed;'></table>" +
+      "</div>" +
+
+      "<button style='margin-left:20px;margin-top:15px;width:calc(100% - 50px);' onclick='descargarSerie()'>Descargar</button>" +
+
+    "</div>" +
+    "<div id='chart'></div>" + 
+  "</div>";
+
+  $('body').css("overflow","hidden");  
+  $('body').prepend(grapher_element);
+
+  $('.close_chart').on("click",function() {
+      $("body").css("overflow","auto");
+      $("#grapher").remove();
+  });
+
+  info.serie.showInLegend = false;
+
+  var color = "rgb(13,180,190)"//getComputedStyle(document.body).getPropertyValue('--subtitulos');
+  info.serie.color = color;
+
+	Highcharts.chart('chart', {
+	  lang: { 'img':'Descargar imagen' },
+	  exporting: {
+	  enabled:true,
+	  buttons: {
+	   contextButton: {
+	    symbolX:19,
+	    symbolY:18,
+	    symbol:'url(img/download.svg)',
+	    _titleKey:'img',
+	    menuItems:[{
+	      textKey:'downloadPNG',
+	      onclick:function() { this.exportChart() },
+	      text:"PNG"
+	    },
+	    {
+	     textKey:'downloadCSV',
+	     onclick:descargarSerie,
+	     text:"CSV"
+	    }]
+	   }
+	  }
+	 },
+	 chart: {
+	 style: {
+	   fontFamily:'Open Sans'
+	 }
+	 },
+	 tooltip: {
+	  useHTML:true,
+	  backgroundColor:null,
+	  borderWidth:0,
+	  style: { fontWeight:800 },
+	  formatter: function() {
+	   var t =
+	   "<div style='text-align:center;'>" +
+	   "<span style='font-size:11px;font-weight:800;color:"+ 'black' +";'>" +
+	   this.point.name + 
+	   "</span>" +
+	   "<br>" +
+	   "<span style='font-weight:300;font-size:18px;'>"
+	   + this.y.toLocaleString("es-MX") +
+	   "</span></div>";
+	   return t;//this.point.name + ": " + this.y;
+	  }
+	 },
+	 credits: { enabled:false },
+	 title: {
+	  text: info.subtema ? info.subtema : info.tema
+	 },
+	 subtitle: {
+	  text: info.grandparent + " - " + info.parent
+	 },
+	 xAxis: {
+	  labels: {
+	   enabled:true,
+	   formatter: function() { return info.fechas[this.value]; }
+	  }
+	 },
+	 yAxis: {
+	 gridLineWidth:0,
+	 labels: {
+	  formatter:function() { return this.value.toLocaleString('es-MX'); },
+	 },
+	 title: {
+	    style: { fontWeight:700 },
+	    text: info.tema
+	 }
+	 },
+	 plotOptions: {
+	 series: {
+	    label: {
+		connectorAllowed: false
+	    },
+	//            pointStart: 2010,
+	    marker: {
+	      radius: 0,
+	      states: {
+		hover: {radius:5}
+	      }
+	    }
+	}
+	},
+	series: [info.serie],
+	responsive: {
+	rules: [{
+	    condition: {
+		maxWidth: 500
+	    },
+	    chartOptions: {
+		legend: {
+		    layout: 'horizontal',
+		    align: 'center',
+		    verticalAlign: 'bottom'
+		}
+	    }
+	}]
+	}
+
+	});
+
+////////////////////// AGREGAR TABLA PARA DESCARGA ////////////////////////////
+ var datos_tabla_ = info.serie.data.reverse();
+
+ d3.select("div#tabla_expandible>table").selectAll("tr")
+  .data(datos_tabla_).enter()
+  .append("tr")
+   .each(function(d) {
+     var val_ = d.map(function(t) {
+     var v = String(t);
+     if(v == "NaN") v = "";
+     return "<td style='font-size:12px;height:22px;min-height:25px;width:90px;min-width:90px;padding:0px;display:inline-block;border-top:1px solid rgba(0,0,0,0.08);'>" + v + "</td>";
+   }).join("");
+   d3.select(this).html(val_);
+ });
+
+ var tExp_w= $("div#tabla_expandible").css("width");
+ $("div#header_expandible").css("width",tExp_w);
+/////////////////////// AGREGAR TABLA PARA DESCARGA /////////////////////////
+
+ d3.select("button.datos_grapher").on("click",function() {
+//    var datos_tabla_ = info.serie.data.reverse();
+
+    var tag_boton = $(this).attr("tag");
+    var new_tag_boton = tag_boton == 'off' ? 'on' : 'off';
+    var chart_container = "#grapher>div#chart";
+    var exp_size = "200px";
+
+    if(tag_boton == 'off') {
+
+      resizeHighchart(exp_size,tag_boton);
+      $("span#flecha").html("<")
+
+      d3.select("#grapher>div.chart_expandible")
+       .style("display","block")
+       .style("width",exp_size);
+
+      $(chart_container)
+//	.css("display","block")
+        .css("width","calc(80% - " + exp_size + ")");
+
+      $(this).attr("tag",new_tag_boton);
+
+    } else {
+//      d3.select("div#tabla_expandible>table").html("");
+
+      $("span#flecha").html(">")
+
+      d3.select("#grapher>div.chart_expandible")
+       .style("display","none")
+       .style("width","0px");
+
+      $(chart_container)
+        .css("width","80%");
+
+      resizeHighchart(exp_size,tag_boton);
+
+      $(this).attr("tag",new_tag_boton);
+
+   }
+
+ });
 
 };
 
