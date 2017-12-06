@@ -755,76 +755,76 @@ var color = "rgb(13,180,190)"//getComputedStyle(document.body).getPropertyValue(
 info.serie.color = color;
 
 Highcharts.chart('chart', {
-lang: { 'img':'Descargar imagen' },
-exporting: {
-enabled:true,
-buttons: {
-contextButton: {
-  symbolX:19,
-  symbolY:18,
-  symbol:'url(img/download.svg)',
-  _titleKey:'img',
-  menuItems:[{
-   textKey:'downloadPNG',
-   onclick:function() { this.exportChart() },
-   text:"PNG"
-  },
-  {
-   textKey:'downloadCSV',
-   onclick:descargarSerie,
-   text:"CSV"
-  }]
-}
-}
-},
-chart: {
-style: {
-fontFamily:'Open Sans'
-}
-},
-tooltip: {
-useHTML:true,
-backgroundColor:null,
-borderWidth:0,
-style: { fontWeight:800 },
-formatter: function() {
-var t =
-"<div style='text-align:center;'>" +
- "<span style='font-size:11px;font-weight:800;color:"+ 'black' +";'>" +
-  this.point.name + 
-"</span>" +
-  "<br>" +
-"<span style='font-weight:300;font-size:18px;'>"
- + this.y.toLocaleString("es-MX") +
-"</span></div>";
-return t;//this.point.name + ": " + this.y;
-}
-},
-credits: { enabled:false },
-title: {
-text: info.subtema ? info.subtema : info.tema
-},
-subtitle: {
-text: info.grandparent + " - " + info.parent
-},
-xAxis: {
-labels: {
-enabled:true,
-formatter: function() { return info.fechas[this.value]; }
-}
-},
-yAxis: {
-gridLineWidth:0,
-labels: {
+  lang: { 'img':'Descargar imagen' },
+  exporting: {
+  enabled:true,
+  buttons: {
+   contextButton: {
+    symbolX:19,
+    symbolY:18,
+    symbol:'url(img/download.svg)',
+    _titleKey:'img',
+    menuItems:[{
+      textKey:'downloadPNG',
+      onclick:function() { this.exportChart() },
+      text:"PNG"
+    },
+    {
+     textKey:'downloadCSV',
+     onclick:descargarSerie,
+     text:"CSV"
+    }]
+   }
+  }
+ },
+ chart: {
+ style: {
+   fontFamily:'Open Sans'
+ }
+ },
+ tooltip: {
+  useHTML:true,
+  backgroundColor:null,
+  borderWidth:0,
+  style: { fontWeight:800 },
+  formatter: function() {
+   var t =
+   "<div style='text-align:center;'>" +
+   "<span style='font-size:11px;font-weight:800;color:"+ 'black' +";'>" +
+   this.point.name + 
+   "</span>" +
+   "<br>" +
+   "<span style='font-weight:300;font-size:18px;'>"
+   + this.y.toLocaleString("es-MX") +
+   "</span></div>";
+   return t;//this.point.name + ": " + this.y;
+  }
+ },
+ credits: { enabled:false },
+ title: {
+  text: info.subtema ? info.subtema : info.tema
+ },
+ subtitle: {
+  text: info.grandparent + " - " + info.parent
+ },
+ xAxis: {
+  labels: {
+   enabled:true,
+   formatter: function() { return info.fechas[this.value]; }
+  }
+ },
+ yAxis: {
+ gridLineWidth:0,
+ labels: {
   formatter:function() { return this.value.toLocaleString('es-MX'); },
-},
-title: {
+ },
+ title: {
     style: { fontWeight:700 },
     text: info.tema
-}
-},
-plotOptions: {
-series: {
+ }
+ },
+ plotOptions: {
+ series: {
     label: {
 	connectorAllowed: false
     },
@@ -1991,24 +1991,28 @@ function formatoData(data) {
  for(var i in data) {
   for(var j in data[i]) {
     if(typeof(data[i][j]) == "object") {
-      data[i][j][Object.keys(data[i][j])[0]] =
-        data[i][j][Object.keys(data[i][j])[0]]
+      let key = Object.keys(data[i][j]).filter(function(d) {
+	return d != 'visual';
+      })[0];
+
+      data[i][j][key] =
+        data[i][j][key]
 	.replace(/(\d)-(\d)/g,"$1 $2")
 
-      data[i][j][Object.keys(data[i][j])[0]] =
-        data[i][j][Object.keys(data[i][j])[0]]
+      data[i][j][key] =
+        data[i][j][key]
 	.replace(/#/g,"&ensp;&nbsp;")
 
-      data[i][j][Object.keys(data[i][j])[0]] =
-        data[i][j][Object.keys(data[i][j])[0]]
+      data[i][j][key] =
+        data[i][j][key]
 	.replace(/\<tr(\>\n.*)\(/g,'<tr id="dist"$1(')
 
-      data[i][j][Object.keys(data[i][j])[0]] =
-        data[i][j][Object.keys(data[i][j])[0]]
-	.replace(/\<td(\>.*(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
+      data[i][j][key] =
+        data[i][j][key]
+	.replace(/\<td(\>.*(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
 
-      data[i][j][Object.keys(data[i][j])[0]] =
-        data[i][j][Object.keys(data[i][j])[0]]
+      data[i][j][key] =
+        data[i][j][key]
 	.replace(/Categor¡a/g,'')
 
     }
