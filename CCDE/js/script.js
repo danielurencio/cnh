@@ -2015,6 +2015,11 @@ function formatoData(data) {
         data[i][j][key]
 	.replace(/Categor¡a/g,'')
 
+      data[i][j][key] =
+        data[i][j][key]
+	.replace(/\<td(\>.*A-[0-9]{4,})/g,'<td id="dist_"$1')
+
+
     }
   }
  }
