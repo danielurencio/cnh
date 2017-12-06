@@ -865,7 +865,7 @@ d3.select("div#tabla_expandible>table").selectAll("tr")
   var val_ = d.map(function(t) {
     var v = String(t);
     if(v == "NaN") v = "";
-    return "<td style='height:22px;min-height:42px;width:90px;min-width:90px;padding:0px;display:inline-block;border-top:1px solid rgba(0,0,0,0.08);'>" + v + "</td>";
+    return "<td style='font-size:12px;height:22px;min-height:25px;width:90px;min-width:90px;padding:0px;display:inline-block;border-top:1px solid rgba(0,0,0,0.08);'>" + v + "</td>";
   }).join("");
   d3.select(this).html(val_);
 });
