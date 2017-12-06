@@ -118,7 +118,7 @@ try {
 ///////////// Aparecer y desaparecer filas según el viewport
 /////////////////////////////////////////////////////////////////////
 if(SS_){
- if(!caso_especial) { // <--No hay desaparición de filas en el caso especial.
+// if(!caso_especial) { // <--No hay desaparición de filas en el caso especial.
   var rows = $("div.overflow tr").filter(function(d) {
     return $(this).css("display") != "none";
   });
@@ -296,7 +296,7 @@ if(SS_){
 
 //  console.log(rows);
   }
- }
+// }
  checkOcurrente();
  aid_CHECK();
 };

@@ -83,7 +83,7 @@ div#grapher button {
  border: 0px solid black;
  background: white;
  font-size:11px;
- background-color:var(--subtitulos);
+ background-color:rgb(13,180,190);/*var(--subtitulos);*/
  color:white;
 }
 
