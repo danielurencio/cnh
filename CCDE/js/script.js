@@ -1236,12 +1236,13 @@ if(tableData[0]) {
 
 	  }
 */
+/*
 	  if(i>noOfRows) {
 	    arr[i]//.remove()
 	.style.display = "none";
 	    $(arr[i]).attr("tag","ocult");
 	  }
-
+*/
 
 	}
 
@@ -2009,7 +2010,9 @@ function formatoData(data) {
 
       data[i][j][key] =
         data[i][j][key]
+	//.replace(/\<td(\>.*(?!CNH-M1-EK-BALAM\/2017)(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
 	.replace(/\<td(\>.*(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
+
 
       data[i][j][key] =
         data[i][j][key]
@@ -2018,7 +2021,6 @@ function formatoData(data) {
       data[i][j][key] =
         data[i][j][key]
 	.replace(/\<td(\>.*A-[0-9]{4,})/g,'<td id="dist_"$1')
-
 
     }
   }
