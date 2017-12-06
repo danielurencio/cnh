@@ -935,149 +935,148 @@ $(this).attr("tag",new_tag_boton);
 
 
 function descargar_selection(series) {
-var chunk = [];
+  var chunk = [];
 
-var fecha = new Date();
-var Header = [
-"PRODUCCION",
-"COMISION NACIONAL DE HIDROCARBUROS",
-"Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
-"\n",
-];
+  var fecha = new Date();
+  var Header = [
+    "PRODUCCION",
+    "COMISION NACIONAL DE HIDROCARBUROS",
+    "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
+    "\n",
+  ];
 
-var fechatest_ = fecha.toLocaleString('es-MX').replace(", "," - ")
+  var fechatest_ = fecha.toLocaleString('es-MX').replace(", "," - ")
 
-chunk.push(Header.join("\n"));
-chunk.push(",,");
+  chunk.push(Header.join("\n"));
+  chunk.push(",,");
 
-chunk.push(",,,," + fechas_())
-var familias = _.uniq( series.map(function(d) { return d.familia; }) );
+  chunk.push(",,,," + fechas_())
+  var familias = _.uniq( series.map(function(d) { return d.familia; }) );
 
-familias.forEach(function(f) {
-var pieces = [];
-chunk.push(f)
-var familia = series.filter(function(d) { return d.familia == f; });
-var subfamilias = _.uniq( familia.map(function(d) { return d.subfamilia; }) );
+  familias.forEach(function(f) {
+    var pieces = [];
+    chunk.push(f)
+    var familia = series.filter(function(d) { return d.familia == f; });
+    var subfamilias = _.uniq( familia.map(function(d) { return d.subfamilia; }) );
 
-subfamilias.forEach(function(sf) {
-chunk.push("," + sf);
-var subfamilia = familia.filter(function(ff) {
-return ff.subfamilia == sf;
-});
+    subfamilias.forEach(function(sf) {
+      chunk.push("," + sf);
+      var subfamilia = familia.filter(function(ff) {
+      return ff.subfamilia == sf;
+      });
 
-var tema = ''; 
-subfamilia.forEach(function(ss) {
-var serie_ = ss.serie.join(",").replace(/NaN/g,"");
-if( tema != ss.tema ) {
-  tema = ss.tema;
-  chunk.push(",," + tema + ",," + serie_);
-}
-var subtema = ss.subtema;
-if( subtema != "" ) chunk.push(",,," + subtema + "," + serie_);
+      var tema = ''; 
+      subfamilia.forEach(function(ss) {
+        var serie_ = ss.serie.join(",").replace(/NaN/g,"");
+        if( tema != ss.tema ) {
+          tema = ss.tema;
+          chunk.push(",," + tema + ",," + serie_);
+        }
+        var subtema = ss.subtema;
+        if( subtema != "" ) chunk.push(",,," + subtema + "," + serie_);
 //	chunk.push(",,,," + serie_);
-});
+     });
 
-});
-chunk.push(",,");
-chunk.push(",,");
+   });
+   chunk.push(",,");
+   chunk.push(",,");
 
-});
+  });
 
-chunk = chunk.join("\n").toUpperCase();
-chunk = chunk.replace(/Á/g,"A");
-chunk = chunk.replace(/É/g,"E");
-chunk = chunk.replace(/Í/g,"I");
-chunk = chunk.replace(/Ó/g,"O");
-chunk = chunk.replace(/Ú/g,"U");
+  chunk = chunk.join("\n").toUpperCase();
+  chunk = chunk.replace(/Á/g,"A");
+  chunk = chunk.replace(/É/g,"E");
+  chunk = chunk.replace(/Í/g,"I");
+  chunk = chunk.replace(/Ó/g,"O");
+  chunk = chunk.replace(/Ú/g,"U");
 
-var csvFile = new Blob(["\ufeff",chunk], { 'type':'text/csv' });
+  var csvFile = new Blob(["\ufeff",chunk], { 'type':'text/csv' });
 
-if(window.navigator && window.navigator.msSaveOrOpenBlob) {
-window.navigator.msSaveOrOpenBlob(csvFile,"info.csv");
-} else {
-var downloadLink = document.createElement("a");
-downloadLink.download = "info.csv";
-downloadLink.href = window.URL.createObjectURL(csvFile);
-downloadLink.style.display = "none";
-document.body.appendChild(downloadLink);
-downloadLink.click();
-var s_a = document.getElementsByTagName("a");
-for(var i=0; i<s_a.length; i++) {
-s_a[i].parentNode.removeChild(s_a[i]);
-}
-}
+  if(window.navigator && window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveOrOpenBlob(csvFile,"info.csv");
+  } else {
+    var downloadLink = document.createElement("a");
+    downloadLink.download = "info.csv";
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    var s_a = document.getElementsByTagName("a");
+    for(var i=0; i<s_a.length; i++) {
+      s_a[i].parentNode.removeChild(s_a[i]);
+    }
+  }
 
 };
 
 function obtener_series() {
-var css_selection = "input[type='checkbox']:checked:not(#principal)";
-var checked = document.querySelectorAll(css_selection);
+  var css_selection = "input[type='checkbox']:checked:not(#principal):not(.aid_check)";
+  var checked = document.querySelectorAll(css_selection);
 
-if(checked.length > 500) {
-alert("Su consulta excede el límite de 500 series.");
-} else {
-var series = [];
-for(var i in checked) {
-if(checked[i].type == "checkbox") {
+  if(checked.length > 500) {
+    alert("Su consulta excede el límite de 500 series.");
+  } else {
+  var series = [];
+  for(var i in checked) {
+    if(checked[i].type == "checkbox") {
 
-var row = checked[i].parentNode.parentNode;
-var parent_ = row.parentNode;
-var grand_parent_ = parent_.parentNode.parentNode.parentNode;
-var parent_tag = parent_.getAttribute("tag");
-var grand_parent_tag = grand_parent_.getAttribute("tag");
+    var row = checked[i].parentNode.parentNode;
+    var parent_ = row.parentNode;
+    var grand_parent_ = parent_.parentNode.parentNode.parentNode;
+    var parent_tag = parent_.getAttribute("tag");
+    var grand_parent_tag = grand_parent_.getAttribute("tag");
 
-var obj = {};
-obj['familia'] = grand_parent_tag;
-obj['subfamilia'] = parent_tag;
+    var obj = {};
+    obj['familia'] = grand_parent_tag;
+    obj['subfamilia'] = parent_tag;
 
-var row_set = [];
-var cells = row.querySelectorAll("td:not(#n)");
-var first_cell = cells[0].innerHTML;
-first_cell = first_cell.replace(/&[a-z;\s]*/g,"");
-first_cell = first_cell.replace(/^\s/g,"");
+    var row_set = [];
+    var cells = row.querySelectorAll("td:not(#n)");
+    var first_cell = cells[0].innerHTML;
+    first_cell = first_cell.replace(/&[a-z;\s]*/g,"");
+    first_cell = first_cell.replace(/^\s/g,"");
 
-if(row.getAttribute('id')) {
-obj['tema'] = first_cell;
-obj['subtema'] = '';
-} else {
+    if(row.getAttribute('id')) {
+      obj['tema'] = first_cell;
+      obj['subtema'] = '';
+    } else {
 
-obj['subtema'] = first_cell;
-var ix = $(row).index();
-var cond = false;
+      obj['subtema'] = first_cell;
+      var ix = $(row).index();
+      var cond = false;
 
-while(!cond) {
-  var s = "tbody[tag='" + grand_parent_tag + "']>div>table>" +
-   "tbody[tag='" + parent_tag + "']" +
-   ">tr:nth-child(" + ix + ")";
+    while(!cond) {
+      var s = "tbody[tag='" + grand_parent_tag + "']>div>table>" +
+       "tbody[tag='" + parent_tag + "']" +
+       ">tr:nth-child(" + ix + ")";
+      var dist = $(s).attr('id');
+      var dist_ = $(s)[0].querySelector("td:first-child").getAttribute("id");
 
-  var dist = $(s).attr('id');
-  var dist_ = $(s)[0].querySelector("td:first-child").getAttribute("id");
+      if( dist || dist_) {
+        var tema = $(s)[0].querySelector("td:first-child").innerHTML;
+        tema = tema.replace(/&[a-z;\s]*/g,"");
+        tema = tema.replace(/^\s/g,"");
+        obj["tema"] = tema;
+        cond = true;
+      }
+      ix -= 1;
+    }
 
-  if( dist || dist_ ) {
-    var tema = $(s)[0].querySelector("td:first-child").innerHTML;
-    tema = tema.replace(/&[a-z;\s]*/g,"");
-    tema = tema.replace(/^\s/g,"");
-    obj["tema"] = tema;
-    cond = true;
+  };
+
+  for(var j=1; j<cells.length; j++) {
+    if(cells[j].nodeName == "TD") {
+      var cell_content = cells[j].innerHTML;
+      cell_content = +cell_content.replace(/,/g,"");
+      row_set.push(cell_content);
+    }
+  };
+
+
+  obj["serie"] = row_set;
+  series.push(obj);
   }
-  ix -= 1;
-}
-
 };
-
-for(var j=1; j<cells.length; j++) {
-if(cells[j].nodeName == "TD") {
-  var cell_content = cells[j].innerHTML;
-  cell_content = +cell_content.replace(/,/g,"");
-  row_set.push(cell_content);
-}
-};
-
-obj["serie"] = row_set;
-series.push(obj);
-}
-};
-
 return series;
 }
 
@@ -1494,7 +1493,12 @@ if(tableData[0]) {
 	 }
 /*-----------------Quitar scroller horizontal si no se necesita--------------*/
 	 PrincipalCheckBox();
-//$("#scroll_aid").prepend("<input type='checkbox' style='position:absolute;left:392px'></input>")
+
+	 var checkIfDist_ = document.querySelectorAll("#dist_").length;
+	 if(checkIfDist_>0) {
+	   d3.selectAll("tr#dist").attr("id",null);
+	 }
+
 	});
       },10);
     }
@@ -1665,14 +1669,14 @@ function icons() {
       var this_tag = cubos[c].getAttribute("tag");
 
       var cubo_td = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
-        "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child"//:not(#dist_)";
+        "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child:not(#dist_)";
       var cubo_th = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
         "tbody.hide[tag='"+ this_tag +"']>tr>th:first-child";
       var cubo_dist_ = "tbody.hide[tag='"+ parent_tag +"']>div>table>"+
         "tbody.hide[tag='"+ this_tag +"']>tr>td:first-child#dist_";
   
 
-      $("<td id='p'><input style='display:none;' type='checkbox'></input></td>")
+      $("<td id='p'><input style='display:none;' id='principal' type='checkbox'></input></td>")
         .insertAfter(cubo_th);
       $("<td id='p'></td>")
         .insertAfter(cubo_th);
@@ -1795,45 +1799,48 @@ grapher(info);
 };
 
 function corregirRenglones() {
-d3.selectAll("td#dist_").each(function() {
+  d3.selectAll("td#dist_").each(function() {
 //        $(this).css("background",temas_fondo);
-});
+  });
 };
 
 
 // ---------CALCULAR TAMAÑO DE CELDAS PARA EL ENCABEZADO-SCROLLER ----
 function headerScroll() {
-var first_th = $("tbody.hide")[0].querySelectorAll("th")[1];
-if(first_th) {
-var cell_Width = first_th.offsetWidth - 1;	
+  var first_th = $("tbody.hide")[0].querySelectorAll("th")[1];
+  if(first_th) {
+    var cell_Width = first_th.offsetWidth - 1;	
 //      var cell_Width = $(first_th).css("width").split("px")[0];
 //console.log(cell_Width);
-var scroll_id_header = fechas_().replace(/-/g," ").split(",")
-.map(function(d) { return "<th style='width:"+ cell_Width +
-"px;min-width:"+ cell_Width +"px;max-width:"+cell_Width+"px'>" + d + "</th>"; });
+    var scroll_id_header = fechas_().replace(/-/g," ").split(",")
+      .map(function(d) {
+	return "<th style='width:"+ cell_Width +
+      	"px;min-width:"+ cell_Width +"px;max-width:"+cell_Width+"px'>"
+	+ d + "</th>";
+    });
 
-var scroll_id_header_ = ["<th style='min-width:413px;padding:1px;'></th>"]
-.concat(scroll_id_header).join("");
-$("tr.scroll_aid_header").html(scroll_id_header_)
+    var scroll_id_header_ = ["<th style='min-width:413px;padding:1px;'></th>"]
+    .concat(scroll_id_header).join("");
+    $("tr.scroll_aid_header").html(scroll_id_header_)
 
-$("tr.scroll_aid_footer").html(scroll_id_header)
+    $("tr.scroll_aid_footer").html(scroll_id_header)
 
 // ----------- CALCULAR TAMAÑO DE TBODY PARA EL SCROLLER_HEADER ----------
-var tbody_Width = document.querySelectorAll("table>.hide")[0]
-.offsetWidth;
-$(".scroll_header").css("width","calc( 100% - "+ 65 +"px)");
+    var tbody_Width = document.querySelectorAll("table>.hide")[0]
+      .offsetWidth;
+    $(".scroll_header").css("width","calc( 100% - "+ 65 +"px)");
 
 // -------------------- MOVER DIVS SIMULTÁNEAMENTE ------------------
-$('div.overflow').on('scroll', function () {
-$('div.scroll_header').scrollLeft($(this).scrollLeft());
-});
+    $('div.overflow').on('scroll', function () {
+      $('div.scroll_header').scrollLeft($(this).scrollLeft());
+    });
 
-$('#footer_').on('scroll', function () {
-$('div.scroll_header').scrollLeft($(this).scrollLeft());
-$('div.overflow').scrollLeft($(this).scrollLeft());
-});
+    $('#footer_').on('scroll', function () {
+      $('div.scroll_header').scrollLeft($(this).scrollLeft());
+      $('div.overflow').scrollLeft($(this).scrollLeft());
+    });
 
-}
+  }
 };
 
 };
@@ -2033,9 +2040,10 @@ function descargarSerie() {
 	if(cells[j].nodeName == "TD") {
 	  var row = cells[j].textContent;
 	  rows.push(row);
+	  console.log(row);
 	}
       }
-      rows = rows.join(",")
+      rows = rows.join(",");console.log(rows);
       csv.push(rows);
     }
   }
@@ -2142,7 +2150,7 @@ function formatoData(data) {
 
       data[i][j][Object.keys(data[i][j])[0]] =
         data[i][j][Object.keys(data[i][j])[0]]
-//	.replace(/\<td(\>.*(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
+	.replace(/\<td(\>.*(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
 
       data[i][j][Object.keys(data[i][j])[0]] =
         data[i][j][Object.keys(data[i][j])[0]]
@@ -2155,10 +2163,14 @@ function formatoData(data) {
 };
 
 function PrincipalCheckBox() {
+  $("div.overflow").filter(function() {
+    return $(this).css("display") == "block";
+  })
+  .prepend("<input id='principal' type='checkbox' style='position:absolute;left:391px;'></input>");
 	 var first_th_ = $("div.overflow").filter(function() {
 	    return $(this).css("display") == "block";
-	 })[0]
-	   .querySelector("tr:first-child>th:first-child");
+	 })
+/*	   .querySelector("tr:first-child>th:first-child");
 
 	 var el_pad = +$($("td.check")[0])
 		.css("padding").split("px")[0];
@@ -2168,7 +2180,7 @@ function PrincipalCheckBox() {
 	  var displace = marginLeft - el_pad;
 	 $(first_th_).html("<input type='checkbox' style='margin-left:"+
 		displace+"px;' id='principal'></input>")
-
+*/
 	 $("input#principal").on("click",function() {
 	   var child_boxes_str = "input[type='checkbox']:not(#principal)";
 	   $(child_boxes_str).prop("checked",$(this).prop("checked"));

@@ -298,6 +298,7 @@ if(SS_){
   }
  }
  checkOcurrente();
+ aid_CHECK();
 };
 
 
@@ -351,3 +352,27 @@ function checkOcurrente() {
   }
 }
 
+function aid_CHECK() {
+    var headerOcurrente = document
+	.querySelector("tr.scroll_aid_header")
+	.getAttribute("visible") == "yes";
+
+    var aid_check = $(".aid_check");
+//    var inputTable = $("input#principal");
+
+    function enableCheckClick(str) {
+      $("input" + str).on("click",function() {
+        var child_boxes_str =
+	  "input[type='checkbox']:not(#principal):not(.aid_check)";
+        $(child_boxes_str).prop("checked",$(this).prop("checked"));
+      });
+    };
+
+    if(headerOcurrente) {
+      aid_check.css("visibility","visible");
+      enableCheckClick(".aid_check");
+    } else {
+      aid_check.css("visibility","hidden");
+      enableCheckClick("#principal");
+    }
+};
