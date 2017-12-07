@@ -1307,7 +1307,7 @@ function colcol() {
 	.css("font-size","13px");
 
   $("div.overflow tr>td:first-child")
-	.css("font-size","13px");
+	.css("font-size","14px");
 
   $("div.overflow tbody>tr:first-child>td").css("display","none");
   $("div.overflow").css("margin-top","20px");
