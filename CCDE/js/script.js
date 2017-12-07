@@ -1389,7 +1389,8 @@ function headerScroll() {
 // ----------- CALCULAR TAMAÑO DE TBODY PARA EL SCROLLER_HEADER ----------
     var tbody_Width = document.querySelectorAll("table>.hide")[0]
       .offsetWidth;
-    $(".scroll_header").css("width","calc( 100% - "+ 65 +"px)");
+    $(".scroll_header")
+	.css("width","calc( 100% - "+ 65 +"px)");
 
 // -------------------- MOVER DIVS SIMULTÁNEAMENTE ------------------
     $('div.overflow').on('scroll', function () {
