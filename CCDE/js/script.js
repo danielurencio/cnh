@@ -690,10 +690,10 @@ $.get("cuencas.json", function(data) {
      RenderWords(response,this.id);
    });
 
-//     $("button#boton").on("click",descargar);
-
    d3.selectAll("button#selection").on("click",function() {
      var series = obtener_series();
+console.log("algo..");
+     console.log(series);
 
      if(series && series.length == 0) {
        alert("Seleccione alguna serie.");
@@ -701,16 +701,12 @@ $.get("cuencas.json", function(data) {
 
    });
 
-
   });
+
  }
+
+
 }); // <-- PRIMER AJAX!
-
-
-
-
-
-
 
 
 
@@ -1774,13 +1770,25 @@ function obtener_series() {
   for(var i in checked) {
     if(checked[i].type == "checkbox") {
 
+    var obj = {};   
     var row = checked[i].parentNode.parentNode;
+    var _ix_ = $(row).index();
+
+    if(_ix_ > 1) {
+      var prevRow = $("div.overflow").filter(function() {
+	return $(this).css("display") == "block";
+      })[0].querySelectorAll("tr:nth-child("+ _ix_ +")")[0]
+      .querySelector("td.graph").innerHTML.length;
+
+      prevRow = prevRow > 0 ? 0 : 1;
+      obj['prevRow'] = prevRow;
+    }
+
     var parent_ = row.parentNode;
     var grand_parent_ = parent_.parentNode.parentNode.parentNode;
     var parent_tag = parent_.getAttribute("tag");
     var grand_parent_tag = grand_parent_.getAttribute("tag");
 
-    var obj = {};
     obj['familia'] = grand_parent_tag;
     obj['subfamilia'] = parent_tag;
 
@@ -1859,21 +1867,28 @@ function descargar_selection(series) {
   familias.forEach(function(f) {
     var pieces = [];
     chunk.push(f)
+
     var familia = series.filter(function(d) { return d.familia == f; });
     var subfamilias = _.uniq( familia.map(function(d) { return d.subfamilia; }) );
 
     subfamilias.forEach(function(sf) {
       chunk.push("," + sf);
+
       var subfamilia = familia.filter(function(ff) {
-      return ff.subfamilia == sf;
+        return ff.subfamilia == sf;
       });
 
       var tema = ''; 
       subfamilia.forEach(function(ss) {
+
         var serie_ = ss.serie.join(",").replace(/NaN/g,"");
         if( tema != ss.tema ) {
           tema = ss.tema;
-          chunk.push(",," + tema + ",," + serie_);
+	  var _cont_ = ss['prevRow'] ? ",," + tema : ",," + tema + ",," + serie_;
+//	  chunk.push(",," + tema);
+//          chunk.push(",," + tema + ",," + serie_);
+	  chunk.push(_cont_);
+
         }
         var subtema = ss.subtema;
         if( subtema != "" ) chunk.push(",,," + subtema + "," + serie_);
@@ -1945,7 +1960,6 @@ function contratosPemexFIX() {
     }
 
     $(filtered).attr("id","dist");
-    console.log(filtered);
   }
 
 };
