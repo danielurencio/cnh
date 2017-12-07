@@ -877,9 +877,14 @@ function Cubos(data,tag) {
       span.html(minus + "&ensp;");
     }
 
+/*-- Esto checa si está abierta la tabla para que, al cerrarla, no se vuelva a hacer un POST --*/
+    var performAjax = $(this).next().css("display");
+    performAjax = performAjax == "none" ? true : false;
+    console.log(performAjax);
+/*------------------------------------------------------------------------------------------*/
+
     if(this.nodeName == "DIV" && $(this).attr("especial") == "1") {
 //	$("div#espere").css("visibility","visible");
-
 	var title = this.parentNode.getAttribute("tag");
 	var subtitle = this.getAttribute("tag");
 
@@ -889,17 +894,22 @@ function Cubos(data,tag) {
 	params["title"] = title;
 	params["subtitle"] = subtitle;
 	var algo_ = this;
-
-	$.ajax({
-	   url:"http://172.16.24.57/cubos_produccion.py",
-	   dataType:'json',
-	   data:params,
-	   success:function(tabla_respuesta) {
+/*--- Si no está abierta la tabla hacer POST para obtener la tabla que se va a mostrar ---*/
+	if(performAjax) {
+	  $.ajax({
+	     url:"http://172.16.24.57/cubos_produccion.py",
+	     dataType:'json',
+	     data:params,
+	     success:function(tabla_respuesta) {
 		tabla_respuesta = formatoData(tabla_respuesta);
 		TableLogistics(algo_,tabla_respuesta);
-	   } 
-	});
-
+	     } 
+	  });
+/*-- Si sí está abierta entonces NO hacer POST y gestionar la logística de las tablas normalmente -*/
+	} else {
+	  TableLogistics(algo_,data);
+	}
+/*------------------------------------------------------------------------------------------*/
     }
 
     if(this.nodeName == "DIV" && $(this).attr("especial") != "1") {
