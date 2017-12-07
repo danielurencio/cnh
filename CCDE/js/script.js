@@ -1065,6 +1065,7 @@ if(tableData[0]) {
 	nuevaTabla(algo,function() {
 	  $("div#espere").css("visibility","hidden");
 	// Quitar espacio blanco de 1ra,2da y 3ra celda.
+/*
 	  $("tbody.hide>tr:nth-child(2)>td:first-child")
 		.css("height","16px");
 
@@ -1073,7 +1074,7 @@ if(tableData[0]) {
 
 	  $("tbody.hide>tr:nth-child(2)>td:nth-child(3)")
 		.css("height","16px");
-
+*/
 
 ///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
 	  var cellHide = $("div.overflow>table>tbody.hide>tr:nth-child(2)>td:nth-child(4)")
@@ -1299,9 +1300,21 @@ function colcol() {
     }
 
   });
+/*-------------------REFINACIÓN DE DETALLES DE TABLAS-------------------*/
+  $("div.overflow tr>td")
+	.css("height","20")
+	.css("font-size","12px");
 
-  $("div.overflow tr>td").css("height","15");
   $("div.overflow tbody>tr:first-child>td").css("display","none");
+  $("div.overflow").css("margin-top","20px");
+  $("div.overflow").css("margin-bottom","20px");
+
+  var tamanio_ = "calc(100% - 430px)"
+  $("div.scroll_header").css("width","calc(100% - 15px)");
+  $("div.overflow").css("width",tamanio_);
+  $("div#footer").css("width",tamanio_);
+/*-------------------REFINACIÓN DE DETALLES DE TABLAS-------------------*/
+
 }
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////vv HABILITAR ÍCONOS POR TABLA vv////////////////////////
