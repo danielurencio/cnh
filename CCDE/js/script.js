@@ -395,7 +395,7 @@ $.ajax({
    dataType:'json',
    data:{'section':'PRODUCCION'},
    success:function(temas) {
-  
+
     var TEMAS = JSON.parse(temas);
 
  $.get("blueprints.json",function(response) {
@@ -451,6 +451,7 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
   });
 
   $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
+      $("div#metodos").html("");
 /*--------------------Resetear último rango de fecha válido-----------------*/
       $("input[type=radio][value=monthly]").click()
       var sel_ = $("select.filtros").find(":selected").attr("tag");
@@ -537,7 +538,6 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-
  var params = parametros();
 
  $.ajax({
@@ -546,8 +546,8 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
    datatype:"json",
    data: params,
    success: function(data){
-console.log(data);
      ajaxFunction(data,Cubos,filtrarSeries);
+     leyendaNotas(TEMAS,params);
    }
 
   });
@@ -683,6 +683,7 @@ $.get("cuencas.json", function(data) {
    data: params,
    success: function(data){
      ajaxFunction(data,Cubos,filtrarSeries);
+     leyendaNotas(TEMAS,params);
    }
 
   });
@@ -1620,6 +1621,7 @@ function parametros() {
 };
 
 function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
+
   var consulta;
      var key_ = Object.keys(data[0][1])[0];
      var tableString = data[0][1];
@@ -1839,7 +1841,7 @@ function descargar_selection(series) {
   chunk.push(Header.join("\n"));
   chunk.push(",,");
 
-  chunk.push(",,,," + fechas_())
+//  chunk.push("," + fechas_())
   var familias = _.uniq( series.map(function(d) { return d.familia; }) );
 
   familias.forEach(function(f) {
@@ -1850,7 +1852,7 @@ function descargar_selection(series) {
     var subfamilias = _.uniq( familia.map(function(d) { return d.subfamilia; }) );
 
     subfamilias.forEach(function(sf) {
-      chunk.push("," + sf);
+      chunk.push("  " + sf + "," + fechas_());
 
       var subfamilia = familia.filter(function(ff) {
         return ff.subfamilia == sf;
@@ -1862,14 +1864,12 @@ function descargar_selection(series) {
         var serie_ = ss.serie.join(",").replace(/NaN/g,"");
         if( tema != ss.tema ) {
           tema = ss.tema;
-	  var _cont_ = ss['prevRow'] ? ",," + tema : ",," + tema + ",," + serie_;
-//	  chunk.push(",," + tema);
-//          chunk.push(",," + tema + ",," + serie_);
+	  var _cont_ = ss['prevRow'] ? "    " + tema : "    " + tema + "," + serie_;
 	  chunk.push(_cont_);
 
         }
         var subtema = ss.subtema;
-        if( subtema != "" ) chunk.push(",,," + subtema + "," + serie_);
+        if( subtema != "" ) chunk.push("      " + subtema + "," + serie_);
 //	chunk.push(",,,," + serie_);
      });
 
@@ -2245,7 +2245,6 @@ function headerScroll() {
     return $(this).css("display") == "block";
   })[0].querySelectorAll("th")[1];
 
-  console.log(first_th);
   if(first_th) {
     var cell_Width = first_th.offsetWidth - 1;	
 //      var cell_Width = $(first_th).css("width").split("px")[0];
@@ -2260,7 +2259,6 @@ function headerScroll() {
     var scroll_id_header_ = ["<th style='min-width:413px;padding:1px;'></th>"]
     .concat(scroll_id_header).join("");
     $("tr.scroll_aid_header").html(scroll_id_header_)
-console.log(scroll_id_header);
     $("tr.scroll_aid_footer").html(scroll_id_header)
 
 // ----------- CALCULAR TAMAÑO DE TBODY PARA EL SCROLLER_HEADER ----------
@@ -2282,4 +2280,19 @@ console.log(scroll_id_header);
   } else {
     console.log("else!");
   }
+};
+
+function leyendaNotas(TEMAS,params) {
+     var metodos = TEMAS.filter(function(d) {
+	return d.json_arg == params['topic'];
+     })[0].metodologia
+     .replace(/Fuente:/,"<b>Fuente:</b>")
+     .replace(/Notas:/,"<br><b>Notas:</b>");
+
+     var str = 
+	"<div style='width:90%;height:100%;padding-top:60px;padding-left:20px;'>"+
+	 metodos +
+	"</div>";
+
+     $("div#metodos").html(str);
 };
