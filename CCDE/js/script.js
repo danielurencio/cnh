@@ -1264,7 +1264,7 @@ function colcol() {
   var row_length_ = tabla_overflow_X[0]
      .querySelector("tr:first-child")
      .getBoundingClientRect().right;
-
+/*----------Mostrar y ocultar footer conforme sea necesario-----------*/
   if(row_length_ > window.innerWidth) {
     tabla_overflow_X.css("overflow-x","hidden")
 
@@ -1274,6 +1274,7 @@ function colcol() {
       $("#footer").css("display","none");
     }
   }
+/*----------Mostrar y ocultar footer conforme sea necesario-----------*/
 
 
   var evenRows = document.querySelectorAll("div.overflow tr:nth-child(even)");
@@ -1303,17 +1304,20 @@ function colcol() {
 /*-------------------REFINACIÓN DE DETALLES DE TABLAS-------------------*/
   $("div.overflow tr>td")
 	.css("height","20")
-	.css("font-size","12px");
+	.css("font-size","13px");
+
+  $("div.overflow tr>td:first-child")
+	.css("font-size","13px");
 
   $("div.overflow tbody>tr:first-child>td").css("display","none");
   $("div.overflow").css("margin-top","20px");
   $("div.overflow").css("margin-bottom","20px");
-/*
+
   var tamanio_ = "calc(100% - 430px)"
   $("div.scroll_header").css("width","calc(100% - 15px)");
   $("div.overflow").css("width",tamanio_);
-  $("div#footer").css("width",tamanio_);
-*/
+  $("div#footer").css("width","100%")
+
 /*-------------------REFINACIÓN DE DETALLES DE TABLAS-------------------*/
 
 }
