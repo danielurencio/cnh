@@ -1308,11 +1308,12 @@ function colcol() {
   $("div.overflow tbody>tr:first-child>td").css("display","none");
   $("div.overflow").css("margin-top","20px");
   $("div.overflow").css("margin-bottom","20px");
-
+/*
   var tamanio_ = "calc(100% - 430px)"
   $("div.scroll_header").css("width","calc(100% - 15px)");
   $("div.overflow").css("width",tamanio_);
   $("div#footer").css("width",tamanio_);
+*/
 /*-------------------REFINACIÓN DE DETALLES DE TABLAS-------------------*/
 
 }
