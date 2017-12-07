@@ -43,6 +43,7 @@ $(document).ready(function() {
 
 
   function filtrarSeries(data) {
+ 
     var str_;
     function regexCheck(patt) {
 	return patt.test(str_);
@@ -75,7 +76,11 @@ $(document).ready(function() {
 
     d3.select("input#filtroSerie").on("input",function(d) {
       var matches = [];
-      var text = document.getElementById("filtroSerie").value.split(" ");
+      var text = document.getElementById("filtroSerie").value
+	.replace(/[(]/g,"\\(")
+	.replace(/[)]/g,"\\)")
+	.split(" ");
+	console.log(text)
 
       if(text.length > 0) {
 	var patts = []	
