@@ -484,7 +484,7 @@ div.overflow tr[even] {
 }
 */
 span.matching {
-  color: var(--temas);
+  color: rgb(13,180,190);
   font-weight:700;
 }
 

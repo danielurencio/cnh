@@ -5,6 +5,7 @@ var _parametros_;
 var params_especiales = null;
 var caso_especial = false;
 var init_year;
+var _azul_ = "rgb(13,180,190)";
 
 $(document).ready(function() {
   document.body.style.zoom = 1.0; 
@@ -47,10 +48,9 @@ $(document).ready(function() {
 	return patt.test(str_);
     };
 
-    var color = getComputedStyle(document.body)
-	.getPropertyValue('--subtitulos');
-    var color_ = getComputedStyle(document.body)
-	.getPropertyValue('--temas-fondo');
+    var color = _azul_
+    var color_ = _azul_//getComputedStyle(document.body)
+//	.getPropertyValue('--temas-fondo');
 
     var data_ = JSON.parse(JSON.stringify(data));
     var parser = new DOMParser();
@@ -185,6 +185,7 @@ $(document).ready(function() {
       d3.selectAll("div#dropDown").style("display","none");
       document.querySelector("input#filtroSerie").value = "";
     });
+
   };
 
 
@@ -540,6 +541,7 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
    datatype:"json",
    data: params,
    success: function(data){
+console.log(data);
      ajaxFunction(data,Cubos,filtrarSeries);
    }
 
@@ -880,7 +882,6 @@ function Cubos(data,tag) {
 /*-- Esto checa si está abierta la tabla para que, al cerrarla, no se vuelva a hacer un POST --*/
     var performAjax = $(this).next().css("display");
     performAjax = performAjax == "none" ? true : false;
-    console.log(performAjax);
 /*------------------------------------------------------------------------------------------*/
 
     if(this.nodeName == "DIV" && $(this).attr("especial") == "1") {
@@ -1365,45 +1366,6 @@ function corregirRenglones() {
   });
 };
 
-
-// ---------CALCULAR TAMAÑO DE CELDAS PARA EL ENCABEZADO-SCROLLER ----
-function headerScroll() {
-  var first_th = $("tbody.hide")[0].querySelectorAll("th")[1];
-  if(first_th) {
-    var cell_Width = first_th.offsetWidth - 1;	
-//      var cell_Width = $(first_th).css("width").split("px")[0];
-//console.log(cell_Width);
-    var scroll_id_header = fechas_().replace(/-/g," ").split(",")
-      .map(function(d) {
-	return "<th style='width:"+ cell_Width +
-      	"px;min-width:"+ cell_Width +"px;max-width:"+cell_Width+"px'>"
-	+ d + "</th>";
-    });
-
-    var scroll_id_header_ = ["<th style='min-width:413px;padding:1px;'></th>"]
-    .concat(scroll_id_header).join("");
-    $("tr.scroll_aid_header").html(scroll_id_header_)
-
-    $("tr.scroll_aid_footer").html(scroll_id_header)
-
-// ----------- CALCULAR TAMAÑO DE TBODY PARA EL SCROLLER_HEADER ----------
-    var tbody_Width = document.querySelectorAll("table>.hide")[0]
-      .offsetWidth;
-    $(".scroll_header")
-	.css("width","calc( 100% - "+ 65 +"px)");
-
-// -------------------- MOVER DIVS SIMULTÁNEAMENTE ------------------
-    $('div.overflow').on('scroll', function () {
-      $('div.scroll_header').scrollLeft($(this).scrollLeft());
-    });
-
-    $('#footer_').on('scroll', function () {
-      $('div.scroll_header').scrollLeft($(this).scrollLeft());
-      $('div.overflow').scrollLeft($(this).scrollLeft());
-    });
-
-  }
-};
 
 };
 
@@ -2270,3 +2232,49 @@ function grapher(info) {
 
 };
 
+// ---------CALCULAR TAMAÑO DE CELDAS PARA EL ENCABEZADO-SCROLLER ----
+function headerScroll() {
+  var first_th = $("tbody.hide")[0].querySelectorAll("th")[1];
+
+  var first_th = $("div.overflow").filter(function() {
+    return $(this).css("display") == "block";
+  })[0].querySelectorAll("th")[1];
+
+  console.log(first_th);
+  if(first_th) {
+    var cell_Width = first_th.offsetWidth - 1;	
+//      var cell_Width = $(first_th).css("width").split("px")[0];
+//console.log(cell_Width);
+    var scroll_id_header = fechas_().replace(/-/g," ").split(",")
+      .map(function(d) {
+	return "<th style='width:"+ cell_Width +
+      	"px;min-width:"+ cell_Width +"px;max-width:"+cell_Width+"px'>"
+	+ d + "</th>";
+       });
+
+    var scroll_id_header_ = ["<th style='min-width:413px;padding:1px;'></th>"]
+    .concat(scroll_id_header).join("");
+    $("tr.scroll_aid_header").html(scroll_id_header_)
+console.log(scroll_id_header);
+    $("tr.scroll_aid_footer").html(scroll_id_header)
+
+// ----------- CALCULAR TAMAÑO DE TBODY PARA EL SCROLLER_HEADER ----------
+    var tbody_Width = document.querySelectorAll("table>.hide")[0]
+      .offsetWidth;
+    $(".scroll_header")
+	.css("width","calc( 100% - "+ 65 +"px)");
+
+// -------------------- MOVER DIVS SIMULTÁNEAMENTE ------------------
+    $('div.overflow').on('scroll', function () {
+      $('div.scroll_header').scrollLeft($(this).scrollLeft());
+    });
+
+    $('#footer_').on('scroll', function () {
+      $('div.scroll_header').scrollLeft($(this).scrollLeft());
+      $('div.overflow').scrollLeft($(this).scrollLeft());
+    });
+
+  } else {
+    console.log("else!");
+  }
+};
