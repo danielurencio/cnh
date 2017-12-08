@@ -432,6 +432,7 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
      var params = parametros();
 
 /*------------------AJAX con botón de consultar-------------------------------*/
+
      $.ajax({
         url: "http://172.16.24.57/cubos_produccion.py",
         type: "post",
