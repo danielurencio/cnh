@@ -45,8 +45,8 @@ div.cell {
 .i_fechas {
  display:table-cell;
  height:100%;
- background-color:white;
- border-left:1px solid white;
+ background-color:transparent;
+ /*border-left:1px solid white;*/
  width:50%;
 }
 

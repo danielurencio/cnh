@@ -657,6 +657,7 @@ for(var j in selectors_) {
     if(cambio_) {
       boton_consulta
 	.css("background-color","rgb(13,180,190)")
+        .css("border","2px solid white")
 	.css("border","none")
 	.css("color","white")
 	.css("border-radius","3px")
@@ -900,6 +901,14 @@ function Cubos(data,tag) {
 
 /*Un IF-STATEMENT podría diferenciar entre niveles*/
   $(".labels").on("click",function(d) {
+/*------Mostrar lámina de "espere" sólo para caso especial-------*/
+    var isOpen = $(this).next().css("display") == "block" ? true : false;
+
+    if( this.getAttribute("especial") && !isOpen) {
+      $("div#espere").css("visibility","visible");
+    }
+/*------Mostrar lámina de "espere" sólo para caso especial-------*/
+
     SS_= true;
     $("div#quitarFiltro").css("display","none");
 
@@ -990,6 +999,7 @@ function TableLogistics(sth,data) {
         })
 
 if(tableData[0]) {
+
         tableData = tableData[0][Tag];
 
         tableData = formatoData(tableData);
@@ -1092,7 +1102,7 @@ if(tableData[0]) {
     };
 
     function mensajeEspera() {
-      $("div#espere").css("visibility","visible")
+      $("div#espere").css("visibility","visible") // aquí
       window.setTimeout(function() {
 	nuevaTabla(algo,function() {
 	  $("div#espere").css("visibility","hidden");
@@ -1703,22 +1713,22 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
          .querySelectorAll("div.labels:nth-child(1)"));
   }
 
-     $("tbody#tabla>tbody.labels").click();
+//     $("tbody#tabla>tbody.labels").click();
 
      if(tableString[key_]) {
        caso_especial = false;
-       consulta.click();
+//       consulta.click();
      } else {
 	caso_especial = true;
 	$("tbody.hide>div.labels").attr("especial","1");
 
-          $(window).scrollTop(
-            $(consulta).offset().top - 180
-          );
-	  consulta.click();
+//          $(window).scrollTop(
+//            $(consulta).offset().top - 180
+//          );
+//	  consulta.click();
      }
      filtrarSeries(data);
-//     $("div#espere").css("visibility","hidden");
+     $("div#espere").css("visibility","hidden");
   
 };
 
