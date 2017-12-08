@@ -465,12 +465,12 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
 
       var title = TEMAS.filter(function(d) { 
 	return d.json_arg == sel_;
-      })[0].titulo;
+      })[0].titulo.toUpperCase();
 
       $("div#mainTitle").html(title);
       var sizE = $("div#mainTitle")[0].getBoundingClientRect().right / 2;
       var LEFT = (window.innerWidth/2) - (sizE/2);
-      $("div#mainTitle").css("left",LEFT + "px");
+//      $("div#mainTitle").css("left",LEFT + "px");
 
 
       var init_year = TEMAS.filter(function(d) {
@@ -713,12 +713,12 @@ $.get("cuencas.json", function(data) {
 
       var title = TEMAS.filter(function(d) { 
 	return d.json_arg == sel_;
-      })[0].titulo;
+      })[0].titulo.toUpperCase();
 
       $("div#mainTitle").html(title);
       var sizE = $("div#mainTitle")[0].getBoundingClientRect().right / 2;
       var LEFT = (window.innerWidth/2) - (sizE/2);
-      $("div#mainTitle").css("left",LEFT + "px");
+//      $("div#mainTitle").css("left",LEFT + "px");
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////// AJAX - tabla default - ///////////////////////////////////
