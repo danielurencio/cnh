@@ -276,8 +276,12 @@ tr#dist:hover, .hide>tr:not(:first-child):hover {
  font-weight:600;
 }
 
+div.overflow td:first-child:hover, div.overflow tr:hover {
+/* background-color:rgba(73,171,129,0.25); /*regresar*/
+}
+
 tr#dist>td:first-child:hover {
- background:var(--filasYcols)
+/* background:var(--filasYcols)*/
 }
 
 th {

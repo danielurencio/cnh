@@ -451,13 +451,33 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
   });
 
   $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
+      $("div#mainTitle").html("");
       $("div#metodos").html("");
 /*--------------------Resetear último rango de fecha válido-----------------*/
       $("input[type=radio][value=monthly]").click()
       var sel_ = $("select.filtros").find(":selected").attr("tag");
+
+      var title = TEMAS.filter(function(d) { 
+	return d.json_arg == sel_;
+      })[0].tema;
+
+      $("div#mainTitle").html(title);
+
+      var title = TEMAS.filter(function(d) { 
+	return d.json_arg == sel_;
+      })[0].titulo;
+
+      $("div#mainTitle").html(title);
+      var sizE = $("div#mainTitle")[0].getBoundingClientRect().right / 2;
+      var LEFT = (window.innerWidth/2) - (sizE/2);
+      $("div#mainTitle").css("left",LEFT + "px");
+
+
       var init_year = TEMAS.filter(function(d) {
 	return d.json_arg == sel_;
       })[0].init_year;
+
+
 
       var current_year = Number(new Date().getFullYear());
       var year_set = [];
@@ -688,6 +708,17 @@ $.get("cuencas.json", function(data) {
 
   });
 
+
+      var sel_ = $("select.filtros").find(":selected").attr("tag");
+
+      var title = TEMAS.filter(function(d) { 
+	return d.json_arg == sel_;
+      })[0].titulo;
+
+      $("div#mainTitle").html(title);
+      var sizE = $("div#mainTitle")[0].getBoundingClientRect().right / 2;
+      var LEFT = (window.innerWidth/2) - (sizE/2);
+      $("div#mainTitle").css("left",LEFT + "px");
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////// AJAX - tabla default - ///////////////////////////////////
@@ -1160,6 +1191,14 @@ if(tableData[0]) {
 
 function colcol() {
 
+  d3.selectAll(".hide td:first-child").on("mouseover",function() {
+    $(this.parentNode.children).css("background-color","rgba(73,171,129,0.25)");
+  });
+
+  d3.selectAll(".hide td:first-child").on("mouseout",function() {
+    $(this.parentNode.children).css("background-color","white");
+  });
+
   d3.selectAll(".hide td:not(:first-child)").on("mouseover",function() {
 
   var grand_parent = $(this).parent().parent().parent()
@@ -1276,7 +1315,7 @@ function colcol() {
   }
 /*----------Mostrar y ocultar footer conforme sea necesario-----------*/
 
-
+/*
   var evenRows = document.querySelectorAll("div.overflow tr:nth-child(even)");
   evenRows = $(evenRows);
 
@@ -1285,7 +1324,7 @@ function colcol() {
     if(this.children[0].getAttribute("id") == "dist_") {
       $(this).attr("color_tag", "rgba(73,171,129,0.25)");
       $(this.children[0])
-	/*petición Mendoza*/
+
 	//.css("background","rgba(73,171,129,0.25)");
     } else {
       if($(this).attr("id") != "dist") {
@@ -1294,13 +1333,14 @@ function colcol() {
       } else {
         $(this).attr("color_tag", "rgba(73,171,129,0.25)");
         $(this.children[0])
-	/*Petición Mendoza*/
+
 	//.css("background","rgba(73,171,129,0.25)");
       }
 
     }
 
   });
+*/
 /*-------------------REFINACIÓN DE DETALLES DE TABLAS-------------------*/
   $("div.overflow tr>td")
 	.css("height","20")
