@@ -1725,14 +1725,15 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
 	.querySelector("div[tag='" + special_params.subtitle + "']");
     } else {
 
-    consulta = $($("tbody#tabla>tbody.hide")[0]
+      consulta = $($("tbody#tabla>tbody.hide")[0]
          .querySelectorAll("div.labels:nth-child(1)"));
+
+      console.log(consulta);
     }
+
     var parTAG = consulta.parentNode.getAttribute("tag");
     $("tbody.labels[tag='" + parTAG + "']").click();
-    console.log([consulta]);
     consulta.click();
-    console.log(caso_especial,[consulta])
 //    if(caso_especial) consulta.click()
   } else {
     consulta = $($("tbody#tabla>tbody.hide")[0]
@@ -1750,10 +1751,14 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
 
      }
      filtrarSeries(data);
+     var consulta_display = $(consulta).css("display");
+     var cond_ = !caso_especial && special_params;
+     console.log(cond_);
 
-//     if(caso_especial) {
+     if(!cond_) {
+console.log("que no desaparezca 'div#espere' en caso especial..");
        $("div#espere").css("visibility","hidden");
-//     }
+     }
   
 };
 
@@ -2429,17 +2434,27 @@ function descargarPNG() {
 
 
 function discriminateRows(table) {
+/* Esta función checa si la tabla tiene filas con todas sus celdas vacías salvo la primera. Si es así, es necesario cambiar ciertos atributos, como el 'id' de la fila, para que apliquen reglas de color.*/
   var trs_ = table.querySelectorAll("tr:not(#dist):not(:first-child)");
 
   trs_ = $(trs_).map(function() {
     var a = this.querySelectorAll("td:nth-child(n+2)");
     a = Array.prototype.slice.call(a);
-    return [a.map(function(d) { return d.textContent; })];
+    return a.map(function(d) { return d.textContent; }).every(function(d) {
+      return d == "";
+    });
   });
 
-  trs_ = Array.prototype.slice.call(trs_);
+  trs_ = Array.prototype.slice.call(trs_).every(function(d) {
+    return d == true;
+  });
 
-  console.log(trs_);
+  if(trs_) {
+//Si la primera celda tienen id='dist_' no se colocarán íconos 'graph' y 'check'.
+    d3.selectAll(table.querySelectorAll("tr:not(#dist)>td:first-child"))
+	.attr("id","dist_");
+    d3.selectAll(table.querySelectorAll("tr#dist")).attr("id",null);
+  }
 
   return table;
 };
