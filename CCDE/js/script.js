@@ -944,6 +944,7 @@ function Cubos(data,tag) {
 	var algo_ = this;
 /*--- Si no está abierta la tabla hacer POST para obtener la tabla que se va a mostrar ---*/
 	if(performAjax) {
+console.log("dentro de if(performAjax)..");
 	  $.ajax({
 	     url:"http://172.16.24.57/cubos_produccion.py",
 	     dataType:'json',
@@ -1008,7 +1009,6 @@ if(tableData[0]) {
         var docTable = parser.parseFromString(tableData,"text/html");
         docTable = docTable.querySelector("table");
         $(docTable).css("table-layout","fixed");
-
 
         d3.selectAll("div>label>span.s").html(plus + "&ensp;");
         span.html(minus + "&ensp;");
@@ -1078,7 +1078,8 @@ if(tableData[0]) {
 
 	}
 
-      
+
+	docTable = discriminateRows(docTable);      
         d3.select(tbody_hide.parentNode.parentNode)
          .style("display","block");
         d3.select(tbody_hide).html(docTable.innerHTML)
@@ -1098,7 +1099,27 @@ if(tableData[0]) {
 //	  $(this).css("background",color);
         });
 
-  } else { console.log("no hay tabla"); }
+  } else {
+    console.log("no hay tabla");
+
+	var params = parametros();
+	params["title"] = params_especiales.title;
+	params["subtitle"] = params_especiales.subtitle;
+	var algo_ = $("tbody.hide[tag='" + params.title + "']>div.labels[tag='"+
+	  params.subtitle+"']")[0]//.click()
+
+	  $.ajax({
+	     url:"http://172.16.24.57/cubos_produccion.py",
+	     dataType:'json',
+	     data:params,
+	     success:function(tabla_respuesta) {
+		tabla_respuesta = formatoData(tabla_respuesta);
+//		console.log(tabla_respuesta);
+		TableLogistics(algo_,tabla_respuesta);
+	     } 
+	  });
+
+  }
     };
 
     function mensajeEspera() {
@@ -1707,7 +1728,12 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
     consulta = $($("tbody#tabla>tbody.hide")[0]
          .querySelectorAll("div.labels:nth-child(1)"));
     }
-
+    var parTAG = consulta.parentNode.getAttribute("tag");
+    $("tbody.labels[tag='" + parTAG + "']").click();
+    console.log([consulta]);
+    consulta.click();
+    console.log(caso_especial,[consulta])
+//    if(caso_especial) consulta.click()
   } else {
     consulta = $($("tbody#tabla>tbody.hide")[0]
          .querySelectorAll("div.labels:nth-child(1)"));
@@ -1717,18 +1743,17 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
 
      if(tableString[key_]) {
        caso_especial = false;
-//       consulta.click();
+
      } else {
 	caso_especial = true;
 	$("tbody.hide>div.labels").attr("especial","1");
 
-//          $(window).scrollTop(
-//            $(consulta).offset().top - 180
-//          );
-//	  consulta.click();
      }
      filtrarSeries(data);
-     $("div#espere").css("visibility","hidden");
+
+//     if(caso_especial) {
+       $("div#espere").css("visibility","hidden");
+//     }
   
 };
 
@@ -1754,8 +1779,8 @@ function formatoData(data) {
 
       data[i][j][key] =
         data[i][j][key]
-	//.replace(/\<td(\>.*(?!CNH-M1-EK-BALAM\/2017)(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
-	.replace(/\<td(\>.*(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd])(?![2017]))/g,'<td id="dist_"$1')
+//	.replace(/\<td(\>.*(?!CNH-M1-EK-BALAM\/2017)(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
+//	.replace(/\<td(\>.*(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd])(?![2017]))/g,'<td id="dist_"$1')
 
 
       data[i][j][key] =
@@ -1764,7 +1789,7 @@ function formatoData(data) {
 
       data[i][j][key] =
         data[i][j][key]
-	.replace(/\<td(\>.*A-[0-9]{4,})/g,'<td id="dist_"$1')
+//	.replace(/\<td(\>.*A-[0-9]{4,})/g,'<td id="dist_"$1')
 
     }
   }
@@ -2153,7 +2178,7 @@ function grapher(info) {
 	    _titleKey:'img',
 	    menuItems:[{
 	      textKey:'downloadPNG',
-	      onclick:function() { this.exportChart() },
+	      onclick:descargarPNG,
 	      text:"PNG"
 	    },
 	    {
@@ -2167,7 +2192,8 @@ function grapher(info) {
 	 chart: {
 	 style: {
 	   fontFamily:'Open Sans'
-	 }
+	 },
+	 inverted:false
 	 },
 	 tooltip: {
 	  useHTML:true,
@@ -2364,4 +2390,56 @@ function leyendaNotas(TEMAS,params) {
 	"</div>";
 
      $("div#metodos").html(str);
+};
+
+
+function descargarPNG() {
+  var SVG = document.querySelector("svg.highcharts-root")
+  var svg_w = $(SVG).css("width");
+  var svg_h = $(SVG).css("height");
+  var rawSVG = SVG.outerHTML;
+  $("body").append("<canvas class='PNG_' id='canvas' width='"+svg_w+"' height='"+svg_h+"'></canvas>");
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+
+ var svg = new Blob([rawSVG], {type:"image/svg+xml;charset=utf-8"}),
+        domURL = self.URL || self.webkitURL || self,
+        url = domURL.createObjectURL(svg),
+        img = new Image;
+
+    img.onload = function () {
+        ctx.drawImage(img, 0, 0);     
+        domURL.revokeObjectURL(url);
+	triggerDownload(canvas.toDataURL());
+    };
+
+    img.src = url;
+
+  function triggerDownload (imgURI) {
+    var a = document.createElement('a');
+    a.setAttribute('download', 'chart.png');
+    a.setAttribute('href', imgURI);
+    a.setAttribute('target', '_blank');
+    a.click();
+    d3.selectAll(".PNG_").remove();
+    a.remove();
+  };
+
+};
+
+
+function discriminateRows(table) {
+  var trs_ = table.querySelectorAll("tr:not(#dist):not(:first-child)");
+
+  trs_ = $(trs_).map(function() {
+    var a = this.querySelectorAll("td:nth-child(n+2)");
+    a = Array.prototype.slice.call(a);
+    return [a.map(function(d) { return d.textContent; })];
+  });
+
+  trs_ = Array.prototype.slice.call(trs_);
+
+  console.log(trs_);
+
+  return table;
 };
