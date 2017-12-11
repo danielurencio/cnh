@@ -1755,10 +1755,10 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
      var cond_ = !caso_especial && special_params;
      console.log(cond_);
 
-     if(!cond_) {
+//     if(!cond_) {
 console.log("que no desaparezca 'div#espere' en caso especial..");
        $("div#espere").css("visibility","hidden");
-     }
+//     }
   
 };
 
