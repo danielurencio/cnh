@@ -42,8 +42,7 @@ $(document).ready(function() {
 //////////////Quitar filtro de búsqueda //////////////////////////
 
 
-  function filtrarSeries(data) {
- 
+  function filtrarSeries(data,data_buscar) {
     var str_;
     function regexCheck(patt) {
 	return patt.test(str_);
@@ -73,14 +72,15 @@ $(document).ready(function() {
       }
     };
 
+    data_buscar = data_buscar.map(function(d) { return d.join(" > "); });
 
     d3.select("input#filtroSerie").on("input",function(d) {
+
       var matches = [];
       var text = document.getElementById("filtroSerie").value
 	.replace(/[(]/g,"\\(")
 	.replace(/[)]/g,"\\)")
 	.split(" ");
-	console.log(text)
 
       if(text.length > 0) {
 	var patts = []	
@@ -91,7 +91,14 @@ $(document).ready(function() {
 	  patts.push(rx);
 	});
 
-	matches = arr.filter(function(d) {
+/*////////////////////////*
+	var _matches = data_buscar.filter(function(d) {
+	  str_ = d;
+	  return patts.every(regexCheck);
+	}); console.log(_matches);
+*/////////////////////
+
+	matches = data_buscar.filter(function(d) {
 	  str_ = d;
 	  return patts.every(regexCheck);
 	});
@@ -114,6 +121,7 @@ $(document).ready(function() {
 	matches = matches.filter(function(d,i) {
 	  return i <50;
         });
+
 
         $("div#dropDown").css("display","block");
 
@@ -169,8 +177,9 @@ $(document).ready(function() {
 	   })
 	   .on("click",function() {
 	    var txt = this.textContent.split(" > ");
-
-	    irAserie(txt);
+console.log(txt);
+alert("En construcción ...");
+//	    irAserie(txt);
 	    $("div#quitarFiltro").css("display","block")
 	   });
 	
@@ -395,7 +404,7 @@ $.ajax({
    dataType:'json',
    data:{'section':'PRODUCCION'},
    success:function(temas) {
-
+    
     var TEMAS = JSON.parse(temas);
 
  $.get("blueprints.json",function(response) {
@@ -433,16 +442,27 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
 
 /*------------------AJAX con botón de consultar-------------------------------*/
 
+ $.ajax({
+   url: "http://172.16.24.57/cubos_buscar.py",
+   type: "post",
+   datatype:"json",
+   data: params,
+   success: function(data_buscar){
+     data_buscar = JSON.parse(data_buscar);
+
      $.ajax({
         url: "http://172.16.24.57/cubos_produccion.py",
         type: "post",
         datatype:"json",
         data: params,
         success: function(data){
-          ajaxFunction(data,Cubos,filtrarSeries,params_especiales);
+          ajaxFunction(data,Cubos,filtrarSeries,params_especiales,data_buscar);
         }
 
      });
+
+   }
+ });
 /*------------------AJAX con botón de consultar-------------------------------*/
 } else if(!fecha_VALIDA_1) {
   alert("Seleccione una fecha válida.");
@@ -562,16 +582,26 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
  var params = parametros();
 
  $.ajax({
-   url: "http://172.16.24.57/cubos_produccion.py",
+   url: "http://172.16.24.57/cubos_buscar.py",
    type: "post",
    datatype:"json",
    data: params,
-   success: function(data){
-     ajaxFunction(data,Cubos,filtrarSeries);
-     leyendaNotas(TEMAS,params);
-   }
+   success: function(data_buscar){
+     data_buscar = JSON.parse(data_buscar);
 
-  });
+     $.ajax({
+       url: "http://172.16.24.57/cubos_produccion.py",
+       type: "post",
+       datatype:"json",
+       data: params,
+       success: function(data){
+         ajaxFunction(data,Cubos,filtrarSeries,null,data_buscar);
+         leyendaNotas(TEMAS,params);
+       }
+    });
+
+  }
+ })
 
 /*
 $.get(tag + ".json", function(data) {
@@ -613,36 +643,6 @@ var selectors_ = ["select#start_year","select#end_year","select#start_month","se
 
 for(var j in selectors_) {
   $(selectors_[j]).change(function() {
-/*
-    if(true) {
-      let anio_inicio = $("select#start_year").val();
-      let anio_final  = $("select#end_year").val();
-
-      if(anio_final - anio_inicio > 10) {
-	$("input[type=radio][value=annually]")[0].checked = true
-	$("div#HP").css('z-index',"1")
-
-	$(".i_fechas>div")
-	  .filter(function(d) {
-	    return this.textContent == "Mensual"
-	  }).css("opacity",0.2);
-
-	$("input[type=radio][value=monthly]")
-	  .css("opacity",0.2);
-
-      } else {
-	$(".i_fechas>div")
-	  .filter(function(d) {
-	    return this.textContent == "Mensual"
-	  }).css("opacity",1);
-
-	$("input[type=radio][value=monthly]")
-	  .css("opacity",1);
-
-      }
-
-    }
-*/
 
     var cambio_ = false;
     var newParams = parametros();
@@ -698,18 +698,28 @@ $.get("cuencas.json", function(data) {
  var params = parametros();
  _parametros_ = parametros();
 
- $.ajax({
-   url: "http://172.16.24.57/cubos_produccion.py",
-   type: "post",
-   datatype:"json",
-   data: params,
-   success: function(data){
-     ajaxFunction(data,Cubos,filtrarSeries);
-     leyendaNotas(TEMAS,params);
-   }
+$.ajax({
+  url: "http://172.16.24.57/cubos_buscar.py",
+  type: "post",
+  datatype:"json",
+  data: params,
+  success: function(data_buscar) {
+   data_buscar = JSON.parse(data_buscar);
 
-  });
+   $.ajax({
+     url: "http://172.16.24.57/cubos_produccion.py",
+     type: "post",
+     datatype:"json",
+     data: params,
+     success: function(data){
+       ajaxFunction(data,Cubos,filtrarSeries,null,data_buscar);
+       leyendaNotas(TEMAS,params);
+     }
+   });
 
+  }
+
+});
 
       var sel_ = $("select.filtros").find(":selected").attr("tag");
 
@@ -746,9 +756,7 @@ console.log("algo..");
 
  }
 
-
 }); // <-- PRIMER AJAX!
-
 
 
 function descargar() {
@@ -1710,7 +1718,7 @@ function parametros() {
   return params;
 };
 
-function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
+function ajaxFunction(data,Cubos,filtrarSeries,special_params,data_buscar) {
 
   var consulta;
      var key_ = Object.keys(data[0][1])[0];
@@ -1750,10 +1758,9 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params) {
 	$("tbody.hide>div.labels").attr("especial","1");
 
      }
-     filtrarSeries(data);
+     filtrarSeries(data,data_buscar);
      var consulta_display = $(consulta).css("display");
      var cond_ = !caso_especial && special_params;
-     console.log(cond_);
 
 //     if(!cond_) {
 console.log("que no desaparezca 'div#espere' en caso especial..");
@@ -2458,3 +2465,4 @@ function discriminateRows(table) {
 
   return table;
 };
+
