@@ -98,7 +98,7 @@ $(document).ready(function() {
 	}); console.log(_matches);
 */////////////////////
 
-	matches = data_buscar.filter(function(d) {
+	matches = data_buscar/*arr*/.filter(function(d) {
 	  str_ = d;
 	  return patts.every(regexCheck);
 	});
@@ -177,9 +177,7 @@ $(document).ready(function() {
 	   })
 	   .on("click",function() {
 	    var txt = this.textContent.split(" > ");
-console.log(txt);
-alert("En construcción ...");
-//	    irAserie(txt);
+	    irAserie(txt);
 	    $("div#quitarFiltro").css("display","block")
 	   });
 	
@@ -208,6 +206,7 @@ alert("En construcción ...");
     var titulo_label = $("tbody.labels[tag='" + titulo + "']");
     var titulo_hide = $("tbody.hide[tag='" + titulo + "']");
 
+
     if(titulo_hide.css("display") == "none") {
       titulo_label.click()
     }
@@ -215,7 +214,8 @@ alert("En construcción ...");
     var subtitulo = txt[1];
     var subtitulo_label = $("tbody.hide[tag='" + titulo + "']>div.labels[tag='"
 	+ subtitulo + "']");
-    var subtitulo_overflow = subtitulo_label.next()
+    var subtitulo_overflow = subtitulo_label.next();
+
 
     if(subtitulo_overflow.css("display") == "none") {
     /* Función anónima que (a) hace click en la tabla solicitada y, de manera
@@ -223,19 +223,26 @@ alert("En construcción ...");
        función que desplazará el viewport hasta encontrar la celda... */
       (function () {
        subtitulo_label.click(); 	    // <-- (a)
-
        window.setTimeout(function() { /*------------------Async--*/
-	  var el_ = selected_TD(txt[2])[0]; // <-- (b)
-//	  asyncScrollingSearch(el_);	    // <-- (c)
-	  mostrar(el_);
+	  var el_ = selected_TD(txt); // <-- (b)
+	  if(el_) {
+	    mostrar(el_[0]);
+          } else {
+	     var sleep_ = setInterval(function() {
+		el_ = selected_TD(txt);
+		if(el_) {
+		  clearInterval(sleep_);
+		  mostrar(el_[0]);
+		}
+	     },500);
+	  }
 	  $("#footer").css("display","none");
        },10);			     /*-------------------Async--*/
 
       })();
 
     } else {
-      var el_ = selected_TD(txt[2])[0] 
-//      asyncScrollingSearch(el_)
+      var el_ = selected_TD(txt)[0] 
 	mostrar(el_);
     }
 
@@ -247,10 +254,10 @@ alert("En construcción ...");
     $(document.querySelectorAll("div.overflow tr")[0]).css("display","block");
     $(el.parentNode).css("display","block");
     var pos = el.parentNode.parentNode.parentNode.parentNode.parentNode.offsetTop;
-//    window.scrollTo(0,pos-30)
+ //   window.scrollTo(0,pos-30)
 
-    $(window).scrollTop(
-      $(el).offset().top - 180
+   $(window).scrollTop(
+      $(el).offset().top - 250
     );
 
   }
@@ -259,14 +266,79 @@ alert("En construcción ...");
 ///////// Búsqueda de celda específica a través del filtro...
 ////////////////////////////////////////////////////////////////////////
   function selected_TD(txt) {
-    var tds = Array.prototype.slice
-	.call(document.querySelectorAll("div.overflow td:first-child"));
+      var titulo = txt[0];
+      var subtitulo = txt[1];
+      var subtitulo_label = $("tbody.hide[tag='" + titulo + "']>div.labels[tag='"
+	+ subtitulo + "']");
+      var subtitulo_overflow = subtitulo_label.next();
 
-    tds = tds.filter(function(d) {
-      return d.textContent.replace(/\s/g,"") == txt.replace(/\s/g,"");
-    });
+      var tds = Array.prototype
+	.slice.call(subtitulo_overflow[0]
+	.querySelectorAll("tr>td:first-child"));
 
-    return tds 
+    var val;
+//    var tds = Array.prototype.slice
+//	.call(document.querySelectorAll("div.overflow td:first-child"));
+
+    var prevTD = tds.filter(function(d) { 
+      return d.textContent.replace(/\s/g,"").toUpperCase() == txt[2].replace(/\s/g,"").toUpperCase();
+    })[0];
+
+    if(!tds.length) {
+/*
+      var titulo = txt[0];
+      var titulo_label = $("tbody.labels[tag='" + titulo + "']");
+      var titulo_hide = $("tbody.hide[tag='" + titulo + "']");
+
+      var subtitulo = txt[1];
+      var subtitulo_label = $("tbody.hide[tag='" + titulo + "']>div.labels[tag='"
+	+ subtitulo + "']");
+      var subtitulo_overflow = subtitulo_label.next();
+      console.log(subtitulo_label);
+
+      if(titulo_hide.css("display") == "none") {
+        titulo_label.click()
+      }
+
+      var sleep = setInterval( function() {
+        console.log(tds);
+        tds = Array.prototype.slice
+	 .call(document.querySelectorAll("div.overflow td:first-child"));
+
+	 if(tds.length != 0) {
+	    clearInterval(sleep);
+
+	    var prevTD = tds.filter(function(d) { 
+	      return d.textContent
+		.replace(/\s/g,"")
+	        .toUpperCase() == txt[2].replace(/\s/g,"")
+					.toUpperCase();
+       	    })[0];
+
+	    
+         }
+      },500);      
+*/
+    } else {
+
+      var c = tds.indexOf(prevTD) + 0;
+      var tdFromList;
+      var referenceTd = txt[3].replace(/\s/g,"").toUpperCase();
+      var condTD;
+
+      for( c; c < tds.length; c++) {
+          tdFromList = tds[c].textContent.replace(/\s/g,"").toUpperCase();
+	  condTD = tdFromList == referenceTd;
+
+          if(condTD) {
+	    break;
+	  }
+      };
+
+      val = [tds[c]];
+
+    }
+    return val;
   }
 
 ////////////////////////////////////////////////////////////////////////////
