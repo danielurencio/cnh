@@ -520,6 +520,7 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
    datatype:"json",
    data: params,
    success: function(data_buscar){
+     console.log(data_buscar.length*2,"bytes ~ aprox: para 'cubos_buscar.py'");
      data_buscar = JSON.parse(data_buscar);
 
      $.ajax({
@@ -1030,6 +1031,8 @@ console.log("dentro de if(performAjax)..");
 	     dataType:'json',
 	     data:params,
 	     success:function(tabla_respuesta) {
+	        var sizeStr = JSON.stringify([tabla_respuesta]).length;
+		console.log(sizeStr);
 		tabla_respuesta = formatoData(tabla_respuesta);
 		TableLogistics(algo_,tabla_respuesta);
 	     } 
@@ -1193,6 +1196,10 @@ if(tableData[0]) {
 	     dataType:'json',
 	     data:params,
 	     success:function(tabla_respuesta) {
+
+	        var sizeStr = JSON.stringify([tabla_respuesta]).length;
+		console.log(sizeStr);
+
 		tabla_respuesta = formatoData(tabla_respuesta);
 //		console.log(tabla_respuesta);
 		TableLogistics(algo_,tabla_respuesta);
