@@ -6,6 +6,8 @@ var params_especiales = null;
 var caso_especial = false;
 var init_year;
 var _azul_ = "rgb(13,180,190)";
+var threshold = 500000;
+var noHayTabla = false;
 
 $(document).ready(function() {
   document.body.style.zoom = 1.0; 
@@ -529,6 +531,8 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
         datatype:"json",
         data: params,
         success: function(data){
+	  var strSize = JSON.stringify(data).length;
+	  console.log(strSize);
           ajaxFunction(data,Cubos,filtrarSeries,params_especiales,data_buscar);
         }
 
@@ -837,8 +841,8 @@ function descargar() {
   var tbodys = document.querySelectorAll("tbody[download='1']");
   var fecha = new Date();
   var Header = [
-    "PRODUCCION",
     "COMISION NACIONAL DE HIDROCARBUROS",
+    "PRODUCCION",
     "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
     "\n",
   ];
@@ -887,10 +891,7 @@ function descargar() {
     downloadLink.style.display = "none";
     document.body.appendChild(downloadLink);
     downloadLink.click();
-    var s_a = document.getElementsByTagName("a");
-    for(var i=0; i<s_a.length; i++) {
-      s_a[i].parentNode.removeChild(s_a[i]);
-    }
+    $("a[download]").remove();
   }
 };
 
@@ -1026,15 +1027,35 @@ function Cubos(data,tag) {
 /*--- Si no está abierta la tabla hacer POST para obtener la tabla que se va a mostrar ---*/
 	if(performAjax) {
 console.log("dentro de if(performAjax)..");
+        noHayTabla = true;
+
 	  $.ajax({
 	     url:"http://172.16.24.57/cubos_produccion.py",
 	     dataType:'json',
 	     data:params,
 	     success:function(tabla_respuesta) {
 	        var sizeStr = JSON.stringify([tabla_respuesta]).length;
-		console.log(sizeStr);
-		tabla_respuesta = formatoData(tabla_respuesta);
-		TableLogistics(algo_,tabla_respuesta);
+		console.log(sizeStr*2,"bytes ~ aprox: caso especial (clic)");
+		if( sizeStr <= threshold) {
+		  tabla_respuesta = formatoData(tabla_respuesta);
+		  TableLogistics(algo_,tabla_respuesta);
+		} else {
+
+		  if(confirm("ups!")) {
+		    $("div#espere").css("visibility","hidden");
+		    console.log("cha cha chaaaan!");
+
+		    var tabla_resp = tabla_respuesta.filter(function(d) {
+			return d[0] == title;
+		    })[0].filter(function(d) {
+			return typeof(d) == "object"
+			&& Object.keys(d)[0] == subtitle
+		    })[0][subtitle];
+
+		    worker(tabla_resp);
+		  }
+
+		}
 	     } 
 	  });
 /*-- Si sí está abierta entonces NO hacer POST y gestionar la logística de las tablas normalmente -*/
@@ -1048,8 +1069,23 @@ console.log("dentro de if(performAjax)..");
 	var title = this.parentNode.getAttribute("tag");
 	var subtitle = this.getAttribute("tag");
 
-	params_especiales = { 'title':title,'subtitle':subtitle };
-	TableLogistics(this,data);
+	    var tabla_resp = data.filter(function(d) {
+		return d[0] == title;
+	    })[0].filter(function(d) {
+		return typeof(d) == "object"
+		&& Object.keys(d)[0] == subtitle
+	    })[0][subtitle];
+
+	var sizeStr = tabla_resp.length*2;
+	
+	if(sizeStr <= threshold) {
+	  params_especiales = { 'title':title,'subtitle':subtitle };
+	  TableLogistics(this,data);
+	} else {
+	  if(confirm("upss!")) {
+	    worker(tabla_resp);
+	  }
+	}
     }
 
 });
@@ -1198,11 +1234,27 @@ if(tableData[0]) {
 	     success:function(tabla_respuesta) {
 
 	        var sizeStr = JSON.stringify([tabla_respuesta]).length;
-		console.log(sizeStr);
+		console.log(sizeStr,"bytes ~ aprox (Consultar - botón)");
+	        if(sizeStr <= threshold) {
+		  tabla_respuesta = formatoData(tabla_respuesta);
+		  TableLogistics(algo_,tabla_respuesta);
+		} else {
 
-		tabla_respuesta = formatoData(tabla_respuesta);
-//		console.log(tabla_respuesta);
-		TableLogistics(algo_,tabla_respuesta);
+		  if(confirm("ups!")) {
+		    console.log("chaaaan");
+
+		    var tabla_resp = tabla_respuesta.filter(function(d) {
+			return d[0] == params.title;
+		    })[0].filter(function(d) {
+			return typeof(d) == "object"
+			&& Object.keys(d)[0] == params.subtitle;
+		    })[0][params.subtitle];
+
+		    worker(tabla_resp);
+		  }
+
+		}
+
 	     } 
 	  });
 
@@ -1726,8 +1778,8 @@ function descargarSerie() {
 
   var fecha = new Date();
   var Header = [
-   titulo,
    "COMISION NACIONAL DE HIDROCARBUROS",
+   titulo,
    "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
    "\n",
   ];
@@ -1768,10 +1820,7 @@ function descargarSerie() {
     downloadLink.style.display = "none";
     document.body.appendChild(downloadLink);
     downloadLink.click();
-    var s_a = document.getElementsByTagName("a");
-    for(var i=0; i<s_a.length; i++) {
-      s_a[i].parentNode.removeChild(s_a[i]);
-    }
+    $("download[a]").remove();
   }
 
 }
@@ -1839,12 +1888,20 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params,data_buscar) {
      }
      filtrarSeries(data,data_buscar);
      var consulta_display = $(consulta).css("display");
-     var cond_ = !caso_especial && special_params;
 
-//     if(!cond_) {
-console.log("que no desaparezca 'div#espere' en caso especial..");
-       $("div#espere").css("visibility","hidden");
+     var signos_ = Array.prototype.slice
+	.call(document.querySelectorAll("span#uno")).map(function(d) {
+	  return d.textContent.replace(/\s/g,"");
+	}).every(function(d) { return d == "+"; });
+
+     var cond_ = !caso_especial && special_params && signos_ ? 1 : 0;
+     console.log(noHayTabla);
+
+//     if(!noHayTabla) {
+//       $("div#espere").css("visibility","hidden");
 //     }
+
+//     noHayTabla = false;
   
 };
 
@@ -2545,3 +2602,45 @@ function discriminateRows(table) {
   return table;
 };
 
+
+function worker(data) {
+  var fecha = new Date();
+  var Header = [
+    "COMISION NACIONAL DE HIDROCARBUROS",
+    "PRODUCCION",
+    "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
+    "\n",
+  ].join("\n");
+
+  var parser = new DOMParser();
+  var table = parser.parseFromString(data,"text/html");
+  table = table.body.querySelector("table");
+  var rows = Array.prototype.slice.call(table.querySelectorAll("tr"));
+
+  var thead = Array.prototype.slice
+	.call(rows.splice(0,1)[0].querySelectorAll("th"))
+	.map(function(d) { return d.textContent; }).join(",");
+
+  var tbody = rows.map(function(d) {
+	return Array.prototype.slice.call(d.querySelectorAll("td"));
+  }).map(function(d) {
+	return d.map(function(f) { return f.textContent; }).join(",");
+  }).join("\n").replace(/#/g," ");
+
+  table = [Header,thead,tbody].join("\n");
+
+  var csvFile = new Blob(["\ufeff",table], { 'type':'text/csv' });
+
+  if(window.navigator && window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveOrOpenBlob(csvFile,filename + ".csv");
+  } else {
+    var downloadLink = document.createElement("a");
+    downloadLink.download = "datos.csv";
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    $("a[download]").remove();
+  }
+
+};
