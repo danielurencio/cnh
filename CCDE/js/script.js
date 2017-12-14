@@ -1,3 +1,5 @@
+var TEMAS;
+var NOTAS;
 var noOfRows;
 var ScrollHeader;
 var SS_ = true;
@@ -479,7 +481,7 @@ $.ajax({
    data:{'section':'PRODUCCION'},
    success:function(temas) {
     
-    var TEMAS = JSON.parse(temas);
+   TEMAS = JSON.parse(temas);
 
  $.get("blueprints.json",function(response) {
   RenderWords(response,"esp",TEMAS);
@@ -549,6 +551,8 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
   });
 
   $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
+      $("div#quitarFiltro").css("display","none");
+      noHayTabla = false;
       $("div#mainTitle").html("");
       $("div#metodos").html("");
 /*--------------------Resetear último rango de fecha válido-----------------*/
@@ -574,7 +578,6 @@ if(fecha_VALIDA_1 && !fecha_VALIDA_2) {
       var init_year = TEMAS.filter(function(d) {
 	return d.json_arg == sel_;
       })[0].init_year;
-
 
 
       var current_year = Number(new Date().getFullYear());
@@ -792,6 +795,7 @@ $.ajax({
        ajaxFunction(data,Cubos,filtrarSeries,null,data_buscar);
        leyendaNotas(TEMAS,params);
      }
+
    });
 
   }
@@ -992,7 +996,7 @@ function Cubos(data,tag) {
 /*------Mostrar lámina de "espere" sólo para caso especial-------*/
 
     SS_= true;
-    $("div#quitarFiltro").css("display","none");
+//    $("div#quitarFiltro").css("display","none");
 
     var tag = d3.select(this).attr("tag");
     var span = d3.select($(this).find("span.s")[0]);
@@ -1014,6 +1018,8 @@ function Cubos(data,tag) {
 /*------------------------------------------------------------------------------------------*/
 
     if(this.nodeName == "DIV" && $(this).attr("especial") == "1") {
+
+        $("div#quitarFiltro").css("display","none");
 //	$("div#espere").css("visibility","visible");
 	var title = this.parentNode.getAttribute("tag");
 	var subtitle = this.getAttribute("tag");
@@ -1029,11 +1035,29 @@ function Cubos(data,tag) {
 console.log("dentro de if(performAjax)..");
         noHayTabla = true;
 
+        $("button#consultar")
+	  .css("background-color","rgb(221,221,221)")
+          .css("border","2px outset rgb(221,221,221)")
+	  .css("color","black")
+	  .css("border-radius","0px")
+	  .css("font-weight","600");
+
+          if(params.start_year == params.end_year &&
+		params.start_month > params.end_month) {
+	    var eMon = document.getElementById("end_month").selectedIndex;
+	    document.getElementById("start_month").selectedIndex = eMon;
+	    params = parametros();
+	    params.title = title;
+	    params.subtitle = subtitle;
+	    console.log("fixed?");
+          }
+
 	  $.ajax({
 	     url:"http://172.16.24.57/cubos_produccion.py",
 	     dataType:'json',
 	     data:params,
 	     success:function(tabla_respuesta) {
+
 	        var sizeStr = JSON.stringify([tabla_respuesta]).length;
 		console.log(sizeStr*2,"bytes ~ aprox: caso especial (clic)");
 		if( sizeStr <= threshold) {
@@ -1053,7 +1077,9 @@ console.log("dentro de if(performAjax)..");
 		    })[0][subtitle];
 
 		    worker(tabla_resp);
-		  }
+		  } else {
+		    $("div#espere").css("visibility","hidden");
+	          }
 
 		}
 	     } 
@@ -1066,6 +1092,8 @@ console.log("dentro de if(performAjax)..");
     }
 
     if(this.nodeName == "DIV" && $(this).attr("especial") != "1") {
+        $("div#quitarFiltro").css("display","none");
+
 	var title = this.parentNode.getAttribute("tag");
 	var subtitle = this.getAttribute("tag");
 
@@ -1082,9 +1110,13 @@ console.log("dentro de if(performAjax)..");
 	  params_especiales = { 'title':title,'subtitle':subtitle };
 	  TableLogistics(this,data);
 	} else {
+
 	  if(confirm("upss!")) {
 	    worker(tabla_resp);
+	  } else {
+	    $("div#espere").css("visibility","hidden");
 	  }
+
 	}
     }
 
@@ -1133,71 +1165,13 @@ if(tableData[0]) {
         span.html(minus + "&ensp;");
         d3.selectAll("div.overflow").style("display","none");
         d3.selectAll("div.overflow>table>tbody").html("")
-
+/*
         var viewStart = algo.getBoundingClientRect().bottom;
         var viewEnd = window.innerHeight;
         noOfRows = Math.ceil((viewEnd-viewStart)/17)*1.5;
 
         var arr = docTable.querySelectorAll("tr");
-
-	for(var i=0; i<arr.length; i++) {
-/*petición Mendoza*/
-/*Colores para filas pares, títulos subtítulos y así...*/
-
-/*
-	  if(arr[i].children[0].getAttribute("id") == "dist_") {
-	    $(arr[i].children)
-		.css("background","rgba(73,171,129,0.25)")
-	  }
-
-	  if(i % 2 == 0 && i != 0) {
-	    if(arr[i].children[0].getAttribute("id") != "dist_") {
-		$(arr[i]).attr("even",1)
-		$(arr[i]).attr("color_tag","rgba(73,171,129,0.1)");
-		$(arr[i].children)
-		  .css("background","rgba(73,171,129,0.1)");
-	    }
-
-	    if(arr[i].children[0].getAttribute("id") == "dist_") {
-		$(arr[i].children)
-		  .css("background","rgba(73,171,129,0.25)");
-	    }
-
-	    if(arr[i].getAttribute("id") == "dist"
-		&& !docTable.querySelectorAll("td#dist_").length
-	    ) {
-		$(arr[i].children)
-		.css("background","rgba(73,171,129,0.25)");
-	      }
-
-	  }
-
-	  if(i % 2 != 0 && i != 0) {
-	    if(arr[i].children[0].getAttribute("id") == "dist_") {
-		$(arr[i].children)
-		  .css("background","rgba(73,171,129,0.25)");
-	    }
-
-	    if(arr[i].getAttribute("id") == "dist" 
-		&& !docTable.querySelectorAll("t#dist_").length
-	    ) {
-		$(arr[i].children)
-		.css("background","rgba(73,171,129,0.25)");
-	      }
-
-	  }
 */
-/*
-	  if(i>noOfRows) {
-	    arr[i]//.remove()
-	.style.display = "none";
-	    $(arr[i]).attr("tag","ocult");
-	  }
-*/
-
-	}
-
-
 	docTable = discriminateRows(docTable);      
         d3.select(tbody_hide.parentNode.parentNode)
          .style("display","block");
@@ -1214,8 +1188,6 @@ if(tableData[0]) {
         $("td#n").each(function() {
 	  let color = $(this.parentNode.children[0])
 	    .css("background-color");
-/*petición Mendoza*/
-//	  $(this).css("background",color);
         });
 
   } else {
@@ -1266,17 +1238,6 @@ if(tableData[0]) {
       window.setTimeout(function() {
 	nuevaTabla(algo,function() {
 	  $("div#espere").css("visibility","hidden");
-	// Quitar espacio blanco de 1ra,2da y 3ra celda.
-/*
-	  $("tbody.hide>tr:nth-child(2)>td:first-child")
-		.css("height","16px");
-
-	  $("tbody.hide>tr:nth-child(2)>td:nth-child(2)")
-		.css("height","16px");
-
-	  $("tbody.hide>tr:nth-child(2)>td:nth-child(3)")
-		.css("height","16px");
-*/
 
 ///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
 	  var cellHide = $("div.overflow>table>tbody.hide>tr:nth-child(2)>td:nth-child(4)")
@@ -1707,7 +1668,6 @@ function fechas_() {
 
 function resizeHighchart(exp_size,activ) {
   var w_, l_;
-//    var activ = $("button.datos_grapher").attr("tag")
 
   if(activ == 'off') {
     w_ = "calc(80% - " + exp_size + ")";
@@ -1776,6 +1736,15 @@ function descargarSerie() {
   titulo = titulo.replace(/Ó/g,"O");
   titulo = titulo.replace(/Ú/g,"U");
 
+  var sel_ = $("select.filtros").find(":selected").attr("tag");
+
+  var NOTAS = TEMAS.filter(function(d) { 
+    return d.json_arg == sel_;
+  })[0].metodologia
+    .replace(/\<a href="([ a-z\/\:=?.]*)/,'$1')
+    .replace(/"\starget="_blank">Portal de información técnica<\/a\>/,"")
+    .replace(/\<br\>/g,"").toUpperCase();
+
   var fecha = new Date();
   var Header = [
    "COMISION NACIONAL DE HIDROCARBUROS",
@@ -1799,15 +1768,21 @@ function descargarSerie() {
 	if(cells[j].nodeName == "TD") {
 	  var row = cells[j].textContent;
 	  rows.push(row);
-	  console.log(row);
 	}
       }
-      rows = rows.join(",");console.log(rows);
+      rows = rows.join(",");
       csv.push(rows);
     }
   }
   csv = csv.join("\n");
   csv = csv.replace(/NaN/g,"");
+  csv = [csv,"\n\n",NOTAS].join("\n");
+
+  csv = csv.replace(/Á/g,"A");
+  csv = csv.replace(/É/g,"E");
+  csv = csv.replace(/Í/g,"I");
+  csv = csv.replace(/Ó/g,"O");
+  csv = csv.replace(/Ú/g,"U");
 
   var csvFile = new Blob(["\ufeff",csv], { 'type':'text/csv' });
 
@@ -1870,13 +1845,11 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params,data_buscar) {
     var parTAG = consulta.parentNode.getAttribute("tag");
     $("tbody.labels[tag='" + parTAG + "']").click();
     consulta.click();
-//    if(caso_especial) consulta.click()
   } else {
     consulta = $($("tbody#tabla>tbody.hide")[0]
          .querySelectorAll("div.labels:nth-child(1)"));
   }
 
-//     $("tbody#tabla>tbody.labels").click();
 
      if(tableString[key_]) {
        caso_especial = false;
@@ -1889,17 +1862,9 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params,data_buscar) {
      filtrarSeries(data,data_buscar);
      var consulta_display = $(consulta).css("display");
 
-     var signos_ = Array.prototype.slice
-	.call(document.querySelectorAll("span#uno")).map(function(d) {
-	  return d.textContent.replace(/\s/g,"");
-	}).every(function(d) { return d == "+"; });
-
-     var cond_ = !caso_especial && special_params && signos_ ? 1 : 0;
-     console.log(noHayTabla);
-
-//     if(!noHayTabla) {
+     if(!noHayTabla) {
        $("div#espere").css("visibility","hidden");
-//     }
+     }
 
 //     noHayTabla = false;
   
@@ -2072,11 +2037,22 @@ function descargar_selection(series) {
 
   var fecha = new Date();
   var Header = [
-    "PRODUCCION",
     "COMISION NACIONAL DE HIDROCARBUROS",
+    "PRODUCCION",
     "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
     "\n",
   ];
+
+
+  var sel_ = $("select.filtros").find(":selected").attr("tag");
+
+  var NOTAS = TEMAS.filter(function(d) { 
+    return d.json_arg == sel_;
+  })[0].metodologia
+    .replace(/\<a href="([ a-z\/\:=?.]*)/,'$1')
+    .replace(/"\starget="_blank">Portal de información técnica<\/a\>/,"")
+    .replace(/\<br\>/g,"").toUpperCase();
+
 
   var fechatest_ = fecha.toLocaleString('es-MX').replace(", "," - ")
 
@@ -2122,6 +2098,7 @@ function descargar_selection(series) {
   });
 
   chunk = chunk.join("\n").toUpperCase();
+  chunk = [chunk,"\n\n",NOTAS].join("\n");
   chunk = chunk.replace(/Á/g,"A");
   chunk = chunk.replace(/É/g,"E");
   chunk = chunk.replace(/Í/g,"I");
@@ -2187,6 +2164,7 @@ function contratosPemexFIX() {
 
 
 function enableGraphs() {
+
   $("td.graph>img").on("click",function() {
     var row = this.parentNode.parentNode.querySelectorAll("td:not(#n)");
     var grandparent_tag = this.parentNode.parentNode.parentNode
@@ -2314,6 +2292,17 @@ function grapher(info) {
   var color = "rgb(13,180,190)"//getComputedStyle(document.body).getPropertyValue('--subtitulos');
   info.serie.color = color;
 
+
+      var sel_ = $("select.filtros").find(":selected").attr("tag");
+
+      var NOTAS = TEMAS.filter(function(d) { 
+	return d.json_arg == sel_;
+      })[0].metodologia
+	.replace("Fuente:","<b>Fuente:</b>")
+	.replace("Notas:","<br><b>Notas:</b>")
+	.replace("Portal de información técnica",
+		"<tspan>Portal de información técnica</tspan>");
+
 	Highcharts.chart('chart', {
 	  lang: { 'img':'Descargar imagen' },
 	  exporting: {
@@ -2338,10 +2327,11 @@ function grapher(info) {
 	  }
 	 },
 	 chart: {
-	 style: {
-	   fontFamily:'Open Sans'
-	 },
-	 inverted:false
+	   style: {
+	     fontFamily:'Open Sans'
+	   },
+	   inverted:false,
+	   marginBottom:120
 	 },
 	 tooltip: {
 	  useHTML:true,
@@ -2361,7 +2351,20 @@ function grapher(info) {
 	   return t;//this.point.name + ": " + this.y;
 	  }
 	 },
-	 credits: { enabled:false },
+	 credits: {
+	   text:NOTAS,//"________________________<br>Notas al pie<br> a<br>b.",
+	   position: {
+	     align:"left",
+	     x:50,
+	     y:-60
+	   },
+	   style: {
+	     fontSize:'11px',
+	     fontWeight:300,
+	     color:"black"
+	   },
+	   href:null
+         },
 	 title: {
 	  text: info.subtema ? info.subtema : info.tema
 	 },
@@ -2389,7 +2392,6 @@ function grapher(info) {
 	    label: {
 		connectorAllowed: false
 	    },
-	//            pointStart: 2010,
 	    marker: {
 	      radius: 0,
 	      states: {
@@ -2416,7 +2418,7 @@ function grapher(info) {
 
 	});
 
-////////////////////// AGREGAR TABLA PARA DESCARGA ////////////////////////////
+////////////////////// AGREGAR TABLA PARA DESCARGA /////////////////////////
  var datos_tabla_ = info.serie.data.reverse();
 
  d3.select("div#tabla_expandible>table").selectAll("tr")
@@ -2612,6 +2614,17 @@ function worker(data) {
     "\n",
   ].join("\n");
 
+
+  var sel_ = $("select.filtros").find(":selected").attr("tag");
+
+  var NOTAS = TEMAS.filter(function(d) { 
+    return d.json_arg == sel_;
+  })[0].metodologia
+    .replace(/\<a href="([ a-z\/\:=?.]*)/,'$1')
+    .replace(/"\starget="_blank">Portal de información técnica<\/a\>/,"")
+    .replace(/\<br\>/g,"").toUpperCase();
+
+
   var parser = new DOMParser();
   var table = parser.parseFromString(data,"text/html");
   table = table.body.querySelector("table");
@@ -2627,7 +2640,14 @@ function worker(data) {
 	return d.map(function(f) { return f.textContent; }).join(",");
   }).join("\n").replace(/#/g," ");
 
-  table = [Header,thead,tbody].join("\n");
+  table = [Header,thead,tbody,"\n\n",NOTAS].join("\n");
+
+
+  table = table.replace(/Á/g,"A");
+  table = table.replace(/É/g,"E");
+  table = table.replace(/Í/g,"I");
+  table = table.replace(/Ó/g,"O");
+  table = table.replace(/Ú/g,"U");
 
   var csvFile = new Blob(["\ufeff",table], { 'type':'text/csv' });
 
@@ -2643,4 +2663,5 @@ function worker(data) {
     $("a[download]").remove();
   }
 
+  $("div#espere").css("visibility","hidden");
 };

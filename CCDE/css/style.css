@@ -512,3 +512,8 @@ div.overflow tr:last-child, div.overflow tr:last-child>td { border-bottom:1px so
 tr.scroll_aid_header>th { border-top:none; }
 
 .aid_check { visibility:hidden; }
+
+text.highcharts-credits>.highcharts-anchor {
+ text-decoration:underline;
+ font-style:italic;
+}
