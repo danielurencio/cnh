@@ -2035,23 +2035,30 @@ return series;
 function descargar_selection(series) {
   var chunk = [];
 
+  var sel_ = $("select.filtros").find(":selected").attr("tag");
+
+  var _titulo_ = TEMAS.filter(function(d) { 
+    return d.json_arg == sel_;
+  })[0].titulo;
+
+
   var fecha = new Date();
   var Header = [
     "COMISION NACIONAL DE HIDROCARBUROS",
-    "PRODUCCION",
+    _titulo_,
     "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
     "\n",
   ];
 
-
-  var sel_ = $("select.filtros").find(":selected").attr("tag");
 
   var NOTAS = TEMAS.filter(function(d) { 
     return d.json_arg == sel_;
   })[0].metodologia
     .replace(/\<a href="([ a-z\/\:=?.]*)/,'$1')
     .replace(/"\starget="_blank">Portal de información técnica<\/a\>/,"")
-    .replace(/\<br\>/g,"").toUpperCase();
+    .replace(/\<br\>/g,"").toUpperCase()
+    .replace(/HTTPS:\/\/PORTAL.CNIH.CNH.GOB.MX\/IICNIH2\/\?LNG=ES_MX/,
+		"https://portal.cnih.cnh.gob.mx/iicnih2/?lng=es_mx");
 
 
   var fechatest_ = fecha.toLocaleString('es-MX').replace(", "," - ")
@@ -2605,24 +2612,30 @@ function discriminateRows(table) {
 };
 
 
+
 function worker(data) {
+
+  var sel_ = $("select.filtros").find(":selected").attr("tag");
+
+  var _titulo_ = TEMAS.filter(function(d) { 
+    return d.json_arg == sel_;
+  })[0].titulo;
+
+
   var fecha = new Date();
   var Header = [
     "COMISION NACIONAL DE HIDROCARBUROS",
-    "PRODUCCION",
+    _titulo_,
     "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", "," - "),
     "\n",
   ].join("\n");
-
-
-  var sel_ = $("select.filtros").find(":selected").attr("tag");
 
   var NOTAS = TEMAS.filter(function(d) { 
     return d.json_arg == sel_;
   })[0].metodologia
     .replace(/\<a href="([ a-z\/\:=?.]*)/,'$1')
     .replace(/"\starget="_blank">Portal de información técnica<\/a\>/,"")
-    .replace(/\<br\>/g,"").toUpperCase();
+    .replace(/\<br\>/g,"").toUpperCase()
 
 
   var parser = new DOMParser();
@@ -2642,12 +2655,14 @@ function worker(data) {
 
   table = [Header,thead,tbody,"\n\n",NOTAS].join("\n");
 
-
+  table = table.toUpperCase();
   table = table.replace(/Á/g,"A");
   table = table.replace(/É/g,"E");
   table = table.replace(/Í/g,"I");
   table = table.replace(/Ó/g,"O");
-  table = table.replace(/Ú/g,"U");
+  table = table.replace(/Ú/g,"U")
+    .replace(/HTTPS:\/\/PORTAL.CNIH.CNH.GOB.MX\/IICNIH2\/\?LNG=ES_MX/,
+		"https://portal.cnih.cnh.gob.mx/iicnih2/?lng=es_mx");
 
   var csvFile = new Blob(["\ufeff",table], { 'type':'text/csv' });
 
