@@ -1898,7 +1898,7 @@ function ajaxFunction(data,Cubos,filtrarSeries,special_params,data_buscar) {
      console.log(noHayTabla);
 
 //     if(!noHayTabla) {
-//       $("div#espere").css("visibility","hidden");
+       $("div#espere").css("visibility","hidden");
 //     }
 
 //     noHayTabla = false;
