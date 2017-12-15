@@ -1223,6 +1223,8 @@ if(tableData[0]) {
 		    })[0][params.subtitle];
 
 		    worker(tabla_resp);
+		  } else {
+		    $("div#espere").css("visibility","hidden");
 		  }
 
 		}
@@ -1743,7 +1745,8 @@ function descargarSerie() {
   })[0].metodologia
     .replace(/\<a href="([ a-z\/\:=?.]*)/,'$1')
     .replace(/"\starget="_blank">Portal de información técnica<\/a\>/,"")
-    .replace(/\<br\>/g,"").toUpperCase();
+    .replace(/\<br\>/g,"").toUpperCase()
+    .replace(/,/g,";");
 
   var fecha = new Date();
   var Header = [
@@ -2636,6 +2639,7 @@ function worker(data) {
     .replace(/\<a href="([ a-z\/\:=?.]*)/,'$1')
     .replace(/"\starget="_blank">Portal de información técnica<\/a\>/,"")
     .replace(/\<br\>/g,"").toUpperCase()
+    .replace(/,/g,";");
 
 
   var parser = new DOMParser();
