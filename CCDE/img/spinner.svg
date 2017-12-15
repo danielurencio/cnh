@@ -9,13 +9,16 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="40"
-   height="40"
-   viewBox="0 0 40 40.000001"
+   width="68.728996"
+   height="60"
+   viewBox="0 0 68.728996 60.000001"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="spinner.svg">
+   sodipodi:docname="spinner.svg"
+   inkscape:export-filename="/home/daniel/Documents/cnh/CCDE/img/ss1.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4">
     <clipPath
@@ -78,9 +81,12 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-1012.3622)">
+     transform="translate(0,-992.3622)">
     <g
-       id="g4271">
+       id="g4271"
+       transform="matrix(2,0,0,2,-5.9999999,-1042.3621)"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
       <circle
          r="13.120146"
          cy="1032.3622"

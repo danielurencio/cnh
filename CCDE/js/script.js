@@ -1,7 +1,5 @@
-/* CHECAR: -->
-https://www.developer.com/lang/jscript/7-things-you-need-to-know-about-web-workers.html
-*/
-
+var current_TXT;
+var siFiltro = false;
 var TEMAS;
 var NOTAS;
 var noOfRows;
@@ -45,7 +43,7 @@ $(document).ready(function() {
    var subtitulo_ = tablaVisible[0].parentNode.children[inx-1];
    subtitulo_.click();
 //   $(this).css("display","none");
-   subtitulo_.click();
+//   subtitulo_.click();
  });
 //////////////Quitar filtro de búsqueda //////////////////////////
 
@@ -99,12 +97,6 @@ $(document).ready(function() {
 	  patts.push(rx);
 	});
 
-/*////////////////////////*
-	var _matches = data_buscar.filter(function(d) {
-	  str_ = d;
-	  return patts.every(regexCheck);
-	}); console.log(_matches);
-*/////////////////////
 
 	matches = data_buscar/*arr*/.filter(function(d) {
 	  str_ = d;
@@ -185,6 +177,9 @@ $(document).ready(function() {
 	   })
 	   .on("click",function() {
 	    var txt = this.textContent.split(" > ");
+	    console.log(caso_especial)
+	    caso_especial ? siFiltro = true : siFiltro = false;
+	    caso_especial ? current_TXT = txt : current_TXT = null;
 	    irAserie(txt);
 	    $("div#quitarFiltro").css("display","block")
 	   });
@@ -217,6 +212,7 @@ $(document).ready(function() {
 
     if(titulo_hide.css("display") == "none") {
       titulo_label.click()
+      console.log("Se hizo click al título!");
     }
 
     var subtitulo = txt[1];
@@ -232,18 +228,22 @@ $(document).ready(function() {
       (function () {
        subtitulo_label.click(); 	    // <-- (a)
        window.setTimeout(function() { /*------------------Async--*/
-	  var el_ = selected_TD(txt); // <-- (b)
-	  if(el_) {
-	    mostrar(el_[0]);
-          } else {
-	     var sleep_ = setInterval(function() {
-		el_ = selected_TD(txt);
-		if(el_) {
-		  clearInterval(sleep_);
-		  mostrar(el_[0]);
-		}
-	     },500);
-	  }
+	    if(!siFiltro) {
+		  var el_ = selected_TD(txt); // <-- (b)
+		  if(el_) {
+		    mostrar(el_[0]);
+		  } else {
+		     var sleep_ = setInterval(function() {
+			el_ = selected_TD(txt);
+			if(el_) {
+			  clearInterval(sleep_);
+			  mostrar(el_[0]);
+			}
+		     },500);
+		  }
+	    } else {
+		console.log("NO FILTRO");
+	    }
 	  $("#footer").css("display","none");
        },10);			     /*-------------------Async--*/
 
@@ -292,42 +292,9 @@ $(document).ready(function() {
       return d.textContent.replace(/\s/g,"").toUpperCase() == txt[2].replace(/\s/g,"").toUpperCase();
     })[0];
 
-    if(!tds.length) {
-/*
-      var titulo = txt[0];
-      var titulo_label = $("tbody.labels[tag='" + titulo + "']");
-      var titulo_hide = $("tbody.hide[tag='" + titulo + "']");
+//    if(!tds.length) {
 
-      var subtitulo = txt[1];
-      var subtitulo_label = $("tbody.hide[tag='" + titulo + "']>div.labels[tag='"
-	+ subtitulo + "']");
-      var subtitulo_overflow = subtitulo_label.next();
-      console.log(subtitulo_label);
-
-      if(titulo_hide.css("display") == "none") {
-        titulo_label.click()
-      }
-
-      var sleep = setInterval( function() {
-        console.log(tds);
-        tds = Array.prototype.slice
-	 .call(document.querySelectorAll("div.overflow td:first-child"));
-
-	 if(tds.length != 0) {
-	    clearInterval(sleep);
-
-	    var prevTD = tds.filter(function(d) { 
-	      return d.textContent
-		.replace(/\s/g,"")
-	        .toUpperCase() == txt[2].replace(/\s/g,"")
-					.toUpperCase();
-       	    })[0];
-
-	    
-         }
-      },500);      
-*/
-    } else {
+//    } else {
 
       var c = tds.indexOf(prevTD) + 0;
       var tdFromList;
@@ -345,133 +312,10 @@ $(document).ready(function() {
 
       val = [tds[c]];
 
-    }
+//    }
     return val;
   }
 
-////////////////////////////////////////////////////////////////////////////
-//////////// Al buscar una celda, esto 'escrolea' hasta encontrarla
-/////////////////////////////////////////////////////////////////////////
-/*
-  function asyncScrollingSearch(el) {
-   var selection_ = document.querySelectorAll("td[selection]");
-   if(selection_.length > 0) {
-     $(selection_).css("border","none")
-   }
-
-   var elDisp = $(el.parentNode).css("display");
-   $(el.parentNode.children).filter(function(i,d) {
-	return i == 0 || i > 2;
-    })
-	.css("border-top","1px solid black")
-	.css("border-bottom","1px solid black")
-	.attr("selection","1");
-
-   var filas = el.parentNode.parentNode.querySelectorAll('tr');
-   var scroll_header_bottom = document.querySelector('div.scroll_header')
-	.getBoundingClientRect().bottom;
-
-   var viewP = window.innerHeight - scroll_header_bottom;
-   var fittingCells = Math.ceil(viewP / 17);
-
-   if(filas.length < fittingCells) {
-      if(elDisp == 'none') {
-       console.log("tabla chica: ir a fila que no está dibujada");
-	 var ss = setInterval(function() {
-    	   window.scrollTo(0,document.body.scrollHeight);
-	   elDisp = $(el.parentNode).css("display");
-
-	   if(elDisp != "none") {
-	    clearInterval(ss);
-	   }
-	 },50);
-
-      } else {
-	console.log("tabla chica: ir a fila que ya está dibujada",elDisp);
-	var mult,elPosition;
-
-	var ss_ = setInterval(function() {
-	   elPosition = el.getBoundingClientRect().top;
-	   mult = elPosition > 300 ? 1 : -1;
-	   var f = Math.log(Math.abs(elPosition-160)) * 20
-    	   window.scrollBy(0,mult*f);
-	   if( elPosition-20 < window.innerHeight && elPosition > 150) {
-	    console.log(elPosition);
-	    clearInterval(ss_);
-	   }
-	},50);
-
-      }
-
-   } else {
-	console.log("TABLAS GRANDES");
-	var elLoc = $(filas).map(function(i,d) {
-	  var val = this.children[0].textContent.replace(/\s/g,"");
-          val = val == el.textContent.replace(/\s/g,"") ? i : null;
-	  return val;
-	})[0];
-
-        var arriba = $(filas).filter(function(i,d) {
-	  return i < elLoc - 60;
-	});
-
-        var block = $(filas).filter(function(i,d) {
-	  return i > elLoc - 60 && i < elLoc + fittingCells*1.5;
-	});
-
-	window.scrollTo(0,document.body.scrollHeight);
-
-	var elPosition = el.getBoundingClientRect().top;
-	var elDisp = $(el.parentNode).css("display");
-	console.log(elPosition,elLoc);
-
-	if(elLoc*17 > window.innerHeight - 150) {
-	  console.log("esto sólo debe de imprimirse cuando es hacia abajo!");
-	  window.scrollTo(0,document.body.scrollHeight);
-	}
-
-	arriba.css("display","none");
-	arriba.attr("tag","arriba");
-	block.css("display","block");
-	block.css("tag",null);
-
-	var mult, firstVisible;
-
-	var ss_ = setInterval(function() {
-
-	   firstVisible = $("div.overflow tr").map(function(i,d) {
-    	    var a = this.getBoundingClientRect().bottom > 150;
-            var val = a ? i : null; return val;
-           })[0];
-
-
-	   elPosition = el.getBoundingClientRect().top;
-	   elBottom = el.getBoundingClientRect().bottom;
-	   elDisp = $(el.parentNode).css("display");
-
-	   if(elPosition > 300) {
-		mult = 1;
-	   } else if(elPosition < 300 && elPosition != 0 && elBottom != 0 ) {
-		mult = -1;
-	   } else if(elPosition == 0 && elBottom == 0 && elLoc > firstVisible) {
-		mult = 1;
-	   } else if(elPosition == 0 && elBottom == 0 && elLoc < firstVisible) {
-		mult = -1;
-	   }
-
-	   var f = Math.log(Math.abs(elPosition-160)) * 30
-    	   window.scrollBy(0,mult*f);
-
-	   if( elPosition < window.innerHeight-20 && elPosition > 150) {
-	    clearInterval(ss_);
-	   }
-
-	},50);
-
-   }
-
-  }
-*/
 
 /////////////////////////////////////////////////////////////////////////////
 //                          |                                              //
@@ -1062,13 +906,19 @@ console.log("dentro de if(performAjax)..");
 	     data:params,
 	     success:function(tabla_respuesta) {
 
+              if(siFiltro) {
+	        console.log("siFiltro",siFiltro);
+	        tabla_respuesta = formatoData(tabla_respuesta);
+		TableLogistics(algo_,tabla_respuesta);
+		siFiltro = false;
+	      } else {
+	        
 	        var sizeStr = JSON.stringify([tabla_respuesta]).length;
 		console.log(sizeStr*2,"bytes ~ aprox: caso especial (clic)");
 		if( sizeStr <= threshold) {
 		  tabla_respuesta = formatoData(tabla_respuesta);
 		  TableLogistics(algo_,tabla_respuesta);
 		} else {
-
 		  if(confirm("ups!")) {
 		    $("div#espere").css("visibility","hidden");
 		    console.log("cha cha chaaaan!");
@@ -1086,6 +936,9 @@ console.log("dentro de if(performAjax)..");
 	          }
 
 		}
+
+	      } // <-- no es verdad 'siFiltro'.. 
+
 	     } 
 	  });
 /*-- Si sí está abierta entonces NO hacer POST y gestionar la logística de las tablas normalmente -*/
@@ -1156,7 +1009,6 @@ function TableLogistics(sth,data) {
         })
 
 if(tableData[0]) {
-
         tableData = tableData[0][Tag];
 
         tableData = formatoData(tableData);
@@ -1170,17 +1022,74 @@ if(tableData[0]) {
         span.html(minus + "&ensp;");
         d3.selectAll("div.overflow").style("display","none");
         d3.selectAll("div.overflow>table>tbody").html("")
-/*
-        var viewStart = algo.getBoundingClientRect().bottom;
-        var viewEnd = window.innerHeight;
-        noOfRows = Math.ceil((viewEnd-viewStart)/17)*1.5;
 
-        var arr = docTable.querySelectorAll("tr");
-*/
 	docTable = discriminateRows(docTable);      
         d3.select(tbody_hide.parentNode.parentNode)
          .style("display","block");
-        d3.select(tbody_hide).html(docTable.innerHTML)
+
+//--------------FILTRO PARA CASO ESPECIAL-----------------------
+        if(caso_especial && current_TXT) {
+	  console.log([current_TXT,docTable]);
+
+	  var newParser = new DOMParser();
+	  var _docTable = newParser
+		.parseFromString(docTable.outerHTML,"text/html")
+		.body.querySelector("table");
+
+          var tds = Array.prototype
+	    .slice.call(_docTable.querySelectorAll("tr>td:first-child"));
+
+          var val;
+
+          var prevTD = tds.filter(function(d) { 
+            return d.textContent.replace(/\s/g,"")
+		.toUpperCase() == current_TXT[2].replace(/\s/g,"")
+						.toUpperCase();
+    	  })[0];
+
+
+          var c = tds.indexOf(prevTD) + 0;
+          var tdFromList;
+          var referenceTd = current_TXT[3].replace(/\s/g,"").toUpperCase();
+          var condTD;
+
+          for( c; c < tds.length; c++) {
+            tdFromList = tds[c].textContent.replace(/\s/g,"").toUpperCase();
+	    condTD = tdFromList == referenceTd;
+
+            if(condTD) {
+	      break;
+	    }
+          };
+
+          val = tds[c].parentNode;
+
+	  console.log(prevTD,prevTD.parentNode);
+	  console.log(tbody_hide);
+
+	 $(_docTable.querySelectorAll("tbody")).html("");
+	 $(_docTable.querySelectorAll("tbody")).append(prevTD.parentNode);
+	 $(_docTable.querySelector("#dist_").parentNode)
+		.css("display","none");
+	 $(_docTable.querySelectorAll("#dist")).css("display","none");
+	 $(_docTable.querySelectorAll("tbody")).append(val);
+	
+
+          d3.select(tbody_hide)
+		.html(_docTable.innerHTML);// <-- pega la tabla.
+
+
+	  current_TXT = null; // <-- IMPORTANTÍSIMO!
+        }
+//--------------FILTRO PARA CASO ESPECIAL-----------------------
+	else {
+          d3.select(tbody_hide)
+		.html(docTable.innerHTML);// <-- pega la tabla.
+	}
+
+   $(window).scrollTop(
+      $(tbody_hide).offset().top - 250
+    );
 
         icons();
    // seleccionarCheckboxes();
@@ -2236,7 +2145,7 @@ function enableGraphs() {
         "tbody[tag='" + parent_tag + "']" +
         ">tr:nth-child(" + ix + ")";
 
-        var dist = $(s).attr('id');
+        var dist = $(s).attr('id'); console.log(s,dist);
         var dist_ = $(s)[0].querySelector("td:first-child").getAttribute("id");
 
         if( dist || dist_ ) {
