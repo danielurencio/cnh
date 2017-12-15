@@ -1,3 +1,7 @@
+/* CHECAR: -->
+https://www.developer.com/lang/jscript/7-things-you-need-to-know-about-web-workers.html
+*/
+
 var TEMAS;
 var NOTAS;
 var noOfRows;
@@ -1092,6 +1096,7 @@ console.log("dentro de if(performAjax)..");
     }
 
     if(this.nodeName == "DIV" && $(this).attr("especial") != "1") {
+console.log("híjole");
         $("div#quitarFiltro").css("display","none");
 
 	var title = this.parentNode.getAttribute("tag");
@@ -1110,8 +1115,8 @@ console.log("dentro de if(performAjax)..");
 	  params_especiales = { 'title':title,'subtitle':subtitle };
 	  TableLogistics(this,data);
 	} else {
-
-	  if(confirm("upss!")) {
+	  var mensaje_casoEspecial = 'El tamaño de los datos solicitados es muy grande. Para poder visualizar su consulta, reduzca el rango de fechas seleccionado y presione el botón de "Consultar".\n\n ¿Desea descargar los datos de esta consulta?';
+	  if(confirm("El tamaño de su consulta es dema")) {
 	    worker(tabla_resp);
 	  } else {
 	    $("div#espere").css("visibility","hidden");
