@@ -378,6 +378,7 @@ div#espere>div.espere {
     overflow: hidden;
     width: 100%;
 }
+
 .helper {
     #position: absolute;
     #top: 50%;
@@ -534,4 +535,57 @@ text.highcharts-credits>.highcharts-anchor {
 
 @keyframes spin {
   100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }
+}
+
+.consulta_anim {
+  background-color: rgba(13,180,190,1);
+  border: 2px solid white;
+  border: none;
+/*  color: white;*/
+  border-radius: 3px;
+  font-weight: 800;
+  animation:myfirst 1s;
+  -moz-animation:myfirst 1s infinite; /* Firefox */
+  -webkit-animation:myfirst 1s infinite; /* Safari and Chrome */
+}
+
+
+@-moz-keyframes myfirst {/* Firefox */
+  0%   { background:rgba(13,180,190,1); }
+  50%  { background:rgba(120,225,225,1); }
+  100%   { background:rgba(13,180,190,1); }
+}
+ 
+@-webkit-keyframes myfirst {/* Firefox */
+  0%   { background:rgba(13,180,190,1); }
+  50%  { background:rgba(120,225,225,1); }
+  100%   { background:rgba(13,180,190,1); }
+}
+
+
+.consulta_normal {
+  background-color: rgb(221,221,221);
+  border: 2px outset rgb(221,221,221);
+  color: black;
+  border-radius: 0px;
+  font-weight: 600);
+}
+
+button#descarga {
+  border: none;
+  color: white;
+  border-radius: 3px;
+  font-weight: 400;
+  font-size:16px;
+  width:100px;
+  height:25px;
+  text-align:center;
+  opacity:0.65;
+}
+
+button#descarga:hover {
+  opacity:1;
+  opacity:1;
+  cursor:pointer;
+  font-weight:800;
 }
