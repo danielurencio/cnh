@@ -1080,7 +1080,7 @@ mensajeExplicativo(null,null,tabla_resp);
                         d3.select(tbody_hide.parentNode.parentNode)
                             .style("display", "block");
 
-                        //--------------FILTRO PARA CASO ESPECIAL-----------------------
+   //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         if (caso_especial && current_TXT) {
                             console.log([current_TXT, docTable]);
 
@@ -1090,7 +1090,8 @@ mensajeExplicativo(null,null,tabla_resp);
                                 .body.querySelector("table");
 
                             var tds = Array.prototype
-                                .slice.call(_docTable.querySelectorAll("tr>td:first-child"));
+                                .slice.call(_docTable
+				.querySelectorAll("tr>td:first-child"));
 
                             var val;
 
@@ -1819,7 +1820,7 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params, data_buscar) {
             console.log(consulta);
         }
 
-        var parTAG = consulta.parentNode.getAttribute("tag");
+        var parTAG = consulta.parentNode.getAttribute("tag"); // ¿?
         $("tbody.labels[tag='" + parTAG + "']").click();
         consulta.click();
     } else {
