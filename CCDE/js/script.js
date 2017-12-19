@@ -14,6 +14,14 @@ var threshold = 500000;
 var noHayTabla = false;
 
 $(document).ready(function() {
+
+$(document).keyup(function(event) {
+  if(event.which === 32) {
+  	event.preventDefault();
+		console.log("Space pressed.");
+  }
+});
+
     document.body.style.zoom = 1.0;
     ScrollHeader = $('div.scroll_header')[0].getBoundingClientRect().bottom;
     ///////////////prevenir zoom//////////////////////////////////////////////////
@@ -30,6 +38,12 @@ $(document).ready(function() {
     };
 
     document.body.addEventListener("wheel", zoomShortcut); //add the event
+
+/*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
+		  $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0);position:relative;bottom:30px;border-radius:3px;'id='divDefense'></div>");
+
+		  $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>")
+/*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
 
     ///////////////prevenir zoom//////////////////////////////////////////////////
 
@@ -343,6 +357,12 @@ $(document).ready(function() {
                 RenderWords(response, "esp", TEMAS);
 
                 $("button#consultar").on("click", function() {
+
+/*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
+		  $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:30px;border-radius:3px;'id='divDefense'></div>");
+
+		  $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>");
+/*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
                     _parametros_ = parametros();
 
                     var fecha_VALIDA_1 = +_parametros_['start_year'] <= +_parametros_['end_year']
@@ -352,10 +372,10 @@ $(document).ready(function() {
                     if (fecha_VALIDA_1 && !fecha_VALIDA_2) {
                         boton_consulta
 			    .attr("class","consulta_normal")
-                            .css("background-color", "rgb(221,221,221)")
-                            .css("border", "2px outset rgb(221,221,221)")
-                            .css("color", "black")
-                            .css("border-radius", "0px")
+//                            .css("background-color", "rgb(221,221,221)")
+//                            .css("border", "2px outset rgb(221,221,221)")
+//                            .css("color", "black")
+//                            .css("border-radius", "0px")
                             .css("font-weight", "600");
 
                         $("div#espere").css("visibility", "visible");
@@ -407,6 +427,47 @@ $(document).ready(function() {
                 });
 
                 $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
+
+//////////////////////////////////////////////////////////////////////////////////
+/*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
+//////////////////////////////////////////////////////////////////////////////////
+			d3.select("#loading").style("height","60px");
+
+			d3.select("div.espere")
+			.style("width","30%")
+			.style("height","30%");
+
+
+			d3.select("div.espere")
+			.style("top","35%")
+			.style("left","35%");
+
+
+			d3.select("div.content")
+			 .style("width","200px")
+			 .style("margin","0 auto")
+			 .style("padding-bottom","0%")
+			 .style("font-size","15px");
+
+			d3.select("div.content>p")
+			 .style("color","black")
+
+			d3.select("div.content>p")
+			  .html("Consultando información")
+			  .style("color","black")
+
+			$("div#descargaBotonesSiNo").remove();
+			$("div#divDefense").remove()
+		        $("div#optionsDefense").remove()
+//////////////////////////////////////////////////////////////////////////////////
+/*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
+//////////////////////////////////////////////////////////////////////////////////
+
+/*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
+		   $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:30px;border-radius:3px;' id='divDefense'></div>")
+
+		  $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>")
+/*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
 
                     $("div#quitarFiltro").css("display", "none");
                     noHayTabla = false;
@@ -507,10 +568,10 @@ $(document).ready(function() {
 
                     boton_consulta
 			.attr("class","consulta_normal")
-                        .css("background-color", "rgb(221,221,221)")
-                        .css("border", "2px outset rgb(221,221,221)")
-                        .css("color", "black")
-                        .css("border-radius", "0px")
+//                        .css("background-color", "rgb(221,221,221)")
+//                        .css("border", "2px outset rgb(221,221,221)")
+//                        .css("color", "black")
+//                        .css("border-radius", "0px")
                         .css("font-weight", "600");
 
                     $("div#espere").css("visibility", "visible");
@@ -618,10 +679,10 @@ $(document).ready(function() {
                             boton_consulta
 				.attr("class","consulta_normal")
 
-                                .css("background-color", "rgb(221,221,221)")
-                                .css("border", "2px outset rgb(221,221,221)")
-                                .css("color", "black")
-                                .css("border-radius", "0px")
+//                                .css("background-color", "rgb(221,221,221)")
+//                                .css("border", "2px outset rgb(221,221,221)")
+//                                .css("color", "black")
+//                                .css("border-radius", "0px")
                                 .css("font-weight", "600");
 
 
@@ -923,12 +984,18 @@ $(document).ready(function() {
                     console.log("dentro de if(performAjax)..");
                     noHayTabla = true;
 
+/*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
+		   $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:30px;border-radius:3px;' id='divDefense'></div>");
+
+		   $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>");
+/*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
+
                     $("button#consultar")
 		        .attr("class","consulta_normal")
-                        .css("background-color", "rgb(221,221,221)")
-                        .css("border", "2px outset rgb(221,221,221)")
-                        .css("color", "black")
-                        .css("border-radius", "0px")
+//                        .css("background-color", "rgb(221,221,221)")
+//                        .css("border", "2px outset rgb(221,221,221)")
+//                        .css("color", "black")
+//                        .css("border-radius", "0px")
                         .css("font-weight", "600");
 
                     if (params.start_year == params.end_year &&
@@ -995,7 +1062,17 @@ mensajeExplicativo(title,subtitle,tabla_respuesta);
             }
 
             if (this.nodeName == "DIV" && $(this).attr("especial") != "1") {
-                console.log("híjole");
+
+/*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
+	     if($(this).next().css("display") != 'block') {
+
+		$("div.d>div")
+		  .append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:30px;border-radius:3px;' id='divDefense'></div>");
+
+		$("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>");
+	     }
+/*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
+
                 $("div#quitarFiltro").css("display", "none");
 
                 var title = this.parentNode.getAttribute("tag");
@@ -1202,6 +1279,9 @@ mensajeExplicativo(params.title,params.subtitle,tabla_respuesta);
                         });
 
                     }
+
+		    $("div#divDefense").remove();
+		    $("div#optionsDefense").remove();
                 };
 
                 function mensajeEspera() {
@@ -1832,9 +1912,14 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params, data_buscar) {
             console.log(consulta);
         }
 
-        var parTAG = consulta.parentNode.getAttribute("tag"); // ¿?
-        $("tbody.labels[tag='" + parTAG + "']").click();
-        consulta.click();
+	try {
+          var parTAG = consulta.parentNode.getAttribute("tag"); // ¿?
+          $("tbody.labels[tag='" + parTAG + "']").click();
+          consulta.click();
+	} catch(err) {
+	  console.log(err);
+	  alert("¡Error, avisar por favor! :(")
+	}
     } else {
         consulta = $($("tbody#tabla>tbody.hide")[0]
             .querySelectorAll("div.labels:nth-child(1)"));
@@ -1858,6 +1943,8 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params, data_buscar) {
 
     //     noHayTabla = false;
 
+    $("div#divDefense").remove();
+    $("div#optionsDefense").remove();
 };
 
 function formatoData(data) {
@@ -2727,6 +2814,12 @@ function worker(data) {
 
 
 function mensajeExplicativo(title,subtitle,tabla_respuesta) {
+var hayBotonesYa = document.querySelector("#descargaBotonesSiNo") ? true : false;
+
+if(hayBotonesYa) {
+  $("#descargaBotonesSiNo").remove();
+}
+
 d3.select("#loading").style("height","0px");
 
 d3.select("div.espere").transition()
@@ -2807,7 +2900,8 @@ d3.select("div.content>p")
   .style("color","black")
 
 d3.selectAll("div#descargaBotonesSiNo").remove();
-
+$("div#divDefense").remove()
+$("div#optionsDefense").remove();
 });
 
 
@@ -2841,5 +2935,7 @@ d3.select("div.content>p")
   .style("color","black")
 
 $("div#descargaBotonesSiNo").remove();
+$("div#divDefense").remove()
+$("div#optionsDefense").remove();
 });
 };
