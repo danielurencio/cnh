@@ -1702,7 +1702,11 @@ window.onresize = function() {
 }
 
 function descargarSerie() {
-    var titulo = document.querySelector('.chart_expandible').getAttribute("tag");
+    var titulo = document.querySelector("select.filtros");
+    titulo = titulo[titulo.selectedIndex].value;
+
+    var subtitulo = document.querySelector('.chart_expandible')
+				.getAttribute("tag");
 
     titulo = titulo.toUpperCase();
     titulo = titulo.replace(/Á/g, "A");
@@ -1710,6 +1714,13 @@ function descargarSerie() {
     titulo = titulo.replace(/Í/g, "I");
     titulo = titulo.replace(/Ó/g, "O");
     titulo = titulo.replace(/Ú/g, "U");
+
+    subtitulo = subtitulo.toUpperCase();
+    subtitulo = subtitulo.replace(/Á/g, "A");
+    subtitulo = subtitulo.replace(/É/g, "E");
+    subtitulo = subtitulo.replace(/Í/g, "I");
+    subtitulo = subtitulo.replace(/Ó/g, "O");
+    subtitulo = subtitulo.replace(/Ú/g, "U");
 
     var sel_ = $("select.filtros").find(":selected").attr("tag");
 
@@ -1725,6 +1736,7 @@ function descargarSerie() {
     var Header = [
         "COMISION NACIONAL DE HIDROCARBUROS",
         titulo,
+	"Serie: " + subtitulo,
         "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", ", " - "),
         "\n",
     ];
@@ -1742,7 +1754,7 @@ function descargarSerie() {
             var cells = filas[i].querySelectorAll("td")
             for (var j in cells) {
                 if (cells[j].nodeName == "TD") {
-                    var row = cells[j].textContent;
+                    var row = cells[j].textContent.replace(/,/g,"");
                     rows.push(row);
                 }
             }
@@ -2455,6 +2467,11 @@ function grapher(info) {
             }).join("");
             d3.select(this).html(val_);
         });
+
+    $("#tabla_expandible td:nth-child(2)").each(function() {
+      var content = this.textContent;
+      $(this).html(Number(content).toLocaleString("es-MX"));
+    });
 
     var tExp_w = $("div#tabla_expandible").css("width");
     $("div#header_expandible").css("width", tExp_w);
