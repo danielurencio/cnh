@@ -961,7 +961,8 @@ $(document).ready(function() {
                                     tabla_respuesta = formatoData(tabla_respuesta);
                                     TableLogistics(algo_, tabla_respuesta);
                                 } else {
-
+mensajeExplicativo(title,subtitle,tabla_respuesta);
+/*
                                     if (confirm("ups!:(")) {
                                         $("div#espere")
 					 .css("visibility", "hidden");
@@ -979,7 +980,7 @@ $(document).ready(function() {
                                     } else {
                                        // $("div#espere").css("visibility", "hidden");
                                     }
-
+*/
                                 }
 
                             } // <-- no es verdad 'siFiltro'.. 
