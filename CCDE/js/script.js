@@ -1,3 +1,5 @@
+var data_BUSCAR;
+var cambio_ = false;
 var current_TXT;
 var siFiltro = false;
 var TEMAS;
@@ -15,12 +17,20 @@ var noHayTabla = false;
 
 $(document).ready(function() {
 
-$(document).keyup(function(event) {
-  if(event.which === 32) {
+  $(document).keypress(
+    function(event){
+     if (event.which == '13') {
+        event.preventDefault();
+	console.log("Enter.");
+      }
+  });
+
+  $(document).keyup(function(event) {
+    if(event.which === 32) {
   	event.preventDefault();
-		console.log("Space pressed.");
-  }
-});
+	console.log("Espacio.");
+    }
+  });
 
     document.body.style.zoom = 1.0;
     ScrollHeader = $('div.scroll_header')[0].getBoundingClientRect().bottom;
@@ -232,7 +242,6 @@ $(document).keyup(function(event) {
 
         if (titulo_hide.css("display") == "none") {
             titulo_label.click()
-            console.log("Se hizo click al título!");
         }
 
         var subtitulo = txt[1];
@@ -393,15 +402,19 @@ $(document).keyup(function(event) {
 
                         var params = parametros();
 
-/*------------------AJAX con botón de consultar-------------------------------*/                        
+/*------------------AJAX con botón de consultar-------------------------------*/    
+	    if(cambio_) {
+console.log(cambio_);
                   $.ajax({
                       url: "http://172.16.24.57/cubos_buscar.py",
                       type: "post",
                       datatype:"json",
                       data: params,
                       success: function(data_buscar){
-                      console.log(data_buscar.length*2,"bytes ~ aprox: para 'cubos_buscar.py'");
+                      //console.log(data_buscar.length*2,"bytes ~ aprox: para 'cubos_buscar.py'");
                       data_buscar = JSON.parse(data_buscar);
+		      data_BUSCAR = data_buscar;
+		      cambio_ = false;
                         
                         $.ajax({
                             url: "http://172.16.24.57/cubos_produccion.py",
@@ -410,7 +423,7 @@ $(document).keyup(function(event) {
                             data: params,
                             success: function(data) {
                                 var strSize = JSON.stringify(data).length;
-                                console.log(strSize);
+                                //console.log(strSize);
                                 ajaxFunction(data, Cubos, filtrarSeries, params_especiales, data_buscar);
                             }
 
@@ -418,6 +431,21 @@ $(document).keyup(function(event) {
 
                       }
                    });
+	    } else {
+		$.ajax({
+		    url: "http://172.16.24.57/cubos_produccion.py",
+		    type: "post",
+		    datatype: "json",
+		    data: params,
+		    success: function(data) {
+			var strSize = JSON.stringify(data).length;
+			//console.log(strSize);
+			ajaxFunction(data, Cubos, filtrarSeries, params_especiales, data_BUSCAR);
+		    }
+
+		});
+
+	    }
 /*------------------AJAX con botón de consultar-------------------------------*/
                     } else if (!fecha_VALIDA_1) {
                         alert("Seleccione una fecha válida.");
@@ -586,11 +614,11 @@ $(document).keyup(function(event) {
                     $("tbody#tabla").html("");
                     var loading_text = "<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>";
 
-                    ///////////////////////////////////////////////////////////////////////////////
-                    //////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
-                    ///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+//////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
+///////////////////////////////////////////////////////////////////////////////
                     var params = parametros();
-
+//if(!cambio_) {
                     $.ajax({
                         url: "http://172.16.24.57/cubos_buscar.py",
                         type: "post",
@@ -598,7 +626,24 @@ $(document).keyup(function(event) {
                         data: params,
                         success: function(data_buscar) {
                             data_buscar = JSON.parse(data_buscar);
+			    data_BUSCAR = data_buscar;
 
+                            $.ajax({
+                                url: "http://172.16.24.57/cubos_produccion.py",
+                                type: "post",
+                                datatype: "json",
+                                data: params,
+                                success: function(data) {
+                                    ajaxFunction(data, Cubos, filtrarSeries, null, data_buscar);
+                                    leyendaNotas(TEMAS, params);
+//				    cambio_ = false;
+//				    data_BUSCAR = data_buscar;
+                                }
+                            });
+
+                        }
+                    })
+/*} else {
                             $.ajax({
                                 url: "http://172.16.24.57/cubos_produccion.py",
                                 type: "post",
@@ -610,9 +655,8 @@ $(document).keyup(function(event) {
                                 }
                             });
 
-                        }
-                    })
-
+}
+*/
                     /*
                     $.get(tag + ".json", function(data) {
                     Cubos(data,tag);
@@ -654,7 +698,7 @@ $(document).keyup(function(event) {
                 for (var j in selectors_) {
                     $(selectors_[j]).change(function() {
 
-                        var cambio_ = false;
+                        cambio_ = false;
                         var newParams = parametros();
 
                         for (var k in newParams) {
@@ -693,11 +737,11 @@ $(document).keyup(function(event) {
 
                     });
 
-                }
+                };
 
-                ///////////////////////////////////////////////////////////////////////////////
-                //////////////////// AJAX - tabla default - ///////////////////////////////////
-                ///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+//////////////////// AJAX - tabla default - ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
                 /*
                 $.get("cuencas.json", function(data) {
@@ -721,6 +765,7 @@ $(document).keyup(function(event) {
                     data: params,
                     success: function(data_buscar) {
                         data_buscar = JSON.parse(data_buscar);
+			data_BUSCAR = data_buscar;
 
                         $.ajax({
                             url: "http://172.16.24.57/cubos_produccion.py",
@@ -730,6 +775,7 @@ $(document).keyup(function(event) {
                             success: function(data) {
                                 ajaxFunction(data, Cubos, filtrarSeries, null, data_buscar);
                                 leyendaNotas(TEMAS, params);
+				cambio_ = false;
                             }
 
                         });
@@ -1909,7 +1955,6 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params, data_buscar) {
             consulta = $($("tbody#tabla>tbody.hide")[0]
                 .querySelectorAll("div.labels:nth-child(1)"));
 
-            console.log(consulta);
         }
 
 	try {
@@ -1918,7 +1963,7 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params, data_buscar) {
           consulta.click();
 	} catch(err) {
 	  console.log(err);
-	  alert("¡Error, avisar por favor! :(")
+//	  alert("¡Error, avisar por favor! :(")
 	}
     } else {
         consulta = $($("tbody#tabla>tbody.hide")[0]
