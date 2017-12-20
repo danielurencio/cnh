@@ -2747,13 +2747,20 @@ function descargarPNG() {
     img.src = url;
 
     function triggerDownload(imgURI) {
-        var a = document.createElement('a');
-        a.setAttribute('download', 'chart.png');
-        a.setAttribute('href', imgURI);
-        a.setAttribute('target', '_blank');
-        a.click();
-        d3.selectAll(".PNG_").remove();
-        a.remove();
+
+
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveOrOpenBlob(csvFile, filename + ".csv");
+        } else {
+
+          var a = document.createElement('a');
+          a.setAttribute('download', 'chart.png');
+          a.setAttribute('href', imgURI);
+          a.setAttribute('target', '_blank');
+          a.click();
+          d3.selectAll(".PNG_").remove();
+          a.remove();
+	}
     };
 
 };
