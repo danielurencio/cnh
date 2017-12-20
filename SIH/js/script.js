@@ -2731,7 +2731,7 @@ function descargarPNG() {
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
-    if(canvas.msToBlob) {
+    if(ctx.msToBlob) {
       var blob = canvas.msToBlob();
       window.navigator.msSaveBlob(blob,"chart.png");
     } else {
