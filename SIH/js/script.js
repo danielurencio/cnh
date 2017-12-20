@@ -2741,16 +2741,14 @@ function descargarPNG() {
     img.onload = function() {
         ctx.drawImage(img, 0, 0);
         domURL.revokeObjectURL(url);
-        triggerDownload(canvas.toDataURL());
+        triggerDownload(canvas.toDataURL(),svg);
     };
 
     img.src = url;
 
-    function triggerDownload(imgURI) {
-
-
+    function triggerDownload(imgURI,svg) {
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveOrOpenBlob(csvFile, filename + ".csv");
+            window.navigator.msSaveOrOpenBlob(svg,"chart.png");
         } else {
 
           var a = document.createElement('a');
