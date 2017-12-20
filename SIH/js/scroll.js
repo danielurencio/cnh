@@ -1,5 +1,5 @@
 window.onscroll = function() {
-  var color = getComputedStyle(document.body).getPropertyValue('--titulos');
+  var color = "rgba(0,0,0,0.68)"//getComputedStyle(document.body).getPropertyValue('--titulos');
   var tr = document.querySelectorAll("tbody.hide>tr:first-child");
 
   var els = [];
