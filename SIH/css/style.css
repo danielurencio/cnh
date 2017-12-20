@@ -544,7 +544,7 @@ text.highcharts-credits>.highcharts-anchor {
 /*  color: white;*/
   border-radius: 3px;
   font-weight: 800;
-  animation:myfirst 0.8s;
+  animation:myfirst 0.8s infinite; /* IE */
   -moz-animation:myfirst 0.8s infinite; /* Firefox */
   -webkit-animation:myfirst 0.8s infinite; /* Safari and Chrome */
 }
