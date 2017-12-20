@@ -1061,7 +1061,7 @@ $(document).ready(function() {
                 var algo_ = this;
 /*--- Si no está abierta la tabla hacer POST para obtener la tabla que se va a mostrar ---*/
                 if (performAjax) {
-                    console.log("dentro de if(performAjax)..");
+//                    console.log("dentro de if(performAjax)..");
                     noHayTabla = true;
 
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -1123,8 +1123,6 @@ $(document).ready(function() {
             }
 
             if (this.nodeName == "DIV" && $(this).attr("especial") != "1") {
-//$("div#espere").css("visibility","visible");
-console.log("aaqquíii!");
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
 	     if($(this).next().css("display") != 'block') {
 
@@ -1969,7 +1967,6 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
 
     if (!noHayTabla && !special_params) {
         $("div#espere").css("visibility", "hidden");
-	console.log("noHayTaBLA");
     }
 
     $("div#divDefense").remove();
