@@ -2731,7 +2731,7 @@ function descargarPNG() {
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
-console.log(ctx.msToBlob(),canvas.msToBlob());
+console.log(canvas.msToBlob());
 
     if(canvas.msToBlob) {
       var blob = canvas.msToBlob();
