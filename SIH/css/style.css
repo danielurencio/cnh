@@ -83,23 +83,23 @@ div#grapher button {
  border: 0px solid black;
  background: white;
  font-size:11px;
- background-color:rgb(13,180,190);/*var(--subtitulos);*/
+ background-color:rgb(13,180,190);/*gray;*/
  color:white;
 }
 
 div#tema_options>button#on {
- background:var(--titulos);
+ background:rgba(0,0,0,0.68);
  color:white;
  font-weight:700;
- border: 4px solid var(--titulos);
+ border: 4px solid rgba(0,0,0,0.68);
 }
 
 
 div#tema_options>button#off {
  background:white;
  font-weight:600;
- border: 1px solid var(--titulos);
- color:var(--titulos);
+ border: 1px solid rgba(0,0,0,0.68);
+ color:rgba(0,0,0,0.68);
 
 }
 
@@ -126,7 +126,7 @@ tr {
 }
 
 .labels {
- color:var(--titulos);
+ color:rgba(0,0,0,0.68);
  font-weight:800;
  border-collapse:separate;
  border-spacing:4px;
@@ -209,7 +209,7 @@ td:nth-child(2),th:nth-child(2) {
  text-align:left;
  font-weight:700;
  font-size:12px;
- color:var(--subtitulos);
+ color:gray;
 }
 
 tr.scroll_aid_header[visible='no']>th {
@@ -293,7 +293,7 @@ tr:not(.scroll_aid_header)>th:nth-child(n+2) {
  text-align:center;
  font-size:13px;
  font-weight:800;
- color:var(--titulos);
+ color:rgba(0,0,0,0.68);
  border-bottom:1px solid lightGray;
 }
 
@@ -480,7 +480,7 @@ div.overflow {
 
 
 div#tabla_expandible tr:nth-child(odd) {
-  background:var(--nones);
+  background:rgba(73,171,129,0.1);
 }
 
 /*
@@ -502,7 +502,7 @@ div#quitarFiltro:hover {
 }
 
 div#tabla_expandible>table>tr:hover {
-  background-color: var(--filasYcols);
+  background-color: rgba(82,191,144,0.25);
 }
 
 
@@ -597,4 +597,12 @@ button#descarga:hover {
 
 div#divDefense:hover, div#optionsDefense:hover {
   cursor:not-allowed;
+}
+
+button.datos_grapher:hover {
+  cursor:pointer;
+}
+
+div.chart_expandible>button:hover {
+  cursor:pointer;
 }
