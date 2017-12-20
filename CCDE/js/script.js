@@ -367,6 +367,40 @@ $(document).ready(function() {
 
                 $("button#consultar").on("click", function() {
 
+//////////////////////////////////////////////////////////////////////////////////
+/*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
+//////////////////////////////////////////////////////////////////////////////////
+			d3.select("#loading").style("height","60px");
+
+			d3.select("div.espere")
+			.style("width","30%")
+			.style("height","30%");
+
+
+			d3.select("div.espere")
+			.style("top","35%")
+			.style("left","35%");
+
+
+			d3.select("div.content")
+			 .style("width","200px")
+			 .style("margin","0 auto")
+			 .style("padding-bottom","0%")
+			 .style("font-size","15px");
+
+			d3.select("div.content>p")
+			 .style("color","black")
+
+			d3.select("div.content>p")
+			  .html("Consultando información")
+			  .style("color","black")
+
+			$("div#descargaBotonesSiNo").remove();
+			$("div#divDefense").remove()
+		        $("div#optionsDefense").remove()
+//////////////////////////////////////////////////////////////////////////////////
+/*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
+//////////////////////////////////////////////////////////////////////////////////
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
 		  $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:30px;border-radius:3px;'id='divDefense'></div>");
 
@@ -404,7 +438,6 @@ $(document).ready(function() {
 
 /*------------------AJAX con botón de consultar-------------------------------*/    
 	    if(cambio_) {
-console.log(cambio_);
                   $.ajax({
                       url: "http://172.16.24.57/cubos_buscar.py",
                       type: "post",
@@ -424,7 +457,8 @@ console.log(cambio_);
                             success: function(data) {
                                 var strSize = JSON.stringify(data).length;
                                 //console.log(strSize);
-                                ajaxFunction(data, Cubos, filtrarSeries, params_especiales, data_buscar);
+                                ajaxFunction(data, Cubos, filtrarSeries,
+						params_especiales, data_buscar);
                             }
 
                         });
@@ -440,7 +474,8 @@ console.log(cambio_);
 		    success: function(data) {
 			var strSize = JSON.stringify(data).length;
 			//console.log(strSize);
-			ajaxFunction(data, Cubos, filtrarSeries, params_especiales, data_BUSCAR);
+			ajaxFunction(data, Cubos, filtrarSeries,
+					params_especiales, data_BUSCAR);
 		    }
 
 		});
@@ -671,9 +706,9 @@ console.log(cambio_);
                     filtrarSeries(data);
                     });
                     */
-                    ///////////////////////////////////////////////////////////////////////////////
-                    //////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
-                    ///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+//////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
                 }); // <------- CAMBIO DE TEMA...
 
@@ -682,10 +717,8 @@ console.log(cambio_);
                     var _month = $("._month");
                     if (this.value == 'annually') {
                         HP.css("z-index", "1");
-                        //    _month.css("opacity","0.18");
                     } else {
                         HP.css("z-index", "-1");
-                        //    _month.css("opacity","1");
                     }
                     var newParams = parametros();
 
@@ -1038,16 +1071,15 @@ console.log(cambio_);
 
                     $("button#consultar")
 		        .attr("class","consulta_normal")
-//                        .css("background-color", "rgb(221,221,221)")
-//                        .css("border", "2px outset rgb(221,221,221)")
-//                        .css("color", "black")
-//                        .css("border-radius", "0px")
                         .css("font-weight", "600");
 
                     if (params.start_year == params.end_year &&
                         params.start_month > params.end_month) {
-                        var eMon = document.getElementById("end_month").selectedIndex;
-                        document.getElementById("start_month").selectedIndex = eMon;
+                        var eMon = document.getElementById("end_month")
+						.selectedIndex;
+                        document.getElementById("start_month")
+				.selectedIndex = eMon;
+
                         params = parametros();
                         params.title = title;
                         params.subtitle = subtitle;
@@ -1069,31 +1101,12 @@ console.log(cambio_);
 
                                 var sizeStr = JSON.stringify([tabla_respuesta])
 						.length;
-                   console.log(sizeStr * 2, "bytes ~ aprox: caso especial (clic)");
+                //console.log(sizeStr * 2, "bytes ~ aprox: caso especial (clic)");
                                 if (sizeStr <= threshold) {
                                     tabla_respuesta = formatoData(tabla_respuesta);
                                     TableLogistics(algo_, tabla_respuesta);
                                 } else {
-mensajeExplicativo(title,subtitle,tabla_respuesta);
-/*
-                                    if (confirm("ups!:(")) {
-                                        $("div#espere")
-					 .css("visibility", "hidden");
-                                        console.log("cha cha chaaaan!");
-
-                                        var tabla_resp = tabla_respuesta
-					.filter(function(d) {
-                                            return d[0] == title;
-                                        })[0].filter(function(d) {
-                                            return typeof(d) == "object" &&
-                                                Object.keys(d)[0] == subtitle
-                                        })[0][subtitle];
-
-                                        worker(tabla_resp);
-                                    } else {
-                                       // $("div#espere").css("visibility", "hidden");
-                                    }
-*/
+				mensajeExplicativo(title,subtitle,tabla_respuesta);
                                 }
 
                             } // <-- no es verdad 'siFiltro'.. 
@@ -1108,7 +1121,8 @@ mensajeExplicativo(title,subtitle,tabla_respuesta);
             }
 
             if (this.nodeName == "DIV" && $(this).attr("especial") != "1") {
-
+//$("div#espere").css("visibility","visible");
+console.log("aaqquíii!");
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
 	     if($(this).next().css("display") != 'block') {
 
@@ -1140,17 +1154,8 @@ mensajeExplicativo(title,subtitle,tabla_respuesta);
                     };
                     TableLogistics(this, data);
                 } else {
-$("div#espere").css("visibility","visible");
-mensajeExplicativo(null,null,tabla_resp);
-
-/*
-                    var mensaje_casoEspecial = 'El tamaño de los datos solicitados es muy grande. Para poder visualizar su consulta, reduzca el rango de fechas seleccionado y presione el botón de "Consultar".\n\n ¿Desea descargar los datos de esta consulta?';
-                    if (confirm("El tamaño de su consulta es dema")) {
-                        worker(tabla_resp);
-                    } else {
-                        $("div#espere").css("visibility", "hidden");
-                    }
-*/
+			$("div#espere").css("visibility","visible");
+			mensajeExplicativo(null,null,tabla_resp);
                 }
             }
 
@@ -1297,12 +1302,12 @@ mensajeExplicativo(null,null,tabla_resp);
                             success: function(tabla_respuesta) {
 
                                 var sizeStr = JSON.stringify([tabla_respuesta]).length;
-                                console.log(sizeStr, "bytes ~ aprox (Consultar - botón)");
+                      //console.log(sizeStr, "bytes ~ aprox (Consultar - botón)");
                                 if (sizeStr <= threshold) {
                                     tabla_respuesta = formatoData(tabla_respuesta);
                                     TableLogistics(algo_, tabla_respuesta);
                                 } else {
-mensajeExplicativo(params.title,params.subtitle,tabla_respuesta);
+		mensajeExplicativo(params.title,params.subtitle,tabla_respuesta);
 /*
                                     if (confirm("UUups!")) {
                                         console.log("chaaaan");
@@ -1381,11 +1386,12 @@ mensajeExplicativo(params.title,params.subtitle,tabla_respuesta);
                             }
 
 
-                            ///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
+///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
 
-                            /*-----------------Quitar scroller horizontal si no se necesita--------------*/
+/*-----------------Quitar scroller horizontal si no se necesita--------------*/
 
-                            var tabla_overflow_X = $("div.overflow").filter(function() {
+                            var tabla_overflow_X = $("div.overflow")
+			      .filter(function() {
                                 return $(this).css("display") == "block";
                             });
 
@@ -1398,7 +1404,7 @@ mensajeExplicativo(params.title,params.subtitle,tabla_respuesta);
                             } else {
                                 tabla_overflow_X.css("overflow-x", "scroll")
                             }
-                            /*-----------------Quitar scroller horizontal si no se necesita--------------*/
+/*-----------------Quitar scroller horizontal si no se necesita--------------*/
                             PrincipalCheckBox();
 
                             var checkIfDist_ = document.querySelectorAll("#dist_").length;
@@ -1938,7 +1944,7 @@ function parametros() {
 };
 
 function ajaxFunction(data, Cubos, filtrarSeries, special_params, data_buscar) {
-
+//$("div#espere").css("visibility","visible");
     var consulta;
     var key_ = Object.keys(data[0][1])[0];
     var tableString = data[0][1];
@@ -2868,13 +2874,14 @@ if(hayBotonesYa) {
 d3.select("#loading").style("height","0px");
 
 d3.select("div.espere").transition()
-.duration(1000)
+.duration(500)
 .style("width","0%")
 .style("height","0%");
 
 
 d3.select("div.espere").transition()
-.duration(1000)
+.delay(500)
+.duration(500)
 .style("width","60%")
 .style("height","40%")
 .style("top","25%")
@@ -2883,23 +2890,33 @@ d3.select("div.espere").transition()
 
 d3.select("div.content")
  .transition()
+ .delay(500)
  .duration(500)
  .style("width","calc(100% - 100px)")
  .style("padding-bottom","3%")
 
 d3.select("div.content>p")
  .transition()
- .duration(500)
+ .duration(200)
  .style("color","transparent")
 
 d3.select("div.content>p")
   .html("<span style='font-weight:300'>El tamaño de su consulta es muy grande por lo que ésta no puede ser visualizada.</span><br><br>¿Desea descargar la información?")
   .transition()
+  .delay(1000)
   .duration(500)
   .style("color","black")
 
 $("div.content")
-  .append("<div id='descargaBotonesSiNo'><button class='si' id='descarga' style='background-color:rgb(13,180,190);'>&check; Sí&ensp;</button>&emsp;<button class='no' id='descarga' style='background-color:red;'>&cross; No&ensp;</button></div>")
+//  .transition()
+//  .delay(1000)
+  .append("<div style='opacity:0' id='descargaBotonesSiNo'><button class='si' id='descarga' style='background-color:rgb(13,180,190);'>&check; Sí&ensp;</button>&emsp;<button class='no' id='descarga' style='background-color:red;'>&cross; No&ensp;</button></div>")
+
+d3.select("div#descargaBotonesSiNo")
+.transition()
+.delay(1000)
+.duration(500)
+.style("opacity","1");
 
 var tabla_resp;
 if(title && subtitle) {
