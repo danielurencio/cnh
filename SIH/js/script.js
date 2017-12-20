@@ -2731,26 +2731,27 @@ function descargarPNG() {
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
-    var svg = new Blob([rawSVG], {
-            type: "image/svg+xml;charset=utf-8"
-        }),
-        domURL = self.URL || self.webkitURL || self,
-        url = domURL.createObjectURL(svg),
-        img = new Image;
+    if(canvas.msToBlob) {
+      var blob = canvas.msToBlob();
+      window.navigator.msSaveBlob(blob,"chart.png");
+    } else {
+	    var svg = new Blob([rawSVG], {
+		    type: "image/svg+xml;charset=utf-8"
+		}),
+		domURL = self.URL || self.webkitURL || self,
+		url = domURL.createObjectURL(svg),
+		img = new Image;
 
-    img.onload = function() {
-        ctx.drawImage(img, 0, 0);
-        domURL.revokeObjectURL(url);
-        triggerDownload(canvas.toDataURL(),svg);
-    };
+	    img.onload = function() {
+		ctx.drawImage(img, 0, 0);
+		domURL.revokeObjectURL(url);
+		triggerDownload(canvas.toDataURL());
+	    };
 
-    img.src = url;
+    	    img.src = url;
+    }
 
-    function triggerDownload(imgURI,svg) {
-        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveOrOpenBlob(svg,"chart.png");
-        } else {
-
+    function triggerDownload(imgURI) {
           var a = document.createElement('a');
           a.setAttribute('download', 'chart.png');
           a.setAttribute('href', imgURI);
@@ -2758,7 +2759,6 @@ function descargarPNG() {
           a.click();
           d3.selectAll(".PNG_").remove();
           a.remove();
-	}
     };
 
 };
