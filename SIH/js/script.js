@@ -50,7 +50,7 @@ $(document).ready(function() {
     document.body.addEventListener("wheel", zoomShortcut); //add the event
 
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
-		  $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0);position:relative;bottom:5px;border-radius:3px;'id='divDefense'></div>");
+		  $("div.d>div").append("<div style='width:90px; height:33px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;'id='divDefense'></div>");
 
 		  $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>")
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -402,7 +402,7 @@ $(document).ready(function() {
 /*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
 //////////////////////////////////////////////////////////////////////////////////
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
-		  $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;'id='divDefense'></div>");
+		  $("div.d>div").append("<div style='width:90px; height:33px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;'id='divDefense'></div>");
 
 		  $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>");
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -539,7 +539,7 @@ $(document).ready(function() {
 //////////////////////////////////////////////////////////////////////////////////
 
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
-		   $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;' id='divDefense'></div>")
+		   $("div.d>div").append("<div style='width:90px; height:33px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;' id='divDefense'></div>")
 
 		  $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>")
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -1065,7 +1065,7 @@ $(document).ready(function() {
                     noHayTabla = true;
 
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
-		   $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;' id='divDefense'></div>");
+		   $("div.d>div").append("<div style='width:90px; height:33px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;' id='divDefense'></div>");
 
 		   $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>");
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -1127,7 +1127,7 @@ $(document).ready(function() {
 	     if($(this).next().css("display") != 'block') {
 
 		$("div.d>div")
-		  .append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;' id='divDefense'></div>");
+		  .append("<div style='width:90px; height:33px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;' id='divDefense'></div>");
 
 		$("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>");
 	     }
