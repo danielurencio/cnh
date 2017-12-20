@@ -556,12 +556,17 @@ text.highcharts-credits>.highcharts-anchor {
   100%   { background:rgba(13,180,190,1); }
 }
  
-@-webkit-keyframes myfirst {/* Firefox */
+@-webkit-keyframes myfirst {/* Chrome */
   0%   { background:rgba(13,180,190,1); }
   50%  { background:rgba(120,225,225,1); }
   100%   { background:rgba(13,180,190,1); }
 }
 
+@keyframes myfirst { /* IE */
+  0%   { background:rgba(13,180,190,1); }
+  50%  { background:rgba(120,225,225,1); }
+  100%   { background:rgba(13,180,190,1); }
+}
 
 .consulta_normal {
   background-color: rgb(13,180,190);
