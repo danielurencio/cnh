@@ -2201,13 +2201,13 @@ function descargar_selection(series) {
                 var serie_ = ss.serie.join(",").replace(/NaN/g, "");
                 if (tema != ss.tema) {
                     tema = ss.tema;
-                    var _cont_ = ss['prevRow'] ? "    " + tema : "    "
+                    var _cont_ = ss['prevRow'] ? "    " + tema : "     "
 					+ tema + "," + serie_;
                     chunk.push(_cont_);
 
                 }
                 var subtema = ss.subtema;
-                if (subtema != "") chunk.push("        " + subtema
+                if (subtema != "") chunk.push("          " + subtema
 						+ "," + serie_);
             });
 
