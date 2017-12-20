@@ -1868,8 +1868,8 @@ function descargarSerie() {
     var Header = [
         "COMISION NACIONAL DE HIDROCARBUROS",
         titulo,
-	"Serie: " + subtitulo,
-        "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", ", " - "),
+	"SERIE: " + subtitulo,
+        "FECHA DE DESCARGA: " + fecha.toLocaleString('es-MX').replace(", ", " - "),
         "\n",
     ];
 
@@ -1965,6 +1965,7 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params, data_buscar) {
 
 	try {
           var parTAG = consulta.parentNode.getAttribute("tag"); // ¿?
+console.log("ya click a parent");
           $("tbody.labels[tag='" + parTAG + "']").click();
           consulta.click();
 	} catch(err) {
