@@ -928,7 +928,7 @@ $(document).ready(function() {
         $("button#principal").attr("todos", "no");
         data = formatoData(data);
         /////////////////////////////////////////////////////////////////////////////
-        var color = getComputedStyle(document.body).getPropertyValue('--filasYcols');
+        var color = "rgba(82,191,144,0.25)"//getComputedStyle(document.body).getPropertyValue('--filasYcols');
         var temas_fondo = "white"
         //getComputedStyle(document.body).getPropertyValue('--temas-fondo');
 

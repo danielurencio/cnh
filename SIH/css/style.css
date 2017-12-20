@@ -217,7 +217,7 @@ tr.scroll_aid_header[visible='no']>th {
 }
 
 label:hover {
- color:var(--resaltar);
+ color:rgb(82,91,144);
 }
 
 .hide>div.labels {
@@ -247,8 +247,8 @@ label:hover {
 }
 
 .labels:hover {
-  color:var(--resaltar);
-  background:var(--resaltarFilas);
+  color:rgba(82,91,144);
+  background:rgba(73,171,129,0.5);
   cursor:pointer;
 }
 
