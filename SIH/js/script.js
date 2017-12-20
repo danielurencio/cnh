@@ -50,7 +50,7 @@ $(document).ready(function() {
     document.body.addEventListener("wheel", zoomShortcut); //add the event
 
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
-		  $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0);position:relative;bottom:30px;border-radius:3px;'id='divDefense'></div>");
+		  $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0);position:relative;bottom:5px;border-radius:3px;'id='divDefense'></div>");
 
 		  $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>")
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -402,7 +402,7 @@ $(document).ready(function() {
 /*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
 //////////////////////////////////////////////////////////////////////////////////
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
-		  $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:30px;border-radius:3px;'id='divDefense'></div>");
+		  $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;'id='divDefense'></div>");
 
 		  $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>");
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -430,7 +430,9 @@ $(document).ready(function() {
                         /*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
 
                         var tag = $(this).find(":selected").attr("tag");
+	if(cambio_) {
                         $("tbody#tabla").html("");
+        }
                         var loading_text = "<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>";
 
 
@@ -466,6 +468,12 @@ $(document).ready(function() {
                       }
                    });
 	    } else {
+
+	   $("div#espere").css("visibility","hidden");
+	   $("div#divDefense").remove();
+	   $("div#optionsDefense").remove();
+	   cambio_=false;
+/*
 		$.ajax({
 		    url: "http://172.16.24.57/cubos_produccion.py",
 		    type: "post",
@@ -479,21 +487,25 @@ $(document).ready(function() {
 		    }
 
 		});
-
+*/
 	    }
 /*------------------AJAX con botón de consultar-------------------------------*/
                     } else if (!fecha_VALIDA_1) {
                         alert("Seleccione una fecha válida.");
+    			$("div#divDefense").remove();
+		        $("div#optionsDefense").remove();
                     } else if (fecha_VALIDA_2) {
                         alert("Seleccione una fecha válida.");
+    			$("div#divDefense").remove();
+		        $("div#optionsDefense").remove();
                     }
                 });
 
-                $("select.filtros").change(function() { // <--- CAMBIO DE TEMA..
+                $("select.filtros").change(function() {//<--CAMBIO DE TEMA..
 
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 /*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 			d3.select("#loading").style("height","60px");
 
 			d3.select("div.espere")
@@ -527,7 +539,7 @@ $(document).ready(function() {
 //////////////////////////////////////////////////////////////////////////////////
 
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
-		   $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:30px;border-radius:3px;' id='divDefense'></div>")
+		   $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;' id='divDefense'></div>")
 
 		  $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>")
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -649,9 +661,9 @@ $(document).ready(function() {
                     $("tbody#tabla").html("");
                     var loading_text = "<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);'class='wait'><span>Cargando información ...</span></div>";
 
-///////////////////////////////////////////////////////////////////////////////
-//////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+/////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
+//////////////////////////////////////////////////////////////////////////////
                     var params = parametros();
 //if(!cambio_) {
                     $.ajax({
@@ -772,22 +784,9 @@ $(document).ready(function() {
 
                 };
 
-///////////////////////////////////////////////////////////////////////////////
-//////////////////// AJAX - tabla default - ///////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-                /*
-                $.get("cuencas.json", function(data) {
-                console.log(data);
-                data = formatoData(data);
-                Cubos(data);
-                $("tbody#tabla>tbody.labels").click();
-                $($("tbody#tabla>tbody.hide")[0]
-                .querySelectorAll("div.labels:nth-child(1)")).click();
-                filtrarSeries(data);
-                });
-                */
-
+//////////////////////////////////////////////////////////////////////////////
+//////////////////// AJAX - tabla default - //////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
                 var params = parametros();
                 _parametros_ = parametros();
 
@@ -1028,19 +1027,21 @@ $(document).ready(function() {
             var span = d3.select($(this).find("span.s")[0]);
             var selection = d3.select("[tag='" + tag + "'].hide")
             var selection = d3.select($(this).next()[0])
-            if (selection.style("display") == 'block' && this.nodeName == "TBODY") {
+            if (selection.style("display") == 'block'
+		&& this.nodeName == "TBODY") {
                 selection
                     .style("display", "none");
                 span.html(plus + "&ensp;");
-            } else if (selection.style("display") != "block" && this.nodeName == "TBODY") {
+            } else if (selection.style("display") != "block"
+			&& this.nodeName == "TBODY") {
                 selection.style("display", "block");
                 span.html(minus + "&ensp;");
             }
 
-            /*-- Esto checa si está abierta la tabla para que, al cerrarla, no se vuelva a hacer un POST --*/
+/*-- Esto checa si está abierta la tabla para que, al cerrarla, no se vuelva a hacer un POST --*/
             var performAjax = $(this).next().css("display");
             performAjax = performAjax == "none" ? true : false;
-            /*------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------*/
 
             if (this.nodeName == "DIV" && $(this).attr("especial") == "1") {
 
@@ -1058,13 +1059,13 @@ $(document).ready(function() {
                 params["title"] = title;
                 params["subtitle"] = subtitle;
                 var algo_ = this;
-                /*--- Si no está abierta la tabla hacer POST para obtener la tabla que se va a mostrar ---*/
+/*--- Si no está abierta la tabla hacer POST para obtener la tabla que se va a mostrar ---*/
                 if (performAjax) {
                     console.log("dentro de if(performAjax)..");
                     noHayTabla = true;
 
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
-		   $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:30px;border-radius:3px;' id='divDefense'></div>");
+		   $("div.d>div").append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;' id='divDefense'></div>");
 
 		   $("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>");
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -1099,9 +1100,10 @@ $(document).ready(function() {
                                 siFiltro = false;
                             } else {
 
-                                var sizeStr = JSON.stringify([tabla_respuesta])
+                                var sizeStr = JSON
+						.stringify([tabla_respuesta])
 						.length;
-                //console.log(sizeStr * 2, "bytes ~ aprox: caso especial (clic)");
+
                                 if (sizeStr <= threshold) {
                                     tabla_respuesta = formatoData(tabla_respuesta);
                                     TableLogistics(algo_, tabla_respuesta);
@@ -1127,11 +1129,11 @@ console.log("aaqquíii!");
 	     if($(this).next().css("display") != 'block') {
 
 		$("div.d>div")
-		  .append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:30px;border-radius:3px;' id='divDefense'></div>");
+		  .append("<div style='width:90px; height:30px; background-color:rgba(0,0,0,0);position:relative;bottom:5px;border-radius:3px;' id='divDefense'></div>");
 
 		$("div#tema_options").append("<div style='width:178px;height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>");
 	     }
-/*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
+/*--Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
 
                 $("div#quitarFiltro").css("display", "none");
 
@@ -1148,6 +1150,7 @@ console.log("aaqquíii!");
                 var sizeStr = tabla_resp.length * 2;
 
                 if (sizeStr <= threshold) {
+//		    $("div#espere").css("visibility","visible");
                     params_especiales = {
                         'title': title,
                         'subtitle': subtitle
@@ -1160,9 +1163,9 @@ console.log("aaqquíii!");
             }
 
         });
-        ///////////////////////////////////////////////////////////////////////////
-        /////////////////^^ EXPANDIR PARA ESCRIBIR EN DOM ^^//////////////////////
-        /////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+/////////////////^^ EXPANDIR PARA ESCRIBIR EN DOM ^^//////////////////////
+/////////////////////////////////////////////////////////////////////////
         function TableLogistics(sth, data) {
             $(".overflow").scrollLeft(0);
             $(".scroll_header").scrollLeft(0);
@@ -1170,6 +1173,7 @@ console.log("aaqquíii!");
             var tbody_hide = $(sth).next()[0].querySelector(".hide");
             var this_overflow = d3.select($(sth).next()[0]);
             var span = d3.select($(sth).find("span.s")[0]);
+
             if (this_overflow.style("display") == "block") {
                 this_overflow.style("display", "none");
                 d3.select(tbody_hide).html("");
@@ -1195,11 +1199,14 @@ console.log("aaqquíii!");
                         tableData = formatoData(tableData);
 
                         var parser = new DOMParser();
-                        var docTable = parser.parseFromString(tableData, "text/html");
+                        var docTable = parser
+					.parseFromString(tableData,
+								"text/html");
                         docTable = docTable.querySelector("table");
                         $(docTable).css("table-layout", "fixed");
 
-                        d3.selectAll("div>label>span.s").html(plus + "&ensp;");
+                        d3.selectAll("div>label>span.s")
+					.html(plus + "&ensp;");
                         span.html(minus + "&ensp;");
                         d3.selectAll("div.overflow").style("display", "none");
                         d3.selectAll("div.overflow>table>tbody").html("")
@@ -1214,7 +1221,8 @@ console.log("aaqquíii!");
 
                             var newParser = new DOMParser();
                             var _docTable = newParser
-                                .parseFromString(docTable.outerHTML, "text/html")
+                                .parseFromString(docTable.outerHTML,
+								"text/html")
                                 .body.querySelector("table");
 
                             var tds = Array.prototype
@@ -1225,18 +1233,22 @@ console.log("aaqquíii!");
 
                             var prevTD = tds.filter(function(d) {
                                 return d.textContent.replace(/\s/g, "")
-                                    .toUpperCase() == current_TXT[2].replace(/\s/g, "")
-                                    .toUpperCase();
+                                    .toUpperCase() == current_TXT[2]
+							.replace(/\s/g, "")
+		                                        .toUpperCase();
                             })[0];
 
 
                             var c = tds.indexOf(prevTD) + 0;
                             var tdFromList;
-                            var referenceTd = current_TXT[3].replace(/\s/g, "").toUpperCase();
+                            var referenceTd = current_TXT[3]
+						.replace(/\s/g, "")
+						.toUpperCase();
                             var condTD;
 
                             for (c; c < tds.length; c++) {
-                                tdFromList = tds[c].textContent.replace(/\s/g, "").toUpperCase();
+                                tdFromList = tds[c].textContent
+				  .replace(/\s/g, "").toUpperCase();
                                 condTD = tdFromList == referenceTd;
 
                                 if (condTD) {
@@ -1250,23 +1262,26 @@ console.log("aaqquíii!");
                             console.log(tbody_hide);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
-                            $(_docTable.querySelectorAll("tbody")).append(prevTD.parentNode);
+                            $(_docTable.querySelectorAll("tbody"))
+				.append(prevTD.parentNode);
                             $(_docTable.querySelector("#dist_").parentNode)
                                 .css("display", "none");
-                            $(_docTable.querySelectorAll("#dist")).css("display", "none");
-                            $(_docTable.querySelectorAll("tbody")).append(val);
+                            $(_docTable.querySelectorAll("#dist"))
+				.css("display", "none");
+                            $(_docTable.querySelectorAll("tbody"))
+				.append(val);
 
 
                             d3.select(tbody_hide)
-                                .html(_docTable.innerHTML); // <-- pega la tabla.
+                                .html(_docTable.innerHTML);//<--pega la tabla
 
 
                             current_TXT = null; // <-- IMPORTANTÍSIMO!
                         }
-                        //--------------FILTRO PARA CASO ESPECIAL-----------------------
+//--------------FILTRO PARA CASO ESPECIAL-----------------------
                         else {
                             d3.select(tbody_hide)
-                                .html(docTable.innerHTML); // <-- pega la tabla.
+                                .html(docTable.innerHTML);//<--pega la tabla
                         }
 
                         $(window).scrollTop(
@@ -1276,7 +1291,7 @@ console.log("aaqquíii!");
                         icons();
                         // seleccionarCheckboxes();
                         //enableGraphs();
-                        corregirRenglones();
+                        //corregirRenglones();
                         headerScroll();
                         colcol();
                         callback();
@@ -1292,8 +1307,9 @@ console.log("aaqquíii!");
                         var params = parametros();
                         params["title"] = params_especiales.title;
                         params["subtitle"] = params_especiales.subtitle;
-                        var algo_ = $("tbody.hide[tag='" + params.title + "']>div.labels[tag='" +
-                            params.subtitle + "']")[0] //.click()
+                        var algo_ = $("tbody.hide[tag='" + params.title
+			    + "']>div.labels[tag='"
+			    + params.subtitle + "']")[0];
 
                         $.ajax({
                             url: "http://172.16.24.57/cubos_produccion.py",
@@ -1301,29 +1317,15 @@ console.log("aaqquíii!");
                             data: params,
                             success: function(tabla_respuesta) {
 
-                                var sizeStr = JSON.stringify([tabla_respuesta]).length;
-                      //console.log(sizeStr, "bytes ~ aprox (Consultar - botón)");
+                                var sizeStr = JSON
+					.stringify([tabla_respuesta])
+					.length;
+
                                 if (sizeStr <= threshold) {
-                                    tabla_respuesta = formatoData(tabla_respuesta);
+                              tabla_respuesta = formatoData(tabla_respuesta);
                                     TableLogistics(algo_, tabla_respuesta);
                                 } else {
 		mensajeExplicativo(params.title,params.subtitle,tabla_respuesta);
-/*
-                                    if (confirm("UUups!")) {
-                                        console.log("chaaaan");
-
-                                        var tabla_resp = tabla_respuesta.filter(function(d) {
-                                            return d[0] == params.title;
-                                        })[0].filter(function(d) {
-                                            return typeof(d) == "object" &&
-                                                Object.keys(d)[0] == params.subtitle;
-                                        })[0][params.subtitle];
-
-                                        worker(tabla_resp);
-                                    } else {
-                                        $("div#espere").css("visibility", "hidden");
-                                    }
-*/
                                 }
 
                             }
@@ -1407,7 +1409,8 @@ console.log("aaqquíii!");
 /*-----------------Quitar scroller horizontal si no se necesita--------------*/
                             PrincipalCheckBox();
 
-                            var checkIfDist_ = document.querySelectorAll("#dist_").length;
+                            var checkIfDist_ = document
+				.querySelectorAll("#dist_").length;
                             if (checkIfDist_ > 0) {
                                 d3.selectAll("tr#dist").attr("id", null);
                             }
@@ -1427,46 +1430,45 @@ console.log("aaqquíii!");
         function colcol() {
 
             d3.selectAll(".hide td:first-child").on("mouseover", function() {
-                $(this.parentNode.children).css("background-color", "rgba(73,171,129,0.25)");
+                $(this.parentNode.children)
+			.css("background-color", "rgba(73,171,129,0.25)");
             });
 
             d3.selectAll(".hide td:first-child").on("mouseout", function() {
                 $(this.parentNode.children).css("background-color", "white");
             });
 
-            d3.selectAll(".hide td:not(:first-child)").on("mouseover", function() {
+            d3.selectAll(".hide td:not(:first-child)")
+	     .on("mouseover", function() {
 
                 var grand_parent = $(this).parent().parent().parent()
                     .parent().parent().attr("tag");
                 var parent = $(this).parent().parent().attr("tag");
                 var ix = $(this).index() + 1;
-                var aid_cell = d3.select("tr.scroll_aid_header>th:nth-child(" + (ix - 2) + ")")
+                var aid_cell = d3.select("tr.scroll_aid_header>th:nth-child("
+						+ (ix - 2) + ")");
                 if (aid_cell) {
                     if ($("tr.scroll_aid_header").attr("visible") == "yes") {
                         aid_cell.style("background", color);
                     }
                 }
 
-                // Colorear columnas
-                //     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" +
-                //	parent+"'] td:nth-child("+ ix +")").style("background",color);
-
                 // Colorear filas
                 /*petición Mendoza*/
                 $(this.parentNode.children).css("background", color);
 
-                d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" +
-                        parent + "'] th:nth-child(" + ix + ")")
-                    /*petición Mendoza*/
+                d3.selectAll("tbody[tag='" + grand_parent
+			+ "']>div>table>tbody[tag='"
+                        + parent + "'] th:nth-child(" + ix + ")")
                     .style("background", color);
-
-                //$(this.parentNode.children[0]).css("background",color)
 
             });
 
 
-            d3.selectAll(".hide td:not(:first-child)").on("mouseout", function() {
-                var color_cond = this.parentNode.getAttribute("id") == "dist" ||
+            d3.selectAll(".hide td:not(:first-child)")
+	     .on("mouseout", function() {
+                var color_cond = this.parentNode
+		 .getAttribute("id") == "dist" ||
                     this.parentNode.children[0].getAttribute("id") == "dist_";
 
                 var color_1 = color_cond ? temas_fondo : "transparent";
@@ -1476,7 +1478,8 @@ console.log("aaqquíii!");
                     .parent().parent().attr("tag");
                 var parent = $(this).parent().parent().attr("tag");
                 var ix = $(this).index() + 1;
-                var aid_cell = d3.select("tr.scroll_aid_header>th:nth-child(" + (ix - 2) + ")")
+                var aid_cell = d3.select("tr.scroll_aid_header>th:nth-child("
+					+ (ix - 2) + ")");
 
                 if (aid_cell) {
                     if ($('tr.scroll_aid_header').attr("visible") == "yes") {
@@ -1489,44 +1492,38 @@ console.log("aaqquíii!");
                 var color_tag_ = color_tag ? color_tag : "transparent";
                 $(this.parentNode.children).css("background", "");
 
-                // Desolorear columnas
-                //     d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='"+parent+"'] "+
-                //	"td:nth-child("+ ix +")")
-                //	.style("background","transparent");
 
-                d3.selectAll("tbody[tag='" + grand_parent + "']>div>table>tbody[tag='" + parent + "'] " +
+                d3.selectAll("tbody[tag='" + grand_parent
+		  + "']>div>table>tbody[tag='" + parent + "'] " +
                         "th:nth-child(" + ix + ")")
                     .style("background", "transparent");
 
 
                 if (color_cond) {
                     $(this.parentNode.children[0]).css("background", color_1)
-                    if (this.parentNode.children[0].getAttribute("id") == "dist_") {
+                    if (this.parentNode.children[0]
+		       .getAttribute("id") == "dist_") {
                         $(this.parentNode.children)
-                        /*petición Mendoza*/
-                        //.css("background",color_1);
                     }
                     if (this.parentNode.getAttribute("id") == "dist") {
-                        $(this.parentNode.children).css("background", color_1);
+                        $(this.parentNode.children)
+				.css("background", color_1);
                     }
 
                 } else {
-                    $(this.parentNode.children[0]).css("background", "white") //color_tag_)
+                    $(this.parentNode.children[0])
+			.css("background", "white"); 
                 }
 
-                var firstC = $(this.parentNode.children[0]).css("background-color");
+                var firstC = $(this.parentNode.children[0])
+			.css("background-color");
 
                 if ($(this.parentNode).attr("even") == 1) {
-                    $(this.parentNode.children)
-                    //        .css("background-color",firstC);
-
+                    $(this.parentNode.children);
                 }
 
             });
 
-            if (tag) {
-                //    if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
-            }
 
             var table_bottom = $(".overflow:visible")[0]
                 .getBoundingClientRect().bottom;
@@ -1538,7 +1535,7 @@ console.log("aaqquíii!");
             var row_length_ = tabla_overflow_X[0]
                 .querySelector("tr:first-child")
                 .getBoundingClientRect().right;
-            /*----------Mostrar y ocultar footer conforme sea necesario-----------*/
+/*----------Mostrar y ocultar footer conforme sea necesario-----------*/
             if (row_length_ > window.innerWidth) {
                 tabla_overflow_X.css("overflow-x", "hidden")
 
@@ -1548,35 +1545,9 @@ console.log("aaqquíii!");
                     $("#footer").css("display", "none");
                 }
             }
-            /*----------Mostrar y ocultar footer conforme sea necesario-----------*/
+/*----------Mostrar y ocultar footer conforme sea necesario-----------*/
 
-            /*
-            var evenRows = document.querySelectorAll("div.overflow tr:nth-child(even)");
-            evenRows = $(evenRows);
-
-            evenRows.each(function() {
-            let color = $(this).css("background-color");
-            if(this.children[0].getAttribute("id") == "dist_") {
-            $(this).attr("color_tag", "rgba(73,171,129,0.25)");
-            $(this.children[0])
-
-            //.css("background","rgba(73,171,129,0.25)");
-            } else {
-            if($(this).attr("id") != "dist") {
-            $(this).attr("color_tag",color);
-            $(this.children[0]).css("background",color)
-            } else {
-            $(this).attr("color_tag", "rgba(73,171,129,0.25)");
-            $(this.children[0])
-
-            //.css("background","rgba(73,171,129,0.25)");
-            }
-
-            }
-
-            });
-            */
-            /*-------------------REFINACIÓN DE DETALLES DE TABLAS-------------------*/
+/*-------------------REFINACIÓN DE DETALLES DE TABLAS-------------------*/
             $("div.overflow tr>td")
                 .css("height", "20")
                 .css("font-size", "13px");
@@ -1593,28 +1564,40 @@ console.log("aaqquíii!");
             $("div.overflow").css("width", tamanio_);
             $("div#footer").css("width", "100%")
 
-            /*-------------------REFINACIÓN DE DETALLES DE TABLAS-------------------*/
+/*-------------------REFINACIÓN DE DETALLES DE TABLAS-------------------*/
 
         }
-        //////////////////////////////////////////////////////////////////////////////
-        /////////////////////vv HABILITAR ÍCONOS POR TABLA vv////////////////////////
-        ////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+/////////////////////vv HABILITAR ÍCONOS POR TABLA vv////////////////////////
+////////////////////////////////////////////////////////////////////////////
         function icons() {
-            var cubos = document.querySelectorAll("tbody.hide>div>table>tbody.hide");
+            var cubos = document
+		.querySelectorAll("tbody.hide>div>table>tbody.hide");
 
             for (var c in cubos) {
                 if (cubos[c].nodeName == "TBODY") {
-                    var parent_tag = cubos[c].parentNode.parentNode.parentNode
+                    var parent_tag = cubos[c]
+			.parentNode
+			.parentNode
+			.parentNode
                         .getAttribute("tag");
 
                     var this_tag = cubos[c].getAttribute("tag");
 
-                    var cubo_td = "tbody.hide[tag='" + parent_tag + "']>div>table>" +
-                        "tbody.hide[tag='" + this_tag + "']>tr>td:first-child:not(#dist_)";
-                    var cubo_th = "tbody.hide[tag='" + parent_tag + "']>div>table>" +
-                        "tbody.hide[tag='" + this_tag + "']>tr>th:first-child";
-                    var cubo_dist_ = "tbody.hide[tag='" + parent_tag + "']>div>table>" +
-                        "tbody.hide[tag='" + this_tag + "']>tr>td:first-child#dist_";
+                    var cubo_td = "tbody.hide[tag='" + parent_tag
+			+ "']>div>table>"
+                        + "tbody.hide[tag='" + this_tag
+			+ "']>tr>td:first-child:not(#dist_)";
+
+                    var cubo_th = "tbody.hide[tag='"
+			+ parent_tag + "']>div>table>"
+                        + "tbody.hide[tag='" + this_tag
+			+ "']>tr>th:first-child";
+
+                    var cubo_dist_ = "tbody.hide[tag='" + parent_tag
+			+ "']>div>table>"
+                        + "tbody.hide[tag='" + this_tag
+			+ "']>tr>td:first-child#dist_";
 
 
                     $("<td id='p'><input style='display:none;' id='principal' type='checkbox'></input></td>")
@@ -1635,36 +1618,18 @@ console.log("aaqquíii!");
                 };
             }
         };
-        //////////////////////////////////////////////////////////////////////////////
-        ////////////////////^^ HABILITAR ÍCONOS POR TABLA^^//////////////////////////
-        ////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+////////////////////^^ HABILITAR ÍCONOS POR TABLA^^//////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
         function seleccionarCheckboxes() {
             $("input#principal").on("click", function() {
-                //var grandparent_tbody = this.parentNode.parentNode.parentNode
-                //.parentNode.parentNode
-                //.getAttribute("tag");
-
-                //var parent_tbody = this.parentNode.parentNode.parentNode
-                //.getAttribute("tag");
-
-                // var child_boxes_str = "tbody[tag='"+ grandparent_tbody +
-                //"']>div>table>tbody[tag='"+ parent_tbody +"']>tr>td>input";
-                var child_boxes_str = "input[type='checkbox']:not(#principal)";
-                $(child_boxes_str).prop("checked", $(this).prop("checked"));
-                //	d3.selectAll(child_boxes_str).attr("checked","checked");
+               var child_boxes_str = "input[type='checkbox']:not(#principal)";
+               $(child_boxes_str).prop("checked", $(this).prop("checked"));
             });
         };
 
         seleccionarCheckboxes();
-
-
-        function corregirRenglones() {
-            d3.selectAll("td#dist_").each(function() {
-                //        $(this).css("background",temas_fondo);
-            });
-        };
-
 
     };
 
@@ -1721,12 +1686,14 @@ console.log("aaqquíii!");
         }
 
         var start_year = document.getElementById("start_year").children;
-        start_year = Array.prototype.slice.call(start_year).map(function(d) {
+        start_year = Array.prototype.slice.call(start_year)
+	 .map(function(d) {
             return d.textContent;
-        });
+         });
 
         var start_month = document.getElementById("start_month").children;
-        start_month = Array.prototype.slice.call(start_month).map(function(d) {
+        start_month = Array.prototype.slice.call(start_month)
+	 .map(function(d) {
             return d.textContent;
         });
 
@@ -1752,14 +1719,14 @@ console.log("aaqquíii!");
         document.getElementById("start_month").selectedIndex = s_Month;
         document.getElementById("end_month").selectedIndex = e_Month;
 
-
     };
 
 });
 
 
 function fechas_() {
-    var header = document.querySelector("tbody.hide>div>table>tbody.hide>tr")
+    var header = document
+	.querySelector("tbody.hide>div>table>tbody.hide>tr")
         .querySelectorAll("th");
 
     var header_ = [];
@@ -1772,6 +1739,7 @@ function fechas_() {
 
     return header_;
 };
+
 
 function resizeHighchart(exp_size, activ) {
     var w_, l_;
@@ -1807,11 +1775,12 @@ window.onresize = function() {
     }
 
 
-    /*-------Mostrar y ocultar el scroller-x bajo demanda------------------------*/
+/*-------Mostrar y ocultar el scroller-x bajo demanda---------------------*/
     try {
-        var tabla_overflow_X = $("div.overflow").filter(function() {
+        var tabla_overflow_X = $("div.overflow")
+	 .filter(function() {
             return $(this).css("display") == "block";
-        });
+         });
 
         var row_length_ = tabla_overflow_X[0]
             .querySelector("tr:first-child")
@@ -1830,7 +1799,7 @@ window.onresize = function() {
     } catch (err) {
         console.log(err);
     }
-    /*-------Mostrar y ocultar el scroller-x bajo demanda------------------------*/
+/*-------Mostrar y ocultar el scroller-x bajo demanda---------------------*/
 }
 
 function descargarSerie() {
@@ -1869,7 +1838,8 @@ function descargarSerie() {
         "COMISION NACIONAL DE HIDROCARBUROS",
         titulo,
 	"SERIE: " + subtitulo,
-        "FECHA DE DESCARGA: " + fecha.toLocaleString('es-MX').replace(", ", " - "),
+        "FECHA DE DESCARGA: " + fecha.toLocaleString('es-MX')
+					.replace(", ", " - "),
         "\n",
     ];
 
@@ -1908,6 +1878,7 @@ function descargarSerie() {
         'type': 'text/csv'
     });
 
+
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveOrOpenBlob(csvFile, "info.csv");
     } else {
@@ -1920,14 +1891,16 @@ function descargarSerie() {
         $("download[a]").remove();
     }
 
-}
+};
+
 
 function parametros() {
     var params = {};
     params['period'] = $('input[name=periodicidad]:checked').val();
 
     if (params["period"] == "monthly") {
-        params['start_month'] = $("select#start_month").find(":selected").text();
+        params['start_month'] = $("select#start_month")
+					.find(":selected").text();
         params['end_month'] = $("select#end_month").find(":selected").text();
     } else {
         params['start_month'] = '01';
@@ -1940,10 +1913,14 @@ function parametros() {
 
     params['title'] = '';
     params['subtitle'] = '';
+
+
     return params;
 };
 
-function ajaxFunction(data, Cubos, filtrarSeries, special_params, data_buscar) {
+
+function ajaxFunction(data, Cubos, filtrarSeries, special_params,
+							data_buscar) {
 //$("div#espere").css("visibility","visible");
     var consulta;
     var key_ = Object.keys(data[0][1])[0];
@@ -1965,9 +1942,9 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params, data_buscar) {
 
 	try {
           var parTAG = consulta.parentNode.getAttribute("tag"); // ¿?
-console.log("ya click a parent");
           $("tbody.labels[tag='" + parTAG + "']").click();
           consulta.click();
+
 	} catch(err) {
 	  console.log(err);
 //	  alert("¡Error, avisar por favor! :(")
@@ -1986,18 +1963,20 @@ console.log("ya click a parent");
         $("tbody.hide>div.labels").attr("especial", "1");
 
     }
+
     filtrarSeries(data, data_buscar);
     var consulta_display = $(consulta).css("display");
 
-    if (!noHayTabla) {
+    if (!noHayTabla && !special_params) {
         $("div#espere").css("visibility", "hidden");
+	console.log("noHayTaBLA");
     }
-
-    //     noHayTabla = false;
 
     $("div#divDefense").remove();
     $("div#optionsDefense").remove();
+
 };
+
 
 function formatoData(data) {
     for (var i in data) {
@@ -2009,11 +1988,11 @@ function formatoData(data) {
 
                 data[i][j][key] =
                     data[i][j][key]
-                    .replace(/(\d)-(\d)/g, "$1 $2")
+                    .replace(/(\d)-(\d)/g, "$1 $2");
 
                 data[i][j][key] =
                     data[i][j][key]
-                    .replace(/#/g, "&ensp;&nbsp;")
+                    .replace(/#/g, "&ensp;&nbsp;");
 
                 data[i][j][key] =
                     data[i][j][key]
@@ -2044,20 +2023,11 @@ function PrincipalCheckBox() {
             return $(this).css("display") == "block";
         })
         .prepend("<button id='selection' style='font-size:9px;height:18px;;position:absolute;left:259px;font-weight:600;font-family:Open Sans'>Descargar selección</button><input id='principal' type='checkbox' style='position:absolute;left:391px;'></input>");
+
     var first_th_ = $("div.overflow").filter(function() {
         return $(this).css("display") == "block";
-    })
-    /*	   .querySelector("tr:first-child>th:first-child");
+    });
 
-    	 var el_pad = +$($("td.check")[0])
-    		.css("padding").split("px")[0];
-    	 var marginLeft = $("td.check>input")[0]
-    		.getBoundingClientRect().left;
-
-    	  var displace = marginLeft - el_pad;
-    	 $(first_th_).html("<input type='checkbox' style='margin-left:"+
-    		displace+"px;' id='principal'></input>")
-    */
     $("input#principal").on("click", function() {
         var child_boxes_str = "input[type='checkbox']:not(#principal)";
         $(child_boxes_str).prop("checked", $(this).prop("checked"));
@@ -2074,7 +2044,7 @@ function PrincipalCheckBox() {
         }
 
     });
-}
+};
 
 
 function obtener_series() {
@@ -2095,7 +2065,8 @@ function obtener_series() {
                 if (_ix_ > 1) {
                     var prevRow = $("div.overflow").filter(function() {
                             return $(this).css("display") == "block";
-                        })[0].querySelectorAll("tr:nth-child(" + _ix_ + ")")[0]
+                        })[0]
+			.querySelectorAll("tr:nth-child(" + _ix_ + ")")[0]
                         .querySelector("td.graph").innerHTML.length;
 
                     prevRow = prevRow > 0 ? 0 : 1;
@@ -2126,19 +2097,25 @@ function obtener_series() {
                     var cond = false;
 
                     while (!cond) {
-                        var s = "tbody[tag='" + grand_parent_tag + "']>div>table>" +
-                            "tbody[tag='" + parent_tag + "']" +
-                            ">tr:nth-child(" + ix + ")";
+                        var s = "tbody[tag='" + grand_parent_tag
+				+ "']>div>table>"
+                                + "tbody[tag='" + parent_tag + "']"
+                                + ">tr:nth-child(" + ix + ")";
+
                         var dist = $(s).attr('id');
-                        var dist_ = $(s)[0].querySelector("td:first-child").getAttribute("id");
+                        var dist_ = $(s)[0].querySelector("td:first-child")
+					   .getAttribute("id");
 
                         if (dist || dist_) {
-                            var tema = $(s)[0].querySelector("td:first-child").innerHTML;
+                            var tema = $(s)[0]
+				.querySelector("td:first-child").innerHTML;
+
                             tema = tema.replace(/&[a-z;\s]*/g, "");
                             tema = tema.replace(/^\s/g, "");
                             obj["tema"] = tema;
                             cond = true;
                         }
+
                         ix -= 1;
                     }
 
@@ -2160,7 +2137,7 @@ function obtener_series() {
         return series;
     }
 
-}
+};
 
 
 function descargar_selection(series) {
@@ -2177,7 +2154,8 @@ function descargar_selection(series) {
     var Header = [
         "COMISION NACIONAL DE HIDROCARBUROS",
         _titulo_,
-        "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", ", " - "),
+        "Fecha de descarga: " + fecha.toLocaleString('es-MX')
+				     .replace(", ", " - "),
         "\n",
     ];
 
@@ -2192,12 +2170,11 @@ function descargar_selection(series) {
             "https://portal.cnih.cnh.gob.mx/iicnih2/?lng=es_mx");
 
 
-    var fechatest_ = fecha.toLocaleString('es-MX').replace(", ", " - ")
+    var fechatest_ = fecha.toLocaleString('es-MX').replace(", ", " - ");
 
     chunk.push(Header.join("\n"));
     chunk.push(",,");
 
-    //  chunk.push("," + fechas_())
     var familias = _.uniq(series.map(function(d) {
         return d.familia;
     }));
@@ -2221,21 +2198,24 @@ function descargar_selection(series) {
             });
 
             var tema = '';
+
             subfamilia.forEach(function(ss) {
 
                 var serie_ = ss.serie.join(",").replace(/NaN/g, "");
                 if (tema != ss.tema) {
                     tema = ss.tema;
-                    var _cont_ = ss['prevRow'] ? "    " + tema : "    " + tema + "," + serie_;
+                    var _cont_ = ss['prevRow'] ? "    " + tema : "    "
+					+ tema + "," + serie_;
                     chunk.push(_cont_);
 
                 }
                 var subtema = ss.subtema;
-                if (subtema != "") chunk.push("        " + subtema + "," + serie_);
-                //	chunk.push(",,,," + serie_);
+                if (subtema != "") chunk.push("        " + subtema
+						+ "," + serie_);
             });
 
         });
+
         chunk.push(",,");
         chunk.push(",,");
 
@@ -2269,6 +2249,7 @@ function descargar_selection(series) {
     }
 
 };
+
 
 function contratosPemexFIX() {
     var t = $("div.overflow").filter(function() {
@@ -2381,23 +2362,29 @@ function enableGraphs() {
 
                 var dist = $(s).attr('id');
                 console.log(s, dist);
-                var dist_ = $(s)[0].querySelector("td:first-child").getAttribute("id");
+                var dist_ = $(s)[0].querySelector("td:first-child")
+				   .getAttribute("id");
 
                 if (dist || dist_) {
-                    var tema = $(s)[0].querySelector("td:first-child").innerHTML;
+                    var tema = $(s)[0].querySelector("td:first-child")
+				      .innerHTML;
                     tema = tema.replace(/&[a-z;\s]*/g, "");
                     tema = tema.replace(/^\s/g, "");
                     info["tema"] = tema;
+
                     if (dist_) {
                         info["subtema"] = tema;
                         info["tema"] = first_cell;
                         info.serie.name = tema;
                     }
+
                     cond = true;
                 }
+
                 ix -= 1;
             }
         }
+
         info.fechas = fechas_().split(",");
         grapher(info);
 
@@ -2450,7 +2437,7 @@ function grapher(info) {
 
     info.serie.showInLegend = false;
 
-    var color = "rgb(13,180,190)" //getComputedStyle(document.body).getPropertyValue('--subtitulos');
+    var color = "rgb(13,180,190)";
     info.serie.color = color;
 
 
@@ -2506,19 +2493,20 @@ function grapher(info) {
             },
             formatter: function() {
                 var t =
-                    "<div style='text-align:center;'>" +
-                    "<span style='font-size:11px;font-weight:800;color:" + 'black' + ";'>" +
+                    "<div style='text-align:center;'>"
+		   + "<span style='font-size:11px;font-weight:800;color:"
+		   + 'black' + ";'>" +
                     this.point.name +
                     "</span>" +
                     "<br>" +
                     "<span style='font-weight:300;font-size:18px;'>" +
                     this.y.toLocaleString("es-MX") +
                     "</span></div>";
-                return t; //this.point.name + ": " + this.y;
+                return t;
             }
         },
         credits: {
-            text: NOTAS, //"________________________<br>Notas al pie<br> a<br>b.",
+            text: NOTAS,
             position: {
                 align: "left",
                 x: 50,
@@ -2592,6 +2580,19 @@ function grapher(info) {
 
     });
 
+   if(document.querySelector("tspan[onclick]")) {
+     $(".highcharts-credits").css("cursor","auto");
+
+     var liga_nombre = $("tspan[onclick]").html();
+     var liga = $("tspan[onclick]").attr("onclick")
+		.split("=")[1].replace(/"/g,"");
+
+     $("tspan[onclick]").html("<a href='" + liga + "' target='_blank'>"
+					  + liga_nombre + "</a>");
+     $("tspan[onclick]").attr("onclick",null);
+
+   }
+
     ////////////////////// AGREGAR TABLA PARA DESCARGA /////////////////////////
     var datos_tabla_ = info.serie.data.reverse();
 
@@ -2614,10 +2615,10 @@ function grapher(info) {
 
     var tExp_w = $("div#tabla_expandible").css("width");
     $("div#header_expandible").css("width", tExp_w);
-    /////////////////////// AGREGAR TABLA PARA DESCARGA /////////////////////////
+
+/////////////////////// AGREGAR TABLA PARA DESCARGA ////////////////////////
 
     d3.select("button.datos_grapher").on("click", function() {
-        //    var datos_tabla_ = info.serie.data.reverse();
 
         var tag_boton = $(this).attr("tag");
         var new_tag_boton = tag_boton == 'off' ? 'on' : 'off';
@@ -2634,13 +2635,11 @@ function grapher(info) {
                 .style("width", exp_size);
 
             $(chart_container)
-                //	.css("display","block")
                 .css("width", "calc(80% - " + exp_size + ")");
 
             $(this).attr("tag", new_tag_boton);
 
         } else {
-            //      d3.select("div#tabla_expandible>table").html("");
 
             $("span#flecha").html(">")
 
@@ -2661,6 +2660,7 @@ function grapher(info) {
 
 };
 
+
 // ---------CALCULAR TAMAÑO DE CELDAS PARA EL ENCABEZADO-SCROLLER ----
 function headerScroll() {
     var first_th = $("tbody.hide")[0].querySelectorAll("th")[1];
@@ -2676,7 +2676,8 @@ function headerScroll() {
         var scroll_id_header = fechas_().replace(/-/g, " ").split(",")
             .map(function(d) {
                 return "<th style='width:" + cell_Width +
-                    "px;min-width:" + cell_Width + "px;max-width:" + cell_Width + "px'>" +
+                    "px;min-width:" + cell_Width + "px;max-width:"
+		   + cell_Width + "px'>" +
                     d + "</th>";
             });
 
@@ -2685,13 +2686,13 @@ function headerScroll() {
         $("tr.scroll_aid_header").html(scroll_id_header_)
         $("tr.scroll_aid_footer").html(scroll_id_header)
 
-        // ----------- CALCULAR TAMAÑO DE TBODY PARA EL SCROLLER_HEADER ----------
+// ----------- CALCULAR TAMAÑO DE TBODY PARA EL SCROLLER_HEADER ----------
         var tbody_Width = document.querySelectorAll("table>.hide")[0]
             .offsetWidth;
         $(".scroll_header")
             .css("width", "calc( 100% - " + 65 + "px)");
 
-        // -------------------- MOVER DIVS SIMULTÁNEAMENTE ------------------
+// -------------------- MOVER DIVS SIMULTÁNEAMENTE ------------------
         $('div.overflow').on('scroll', function() {
             $('div.scroll_header').scrollLeft($(this).scrollLeft());
         });
@@ -2702,7 +2703,7 @@ function headerScroll() {
         });
 
     } else {
-        console.log("else!");
+//        console.log("else!");
     }
 };
 
@@ -2727,14 +2728,16 @@ function descargarPNG() {
     var svg_w = $(SVG).css("width");
     var svg_h = $(SVG).css("height");
     var rawSVG = SVG.outerHTML;
-    $("body").append("<canvas class='PNG_' id='canvas' width='" + svg_w + "' height='" + svg_h + "'></canvas>");
+    $("body").append("<canvas class='PNG_' id='canvas' width='"
+			+ svg_w + "' height='" + svg_h + "'></canvas>");
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
-console.log(canvas.msToBlob());
+console.log(canvas.msToBlob);
 
     if(canvas.msToBlob) {
       var blob = canvas.msToBlob();
+console.log(blob);
       window.navigator.msSaveBlob(blob,"chart.png");
     } else {
 	    var svg = new Blob([rawSVG], {
@@ -2809,7 +2812,8 @@ function worker(data) {
     var Header = [
         "COMISION NACIONAL DE HIDROCARBUROS",
         _titulo_,
-        "Fecha de descarga: " + fecha.toLocaleString('es-MX').replace(", ", " - "),
+        "Fecha de descarga: " + fecha.toLocaleString('es-MX')
+				     .replace(", ", " - "),
         "\n",
     ].join("\n");
 
@@ -2873,61 +2877,61 @@ function worker(data) {
 
 
 function mensajeExplicativo(title,subtitle,tabla_respuesta) {
-var hayBotonesYa = document.querySelector("#descargaBotonesSiNo") ? true : false;
+  var hayBotonesYa = document
+		.querySelector("#descargaBotonesSiNo") ? true : false;
 
-if(hayBotonesYa) {
-  $("#descargaBotonesSiNo").remove();
-}
+  if(hayBotonesYa) {
+    $("#descargaBotonesSiNo").remove();
+  }
 
-d3.select("#loading").style("height","0px");
+  d3.select("#loading").style("height","0px");
 
-d3.select("div.espere").transition()
-.duration(500)
-.style("width","0%")
-.style("height","0%");
-
-
-d3.select("div.espere").transition()
-.delay(500)
-.duration(500)
-.style("width","60%")
-.style("height","40%")
-.style("top","25%")
-.style("left","20%");
+  d3.select("div.espere").transition()
+   .duration(500)
+   .style("width","0%")
+   .style("height","0%");
 
 
-d3.select("div.content")
- .transition()
- .delay(500)
- .duration(500)
- .style("width","calc(100% - 100px)")
- .style("padding-bottom","3%")
+  d3.select("div.espere").transition()
+   .delay(500)
+    .duration(500)
+    .style("width","60%")
+    .style("height","40%")
+    .style("top","25%")
+    .style("left","20%");
 
-d3.select("div.content>p")
- .transition()
- .duration(200)
- .style("color","transparent")
 
-d3.select("div.content>p")
-  .html("<span style='font-weight:300'>El tamaño de su consulta es muy grande por lo que ésta no puede ser visualizada.</span><br><br>¿Desea descargar la información?")
+  d3.select("div.content")
+   .transition()
+   .delay(500)
+   .duration(500)
+   .style("width","calc(100% - 100px)")
+   .style("padding-bottom","3%")
+
+  d3.select("div.content>p")
+   .transition()
+   .duration(200)
+   .style("color","transparent")
+
+  d3.select("div.content>p")
+   .html("<span style='font-weight:300'>El tamaño de su consulta es muy grande por lo que ésta no puede ser visualizada.</span><br><br>¿Desea descargar la información?")
   .transition()
   .delay(1000)
   .duration(500)
   .style("color","black")
 
-$("div.content")
-//  .transition()
-//  .delay(1000)
-  .append("<div style='opacity:0' id='descargaBotonesSiNo'><button class='si' id='descarga' style='background-color:rgb(13,180,190);'>&check; Sí&ensp;</button>&emsp;<button class='no' id='descarga' style='background-color:red;'>&cross; No&ensp;</button></div>")
+  $("div.content")
+    .append("<div style='opacity:0' id='descargaBotonesSiNo'><button class='si' id='descarga' style='background-color:rgb(13,180,190);'>&check; Sí&ensp;</button>&emsp;<button class='no' id='descarga' style='background-color:red;'>&cross; No&ensp;</button></div>")
 
-d3.select("div#descargaBotonesSiNo")
-.transition()
-.delay(1000)
-.duration(500)
-.style("opacity","1");
+  d3.select("div#descargaBotonesSiNo")
+    .transition()
+    .delay(1000)
+    .duration(500)
+    .style("opacity","1");
 
-var tabla_resp;
-if(title && subtitle) {
+  var tabla_resp;
+
+  if(title && subtitle) {
 	 tabla_resp = tabla_respuesta
 	.filter(function(d) {
 	    return d[0] == title;
@@ -2935,77 +2939,78 @@ if(title && subtitle) {
 	    return typeof(d) == "object" &&
 		Object.keys(d)[0] == subtitle
 	})[0][subtitle];
-} else {
-  tabla_resp = tabla_respuesta;
-}
+  } else {
+    tabla_resp = tabla_respuesta;
+  }
 
-$("button.si").on("click", function() {
+
+  $("button.si").on("click", function() {
 	worker(tabla_resp);
-   $("div#espere").css("visibility","hidden");
+	$("div#espere").css("visibility","hidden");
+
+	d3.select("#loading").style("height","60px");
+
+	d3.select("div.espere")
+	.style("width","30%")
+	.style("height","30%");
 
 
-d3.select("#loading").style("height","60px");
-
-d3.select("div.espere")
-.style("width","30%")
-.style("height","30%");
+	d3.select("div.espere")
+	.style("top","35%")
+	.style("left","35%");
 
 
-d3.select("div.espere")
-.style("top","35%")
-.style("left","35%");
+	d3.select("div.content")
+	 .style("width","200px")
+	 .style("margin","0 auto")
+	 .style("padding-bottom","0%")
+	 .style("font-size","15px");
+
+	d3.select("div.content>p")
+	 .style("color","black");
+
+	d3.select("div.content>p")
+	  .html("Consultando información")
+	  .style("color","black");
+
+	d3.selectAll("div#descargaBotonesSiNo").remove();
+	$("div#divDefense").remove()
+	$("div#optionsDefense").remove();
+  });
 
 
-d3.select("div.content")
- .style("width","200px")
- .style("margin","0 auto")
- .style("padding-bottom","0%")
- .style("font-size","15px");
-
-d3.select("div.content>p")
- .style("color","black")
-
-d3.select("div.content>p")
-  .html("Consultando información")
-  .style("color","black")
-
-d3.selectAll("div#descargaBotonesSiNo").remove();
-$("div#divDefense").remove()
-$("div#optionsDefense").remove();
-});
+  $("button.no").on("click", function() {
+	$("div#espere").css("visibility","hidden");
 
 
-$("button.no").on("click", function() {
-  $("div#espere").css("visibility","hidden");
+	d3.select("#loading").style("height","60px");
+
+	d3.select("div.espere")
+	.style("width","30%")
+	.style("height","30%");
 
 
-d3.select("#loading").style("height","60px");
-
-d3.select("div.espere")
-.style("width","30%")
-.style("height","30%");
+	d3.select("div.espere")
+	.style("top","35%")
+	.style("left","35%");
 
 
-d3.select("div.espere")
-.style("top","35%")
-.style("left","35%");
+	d3.select("div.content")
+	 .style("width","200px")
+	 .style("margin","0 auto")
+	 .style("padding-bottom","0%")
+	 .style("font-size","15px");
 
+	d3.select("div.content>p")
+	 .style("color","black");
 
-d3.select("div.content")
- .style("width","200px")
- .style("margin","0 auto")
- .style("padding-bottom","0%")
- .style("font-size","15px");
+	d3.select("div.content>p")
+	  .html("Consultando información")
+	  .style("color","black");
 
-d3.select("div.content>p")
- .style("color","black")
+	$("div#descargaBotonesSiNo").remove();
+	$("div#divDefense").remove()
+	$("div#optionsDefense").remove();
+  });
 
-d3.select("div.content>p")
-  .html("Consultando información")
-  .style("color","black")
-
-$("div#descargaBotonesSiNo").remove();
-$("div#divDefense").remove()
-$("div#optionsDefense").remove();
-});
 };
