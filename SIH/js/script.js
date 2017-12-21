@@ -2749,15 +2749,17 @@ console.log(blob);
 	    img.onload = function() {
 		ctx.drawImage(img, 0, 0);
 		domURL.revokeObjectURL(url);
-		triggerDownload(canvas.toDataURL());
+		console.log(svg)
+		triggerDownload(canvas.toDataURL(),svg);
 	    };
 
     	    img.src = url;
 //    }
 
-    function triggerDownload(imgURI) {
+    function triggerDownload(imgURI,svg) {
 
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+	  console.log(svg)
           window.navigator.msSaveOrOpenBlob(svg, "a.png");
       } else {
           var a = document.createElement('a');
