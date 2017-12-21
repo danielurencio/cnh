@@ -2732,12 +2732,13 @@ var rawSVG = new XMLSerializer().serializeToString(SVG);
     var ctx = canvas.getContext('2d');
 
 console.log(canvas.msToBlob);
-
-    if(canvas.msToBlob) {
+/*
+    if(false) {
       var blob = canvas.msToBlob();
 console.log(blob);
       window.navigator.msSaveBlob(blob,"chart.png");
     } else {
+*/
 	    var svg = new Blob([rawSVG], {
 		    type: "image/svg+xml;charset=utf-8"
 		}),
@@ -2752,9 +2753,13 @@ console.log(blob);
 	    };
 
     	    img.src = url;
-    }
+//    }
 
     function triggerDownload(imgURI) {
+
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(svg, "a.png");
+      } else {
           var a = document.createElement('a');
           a.setAttribute('download', 'chart.png');
           a.setAttribute('href', imgURI);
@@ -2762,6 +2767,7 @@ console.log(blob);
           a.click();
           d3.selectAll(".PNG_").remove();
           a.remove();
+      }
     };
 
 };
