@@ -2724,7 +2724,8 @@ function descargarPNG() {
     var SVG = document.querySelector("svg.highcharts-root")
     var svg_w = $(SVG).css("width");
     var svg_h = $(SVG).css("height");
-    var rawSVG = SVG.outerHTML;
+//    var rawSVG = SVG.outerHTML;
+var rawSVG = new XMLSerializer().serializeToString(SVG);
     $("body").append("<canvas class='PNG_' id='canvas' width='"
 			+ svg_w + "' height='" + svg_h + "'></canvas>");
     var canvas = document.getElementById('canvas');
