@@ -362,7 +362,7 @@ $(document).ready(function() {
 
             TEMAS = JSON.parse(temas);
 
-            $.get("blueprints.json", function(response) {
+            d3.json("blueprints.json", function(response) {
                 RenderWords(response, "esp", TEMAS);
 
                 $("button#consultar").on("click", function() {
