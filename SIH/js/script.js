@@ -361,6 +361,7 @@ $(document).ready(function() {
         success: function(temas) {
 
             TEMAS = JSON.parse(temas);
+console.log(TEMAS);
 
             d3.json("blueprints.json", function(response) {
                 RenderWords(response, "esp", TEMAS);
@@ -500,6 +501,31 @@ $(document).ready(function() {
 		        $("div#optionsDefense").remove();
                     }
                 });
+
+
+// ======================= CAMBIO POR SECCIÓN ========================================
+		$("select.filtros_").change(function() {
+		      console.log(TEMAS); 
+                      var sel_ = $("select.filtros_").find(":selected").attr("tag");
+		      var temas_seccion = TEMAS.filter(function(d) {
+			return d.seccion == sel_;
+		      });
+
+		      d3.select("select.filtros").html("");
+
+		      d3.select("select.filtros").selectAll("option")
+			.data(temas_seccion).enter()
+			.append("option")
+			.attr("tag",function(d) {
+			    return d.json_arg;
+			})
+			.html(function(d) {
+			    return d.tema;
+			});
+
+		    $("select.filtros").find(":selected").trigger("change");
+		});
+// ===================================================================================
 
                 $("select.filtros").change(function() {//<--CAMBIO DE TEMA..
 
@@ -1638,8 +1664,28 @@ $(document).ready(function() {
         var years = obj.A[lang].filtros.years;
         var options = obj.A[lang].filtros.options;
 
+
+	var secciones = _.uniq(temas,function(d) {
+	  return d.seccion;
+	}).map(function(d) { return d.seccion; });
+
+
+	d3.select("select.filtros_").selectAll("option")
+	    .data(secciones).enter()
+	    .append("option")
+	    .attr("tag", function(d) {
+		return d;
+	    })
+	    .html(function(d) {
+		return d;
+	    });
+
+
+        var sel_ = $("select.filtros_").find(":selected").attr("tag");
+
+
         d3.select("select.filtros").selectAll("option")
-            .data(temas).enter()
+            .data(temas.filter(function(d) { return d.seccion == sel_; })).enter()
             .append("option")
             .attr("tag", function(d) {
                 return d['json_arg'];
