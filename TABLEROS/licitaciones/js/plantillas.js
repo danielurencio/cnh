@@ -1730,12 +1730,12 @@ var tablaString =
   '</table>' +
  '</div>' + 
 "<div class='notas' style='background-color:white;height:8%;color:black;line-height:14px;font-size:10px;font-weight:300;padding-bottom:0px;padding-left:20px;padding-right:20px;text-align:justify;margin_bottom:20px'>"+i_a+i_b+"</div>" +
-'<div id="tBodyContainer" style="height:58%">' +
+'<div id="tBodyContainer" style="height:52%">' +
  '<table id="tBody">' +
 
  '</table>'+
 '</div>' +
-'<div style="width:100%;padding-left:20px;line-height:11px;border-top:solid 0.25px gray"><span style="font-weight:700;color:rgb(8,109,115)">* Las ofertas en negritas y en este color fueron las que adjudicaron. Éstas corresponden a la oferta más alta en la licitación, o a la segunda más alta en caso de que el primer lugar no firme el contrato.</span><br><span style="color:white;background-color:gray">* Las ofertas en gris fueron desechadas por no superar el límite establecido por la Secretaría de Hacienda y Crédito Público.</span></div>' +
+'<div style="width:100%;padding-left:20px;line-height:11px;border-top:solid 0.25px gray"><span style="font-weight:700;color:rgb(8,109,115)">* Las ofertas en negritas y en este color fueron las que adjudicaron. Éstas corresponden a la oferta más alta en la licitación, o a la segunda más alta en caso de que el primer lugar no firme el contrato.</span><br><span style="color:white;background-color:gray;">* Las ofertas en gris fueron desechadas por no superar el límite establecido por la Secretaría de Hacienda y Crédito Público.</span></div>' +
 '</div>';
 
   d3.select("#Tabla").remove();
