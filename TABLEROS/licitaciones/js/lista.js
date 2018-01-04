@@ -77,7 +77,7 @@ function mostrarLista() {
 	      .style("border-style","solid")
 	      .style("border-width","0.5px")
 	      .style("background-color","transparent")
-	      .style("background",'url(img/glass_.svg) no-repeat 1px 1px')
+	      .style("background",'url(/images/estadistica/tablero-licitaciones/glass_.svg) no-repeat 1px 1px')
 	      .style("padding-left","25px")
 	      .style("color",colorBarras)
 	      .style("width","inherit");

@@ -1,4 +1,5 @@
 var widLic_ = '300px';
+var NUMERO_DE_OFERTAS_;
 
 function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
   if(d3.select("div#temporal")[0][0]) d3.select("div#temporal").remove()
@@ -231,7 +232,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		buttons: {
 		  contextButton: { enabled:false },
 		  myButton: {
-		    symbol: 'url(./img/download.svg)',
+		    symbol: 'url(/images/estadisticas/tablero-licitaciones/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    _titleKey:'Descargar',
@@ -399,7 +400,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		buttons: {
 		  myButton: {
 		    _titleKey:"Descargar",
-		    symbol: 'url(./img/download.svg)',
+		    symbol: 'url(/images/estadisticas/tablero-licitaciones/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    menuItems: [
@@ -512,7 +513,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //		filename:'ingresos',
 		buttons: {
 		  contextButton: {
-		    symbol:'url(./img/download.svg)',
+		    symbol:'url(/images/estadisticas/tablero-licitaciones/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    _titleKey:"Descargar",
@@ -520,6 +521,8 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 			{
 			  'text':'Exportar datos (CSV)',
 			  'onclick': function() {
+			     console.log(this.getCSV());
+			     console.log(d3.sum(NUMERO_DE_OFERTAS_),TABLA.filter(function(d) { return d.VALIDEZ == "VALIDA"}));
 			     csvGraf(this.getCSV(),'ofertas_resumen',{rondas:RONDA_LIC});
 			  }
 			}
@@ -1499,6 +1502,8 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
     cuentaOfertas.push(val.length);
   };
 
+  NUMERO_DE_OFERTAS_ = cuentaOfertas;
+
   if(cuentaOfertas.length > 0) { 
     ofertasValidas = d3.mean(cuentaOfertas).toFixed(1);
   } else {
@@ -1580,18 +1585,23 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 	row.push(celda);
 	if(j == 0) { ronda_.push(celda); };
       };
+
+      if(rows[i].style.display != "none") {
 // ---- ¿Es la oferta ganadora? -----
-      if( rows[i].getAttribute("tag") == "ganadora" ) { 
-	row.push("SI");
-      } else { 
-	row.push("NO");
-      }
+        if( rows[i].getAttribute("tag") == "ganadora" ) {
+	  console.log(rows[i].style.display); 
+	  row.push("SI");
+        } else { 
+	  row.push("NO");
+        }
 
 // ---- ¿Es la oferta válida? --
-      if( $(rows[i]).css('color') == 'rgb(128, 128, 128)' ) {
-	row.push("NO")
-      } else {
-	row.push("SI")
+        if( $(rows[i]).css('color') == 'rgb(128, 128, 128)' ) {
+	  row.push("NO")
+        } else {
+	  row.push("SI")
+        }
+
       }
 
       csv.push(row.join(","));
@@ -1606,7 +1616,6 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
     if(emp_nom != "RESUMEN") objCSV["empresa"] = emp_nom;
 
     csvGraf(csv,"tabla",objCSV)
-    
   };
 
 
@@ -1833,7 +1842,7 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 	filename:'gráfico-ofertas',
 	buttons: {
 	 contextButton: {
-	  symbol:'url(./img/download.svg)',
+	  symbol:'url(/images/estadisticas/tablero-licitaciones/download.svg)',
 	  _titleKey:"Descargar",
 	  symbolX:19,
 	  symbolY:18,
@@ -1922,7 +1931,7 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 //	filename:'inversion-ronda-bloque',
 	buttons: {
 	 contextButton: {
-	  symbol:'url(./img/download.svg)',
+	  symbol:'url(/images/estadisticas/tablero-licitaciones/download.svg)',
 	  symbolX:19,
 	  symbolY:18,
           _titleKey:'Descargar',
