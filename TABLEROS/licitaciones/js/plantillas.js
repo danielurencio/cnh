@@ -1,5 +1,59 @@
+var _ambiente_ = "local";
 var widLic_ = '300px';
-var NUMERO_DE_OFERTAS_;
+
+function img_from(file,ambiente) {
+  var img_download_ = {
+    'produccion': 'url(/images/estadistica/tablero-licitaciones/'+ file +'.svg)',
+    'local': 'url(/img/'+ file +'.svg)'
+  };
+  return img_download_[ambiente];
+};
+
+function flags_dir(ambiente) {
+  var dir = {
+    'produccion':'images/estadistica/tablero-licitaciones/FLAGS/',
+    'local':'img/flags/FLAGS/'
+  };
+  return dir[ambiente];
+};
+
+var _img_download_ = img_from("download",_ambiente_);
+var _flags_dir_ = flags_dir(_ambiente_);
+var lupita = img_from("glass_",_ambiente_);
+
+
+  var pais_dict = {
+   'ALEMANIA':'Germany',
+   'ARGENTINA':'Argentina',
+   'AUSTRALIA':'Australia',
+   'BRASIL':'Brazil',
+   'CANADÁ':'Canada',
+   'CHILE':'Chile',
+   'CHINA':'China',
+   'COLOMBIA':'Colombia',
+   'DINAMARCA':'Denmark',
+   'EGIPTO':'Egypt',
+   'ESPAÑA':'Spain',
+   'ESTADOS UNIDOS':'United-States',
+   'FRANCIA':'France',
+   'HOLANDA':'Netherlands',
+   'INDIA':'India',
+   'ITALIA':'Italy',
+   'JAPÓN':'Japan',
+   'LUXEMBURGO':'Luxembourg',
+   'MALASIA':'Malaysia',
+   'MÉXICO':'Mexico',
+   'NORUEGA':'Norway',
+   'PANAMÁ':'Panama',
+   'PORTUGAL':'Portugal',
+   'REINO UNIDO':'United-Kingdom',
+   'RUSIA':'Russia',
+   'TAILANDIA':'Thailand',
+   'URUGUAY':'Uruguay'
+  };
+
+
+
 
 function resumen(data,adj,licRondas,pmts,ofertas,RONDA_LIC,tabla,procesos) {
   if(d3.select("div#temporal")[0][0]) d3.select("div#temporal").remove()
@@ -232,7 +286,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		buttons: {
 		  contextButton: { enabled:false },
 		  myButton: {
-		    symbol: 'url(/images/estadisticas/tablero-licitaciones/download.svg)',
+		    symbol: _img_download_,//,'url(/images/estadisticas/tablero-licitaciones/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    _titleKey:'Descargar',
@@ -400,7 +454,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 		buttons: {
 		  myButton: {
 		    _titleKey:"Descargar",
-		    symbol: 'url(/images/estadisticas/tablero-licitaciones/download.svg)',
+		    symbol: _img_download_,//'url(/images/estadisticas/tablero-licitaciones/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    menuItems: [
@@ -513,7 +567,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 //		filename:'ingresos',
 		buttons: {
 		  contextButton: {
-		    symbol:'url(/images/estadisticas/tablero-licitaciones/download.svg)',
+		    symbol: _img_download_,//'url(/images/estadisticas/tablero-licitaciones/download.svg)',
 		    symbolX:19,
 		    symbolY:18,
 		    _titleKey:"Descargar",
@@ -521,9 +575,22 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 			{
 			  'text':'Exportar datos (CSV)',
 			  'onclick': function() {
-			     console.log(this.getCSV());
-			     console.log(d3.sum(NUMERO_DE_OFERTAS_),TABLA.filter(function(d) { return d.VALIDEZ == "VALIDA"}));
-			     csvGraf(this.getCSV(),'ofertas_resumen',{rondas:RONDA_LIC});
+			     var csv_ = this.getCSV();
+			     var noOfertas_VALIDAS = TABLA.filter(function(d) { return d.VALIDEZ == "VALIDA" }).length;
+			     csv_ = csv_.split('\n');
+
+			     for(var i in csv_) {
+				if(i == 0) {
+				  csv_[i] += ",NUMERO DE OFERTAS VALIDAS"
+				} else {
+				  csv_[i] += "," + noOfertas_VALIDAS;
+				}
+
+			     }
+			     csv_ = csv_.join('\n');
+
+			     console.log(csv_);
+			     csvGraf(csv_,'ofertas_resumen',{rondas:RONDA_LIC});
 			  }
 			}
 		    ]
@@ -829,6 +896,7 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
 
 
 function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERTAS_) {
+
   var id_empresa = d.id;
   if(d3.select("div#temporal")[0][0]) d3.select("div#temporal").remove();
 
@@ -847,7 +915,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 
   var plantilla = 
   '<div id="titulo" style="height:15%; font-size:20px;padding-top:10px;">'+
-	'<div style="padding:0px;height:15%;">' + objEmp[0].EMPRESA.split(",")[0] + '</div>' +
+	'<div style="padding:0px;height:15%;"><img style="position:relative;top:8px;" src="' + _flags_dir_ + pais_dict[objEmp[0].PAIS] +'.png"></img>&ensp;' + objEmp[0].EMPRESA.split(",")[0] + '</div>' +
    '<div class="totalBloques" style="padding:0px;height:75%;">'+
     '<div id="sumas" style="padding-top:10px;width:100%;height:80px;"></div>' +
 '   <svg id="pestañas" style="width:100%;height:30px;z-index:5000;"></svg>' +
@@ -1502,7 +1570,6 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
     cuentaOfertas.push(val.length);
   };
 
-  NUMERO_DE_OFERTAS_ = cuentaOfertas;
 
   if(cuentaOfertas.length > 0) { 
     ofertasValidas = d3.mean(cuentaOfertas).toFixed(1);
@@ -1833,6 +1900,7 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 
   maxPosible = d3.max(maxPosible);
 
+
   var stacked_bars = Highcharts.chart('mitad1', {
     credits: { enabled:false },
     lang: { Descargar:"Descargar" },
@@ -1842,7 +1910,7 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 	filename:'gráfico-ofertas',
 	buttons: {
 	 contextButton: {
-	  symbol:'url(/images/estadisticas/tablero-licitaciones/download.svg)',
+	  symbol: _img_download_,
 	  _titleKey:"Descargar",
 	  symbolX:19,
 	  symbolY:18,
@@ -1931,7 +1999,7 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 //	filename:'inversion-ronda-bloque',
 	buttons: {
 	 contextButton: {
-	  symbol:'url(/images/estadisticas/tablero-licitaciones/download.svg)',
+	  symbol: _img_download_,
 	  symbolX:19,
 	  symbolY:18,
           _titleKey:'Descargar',
