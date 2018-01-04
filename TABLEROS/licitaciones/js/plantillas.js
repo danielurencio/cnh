@@ -1,6 +1,15 @@
 var _ambiente_ = "local";
 var widLic_ = '300px';
 
+function url_servicio(ambiente) {
+  var url = {
+    'produccion':'https://portaltest02.cnih.cnh.gob.mx/api/licitaciones_data.py',
+    'local':'http://172.16.24.57/licitaciones_data.py'
+  };
+  return url[ambiente];
+}
+
+
 function img_from(file,ambiente) {
   var img_download_ = {
     'produccion': 'url(/images/estadistica/tablero-licitaciones/'+ file +'.svg)',
@@ -1613,7 +1622,7 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 };
 
   function descargar_CSV() {
-    var csv = ["RONDA-LICITACION,BLOQUE,LICITANTE,VARIABLE DE ADJUDICACION 1,VARIABLE DE ADJUDICACION 2,VPO,BONO (DOLARES),OFERTA GANADORA,OFERTA VALIDA"];
+    var csv = ["RONDA-LICITACION,BLOQUE,LICITANTE,VARIABLE DE ADJUDICACION 1,VARIABLE DE ADJUDICACION 2,VPO,BONO (DOLARES),OFERTA QUE ADJUDICO,OFERTA VALIDA"];
     var rows = document.querySelectorAll("table tr.datosMod");
     var ronda_ = [];
 
@@ -1726,7 +1735,7 @@ var tablaString =
 
  '</table>'+
 '</div>' +
-'<div style="width:100%;padding-left:20px;line-height:11px;border-top:solid 0.25px gray"><span style="font-weight:700;color:rgb(8,109,115)">* Las ofertas en negritas y en este color fueron ganadoras.</span><br><span style="color:white;background-color:gray">* Las ofertas en gris fueron desechadas por no superar el límite establecido por la Secretaría de Hacienda y Crédito Público.</span></div>' +
+'<div style="width:100%;padding-left:20px;line-height:11px;border-top:solid 0.25px gray"><span style="font-weight:700;color:rgb(8,109,115)">* Las ofertas en negritas y en este color fueron las que adjudicaron. Éstas corresponden a la oferta más alta en la licitación, o a la segunda más alta en caso de que el primer lugar no firme el contrato.</span><br><span style="color:white;background-color:gray">* Las ofertas en gris fueron desechadas por no superar el límite establecido por la Secretaría de Hacienda y Crédito Público.</span></div>' +
 '</div>';
 
   d3.select("#Tabla").remove();
@@ -2129,7 +2138,7 @@ function csvGraf(csv,filename,obj) {
 	CSV = header.join("\n") + "\n\n\n" + csv;
       }
 
-var notas = "a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida o a la regalía adicional en caso de contratos de licencia. b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo; para las rondas posteriores esta variable se refiere al factor de inversión adicional."
+var notas = "a) La variable de adjudicación 1 se refiere al porcentaje que corresponde a la participación del Estado en caso de contratos de producción compartida o a la regalía adicional en caso de contratos de licencia. b) De la R1.1 a la R1.3 la variable de adjudicación 2 representa un porcentaje de incremento en la inversión del programa mínimo de trabajo; para las rondas posteriores esta variable se refiere al factor de inversión adicional. c) Las ofertas que adjudicaron corresponden a la oferta más alta en la licitación o a la segunda en caso de que el primer lugar no firme el contrato."
 
 
       if(obj.rondas && typeof(obj.rondas) == "string") {
