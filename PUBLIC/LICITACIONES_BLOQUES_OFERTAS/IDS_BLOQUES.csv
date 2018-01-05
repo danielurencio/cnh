@@ -1,0 +1,97 @@
+OLD_ID,NEW_ID,CONTRATO
+R1L1-1,R1L1-1,Producción compartida
+R1L1-2,R1L1-2,Producción compartida
+R1L1-3,R1L1-3,Producción compartida
+R1L1-4,R1L1-4,Producción compartida
+R1L1-5,R1L1-5,Producción compartida
+R1L1-6,R1L1-6,Producción compartida
+R1L1-7,R1L1-7,Producción compartida
+R1L1-8,R1L1-8,Producción compartida
+R1L1-9,R1L1-9,Producción compartida
+R1L1-10,R1L1-10,Producción compartida
+R1L1-11,R1L1-11,Producción compartida
+R1L1-12,R1L1-12,Producción compartida
+R1L1-13,R1L1-13,Producción compartida
+R1L1-14,R1L1-14,Producción compartida
+R1L2-Amoca-Tecoalli-Miztón,R1L2-1,Producción compartida
+R1L2-Hokchi,R1L2-2,Producción compartida
+R1L2-Xulum,R1L2-3,Producción compartida
+R1L2-Ichalkil-Pokoch,R1L2-4,Producción compartida
+R1L2-Nak-Misón,R1L2-5,Producción compartida
+R1L3-Barcodón,R1L3-1,Licencia
+R1L3-Benavides-Primavera,R1L3-2,Licencia
+R1L3-Calibrador,R1L3-3,Licencia
+R1L3-Calicanto,R1L3-4,Licencia
+R1L3-Carretas,R1L3-5,Licencia
+R1L3-Catedral,R1L3-6,Licencia
+R1L3-Cuichapa-Poniente,R1L3-7,Licencia
+R1L3-Duna,R1L3-8,Licencia
+R1L3-Fortuna Nacional,R1L3-9,Licencia
+R1L3-La Laja,R1L3-10,Licencia
+R1L3-Malva,R1L3-11,Licencia
+R1L3-Mareógrafo,R1L3-12,Licencia
+R1L3-Mayacaste,R1L3-13,Licencia
+R1L3-Moloacán,R1L3-14,Licencia
+R1L3-Mundo Nuevo,R1L3-15,Licencia
+R1L3-Paraíso,R1L3-16,Licencia
+R1L3-Paso de Oro,R1L3-17,Licencia
+R1L3-Peña Blanca,R1L3-18,Licencia
+R1L3-Pontón,R1L3-19,Licencia
+R1L3-Ricos,R1L3-20,Licencia
+R1L3-San Bernardo,R1L3-21,Licencia
+R1L3-Secadero,R1L3-22,Licencia
+R1L3-Tajón,R1L3-23,Licencia
+R1L3-Tecolutla,R1L3-24,Licencia
+R1L3-Topén,R1L3-25,Licencia
+R1L4-PERDIDO1,R1L4-1,Licencia
+R1L4-PERDIDO2,R1L4-2,Licencia
+R1L4-PERDIDO3,R1L4-3,Licencia
+R1L4-PERDIDO4,R1L4-4,Licencia
+R1L4-HAN1,R1L4-5,Licencia
+R1L4-HAN2,R1L4-6,Licencia
+R1L4-HAN3,R1L4-7,Licencia
+R1L4-HAN4,R1L4-8,Licencia
+R1L4-HAN5,R1L4-9,Licencia
+R1L4-HAN6,R1L4-10,Licencia
+R2L1-1,R2L1-1,Producción compartida
+R2L1-2,R2L1-2,Producción compartida
+R2L1-3,R2L1-3,Producción compartida
+R2L1-4,R2L1-4,Producción compartida
+R2L1-5,R2L1-5,Producción compartida
+R2L1-6,R2L1-6,Producción compartida
+R2L1-7,R2L1-7,Producción compartida
+R2L1-8,R2L1-8,Producción compartida
+R2L1-9,R2L1-9,Producción compartida
+R2L1-10,R2L1-10,Producción compartida
+R2L1-11,R2L1-11,Producción compartida
+R2L1-12,R2L1-12,Producción compartida
+R2L1-13,R2L1-13,Producción compartida
+R2L1-14,R2L1-14,Producción compartida
+R2L1-15,R2L1-15,Producción compartida
+R2L2-1,R2L2-1,Licencia
+R2L2-2,R2L2-2,Licencia
+R2L2-3,R2L2-3,Licencia
+R2L2-4,R2L2-4,Licencia
+R2L2-5,R2L2-5,Licencia
+R2L2-6,R2L2-6,Licencia
+R2L2-7,R2L2-7,Licencia
+R2L2-8,R2L2-8,Licencia
+R2L2-9,R2L2-9,Licencia
+R2L2-10,R2L2-10,Licencia
+R2L3-BG-01,R2L3-1,Licencia
+R2L3-BG-02,R2L3-2,Licencia
+R2L3-BG-03,R2L3-3,Licencia
+R2L3-BG-04,R2L3-4,Licencia
+R2L3-TM-01,R2L3-5,Licencia
+R2L3-VC-01,R2L3-6,Licencia
+R2L3-VC-02,R2L3-7,Licencia
+R2L3-VC-03,R2L3-8,Licencia
+R2L3-CS-01,R2L3-9,Licencia
+R2L3-CS-02,R2L3-10,Licencia
+R2L3-CS-03,R2L3-11,Licencia
+R2L3-CS-04,R2L3-12,Licencia
+R2L3-CS-05,R2L3-13,Licencia
+R2L3-CS-06,R2L3-14,Licencia
+ASOC-TRION,ASOC-TRION,Licencia
+ASOC-OGARRIO,ASOC-OGARIO,Licencia
+ASOC-CÁRDENAS-MORA,ASOC-CÁRDENAS/MORA,Licencia

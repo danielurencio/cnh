@@ -5,3 +5,4 @@
 shapes_banobras/*/
 !/DIAGRAMA/*.csv
 TABLEROS/licitaciones/img/flags/FLAGS
+!/PUBLIC/LICITACIONES_BLOQUES_OFERTAS/IDS_BLOQUES.csv
