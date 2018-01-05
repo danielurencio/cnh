@@ -228,8 +228,6 @@ var SUMAS = calculoSumas(licRondas,ofertas,adj,RONDA_LIC,procesos,data,tabla);
       var hT = +d3.select("#titulo").style("height").split("px")[0];
       var alturaGraficas = (window.innerHeight - cintilla - hT) *.5;
 
-//      d3.select("#mitades").style("height",alturaGraficas + "px");
-//      d3.select("#barras").style("height",alturaGraficas + "px");
 	var bOf = SUMAS.pre.filter(function(d) {
 	  return d.key == "Bloques ofertados";
 	})[0].val;
@@ -914,7 +912,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   var objEmp = data.filter(filtroEmp);
 
   var contenido =
-    '<div id="mitades" style="height:50%">'+
+    '<div id="mitades" style="height:40%">'+
      '<div id="mitad1" style="height:100%;float:left;clear:left;width:80%;background-color:rgba(0,0,0,0.1); display:table; margin:0 auto;"></div>' +
    //  '<div id="mitad2" style="float:left;width:70%; background-color:rgba(0,0,0,0.15)">'+
 //        '<svg style="width:100%;height:inherit;"></svg>'+
@@ -923,8 +921,10 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
     '<div id="gantt" style="height:100%;padding:0px;width:100%;background-color:transparent"></div>';
 
   var plantilla = 
-  '<div id="titulo" style="height:15%; font-size:20px;padding-top:10px;">'+
-	'<div style="padding:0px;height:15%;"><img style="position:relative;top:8px;" src="' + _flags_dir_ + pais_dict[objEmp[0].PAIS] +'.png"></img>&ensp;' + objEmp[0].EMPRESA.split(",")[0] + '</div>' +
+
+	'<div style="text-align:center;font-weight:900;">' + objEmp[0].EMPRESA.split(",")[0] + '</div>' +
+  '<div id="titulo" style="height:12%; font-size:20px;padding-top:0px;">'+
+
    '<div class="totalBloques" style="padding:0px;height:75%;">'+
     '<div id="sumas" style="padding-top:10px;width:100%;height:80px;"></div>' +
 '   <svg id="pestañas" style="width:100%;height:30px;z-index:5000;"></svg>' +
@@ -944,9 +944,6 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   var titPad = +titulo.style("padding-top").split("px")[0];
   var titT = titHeight //+ titPad;
   var espacioDisp = window.innerHeight - titT - cintilla;
-//  d3.select("div#mitades").style("height",(espacioDisp/2) + "px");
-//  d3.selectAll("div#mitades>div").style("height","100%");
-//  d3.select("div#gantt").style("height",(espacioDisp/2) + "px");
 
 //---------- DIMENSIONES DE APARTADOS PARA GRÁFICAS ----------------------//
 
@@ -1000,6 +997,7 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
 
 
   var SUMAS = [
+    { 'key':'Origen', 'val':'' },
     { 'key':'Bloques adjudicados', 'val':total },
     { 'key':'Área adjudicada (km\u00B2)','val':area },
     { 'key':'Inversión (dólares)', 'val':inv_pmt },
@@ -1025,13 +1023,57 @@ function plantillaEmpresa(d,adj,data,licRondas,pmts,tabla,procesos,ofertas,OFERT
   .style("text-align","center")
   .style("padding-top","10px")
   .style("font-weight","300")
-  .style("width","33%")
+  .style("width","25%")
   .html(function(d,i) {
-    var valor = d.val.toLocaleString('es-MX');
-    if( i == 2 ) valor = "$" + Number(d.val.toFixed(1)).toLocaleString('es-MX')
-    var txt = "<div style='color:rgba(0,0,0,0.5)'>" + valor + "</div>"
-    + "<div style='font-size:11px; font-weight:600'>"+ d.key +"</div>";
+    if( i != 0 ) {
+      var valor = d.val.toLocaleString('es-MX');
+      if( i == 3 ) valor = "$" + Number(d.val.toFixed(1)).toLocaleString('es-MX')
+      var txt = "<div style='color:rgba(0,0,0,0.5)'>" + valor + "</div>"
+      + "<div style='font-size:11px; font-weight:600'>"+ d.key +"</div>";
+    } else {
+      var txt = 
+		"<div id='nombre_pais' style='color:transparent;font-size:11px;position:absolute;top:0px;'>"+ objEmp[0].PAIS +"</div>" +
+		"<div style='height:27px;'>" +
+		"<img id='banderita' src='" + _flags_dir_ + pais_dict[objEmp[0].PAIS] + ".png'></img>" +
+		"</div>" +
+		"<div style='font-size:11px;font-weight:600;'>"+ d.key +"</div>";
+    }
     return txt;
+  });
+
+
+  var y_offset_pais = +(document.querySelector("div#temporal>div:first-child")
+	.getBoundingClientRect().height + 10) + "px";
+
+  var div_placeholder = document.querySelector("div#sumas>div:first-child").getBoundingClientRect().width / 2;
+  var pais_div_nom = document.querySelector("div#nombre_pais").getBoundingClientRect().width / 2;
+
+  var x_offset_pais = (div_placeholder - pais_div_nom) + "px";
+
+  d3.select("div#nombre_pais").style("top",y_offset_pais);
+  d3.select("div#nombre_pais").style("left",x_offset_pais);
+
+  window.onresize = function() {
+    var y_offset_pais = +(document.querySelector("div#temporal>div:first-child")
+	.getBoundingClientRect().height + 10) + "px";
+
+
+    var div_placeholder = document.querySelector("div#sumas>div:first-child").getBoundingClientRect().width / 2;
+    var pais_div_nom = document.querySelector("div#nombre_pais").getBoundingClientRect().width / 2;
+
+    var x_offset_pais = (div_placeholder - pais_div_nom) + "px";
+
+    d3.select("div#nombre_pais").style("top",y_offset_pais);
+    d3.select("div#nombre_pais").style("left",x_offset_pais);
+
+  };
+
+  d3.select("img#banderita").on("mouseover",function() {
+    d3.select("div#nombre_pais").style("color","black");
+  });
+
+  d3.select("img#banderita").on("mouseout",function() {
+    d3.select("div#nombre_pais").style("color","transparent");
   });
 
 /////////////////////////////////////////////////////////////////////////
@@ -1873,10 +1915,8 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
 
 
   var contenido =
-    '<div id="mitades" style="width:80%;height:50%">'+
+    '<div id="mitades" style="width:80%;height:40%">'+
      '<div id="mitad1" style="background-color:transparent;height:100%;"></div>' +
-//     '<div id="mitad2" style="float:left;width:0%; background-color:rgba(0,0,0,0.15)">'+
-//        '<svg style="width:100%;height:inherit;"></svg>'+
      '</div>' +
     '</div>' +
     '<div id="gantt" style="padding:0px;width:80%;background-color:transparent;height:50%;"></div>';
@@ -1889,10 +1929,6 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
   var titPad = +titulo.style("padding-top").split("px")[0];
   var titT = titHeight //+ titPad;
   var espacioDisp = window.innerHeight - titT - cintilla;
-//  d3.select("div#mitades").style("height",(espacioDisp/2) + "px");
-//  d3.selectAll("div#mitades>div").style("height","100%");
-//  d3.select("div#gantt").style("height",(espacioDisp/2) + "px");
-
 
 
 //------------------------- STACKED-BARS -------------------------------//
