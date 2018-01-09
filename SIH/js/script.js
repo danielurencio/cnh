@@ -1,3 +1,4 @@
+var asyncAJAX = false;
 var data_BUSCAR;
 var cambio_ = false;
 var current_TXT;
@@ -87,6 +88,30 @@ $(document).ready(function() {
         var parser = new DOMParser();
         var arr = [];
 
+        if(data_buscar) {
+	  cosas(data_buscar);
+        } else {
+	  data_BUSCAR = true;
+	  if(asyncAJAX) { console.log(asyncAJAX); asyncAJAX.abort(); } else { console.log(asyncAJAX); }
+	  asyncAJAX = $.ajax({
+	    url:"http://172.16.24.57/cubos_buscar.py",
+            type:"post",
+	    datatype:"json",
+            data: parametros(),
+	    success: function(data_buscar_) {
+		data_buscar_ = JSON.parse(data_buscar_);
+                cosas(data_buscar_);
+		data_BUSCAR = false;
+		asyncAJAX = false;
+		$("div#dropDown>div").html("Busque...")
+//		cosas(data_buscar_);
+	    }			      
+	  });
+
+
+        }
+//       cosas();
+       function cosas(data_buscar_) {
         for (var i in data_) {
             for (var j in data_[i]) {
                 if (typeof(data_[i][j]) == 'object') {
@@ -105,12 +130,13 @@ $(document).ready(function() {
             }
         };
 
-        data_buscar = data_buscar.map(function(d) {
+        var data_buscar_ = data_buscar_.map(function(d) {
             return d.join(" > ");
         });
 
         d3.select("input#filtroSerie").on("input", function(d) {
 
+	  if(!data_BUSCAR) {
             var matches = [];
             var text = document.getElementById("filtroSerie").value
                 .replace(/[(]/g, "\\(")
@@ -127,7 +153,7 @@ $(document).ready(function() {
                 });
 
 
-                matches = data_buscar /*arr*/ .filter(function(d) {
+                matches = data_buscar_ /*arr*/ .filter(function(d) {
                     str_ = d;
                     return patts.every(regexCheck);
                 });
@@ -222,6 +248,27 @@ $(document).ready(function() {
                 $("div#dropDown").css("display", "none");
             }
 
+	    
+          } else {
+	    console.log("!!!!!!!!!!!!!!!!!!!!!!!");
+                $("div#dropDown").css("display", "block");
+
+                    var series = d3.select("div#dropDown")
+                        .append("div")
+      //                  .selectAll("li").data([1,2,3,4,5,6]).enter()
+//                        .append("div")
+                        .style("font-weight", "300")
+			.style("height","100px")
+                        .style("padding-left", "20px")
+                        .style("font-family", "Open Sans")
+			.style("text-align","center")
+                        .html(function(d) {
+                            var val = d;
+                            return "<img id='loading' src='img/ss1.png' style='margin-top:20px;'></img>";
+                        });
+
+	  }
+
         });
 
 
@@ -230,6 +277,8 @@ $(document).ready(function() {
             d3.selectAll("div#dropDown").style("display", "none");
             document.querySelector("input#filtroSerie").value = "";
         });
+
+      };
 
     };
 
@@ -361,7 +410,6 @@ $(document).ready(function() {
         success: function(temas) {
 
             TEMAS = JSON.parse(temas);
-console.log(TEMAS);
 
             d3.json("blueprints.json", function(response) {
                 RenderWords(response, "esp", TEMAS);
@@ -441,15 +489,6 @@ console.log(TEMAS);
 
 /*------------------AJAX con botón de consultar-------------------------------*/    
 	    if(cambio_) {
-                  $.ajax({
-                      url: "http://172.16.24.57/cubos_buscar.py",
-                      type: "post",
-                      datatype:"json",
-                      data: params,
-                      success: function(data_buscar){
-                      //console.log(data_buscar.length*2,"bytes ~ aprox: para 'cubos_buscar.py'");
-                      data_buscar = JSON.parse(data_buscar);
-		      data_BUSCAR = data_buscar;
 		      cambio_ = false;
                         
                         $.ajax({
@@ -458,37 +497,39 @@ console.log(TEMAS);
                             datatype: "json",
                             data: params,
                             success: function(data) {
-                                var strSize = JSON.stringify(data).length;
-                                //console.log(strSize);
-                                ajaxFunction(data, Cubos, filtrarSeries,
-						params_especiales, data_buscar);
-                            }
 
+			      var ifEmpty = checkIfEmpty(data);
+/*=================Chechar si las tablas están vacías========================*/
+			      if(!ifEmpty) {
+				$.ajax({
+				  url:"http://172.16.24.57/cubos_buscar.py",
+				  type:"post",
+				  datatype:"json",
+				  data:params,
+				  success: function(data_buscar) {
+				    data_buscar = JSON.parse(data_buscar);
+				    var data_buscar;
+                                    ajaxFunction(data, Cubos, filtrarSeries,
+						params_especiales, data_buscar);
+
+				  }			      
+				});
+
+			      } else {
+				data_buscar = null;
+				ajaxFunction(data,Cubos,filtrarSeries,params_especiales, data_buscar);
+			      }
+/*=================Chechar si las tablas están vacías========================*/
+
+                            }
                         });
 
-                      }
-                   });
 	    } else {
 
-	   $("div#espere").css("visibility","hidden");
-	   $("div#divDefense").remove();
-	   $("div#optionsDefense").remove();
-	   cambio_=false;
-/*
-		$.ajax({
-		    url: "http://172.16.24.57/cubos_produccion.py",
-		    type: "post",
-		    datatype: "json",
-		    data: params,
-		    success: function(data) {
-			var strSize = JSON.stringify(data).length;
-			//console.log(strSize);
-			ajaxFunction(data, Cubos, filtrarSeries,
-					params_especiales, data_BUSCAR);
-		    }
-
-		});
-*/
+	     $("div#espere").css("visibility","hidden");
+	     $("div#divDefense").remove();
+	     $("div#optionsDefense").remove();
+	     cambio_=false;
 	    }
 /*------------------AJAX con botón de consultar-------------------------------*/
                     } else if (!fecha_VALIDA_1) {
@@ -693,57 +734,37 @@ console.log(TEMAS);
                     var params = parametros();
 //if(!cambio_) {
                     $.ajax({
-                        url: "http://172.16.24.57/cubos_buscar.py",
+                        url: "http://172.16.24.57/cubos_produccion.py",
                         type: "post",
                         datatype: "json",
                         data: params,
-                        success: function(data_buscar) {
-                            data_buscar = JSON.parse(data_buscar);
-			    data_BUSCAR = data_buscar;
+                        success: function(data) {
+			  var ifEmpty = checkIfEmpty(data);
+/*=================Chechar si las tablas están vacías========================*/
+			  if(!ifEmpty) {
 
                             $.ajax({
-                                url: "http://172.16.24.57/cubos_produccion.py",
+                                url: "http://172.16.24.57/cubos_buscar.py",
                                 type: "post",
                                 datatype: "json",
                                 data: params,
-                                success: function(data) {
+                                success: function(data_buscar) {
+                            	    data_buscar = JSON.parse(data_buscar);
                                     ajaxFunction(data, Cubos, filtrarSeries, null, data_buscar);
                                     leyendaNotas(TEMAS, params);
 //				    cambio_ = false;
-//				    data_BUSCAR = data_buscar;
                                 }
                             });
 
+			  } else {
+				console.log("qué está pasando");
+			    data_buscar = null;
+			    ajaxFunction(data,Cubos,filtrarSeries,null,data_buscar);
+			    leyendaNotas(TEMAS,params)
+			  }
+/*=================Chechar si las tablas están vacías========================*/
                         }
                     })
-/*} else {
-                            $.ajax({
-                                url: "http://172.16.24.57/cubos_produccion.py",
-                                type: "post",
-                                datatype: "json",
-                                data: params,
-                                success: function(data) {
-                                    ajaxFunction(data, Cubos, filtrarSeries, null, data_buscar);
-                                    leyendaNotas(TEMAS, params);
-                                }
-                            });
-
-}
-*/
-                    /*
-                    $.get(tag + ".json", function(data) {
-                    Cubos(data,tag);
-                    $("tbody#tabla>tbody.labels").click();
-                    $($("tbody#tabla>tbody.hide")[0]
-                    .querySelectorAll("div.labels:nth-child(1)")).click();
-
-                    if(tag == "campos") d3.selectAll("#dist").attr("id",null); // <-- ¿?
-
-                    $("body").css("cursor","default");
-
-                    filtrarSeries(data);
-                    });
-                    */
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -817,20 +838,19 @@ console.log(TEMAS);
                 _parametros_ = parametros();
 
                 $.ajax({
-                    url: "http://172.16.24.57/cubos_buscar.py",
+                    url: "http://172.16.24.57/cubos_produccion.py",
                     type: "post",
                     datatype: "json",
                     data: params,
-                    success: function(data_buscar) {
-                        data_buscar = JSON.parse(data_buscar);
-			data_BUSCAR = data_buscar;
-
+                    success: function(data) {
+			var ifEmpty = checkIfEmpty(data);
                         $.ajax({
-                            url: "http://172.16.24.57/cubos_produccion.py",
+                            url: "http://172.16.24.57/cubos_buscar.py",
                             type: "post",
                             datatype: "json",
                             data: params,
-                            success: function(data) {
+                            success: function(data_buscar) {
+                        	data_buscar = JSON.parse(data_buscar);
                                 ajaxFunction(data, Cubos, filtrarSeries, null, data_buscar);
                                 leyendaNotas(TEMAS, params);
 				cambio_ = false;
@@ -2003,6 +2023,7 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
         caso_especial = false;
 
     } else {
+	console.log("caso especial");
         caso_especial = true;
         $("tbody.hide>div.labels").attr("especial", "1");
 
@@ -3066,4 +3087,15 @@ function mensajeExplicativo(title,subtitle,tabla_respuesta) {
 	$("div#optionsDefense").remove();
   });
 
+};
+
+
+function checkIfEmpty(data) {
+  console.log(data);
+
+  var cond = data.every(function(d) {
+    return d.filter(function(d,i) { return i > 0; }).every(function(d) {
+		return typeof(d) == "object" && d[Object.keys(d)[0]] == '' }) });
+
+  return cond;
 };
