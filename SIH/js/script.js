@@ -249,6 +249,7 @@ $(document).ready(function() {
 
 	    
           } else { // <--- Si el servicio 'cubos_buscar.py' está corriendo ..
+	    if(!document.querySelector('div#dropDown>div')) {
                 $("div#dropDown").css("display", "block");
 
                     var series = d3.select("div#dropDown")
@@ -262,6 +263,7 @@ $(document).ready(function() {
                             var val = d;
                             return "<img id='loading' src='img/ss1.png' style='margin-top:20px;'></img>";
                         });
+	    }
 
 	  }
 
