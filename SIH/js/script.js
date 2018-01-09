@@ -22,14 +22,12 @@ $(document).ready(function() {
     function(event){
      if (event.which == '13') {
         event.preventDefault();
-	console.log("Enter.");
       }
   });
 
   $(document).keyup(function(event) {
     if(event.which === 32) {
   	event.preventDefault();
-	console.log("Espacio.");
     }
   });
 
@@ -92,7 +90,7 @@ $(document).ready(function() {
 	  cosas(data_buscar);
         } else {
 	  data_BUSCAR = true;
-	  if(asyncAJAX) { console.log(asyncAJAX); asyncAJAX.abort(); } else { console.log(asyncAJAX); }
+	  if(asyncAJAX) { asyncAJAX.abort(); }
 	  asyncAJAX = $.ajax({
 	    url:"http://172.16.24.57/cubos_buscar.py",
             type:"post",
@@ -103,7 +101,8 @@ $(document).ready(function() {
                 cosas(data_buscar_);
 		data_BUSCAR = false;
 		asyncAJAX = false;
-		$("div#dropDown>div").html("Busque...")
+		$("div#dropDown>div").remove()//.html("Busque...")
+		d3.select("input#filtroSerie").dispatch("input")
 //		cosas(data_buscar_);
 	    }			      
 	  });
@@ -136,7 +135,7 @@ $(document).ready(function() {
 
         d3.select("input#filtroSerie").on("input", function(d) {
 
-	  if(!data_BUSCAR) {
+	  if(!data_BUSCAR) { // <-- Si no está corriendo 'cubos_buscar.py' ..
             var matches = [];
             var text = document.getElementById("filtroSerie").value
                 .replace(/[(]/g, "\\(")
@@ -249,14 +248,11 @@ $(document).ready(function() {
             }
 
 	    
-          } else {
-	    console.log("!!!!!!!!!!!!!!!!!!!!!!!");
+          } else { // <--- Si el servicio 'cubos_buscar.py' está corriendo ..
                 $("div#dropDown").css("display", "block");
 
                     var series = d3.select("div#dropDown")
                         .append("div")
-      //                  .selectAll("li").data([1,2,3,4,5,6]).enter()
-//                        .append("div")
                         .style("font-weight", "300")
 			.style("height","100px")
                         .style("padding-left", "20px")
@@ -1261,7 +1257,6 @@ $(document).ready(function() {
 
    //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         if (caso_especial && current_TXT) {
-                            console.log([current_TXT, docTable]);
 
                             var newParser = new DOMParser();
                             var _docTable = newParser
@@ -1302,8 +1297,6 @@ $(document).ready(function() {
 
                             val = tds[c].parentNode;
 
-                            console.log(prevTD, prevTD.parentNode);
-                            console.log(tbody_hide);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
                             $(_docTable.querySelectorAll("tbody"))
@@ -1424,8 +1417,6 @@ $(document).ready(function() {
                             //	  $("div.overflow tr>td:first-child").css("min-width","600px")
 
                             if (posHeader.left != posHide.left) {
-                                console.log(posHide);
-                                console.log(posHeader);
 
                                 d3.select(".scroll_aid_header>th:first-child")
                                     .style("min-width", posHeader.left + "px");
@@ -3091,7 +3082,6 @@ function mensajeExplicativo(title,subtitle,tabla_respuesta) {
 
 
 function checkIfEmpty(data) {
-  console.log(data);
 
   var cond = data.every(function(d) {
     return d.filter(function(d,i) { return i > 0; }).every(function(d) {
