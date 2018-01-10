@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:299,300i,400,400i,600,600i,700,700i,800,800i');
+
+html, body {
+ margin: 0px;
+ font-family:'Open Sans':
+}
+
+#grapher {
+  width:100%;
+  height:100%;
+  position:fixed;
+  background:rgba(0,0,0,0.5);
+  z-index:51;
+}
+
+#grapher>div.chart_expandible {
+ font-family:'Open Sans';
+ position:absolute;
+ background-color:white;
+ border-right:1px solid lightGray;
+ z-index:0;
+ width:0px;
+ height:80%;
+ left:10%;
+ top:10%;
+ display:none;
+}
+
+
+#grapher>div#chart {
+ background:white;
+ width:80%;
+ height:80%;
+ display:block;
+ margin:auto;
+ position:absolute;
+ left:10%;
+ top:10%;
+ border-radius:5px;
+}
+
+button.datos_grapher {
+ position:absolute;
+ height:20px;
+ top:calc(10% + 8px);
+ left:calc(10% + 15px);
+ z-index:1;
+}
+
+div#tabla_expandible tr:nth-child(odd) {
+  background:rgba(73,171,129,0.1);
+}
+
+div#tabla_expandible tr:nth-child(odd) {
+  background:rgba(73,171,129,0.1);
+}
+
+button.datos_grapher:hover {
+  cursor:pointer;
+}
+
+div.chart_expandible>button:hover {
+  cursor:pointer;
+}
+
+div#grapher button {
+ font-weight:600;
+ border-radius:3px;
+ font-family:"Open Sans";
+ border: 0px solid black;
+ background: white;
+ font-size:11px;
+ background-color:rgb(13,180,190);/*gray;*/
+ color:white;
+}
+
+table {
+  border-collapse: collapse;
+  border:0;
+  text-align:center;
+  table-layout:fixed;
+  width: 100%;
+  margin:auto;
+}
+
+tbody,div {
+ width:100%;
+}
+
+tr {
+ width:100%;
+}
+
+.close_chart {
+ position:absolute;
+ top:calc(10% - 15px);
+ right:calc(10% - 15px);
+ z-index:1;
+ opacity:0.8;
+}
+
+div#quitarFiltro:hover {
+  cursor:pointer;
+}
+
+div#tabla_expandible>table>tr:hover {
+  background-color: rgba(82,191,144,0.25);
+}
+
+.highcharts-contextmenu {
+  width: 200px;
+}
+
+div#tabla_expandible::-webkit-scrollbar {
+    width: 10px;
+    height:10px;
+}
+ 
+div#tabla_expandible::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 0px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+    background:rgb(230,230,230);
+}
+ 
+div#tabla_expandible::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:white;
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+
