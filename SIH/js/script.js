@@ -2848,7 +2848,7 @@ function descargarPNG() {
 	    img.onload = function() {
 		ctx.drawImage(img, 0, 0);
 		domURL.revokeObjectURL(url);
-		console.log(svg)
+		//console.log(svg)
 		triggerDownload(canvas.toDataURL(),svg);
 	    };
 
