@@ -15,6 +15,7 @@ var init_year;
 var _azul_ = "rgb(13,180,190)";
 var threshold = 500000;
 var noHayTabla = false;
+var FILE_NAME;
 
 $(document).ready(function() {
 
@@ -1154,6 +1155,7 @@ console.log(params,data)
                                     tabla_respuesta = formatoData(tabla_respuesta);
                                     TableLogistics(algo_, tabla_respuesta);
                                 } else {
+				FILE_NAME = { 'title':title, 'subtitle':subtitle };
 				mensajeExplicativo(title,subtitle,tabla_respuesta);
                                 }
 
@@ -1202,6 +1204,7 @@ console.log(params,data)
                     TableLogistics(this, data);
                 } else {
 			$("div#espere").css("visibility","visible");
+			FILE_NAME = { 'title':title, 'subtitle':subtitle};
 			mensajeExplicativo(null,null,tabla_resp);
                 }
             }
@@ -1366,6 +1369,7 @@ console.log(params,data)
                               tabla_respuesta = formatoData(tabla_respuesta);
                                     TableLogistics(algo_, tabla_respuesta);
                                 } else {
+		FILE_NAME = { 'title':params.title, 'subtitle':params.subtitle };
 		mensajeExplicativo(params.title,params.subtitle,tabla_respuesta);
                                 }
 
@@ -2521,6 +2525,19 @@ function grapher(info) {
         .replace("Portal de información técnica",
             "<tspan>Portal de información técnica</tspan>");
 
+//============= CREDITS FIX ======================
+
+function creditsFix(NOTAS) {
+
+
+  return 0;
+}
+
+var credFIX = creditsFix(NOTAS);
+//============= CREDITS FIX ======================
+var marginCred = document.querySelector('div#metodos>div').clientHeight;
+var offsetCred = Math.floor(marginCred / 100);
+console.log(marginCred);
     Highcharts.chart('chart', {
         lang: {
             'img': 'Descargar imagen'
@@ -2552,7 +2569,7 @@ function grapher(info) {
                 fontFamily: 'Open Sans'
             },
             inverted: false,
-            marginBottom: 120
+            marginBottom: marginCred
         },
         tooltip: {
             useHTML: true,
@@ -2580,7 +2597,7 @@ function grapher(info) {
             position: {
                 align: "left",
                 x: 50,
-                y: -60
+                y: marginCred > 100 ? -70 * offsetCred : -50
             },
             style: {
                 fontSize: '11px',
@@ -2649,9 +2666,14 @@ function grapher(info) {
         }
 
     });
-   console.log([NOTAS])
 /*EDITAR NOTAS*/
-   var editNOtes = NOTAS.replace(/,<br>/g,"");
+
+   var fixMathChars = $('.highcharts-credits>tspan').filter(function() { return this.textContent.match(/&/g); });
+
+   fixMathChars.each(function() {
+     $(this).html(this.textContent);
+   });
+
 
    if(document.querySelector("tspan[onclick]")) {
      $(".highcharts-credits").css("cursor","auto");
@@ -2882,7 +2904,7 @@ function discriminateRows(table) {
 
 
 function worker(data) {
-
+    var concatFILENAME = FILE_NAME.title + " - " + FILE_NAME.subtitle;
     var sel_ = $("select.filtros").find(":selected").attr("tag");
 
     var _titulo_ = TEMAS.filter(function(d) {
@@ -2943,10 +2965,10 @@ function worker(data) {
     });
 
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(csvFile,"datos.csv");
+        window.navigator.msSaveOrOpenBlob(csvFile, concatFILENAME + ".csv");
     } else {
         var downloadLink = document.createElement("a");
-        downloadLink.download = "datos.csv";
+        downloadLink.download = concatFILENAME + ".csv";
         downloadLink.href = window.URL.createObjectURL(csvFile);
         downloadLink.style.display = "none";
         document.body.appendChild(downloadLink);

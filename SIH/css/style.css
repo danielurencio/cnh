@@ -35,12 +35,16 @@ div.overflow td {
 div.cell {
  display:table-cell;
  height:100%;
- width: 25%;
 }
 
 /*.d { width:20%; }*/
 
 .a, .b, .c, .d { height:100%; }
+
+.a { width:40%; }
+.b { width:30%; }
+.c { width:15%; }
+.d { width:15%; }
 
 .i_fechas {
  display:table-cell;
