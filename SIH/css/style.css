@@ -174,7 +174,7 @@ tbody.hide>tr:nth-child(2)>td:first-child {
 .hide>tr>td:nth-child(3), .hide>tr>th:nth-child(3) {
  position:absolute;
 /* margin-left:-27px;*/
- left:388px; /*nombres largos*/
+ left:calc(360px + 28px); /*nombres largos*/
  min-width:45px;
  width:45px;
  border-left:none;
@@ -453,7 +453,7 @@ td.graph>img:hover {
 div.overflow {
  overflow-x:scroll;
  width:calc(100% - 480px);
- margin-left:415px;
+ margin-left:calc(360px + 55px);
 }
 
 #footer {
@@ -605,4 +605,8 @@ button.datos_grapher:hover {
 
 div.chart_expandible>button:hover {
   cursor:pointer;
+}
+
+.highcharts-credits:hover {
+  cursor:auto;
 }

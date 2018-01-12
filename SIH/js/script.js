@@ -1412,8 +1412,8 @@ $(document).ready(function() {
 
                             var posHide = cellHide[0].getBoundingClientRect();
 
-                            $(".scroll_aid_header>th:first-child").css("padding", "1px");
-                            $(".scroll_aid_header>th:first-child").css("min-width", "413px");
+                            $(".scroll_aid_header>th:first-child").css("padding", "0px");
+                            $(".scroll_aid_header>th:first-child").css("min-width", "calc(360px + 55px)");
                             $("div.overflow tr>td").css("border-bottom", "0px solid white");
                             $("div.overflow tr>td").css("border-top", "1px solid lightGray");
                             //	  $("div.overflow tr>td:first-child").css("min-width","600px")
@@ -1590,7 +1590,7 @@ $(document).ready(function() {
                 .css("font-size", "13px");
 
             $("div.overflow tr>td:first-child")
-                .css("font-size", "14px");
+                .css("font-size", "12px");
 
             $("div.overflow tbody>tr:first-child>td").css("display", "none");
             $("div.overflow").css("margin-top", "20px");
@@ -2443,7 +2443,6 @@ function enableGraphs() {
         }
 
         info.fechas = fechas_().split(",");
-	console.log([info]);
         grapher(info);
 
     });
@@ -2637,6 +2636,9 @@ function grapher(info) {
         }
 
     });
+   console.log([NOTAS])
+/*EDITAR NOTAS*/
+   var editNOtes = NOTAS.replace(/,<br>/g,"");
 
    if(document.querySelector("tspan[onclick]")) {
      $(".highcharts-credits").css("cursor","auto");
