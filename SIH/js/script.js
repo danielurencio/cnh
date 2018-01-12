@@ -484,7 +484,7 @@ $(document).ready(function() {
 
 
                         var params = parametros();
-
+console.log(params)
 /*------------------AJAX con botón de consultar-------------------------------*/    
 	    if(cambio_) {
 		      cambio_ = false;
@@ -495,7 +495,7 @@ $(document).ready(function() {
                             datatype: "json",
                             data: params,
                             success: function(data) {
-
+console.log(params,data)
 			      var ifEmpty = checkIfEmpty(data);
 /*=================Chechar si las tablas están vacías========================*/
 			      if(!ifEmpty) {
@@ -942,6 +942,8 @@ $(document).ready(function() {
             }
             csv.push("");
         }
+
+	console.log(parent_,current_)
 
         csv = csv.join("\n");
         var csvFile = new Blob(["\ufeff", csv], {
@@ -2224,7 +2226,8 @@ function descargar_selection(series) {
         .replace(/"\starget="_blank">Portal de información técnica<\/a\>/, "")
         .replace(/\<br\>/g, "").toUpperCase()
         .replace(/HTTPS:\/\/PORTAL.CNIH.CNH.GOB.MX\/IICNIH2\/\?LNG=ES_MX/,
-            "https://portal.cnih.cnh.gob.mx/iicnih2/?lng=es_mx");
+            "https://portal.cnih.cnh.gob.mx/iicnih2/?lng=es_mx")
+	.replace(/,/g,";");
 
 
     var fechatest_ = fecha.toLocaleString('es-MX').replace(", ", " - ");
@@ -2290,11 +2293,21 @@ function descargar_selection(series) {
         'type': 'text/csv'
     });
 
+    var fam = _.uniq(series.map(function(d) { return d.familia; }))[0];
+    var subfam = _.uniq(series.map(function(d) { return d.subfamilia; }))[0];
+    var file_name = fam + " - " + subfam;
+
+    file_name = file_name.replace(/Á/g,'A')
+			 .replace(/É/g,'E')
+			 .replace(/Í/g,'I')
+			 .replace(/Ó/g,'O')
+			 .replace(/Ú/g,'U');
+
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(csvFile, "info.csv");
+        window.navigator.msSaveOrOpenBlob(csvFile, file_name + ".csv");
     } else {
         var downloadLink = document.createElement("a");
-        downloadLink.download = "info.csv";
+        downloadLink.download = file_name + ".csv";
         downloadLink.href = window.URL.createObjectURL(csvFile);
         downloadLink.style.display = "none";
         document.body.appendChild(downloadLink);
