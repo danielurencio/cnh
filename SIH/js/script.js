@@ -2835,7 +2835,7 @@ function descargarPNG() {
       canvg(canvas,rawSVG)
       var blob = canvas.msToBlob();
       window.navigator.msSaveBlob(blob,"chart.png");
-    
+      $("PNG_").remove()
     } else {
 
 	    var svg = new Blob([rawSVG], {
@@ -2853,6 +2853,7 @@ function descargarPNG() {
 	    };
 
     	    img.src = url;
+	    $("PNG_").remove();
     }
 
     function triggerDownload(imgURI,svg) {
