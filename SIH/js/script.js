@@ -2829,6 +2829,7 @@ function descargarPNG() {
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
+    $(".PNG_").css("display","none");
 
     if(canvas.msToBlob) {
       canvg(canvas,rawSVG)
