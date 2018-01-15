@@ -2099,7 +2099,6 @@ function PrincipalCheckBox() {
 
     d3.selectAll("button#selection").on("click", function() {
         var series = obtener_series();
-
         if (series && series.length == 0) {
             alert("Seleccione alguna serie.");
         } else {
@@ -2204,6 +2203,7 @@ function obtener_series() {
 
 
 function descargar_selection(series) {
+    console.log(series);
     var chunk = [];
 
     var sel_ = $("select.filtros").find(":selected").attr("tag");
@@ -2245,7 +2245,7 @@ function descargar_selection(series) {
 
     familias.forEach(function(f) {
         var pieces = [];
-        chunk.push(f)
+        chunk.push(f);
 
         var familia = series.filter(function(d) {
             return d.familia == f;
@@ -2262,17 +2262,48 @@ function descargar_selection(series) {
             });
 
             var tema = '';
+var buffer = [];
+var cached_sum = []
 
             subfamilia.forEach(function(ss) {
-
                 var serie_ = ss.serie.join(",").replace(/NaN/g, "");
+
+		var buff_zeros = serie_.split(",").map(function(d) { return 0; });
+		var serie_nums = serie_.split(",").map(function(d) { return Number(d); });
+		buffer.push(serie_nums);
+
+		if(cached_sum.length == 0) {
+		  cached_sum = buff_zeros;
+		}
+
+//		console.log(cached_sum)
+
                 if (tema != ss.tema) {
                     tema = ss.tema;
-                    var _cont_ = ss['prevRow'] ? "    " + tema : "     "
-					+ tema + "," + serie_;
-                    chunk.push(_cont_);
 
+		    var sum_tema = series.filter(function(d) { return d.tema == tema; })
+			.map(function(d) { return d.serie; });
+
+		    var arr_sum = [];
+		    for(var i=0; i < sum_tema[0].length; i++) {
+		      var holder = []
+		      for(var j=0; j < sum_tema.length; j++) {
+			holder.push(sum_tema[j][i]);
+		      }
+		      arr_sum.push(holder);
+		    }
+
+		    arr_sum = arr_sum.map(function(d) { return String(d3.sum(d)); }).join(",");
+		console.log(ss)
+		    var serie__ = ss.subtema.length > 0 ? arr_sum : serie_;
+//		    if(ss.subtema.length > 0) serie_ = arr_sum;
+                    var _cont_ = ss['prevRow'] ? "    " + tema : "     "
+					+ tema + "," + serie__;
+                    chunk.push(_cont_);
                 }
+console.log(tema)
+
+
                 var subtema = ss.subtema;
                 if (subtema != "") chunk.push("          " + subtema
 						+ "," + serie_);
@@ -2848,7 +2879,7 @@ function descargarPNG() {
 	    img.onload = function() {
 		ctx.drawImage(img, 0, 0);
 		domURL.revokeObjectURL(url);
-		//console.log(svg)
+		console.log(svg)
 		triggerDownload(canvas.toDataURL(),svg);
 	    };
 
@@ -2860,12 +2891,14 @@ function descargarPNG() {
 
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
 	  console.log(svg)
-//          window.navigator.msSaveOrOpenBlob(svg, "a.png");
+          window.navigator.msSaveOrOpenBlob(svg, "a.png");
       } else {
           var a = document.createElement('a');
           a.setAttribute('download', 'chart.png');
           a.setAttribute('href', imgURI);
           a.setAttribute('target', '_blank');
+	  document.body.appendChild(a);
+	  console.log(a)
           a.click();
           d3.selectAll(".PNG_").remove();
           a.remove();
