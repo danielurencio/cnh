@@ -974,7 +974,7 @@ console.log(params,data)
         $("button#principal").attr("todos", "no");
         data = formatoData(data);
         /////////////////////////////////////////////////////////////////////////////
-        var color = "rgba(82,191,144,0.25)"//getComputedStyle(document.body).getPropertyValue('--filasYcols');
+        var color = "rgba(13,180,190,0.25)"//"rgba(82,191,144,0.25)"//getComputedStyle(document.body).getPropertyValue('--filasYcols');
         var temas_fondo = "white"
         //getComputedStyle(document.body).getPropertyValue('--temas-fondo');
 
@@ -1474,7 +1474,7 @@ console.log(params,data)
 
             d3.selectAll(".hide td:first-child").on("mouseover", function() {
                 $(this.parentNode.children)
-			.css("background-color", "rgba(73,171,129,0.25)");
+			.css("background-color", "rgba(13,180,190,0.25)");
             });
 
             d3.selectAll(".hide td:first-child").on("mouseout", function() {
