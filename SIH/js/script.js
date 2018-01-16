@@ -2568,7 +2568,10 @@ var credFIX = creditsFix(NOTAS);
 //============= CREDITS FIX ======================
 var marginCred = document.querySelector('div#metodos>div').clientHeight;
 var offsetCred = Math.floor(marginCred / 100);
-console.log(marginCred);
+
+NOTAS = NOTAS.replace(/<b>|<\/b>/g,"")
+console.log([NOTAS]);
+
     Highcharts.chart('chart', {
         lang: {
             'img': 'Descargar imagen'
@@ -2701,8 +2704,10 @@ console.log(marginCred);
 
    var fixMathChars = $('.highcharts-credits>tspan').filter(function() { return this.textContent.match(/&/g); });
 
+console.log($('.highcharts-credits>tspan'));
+
    fixMathChars.each(function() {
-//     $(this).html(this.textContent);
+     $(this).html(this.textContent);
    });
 
 
