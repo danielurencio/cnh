@@ -2702,7 +2702,7 @@ console.log(marginCred);
    var fixMathChars = $('.highcharts-credits>tspan').filter(function() { return this.textContent.match(/&/g); });
 
    fixMathChars.each(function() {
-     $(this).html(this.textContent);
+//     $(this).html(this.textContent);
    });
 
 
