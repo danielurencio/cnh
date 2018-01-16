@@ -102,9 +102,10 @@ $(document).ready(function() {
                 cosas(data_buscar_);
 		data_BUSCAR = false;
 		asyncAJAX = false;
-		$("div#dropDown>div").remove()//.html("Busque...")
-		d3.select("input#filtroSerie").dispatch("input")
-//		cosas(data_buscar_);
+		if(document.querySelector("div#dropDown>div")) {
+		  $("div#dropDown>div").remove();
+		  d3.select("input#filtroSerie").dispatch("input");
+		}
 	    }			      
 	  });
 
