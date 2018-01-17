@@ -75,7 +75,7 @@ for i in cols:
 
 merge = merge.join(ids_adj)
 merge.drop("POLIGONO",axis=1,inplace=True)
-merge.replace(r'\s+',np.nan,regex=True,inplace=True)
+merge.replace(' ',np.nan,regex=False,inplace=True)
 #merge.COB_SIS_3D = pd.to_numeric(merge.COB_SIS_3D)
 
 cols_to_fix = ['GRADOS_API','RESV_GAS_1P','COB_SIS_3D','REC_PROSP_P10','SUPERFICIE']
