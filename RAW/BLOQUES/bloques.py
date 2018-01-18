@@ -17,11 +17,12 @@ tabla.columns = tabla.columns.str.upper()
 
 bloques_old = pd.read_sql(query_raw,engine_raw)
 bloques_old.columns = bloques_old.columns.str.upper()
-bloques_old.ID_BLOQUE1 = bloques_old.ID_BLOQUE1.map(lambda x:unicode(x.decode('utf-8')))
+bloques_old.ID_BLOQUE1 = bloques_old.ID_BLOQUE1.map(lambda x:unicode(x.decode('latin1')))
 bloques_old.set_index("ID_BLOQUE1",inplace=True)
 
-bloques = pd.read_csv("archivos/_bloques_.csv",encoding="utf-8")
-ids_bien = pd.read_csv("archivos/IDS_BLOQUES.csv",encoding="utf-8")
+bloques = pd.read_csv("archivos/_bloques_.csv",encoding="latin1")
+ids_bien = pd.read_csv("archivos/IDS_BLOQUES.csv",encoding="latin1")
+ids_bien.OLD_ID = ids_bien.OLD_ID.str.upper()
 ids_bien.OLD_ID = ids_bien.OLD_ID.map(lambda x:unicode(x))
 ids_bien.set_index("OLD_ID",inplace=True)
 
@@ -59,7 +60,7 @@ def regexCols(x):
 
 
 bloques.ID_BLOQUE = bloques.ID_BLOQUE.map(lambda x:unicode(x))
-tabla.ID_BLOQUE = tabla.ID_BLOQUE.map(lambda x:unicode(x.decode('utf-8')))
+tabla.ID_BLOQUE = tabla.ID_BLOQUE.map(lambda x:unicode(x.decode('latin1')))
 
 bloques.set_index("ID_BLOQUE",inplace=True)
 tabla.set_index("ID_BLOQUE",inplace=True)
@@ -76,6 +77,8 @@ for i in cols:
 merge = merge.join(ids_adj)
 merge.drop("POLIGONO",axis=1,inplace=True)
 merge.replace(' ',np.nan,regex=False,inplace=True)
+merge.replace('"',np.nan,regex=False,inplace=True)
+
 #merge.COB_SIS_3D = pd.to_numeric(merge.COB_SIS_3D)
 
 cols_to_fix = ['GRADOS_API','RESV_GAS_1P','COB_SIS_3D','REC_PROSP_P10','SUPERFICIE']
@@ -83,4 +86,5 @@ cols_to_fix = ['GRADOS_API','RESV_GAS_1P','COB_SIS_3D','REC_PROSP_P10','SUPERFIC
 for c in cols_to_fix:
   merge[c] = merge[c].map(lambda x: float(x) if not pd.isnull(x) else x)
 
-merge.to_csv("BLOQUES_BIEN.csv",encoding="latin1")
+#merge.to_csv("BLOQUES_BIEN.csv",encoding="latin1",header=False)
+#merge.to_sql('datos_licitaciones_bloques1',engine_raw,if_exists='append')
