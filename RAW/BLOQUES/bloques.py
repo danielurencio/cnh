@@ -2,6 +2,13 @@ import numpy as np
 import pandas as pd
 import re
 from sqlalchemy import create_engine
+from pymongo import MongoClient
+
+collection = MongoClient("mongodb://localhost:27017").cnh.poligonos_bien
+poligonos = []
+
+for i in collection.find({},{ '_id':0, 'lic':0 }):
+  poligonos.append(i)
 
 conn_public = 'oracle://cmde_public:public17@172.16.120.3:1521/cnih'
 engine_public = create_engine(conn_public)
@@ -86,5 +93,14 @@ cols_to_fix = ['GRADOS_API','RESV_GAS_1P','COB_SIS_3D','REC_PROSP_P10','SUPERFIC
 for c in cols_to_fix:
   merge[c] = merge[c].map(lambda x: float(x) if not pd.isnull(x) else x)
 
+
+merge["POLIGONO"] = pd.Series([np.nan for i in xrange(merge.shape[0])],index=merge.index)
+
+for i,d in merge.iterrows():
+  for b in poligonos:
+    if i == b["ID_BLOQUE"]:
+      merge.loc[i,"POLIGONO"] = str(b)
+
 #merge.to_csv("BLOQUES_BIEN.csv",encoding="latin1",header=False)
-#merge.to_sql('datos_licitaciones_bloques1',engine_raw,if_exists='append')
+merge.to_sql('datos_licitaciones_bloques1',engine_raw,if_exists='append')
+print("Todo bien.")

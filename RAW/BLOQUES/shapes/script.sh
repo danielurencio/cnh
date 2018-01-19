@@ -63,3 +63,10 @@ do
 done
 }
 
+
+shapes()  {
+ for dir in */; do
+  file=$(ls $dir*.shp)
+  python shapes.py $file
+ done
+}
