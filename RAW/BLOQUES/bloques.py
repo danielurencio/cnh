@@ -4,6 +4,10 @@ import re
 from sqlalchemy import create_engine
 from pymongo import MongoClient
 
+
+pozos_comp = pd.read_csv("https://rondasmexico.gob.mx/wp-content/uploads/2017/12/cr_pozos_b.csv",encoding='latin1',skipfooter=4,engine="python")
+pozos_comp = pozos_comp[['Contrato','Pozos comprometidos']].dropna()
+
 collection = MongoClient("mongodb://localhost:27017").cnh.poligonos_bien
 poligonos = []
 
@@ -101,6 +105,5 @@ for i,d in merge.iterrows():
     if i == b["ID_BLOQUE"]:
       merge.loc[i,"POLIGONO"] = str(b)
 
-#merge.to_csv("BLOQUES_BIEN.csv",encoding="latin1",header=False)
-merge.to_sql('datos_licitaciones_bloques1',engine_raw,if_exists='append')
-print("Todo bien.")
+#merge.to_sql('datos_licitaciones_bloques1',engine_raw,if_exists='append')
+#print("Todo bien.")
