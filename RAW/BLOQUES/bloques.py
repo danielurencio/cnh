@@ -6,7 +6,8 @@ from pymongo import MongoClient
 
 
 pozos_comp = pd.read_csv("https://rondasmexico.gob.mx/wp-content/uploads/2017/12/cr_pozos_b.csv",encoding='latin1',skipfooter=4,engine="python")
-pozos_comp = pozos_comp[['Contrato','Pozos comprometidos']].dropna()
+#pozos_comp = pozos_comp[['Contrato','Pozos comprometidos']].dropna()
+pozos_comp.set_index('Contrato',inplace=True)
 
 collection = MongoClient("mongodb://localhost:27017").cnh.poligonos_bien
 poligonos = []
@@ -107,6 +108,15 @@ for i,d in merge.iterrows():
 
 
 CONTRATOS = merge.reset_index()[['ID_BLOQUE','ID_CONTRATO']].dropna().copy().set_index('ID_CONTRATO')
+CONTRATOS = CONTRATOS.join(pozos_comp)
+CONTRATOS.loc['CNH-R02-L03-VC-03/2017','Pozos comprometidos'] = 2
+CONTRATOS.reset_index(inplace=True)
+CONTRATOS.set_index("ID_BLOQUE",inplace=True)
+CONTRATOS.rename(columns={ 'Pozos comprometidos':'POZOS_COMPROMETIDOS' }, inplace=True)
+
+#merge.drop("POZOS_COMPROMETIDOS",inplace=True)
+#merge = merge.join(CONTRATOS)
+
 
 #merge.to_sql('datos_licitaciones_bloques1',engine_raw,if_exists='append')
 #print("Todo bien.")
