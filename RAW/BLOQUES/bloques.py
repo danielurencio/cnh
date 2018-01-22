@@ -105,5 +105,8 @@ for i,d in merge.iterrows():
     if i == b["ID_BLOQUE"]:
       merge.loc[i,"POLIGONO"] = str(b)
 
+
+CONTRATOS = merge.reset_index()[['ID_BLOQUE','ID_CONTRATO']].dropna().copy().set_index('ID_CONTRATO')
+
 #merge.to_sql('datos_licitaciones_bloques1',engine_raw,if_exists='append')
 #print("Todo bien.")
