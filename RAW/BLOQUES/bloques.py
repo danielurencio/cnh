@@ -24,6 +24,8 @@ engine_raw = create_engine(conn_raw)
 query_raw = "SELECT ID_BLOQUE1, ID_LICITANTE_ADJ, ID_OPERADOR FROM DATOS_LICITACIONES_BLOQUES"
 
 
+fecha_firma = pd.read_csv('archivos/fechaFirma.csv')
+
 tabla = pd.read_sql(query_public,engine_public)
 tabla.columns = tabla.columns.str.upper()
 
@@ -114,9 +116,11 @@ CONTRATOS.reset_index(inplace=True)
 CONTRATOS.set_index("ID_BLOQUE",inplace=True)
 CONTRATOS.rename(columns={ 'Pozos comprometidos':'POZOS_COMPROMETIDOS' }, inplace=True)
 
-#merge.drop("POZOS_COMPROMETIDOS",inplace=True)
-#merge = merge.join(CONTRATOS)
+merge.drop("POZOS_COMPROMETIDOS",inplace=True,axis=1)
+merge = merge.join(CONTRATOS.drop('index',axis=1))
+merge.POZOS_COMPROMETIDOS = merge.POZOS_COMPROMETIDOS.map(lambda x:int(x) if not pd.isnull(x) else x)
 
+contratos = list(CONTRATOS.copy()['index'].map(lambda x:x.lower().replace("-a","-A").replace("/","-")).values)
 
 #merge.to_sql('datos_licitaciones_bloques1',engine_raw,if_exists='append')
 #print("Todo bien.")
