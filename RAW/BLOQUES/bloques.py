@@ -6,7 +6,7 @@ from pymongo import MongoClient
 
 
 pozos_comp = pd.read_csv("https://rondasmexico.gob.mx/wp-content/uploads/2017/12/cr_pozos_b.csv",encoding='latin1',skipfooter=4,engine="python")
-#pozos_comp = pozos_comp[['Contrato','Pozos comprometidos']].dropna()
+pozos_comp = pozos_comp[['Contrato','Pozos comprometidos']]#.dropna()
 pozos_comp.set_index('Contrato',inplace=True)
 
 collection = MongoClient("mongodb://localhost:27017").cnh.poligonos_bien
