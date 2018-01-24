@@ -1,3 +1,4 @@
+import datetime
 import numpy as np
 import pandas as pd
 import re
@@ -24,7 +25,7 @@ engine_raw = create_engine(conn_raw)
 query_raw = "SELECT ID_BLOQUE1, ID_LICITANTE_ADJ, ID_OPERADOR FROM DATOS_LICITACIONES_BLOQUES"
 
 
-fecha_firma = pd.read_csv('archivos/fechaFirma.csv')
+fecha_firma = pd.read_csv('archivos/fechaFirma.csv').set_index('ID_CONTRATO')
 
 tabla = pd.read_sql(query_public,engine_public)
 tabla.columns = tabla.columns.str.upper()
@@ -93,7 +94,6 @@ merge.drop("POLIGONO",axis=1,inplace=True)
 merge.replace(' ',np.nan,regex=False,inplace=True)
 merge.replace('"',np.nan,regex=False,inplace=True)
 
-#merge.COB_SIS_3D = pd.to_numeric(merge.COB_SIS_3D)
 
 cols_to_fix = ['GRADOS_API','RESV_GAS_1P','COB_SIS_3D','REC_PROSP_P10','SUPERFICIE']
 
@@ -111,16 +111,16 @@ for i,d in merge.iterrows():
 
 CONTRATOS = merge.reset_index()[['ID_BLOQUE','ID_CONTRATO']].dropna().copy().set_index('ID_CONTRATO')
 CONTRATOS = CONTRATOS.join(pozos_comp)
+CONTRATOS = CONTRATOS.join(fecha_firma)
 CONTRATOS.loc['CNH-R02-L03-VC-03/2017','Pozos comprometidos'] = 2
 CONTRATOS.reset_index(inplace=True)
 CONTRATOS.set_index("ID_BLOQUE",inplace=True)
-CONTRATOS.rename(columns={ 'Pozos comprometidos':'POZOS_COMPROMETIDOS' }, inplace=True)
+CONTRATOS.rename(columns={ 'Pozos comprometidos':'POZOS_COMPROMETIDOS', 'index':'ID_CONTRATO' }, inplace=True)
 
 merge.drop("POZOS_COMPROMETIDOS",inplace=True,axis=1)
-merge = merge.join(CONTRATOS.drop('index',axis=1))
+merge = merge.join(CONTRATOS.drop('ID_CONTRATO',axis=1))
 merge.POZOS_COMPROMETIDOS = merge.POZOS_COMPROMETIDOS.map(lambda x:int(x) if not pd.isnull(x) else x)
+merge.FECHA_FIRMA = pd.to_datetime(merge.FECHA_FIRMA,format='%d/%m/%Y')
 
-contratos = list(CONTRATOS.copy()['index'].map(lambda x:x.lower().replace("-a","-A").replace("/","-")).values)
-
-#merge.to_sql('datos_licitaciones_bloques1',engine_raw,if_exists='append')
-#print("Todo bien.")
+merge.to_sql('datos_licitaciones_bloques1',engine_raw,if_exists='append')
+print("Todo bien.")
