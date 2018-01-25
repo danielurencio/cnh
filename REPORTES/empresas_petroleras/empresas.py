@@ -4,9 +4,17 @@ from sqlalchemy import create_engine
 from collections import Counter
 
 
-query = 'SELECT DISTINCT ID_LICITANTE,ID_EMPRESA,EMPRESA FROM LICITACIONES_BLOQUES_OFERTAS WHERE ID_LICITANTE != 0 AND ID_LICITANTE_ADJ = ID_LICITANTE'
+#query = 'SELECT DISTINCT ID_LICITANTE,ID_EMPRESA,EMPRESA FROM LICITACIONES_BLOQUES_OFERTAS WHERE ID_LICITANTE != 0 AND ID_LICITANTE_ADJ = ID_LICITANTE'
+query = 'SELECT DISTINCT ID_LICITANTE,ID_EMPRESA,EMPRESA FROM LICITACIONES_BLOQUES_OFERTAS WHERE ID_LICITANTE != 0'
+
+
+query_matrices = 'SELECT ID_MATRIZ,PAIS FROM DATOS_LICITACIONES_MATRICES'
+
 engine = create_engine('oracle://cmde_valid:valid17@172.16.120.3:1521/cnih')
 df = pd.read_sql(query,engine)
+
+engine_raw = create_engine('oracle://cmde_raw:raw17@172.16.120.3:1521/cnih')
+matrices = pd.read_sql(query_matrices,engine_raw)
 
 lista_empresas = df.id_empresa.unique().tolist()
 lista_licitantes = df.id_licitante.unique().tolist()
