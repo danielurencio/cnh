@@ -4,6 +4,7 @@
 import pandas as pd
 import numpy as np
 import xlwings as xw
+import geopandas as gpd
 from sqlalchemy import create_engine
 
 
@@ -16,10 +17,19 @@ class Reporte(object):
     def datos_grales(self):
 #        self.sheet.range("A2").value = u"t\xedtulo".encode("latin1")
         self.bloques()
-        self.sheet.range("A130").value = self.cuadros[0]
-        self.sheet.range("A163").value = self.cuadros[1]
-        self.sheet.range("A205").value = self.cuadros[2]
+        self.sheet.range("A126").value = self.cuadros[0]
+        self.sheet.range("A159").value = self.cuadros[1]
+        self.sheet.range("A201").value = self.cuadros[2]
 
+    def df_RAW(self,query):
+        engine = create_engine('oracle://cmde_raw:raw17@172.16.120.3:1521/cnih',encoding='latin1')
+        df = pd.read_sql(query,engine)
+        return df
+
+    def poligonos(self):
+        query = "select poligono from datos_licitaciones_bloques1 where RONDA='2' and LICITACION='4' and poligono is not null"
+        df = self.df_RAW(query)
+        return df
 
     def bloques(self):
         query = "SELECT NOMBRE_BLOQUE,PROV_GEO,PLAYS,LITOLOGIA,HIDROC_PRINCIPAL,SUPERFICIE,TIRANTE_PROM,PROB_EXITO_GEO_MAX,PROB_EXITO_GEO_MIN,REC_PROSP_MEDIO,REC_PROSP_TOT_RIESGO FROM DATOS_LICITACIONES_BLOQUES1 WHERE RONDA = '2' AND LICITACION = '4'"
