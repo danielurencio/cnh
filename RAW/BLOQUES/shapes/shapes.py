@@ -3,6 +3,7 @@ import pandas as pd
 import sys
 import ast
 from pymongo import MongoClient
+import ast
 
 col = MongoClient("mongodb://localhost:27017").cnh.poligonos
 
