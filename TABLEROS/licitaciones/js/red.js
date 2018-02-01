@@ -1,5 +1,7 @@
-var graphW = window.innerWidth/2//graphConteinerRect.attr("width"),
-    graphH = window.innerHeight;//graphConteinerRect.attr("height");
+var pozos_comprometidos;
+
+var graphW = window.innerWidth/2;
+    graphH = window.innerHeight;
 
 var minColor = "rgb(247,195,32)";
 var maxColor = "rgb(255,0,61)";
@@ -114,6 +116,7 @@ function RED(width,height) {
 
 
   function to_OFERTAS_(x) {
+      pozos_comprometidos = Object.keys(x[0]).filter(function(d) { return d == 'POZOS_COMPROMETIDOS'; }).length ? true : false;
       var rr = x.filter(function(d) { return d.VALIDEZ != 'NO PRESENTA' });
       rr = rr.filter(function(d) { return d.VALIDEZ != 'SIN GARANTIA' });
       rr = rr.map(function(d) {
@@ -131,6 +134,7 @@ function RED(width,height) {
       obj['VAR_ADJ2'] = d.VAR_ADJ2;
       obj['VPO'] = d.VPO;
       obj['VALIDEZ'] = d.VALIDEZ;
+      if(pozos_comprometidos) obj['POZOS_COMPROMETIDOS'] = d.POZOS_COMPROMETIDOS;
 
       return obj;
     });
@@ -165,9 +169,8 @@ function RED(width,height) {
   };
 //==============================================================================|
   queue()
-	.defer(d3.csv,url_servicio(_ambiente_))
-//    .defer(d3.csv,'https://portaltest02.cnih.cnh.gob.mx/api/licitaciones_data.py')
-//    .defer(d3.csv,'http://172.16.24.57/licitaciones_data.py')
+	.defer(d3.csv,'BLOQUES_OFERTAS.csv')
+//	.defer(d3.csv,url_servicio(_ambiente_))
     .await(getDATA);
 
   function getDATA(err,bloques_ofertas) {

@@ -3,7 +3,7 @@ var widLic_ = '300px';
 
 function url_servicio(ambiente) {
   var url = {
-    'produccion':'https://portaltest02.cnih.cnh.gob.mx/api/licitaciones_data.py',
+    'produccion':'/api/licitaciones_data.py',
     'local':'http://172.16.24.57/licitaciones_data.py'
   };
   return url[ambiente];
@@ -12,7 +12,7 @@ function url_servicio(ambiente) {
 
 function img_from(file,ambiente) {
   var img_download_ = {
-    'produccion': 'url(/images/estadistica/tablero-licitaciones/'+ file +'.svg)',
+    'produccion': 'url(./images/estadisticas/tablero-licitaciones/'+ file +'.svg)',
     'local': 'url(/img/'+ file +'.svg)'
   };
   return img_download_[ambiente];
@@ -20,7 +20,7 @@ function img_from(file,ambiente) {
 
 function flags_dir(ambiente) {
   var dir = {
-    'produccion':'images/estadistica/tablero-licitaciones/FLAGS/',
+    'produccion':'./images/estadisticas/tablero-licitaciones/FLAGS/',
     'local':'img/flags/FLAGS/'
   };
   return dir[ambiente];
@@ -55,6 +55,7 @@ var lupita = img_from("glass_",_ambiente_);
    'NORUEGA':'Norway',
    'PANAMÁ':'Panama',
    'PORTUGAL':'Portugal',
+   'CATAR':'Qatar',
    'REINO UNIDO':'United-Kingdom',
    'RUSIA':'Russia',
    'TAILANDIA':'Thailand',
@@ -1866,6 +1867,7 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
 	obj["pmt"] = d.PMT_TOTAL;
         obj["bloque"] = d.ID_BLOQUE;
 	obj["ron_lic"] = "R" + d.RONDA + "." + d.LICITACION;
+	obj['pozos_comp'] = +d.POZOS_COMPROMETIDOS;
 	return obj;
       });
 
@@ -1888,7 +1890,7 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
       for(var k in invComRon) {
 	var obj_ = {};
 	var ix;
-
+	if(pozos_comprometidos) var sum_pozosC = invComRon[k].map(function(d) { return d.pozos_comp; }).reduce(function(a,b) { return a + b });
 	rondas_.forEach(function(d,i) {
 	  if( d == k ) ix = i;
 	});
@@ -1896,6 +1898,7 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
 	obj_["color"] = colorS(ix);
         obj_["id"] = "p_" + ix;
 	obj_["name"] = k;
+	if(pozos_comprometidos) obj_["pozos"] = sum_pozosC;
 	dataForTree.push(obj_);
 
 	invComRon[k].forEach(function(d) {
@@ -1903,12 +1906,12 @@ function GraficosEmpresa(id_empresa,data,tabla,OFERTAS_,ofertas) {
 	  obj["parent"] = "p_" + ix;
 	  obj["value"] = d.pmt;
 	  obj["name"] = d.bloque;
+	  if(pozos_comprometidos) obj["pozos"] = +d.pozos_comp;
 
 	  dataForTree.push(obj);
 
 	});
       };
-
 
 
 /*------------------------- DATOS PARA DONUT ----------------------------*/
@@ -2030,10 +2033,20 @@ licsEmpresa = OFERTAS_.filter(function(d) { return d.ID_EMPRESA == id_empresa })
 //-----------------------------------------------------------------------//
 
 //------------------------- DONA -------------------------------//
+//  var pozos_STR = pozos_comprometidos ? "<br><b>Pozos comprometidos:</b> " + this.point.pozos : '';
+
   var treemap = Highcharts.chart('gantt', {
     tooltip: {
       formatter: function() {
-        return '<b>'+ this.point.name +'</b>: $'+ this.point.value.toLocaleString("es-MX");
+	var str_;
+	if(pozos_comprometidos) {
+          str_ = '<b>'+ this.point.name +':</b> $'+ this.point.value.toLocaleString("es-MX") + 
+		"<br><b>Pozos comprometidos:</b> " + this.point.pozos;
+	} else {
+          str_ = '<b>'+ this.point.name +':</b> $'+ this.point.value.toLocaleString("es-MX");
+	}
+
+	return str_;
       }
     },
     credits: { enabled:false },
