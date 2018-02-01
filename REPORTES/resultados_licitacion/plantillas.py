@@ -174,14 +174,19 @@ class Reporte(object):
         return df
 
     def Cuadros(self):
-#        df = pd.read_sql(self.query_bloques,self.engine_raw)
-        df = self.tabla_bloques
-        nombres = {'prov_geo':u'Provincia geol\xf3gica','plays':'Edades del Play','litologia':u'Litolog\xeda','hidroc_principal':'Hidrocarburo principal','superficie':'Superficie','tirante_prom':'Tirante de agua','prob_exito_geo_max':u'Probabilidad de \xe9xito geol\xf3gico m\xe1xima','prob_exito_geo_min':u'Probabilidad de \xe9xito geol\xf3gico m\xednimo','rec_prosp_tot_riesgo':'Recurso prospectivo total con riesgo'}
+        ofertas = self.tabla_ofertas
+        ofertas = ofertas[ofertas['id_licitante'] == ofertas['id_licitante_adj']]
+        ofertas = ofertas[['id_bloque','licitante','var_adj1','var_adj2','bono']].set_index("id_bloque")
+        df = self.tabla_bloques.drop(['contrato','prob_exito_geo_min','prob_exito_geo_max','tirante_prom'],axis=1)
+        df = df.set_index("id_bloque").join(ofertas)
+        df.reset_index(inplace=True)
+        df.drop("id_bloque",inplace=True,axis=1)
+        nombres = {'prov_geo':u'Provincia geol\xf3gica','plays':'Edades del Play','litologia':u'Litolog\xeda','hidroc_principal':'Hidrocarburo principal','superficie':'Superficie','rec_prosp_tot_riesgo':'Recurso prospectivo total con riesgo', 'rec_prosp_medio':'Recurso prospectivo medio' }
         df.rename(columns=nombres,inplace=True)
         df.set_index('nombre_bloque',inplace=True)
         df.sort_index(inplace=True)
         df = df.T
-        unidades = [None, None, None, None, u'km\xb2', 'Metros','Min','Max','MMbpce', 'MMbpce']
+        unidades = [None, None, None, None, u'km\xb2', 'MMbpce', 'MMbpce',None,None,None,None]
         df['Unidades'] = pd.Series(np.array(unidades),index=df.index)
         cols = df.columns.tolist()
         unidades = cols[len(cols)-1]
@@ -193,7 +198,7 @@ class Reporte(object):
 
 
 if __name__ == "__main__":
-    reporte = Reporte("plantilla_0.xlsx","A",(2,2))
-    celdas_tablas = ['A126','A159','A201']
+    reporte = Reporte("plantilla_0.xlsx","A",(2,4))
+    celdas_tablas = ['A188','A221','A263']
     celdas_resumen = ['A302','A303','A305','A306','F77','D302','I302']
 
