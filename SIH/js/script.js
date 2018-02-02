@@ -412,6 +412,7 @@ $(document).ready(function() {
             TEMAS = JSON.parse(temas);
 
             d3.json("blueprints.json", function(response) {
+response.A.esp.filtros.years[1] = 2018  // <----
                 RenderWords(response, "esp", TEMAS);
 
                 $("button#consultar").on("click", function() {
@@ -1683,7 +1684,7 @@ console.log(params,data)
         var months = obj.A[lang].filtros.months;
         var years = obj.A[lang].filtros.years;
         var options = obj.A[lang].filtros.options;
-
+console.log(years)
 
 	var secciones = _.uniq(temas,function(d) {
 	  return d.seccion;
@@ -1741,6 +1742,8 @@ console.log(params,data)
             return "<option>" + d + "</option>";
         });
 
+	console.log(years_)
+
         var id_dates = ["start", "end"];
         for (var i in id_dates) {
             $("select#" + id_dates[i] + "_month").text("");
@@ -1772,6 +1775,8 @@ console.log(params,data)
 
         var dateBefore = addMonths(new Date(), -12);
         var dateNow = addMonths(new Date(), -1);
+
+        console.log(dateBefore,dateNow)
 
         var s_Year = start_year.indexOf(dateBefore[1]);
         var e_Year = start_year.indexOf(dateNow[1]);
