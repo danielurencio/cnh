@@ -1,3 +1,5 @@
+var ambiente = 'producción';
+var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
 var cambio_ = false;
@@ -93,7 +95,7 @@ $(document).ready(function() {
 	  data_BUSCAR = true;
 	  if(asyncAJAX) { asyncAJAX.abort(); }
 	  asyncAJAX = $.ajax({
-	    url:"http://172.16.24.57/cubos_buscar.py",
+	    url:HOSTNAME + "/cubos_buscar.py",
             type:"post",
 	    datatype:"json",
             data: parametros(),
@@ -233,7 +235,7 @@ $(document).ready(function() {
                         })
                         .on("click", function() {
                             var txt = this.textContent.split(" > ");
-                            console.log(caso_especial)
+                            //console.log(caso_especial)
                             caso_especial ? siFiltro = true : siFiltro = false;
                             caso_especial ? current_TXT = txt : current_TXT = null;
                             irAserie(txt);
@@ -320,7 +322,7 @@ $(document).ready(function() {
                             }, 500);
                         }
                     } else {
-                        console.log("NO FILTRO");
+                        //console.log("NO FILTRO");
                     }
                     $("#footer").css("display", "none");
                 }, 10); /*-------------------Async--*/
@@ -402,7 +404,7 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////
 
     $.ajax({
-        url: "http://172.16.24.57/cubos_temas.py",
+        url: HOSTNAME + "/cubos_temas.py",
         dataType: 'json',
         data: {
             'section': 'PRODUCCION'
@@ -412,6 +414,7 @@ $(document).ready(function() {
             TEMAS = JSON.parse(temas);
 
             d3.json("blueprints.json", function(response) {
+
 response.A.esp.filtros.years[1] = 2018  // <----
                 RenderWords(response, "esp", TEMAS);
 
@@ -487,23 +490,23 @@ response.A.esp.filtros.years[1] = 2018  // <----
 
 
                         var params = parametros();
-console.log(params)
+//console.log(params)
 /*------------------AJAX con botón de consultar-------------------------------*/    
 	    if(cambio_) {
 		      cambio_ = false;
                         
                         $.ajax({
-                            url: "http://172.16.24.57/cubos_produccion.py",
+                            url: HOSTNAME + "/cubos_produccion.py",
                             type: "post",
                             datatype: "json",
                             data: params,
                             success: function(data) {
-console.log(params,data)
+//console.log(params,data)
 			      var ifEmpty = checkIfEmpty(data);
 /*=================Chechar si las tablas están vacías========================*/
 			      if(!ifEmpty) {
 				$.ajax({
-				  url:"http://172.16.24.57/cubos_buscar.py",
+				  url:HOSTNAME + "/cubos_buscar.py",
 				  type:"post",
 				  datatype:"json",
 				  data:params,
@@ -547,7 +550,7 @@ console.log(params,data)
 
 // ======================= CAMBIO POR SECCIÓN ========================================
 		$("select.filtros_").change(function() {
-		      console.log(TEMAS); 
+		      //console.log(TEMAS); 
                       var sel_ = $("select.filtros_").find(":selected").attr("tag");
 		      var temas_seccion = TEMAS.filter(function(d) {
 			return d.seccion == sel_;
@@ -735,7 +738,7 @@ console.log(params,data)
                     var params = parametros();
 //if(!cambio_) {
                     $.ajax({
-                        url: "http://172.16.24.57/cubos_produccion.py",
+                        url: HOSTNAME + "/cubos_produccion.py",
                         type: "post",
                         datatype: "json",
                         data: params,
@@ -745,7 +748,7 @@ console.log(params,data)
 			  if(!ifEmpty) {
 
                             $.ajax({
-                                url: "http://172.16.24.57/cubos_buscar.py",
+                                url: HOSTNAME + "/cubos_buscar.py",
                                 type: "post",
                                 datatype: "json",
                                 data: params,
@@ -758,7 +761,7 @@ console.log(params,data)
                             });
 
 			  } else {
-				console.log("qué está pasando");
+				//console.log("qué está pasando");
 			    data_buscar = null;
 			    ajaxFunction(data,Cubos,filtrarSeries,null,data_buscar);
 			    leyendaNotas(TEMAS,params)
@@ -839,14 +842,14 @@ console.log(params,data)
                 _parametros_ = parametros();
 
                 $.ajax({
-                    url: "http://172.16.24.57/cubos_produccion.py",
+                    url: HOSTNAME + "/cubos_produccion.py",
                     type: "post",
                     datatype: "json",
                     data: params,
                     success: function(data) {
 			var ifEmpty = checkIfEmpty(data);
                         $.ajax({
-                            url: "http://172.16.24.57/cubos_buscar.py",
+                            url: HOSTNAME + "/cubos_buscar.py",
                             type: "post",
                             datatype: "json",
                             data: params,
@@ -885,8 +888,8 @@ console.log(params,data)
 
                 d3.selectAll("button#selection").on("click", function() {
                     var series = obtener_series();
-                    console.log("algo..");
-                    console.log(series);
+                    //console.log("algo..");
+                    //console.log(series);
 
                     if (series && series.length == 0) {
                         alert("Seleccione alguna serie.");
@@ -946,7 +949,7 @@ console.log(params,data)
             csv.push("");
         }
 
-	console.log(parent_,current_)
+	//console.log(parent_,current_)
 
         csv = csv.join("\n");
         var csvFile = new Blob(["\ufeff", csv], {
@@ -1133,17 +1136,17 @@ console.log(params,data)
                         params = parametros();
                         params.title = title;
                         params.subtitle = subtitle;
-                        console.log("fixed?");
+                        //console.log("fixed?");
                     }
 
                     $.ajax({
-                        url: "http://172.16.24.57/cubos_produccion.py",
+                        url: HOSTNAME + "/cubos_produccion.py",
                         dataType: 'json',
                         data: params,
                         success: function(tabla_respuesta) {
 
                             if (siFiltro) {
-                                console.log("siFiltro", siFiltro);
+                                //console.log("siFiltro", siFiltro);
                                 tabla_respuesta = formatoData(tabla_respuesta);
                                 TableLogistics(algo_, tabla_respuesta);
                                 siFiltro = false;
@@ -1348,7 +1351,7 @@ console.log(params,data)
                         });
 
                     } else {
-                        console.log("no hay tabla");
+                        //console.log("no hay tabla");
 
                         var params = parametros();
                         params["title"] = params_especiales.title;
@@ -1358,7 +1361,7 @@ console.log(params,data)
 			    + params.subtitle + "']")[0];
 
                         $.ajax({
-                            url: "http://172.16.24.57/cubos_produccion.py",
+                            url: HOSTNAME + "/cubos_produccion.py",
                             dataType: 'json',
                             data: params,
                             success: function(tabla_respuesta) {
@@ -1684,7 +1687,7 @@ console.log(params,data)
         var months = obj.A[lang].filtros.months;
         var years = obj.A[lang].filtros.years;
         var options = obj.A[lang].filtros.options;
-console.log(years)
+//console.log(years)
 
 	var secciones = _.uniq(temas,function(d) {
 	  return d.seccion;
@@ -1742,7 +1745,7 @@ console.log(years)
             return "<option>" + d + "</option>";
         });
 
-	console.log(years_)
+	//console.log(years_)
 
         var id_dates = ["start", "end"];
         for (var i in id_dates) {
@@ -1776,7 +1779,7 @@ console.log(years)
         var dateBefore = addMonths(new Date(), -12);
         var dateNow = addMonths(new Date(), -1);
 
-        console.log(dateBefore,dateNow)
+        //console.log(dateBefore,dateNow)
 
         var s_Year = start_year.indexOf(dateBefore[1]);
         var e_Year = start_year.indexOf(dateNow[1]);
@@ -2028,7 +2031,7 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
         caso_especial = false;
 
     } else {
-	console.log("caso especial");
+	//console.log("caso especial");
         caso_especial = true;
         $("tbody.hide>div.labels").attr("especial", "1");
 
@@ -2209,7 +2212,7 @@ function obtener_series() {
 
 
 function descargar_selection(series) {
-    console.log(series);
+    //console.log(series);
     var chunk = [];
 
     var sel_ = $("select.filtros").find(":selected").attr("tag");
@@ -2300,14 +2303,14 @@ var cached_sum = []
 		    }
 
 		    arr_sum = arr_sum.map(function(d) { return String(d3.sum(d)); }).join(",");
-		console.log(ss)
+		//console.log(ss)
 		    var serie__ = ss.subtema.length > 0 ? arr_sum : serie_;
 //		    if(ss.subtema.length > 0) serie_ = arr_sum;
                     var _cont_ = ss['prevRow'] ? "    " + tema : "     "
 					+ tema + "," + serie__;
                     chunk.push(_cont_);
                 }
-console.log(tema)
+//console.log(tema)
 
 
                 var subtema = ss.subtema;
@@ -2472,7 +2475,7 @@ function enableGraphs() {
                     ">tr:nth-child(" + ix + ")";
 
                 var dist = $(s).attr('id');
-                console.log(s, dist);
+                //console.log(s, dist);
                 var dist_ = $(s)[0].querySelector("td:first-child")
 				   .getAttribute("id");
 
@@ -2576,7 +2579,7 @@ var marginCred = document.querySelector('div#metodos>div').clientHeight;
 var offsetCred = Math.floor(marginCred / 100);
 
 NOTAS = NOTAS.replace(/<b>|<\/b>/g,"")
-console.log([NOTAS]);
+//console.log([NOTAS]);
 
     Highcharts.chart('chart', {
         lang: {
@@ -2710,7 +2713,7 @@ console.log([NOTAS]);
 
    var fixMathChars = $('.highcharts-credits>tspan').filter(function() { return this.textContent.match(/&/g); });
 
-console.log($('.highcharts-credits>tspan'));
+//console.log($('.highcharts-credits>tspan'));
 
    fixMathChars.each(function() {
      $(this).html(this.textContent);
@@ -2890,7 +2893,7 @@ function descargarPNG() {
 	    img.onload = function() {
 		ctx.drawImage(img, 0, 0);
 		domURL.revokeObjectURL(url);
-		console.log(svg)
+		//console.log(svg)
 		triggerDownload(canvas.toDataURL(),svg);
 	    };
 
@@ -2901,7 +2904,7 @@ function descargarPNG() {
     function triggerDownload(imgURI,svg) {
 
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-	  console.log(svg)
+	  //console.log(svg)
           window.navigator.msSaveOrOpenBlob(svg, "a.png");
       } else {
           var a = document.createElement('a');
@@ -2909,7 +2912,7 @@ function descargarPNG() {
           a.setAttribute('href', imgURI);
           a.setAttribute('target', '_blank');
 	  document.body.appendChild(a);
-	  console.log(a)
+	  //console.log(a)
           a.click();
           d3.selectAll(".PNG_").remove();
           a.remove();
