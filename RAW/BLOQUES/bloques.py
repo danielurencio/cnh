@@ -122,5 +122,10 @@ merge = merge.join(CONTRATOS.drop('ID_CONTRATO',axis=1))
 merge.POZOS_COMPROMETIDOS = merge.POZOS_COMPROMETIDOS.map(lambda x:int(x) if not pd.isnull(x) else x)
 merge.FECHA_FIRMA = pd.to_datetime(merge.FECHA_FIRMA,format='%d/%m/%Y')
 
-merge.to_sql('datos_licitaciones_bloques1',engine_raw,if_exists='append')
+IDS_LICITANTE_ADJ_MISSING = [['R1L2-1',27],['R1L3-1',24],['R1L3-12',17],['R1L3-14',7],['R1L3-16',78],['R1L3-18',89],['R1L3-19',74],['R1L3-23',16],['R1L3-25',74]]
+
+for i in IDS_LICITANTE_ADJ_MISSING:
+  merge.loc[i[0],'ID_LICITANTE_ADJ'] = i[1]
+
+merge.to_sql('datos_licitaciones_bloques',engine_raw,if_exists='append')
 print("Todo bien.")
