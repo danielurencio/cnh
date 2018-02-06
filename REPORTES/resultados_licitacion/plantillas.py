@@ -15,6 +15,7 @@ class Reporte(object):
         self.licitacion = licitacion
         self.wb = xw.Book(archivo)
         self.sheet = self.wb.sheets[hoja]
+        self.sheet_ = self.wb.sheets["B"]
         self.query_bloques = "SELECT NOMBRE_BLOQUE,ID_BLOQUE,CONTRATO,PROV_GEO,PLAYS,LITOLOGIA,HIDROC_PRINCIPAL,SUPERFICIE,TIRANTE_PROM,PROB_EXITO_GEO_MAX,PROB_EXITO_GEO_MIN,REC_PROSP_MEDIO,REC_PROSP_TOT_RIESGO FROM DATOS_LICITACIONES_BLOQUES1 WHERE RONDA ='"+str(licitacion[0])+"' AND LICITACION = '"+str(licitacion[1])+"' AND NOMBRE_BLOQUE != 'AP-PY-G01'"
         self.query_valid = "SELECT * FROM LICITACIONES_BLOQUES_OFERTAS WHERE RONDA='"+str(self.licitacion[0])+"' AND LICITACION='"+str(self.licitacion[1])+"'"
         self.engine_raw = create_engine('oracle://cmde_raw:raw17@172.16.120.3:1521/cnih',encoding="latin1")
@@ -40,23 +41,23 @@ class Reporte(object):
         lic = str(self.licitacion[0]) + '.' + str(self.licitacion[1])
         self.sheet.range("A1").value = ("Ronda " + lic).encode("latin1")
         # N. de bloques
-        self.sheet.range("I18").value = df.shape[0]
+        self.sheet.range("H10").value = df.shape[0]
         # Provincias geologicas
         prov_geo = sorted(df.prov_geo.unique().tolist())
         prov_geo = reduce(lambda x,y: x + ', ' + y,prov_geo)
-        self.sheet.range("I21").value = prov_geo
+        self.sheet.range("H11").value = prov_geo
         # Edades del Play
         plays = self.Unicos(df.plays.unique().tolist())
-        self.sheet.range("I25").value = plays
+        self.sheet.range("H13").value = plays
         # Litologias
         litos = self.Unicos(df.litologia.unique().tolist())
-        self.sheet.range("I33").value = litos
+        self.sheet.range("H21").value = litos
         # Hidrocarburo principal
         hidroc = self.Unicos(df.hidroc_principal.unique().tolist())
-        self.sheet.range("I41").value = hidroc
+        self.sheet.range("H26").value = hidroc
         # Tipo de contrato
         contrato = self.Unicos(df.contrato.unique().tolist())
-        self.sheet.range("I45").value = contrato.upper()
+        self.sheet.range("H28").value = contrato.upper()
 
     def graficos_resumen(self,celdas):
         df = self.tabla_ofertas
@@ -64,28 +65,28 @@ class Reporte(object):
         emps_ = df[df['id_licitante'] == df['id_licitante_adj']]
         emps = emps_['empresa'].unique().shape[0]
         emps_noAdj = df['empresa'].unique().shape[0] - emps
-        self.sheet.range(celdas[0]).value = ["Adjudicaron","No adjudicaron"]
-        self.sheet.range(celdas[1]).value = [emps,emps_noAdj]
+        self.sheet_.range(celdas[0]).value = ["Adjudicaron","No adjudicaron"]
+        self.sheet_.range(celdas[1]).value = [emps,emps_noAdj]
         # Bloques adjudicados
         bloques_adj = len(df[['id_bloque','id_licitante_adj']].dropna()["id_bloque"].unique().tolist())
         bloques_noAdj = len(df['id_bloque'].unique().tolist()) - bloques_adj
-        self.sheet.range(celdas[2]).value = ['Adjudicados','No adjudicados']
-        self.sheet.range(celdas[3]).value = [bloques_adj,bloques_noAdj]
+        self.sheet_.range(celdas[2]).value = ['Adjudicados','No adjudicados']
+        self.sheet_.range(celdas[3]).value = [bloques_adj,bloques_noAdj]
         # Numero de ofertas promedio por bloque
         desiertos = df[pd.isnull(df['id_licitante_adj'])]['id_bloque'].unique().shape[0]
         desiertos = int(desiertos)
         ofertasXbloque = df[df['validez']=='VALIDA'][['id_bloque','id_licitante']].drop_duplicates().groupby("id_bloque").count().id_licitante.sum()
         bloques_total = int(bloques_adj) + int(bloques_noAdj)
         ofertasXbloque /= bloques_total
-        self.sheet.range(celdas[4]).value = round(ofertasXbloque,1)
+        self.sheet_.range(celdas[4]).value = round(ofertasXbloque,1)
         # Numero de empresas participantes por pais
         paises = df[["pais","empresa"]].drop_duplicates().groupby("pais").count()
-        paises = paises.reset_index().values
-        self.sheet.range(celdas[5]).value = paises
+        paises = paises.sort_values("empresa",ascending=False).reset_index().values
+        self.sheet_.range(celdas[5]).value = paises
         # Bloques adjudicados por empresa
-        bloquesXempresa = emps_[["empresa","id_bloque"]].groupby("empresa").count()
+        bloquesXempresa = emps_[["empresa","id_bloque"]].groupby("empresa").count().sort_values("id_bloque",ascending=False)
         bloquesXempresa = bloquesXempresa.reset_index().values
-        self.sheet.range(celdas[6]).value = bloquesXempresa
+        self.sheet_.range(celdas[6]).value = bloquesXempresa
 
 
     def analisis_ofertas(self):
@@ -177,16 +178,19 @@ class Reporte(object):
         ofertas = self.tabla_ofertas
         ofertas = ofertas[ofertas['id_licitante'] == ofertas['id_licitante_adj']]
         ofertas = ofertas[['id_bloque','licitante','var_adj1','var_adj2','bono']].set_index("id_bloque")
+        ofertas.licitante = ofertas.licitante.str.replace(';',', ')
+        ofertas.bono = ofertas.bono.map(lambda x:round(x/1000,1) if isinstance(x,float) else x)
         df = self.tabla_bloques.drop(['contrato','prob_exito_geo_min','prob_exito_geo_max','tirante_prom'],axis=1)
-        df = df.set_index("id_bloque").join(ofertas)
+        df = df.set_index("id_bloque").join(ofertas).drop_duplicates()
+        df.index = df.index.map(self.fixIDtoSort)
+        df.sort_index(inplace=True)
         df.reset_index(inplace=True)
         df.drop("id_bloque",inplace=True,axis=1)
-        nombres = {'prov_geo':u'Provincia geol\xf3gica','plays':'Edades del Play','litologia':u'Litolog\xeda','hidroc_principal':'Hidrocarburo principal','superficie':'Superficie','rec_prosp_tot_riesgo':'Recurso prospectivo total con riesgo', 'rec_prosp_medio':'Recurso prospectivo medio' }
+        nombres = {'prov_geo':u'Provincia geol\xf3gica','plays':'Edades del Play','litologia':u'Litolog\xeda','hidroc_principal':'Hidrocarburo principal','superficie':'Superficie','rec_prosp_tot_riesgo':'Recurso prospectivo total con riesgo', 'rec_prosp_medio':'Recurso prospectivo medio','licitante':'Ganador','var_adj1':u'Regal\xeda adicional', 'var_adj2':u'Factor de inversi\xf3n adicional','bono':'Bono' }
         df.rename(columns=nombres,inplace=True)
         df.set_index('nombre_bloque',inplace=True)
-        df.sort_index(inplace=True)
         df = df.T
-        unidades = [None, None, None, None, u'km\xb2', 'MMbpce', 'MMbpce',None,None,None,None]
+        unidades = [None, None, None, None, u'km\xb2', 'MMbpce', 'MMbpce',None,'%','%',u'Miles de d\xf3lares']
         df['Unidades'] = pd.Series(np.array(unidades),index=df.index)
         cols = df.columns.tolist()
         unidades = cols[len(cols)-1]
@@ -197,8 +201,27 @@ class Reporte(object):
         self.cuadros = cuadros
 
 
+    def tabla_totales(self):
+        cuadros = map(lambda x:x.drop("Unidades",axis=1).T,self.cuadros)
+        cuadros = pd.concat(cuadros)
+        adj = cuadros[pd.isnull(cuadros[u'Regal\xeda adicional']) == False]
+        self.sheet.range("I264").value = adj["Superficie"].sum()
+        self.sheet.range("I265").value = adj["Recurso prospectivo medio"].sum()
+        self.sheet.range("I267").value = adj["Recurso prospectivo total con riesgo"].sum()
+        self.sheet.range("E264").value = cuadros["Superficie"].sum()
+        self.sheet.range("E265").value = cuadros["Recurso prospectivo medio"].sum()
+        self.sheet.range("E267").value = cuadros["Recurso prospectivo total con riesgo"].sum()
+        self.sheet.range("G264").value = cuadros["Superficie"].mean()
+        self.sheet.range("G265").value = cuadros["Recurso prospectivo medio"].mean()
+        self.sheet.range("G267").value = cuadros["Recurso prospectivo total con riesgo"].mean()
+        self.sheet.range("I269").value = round(cuadros["Bono"].sum()/1000,1)
+
+#        return adj
+
+
 if __name__ == "__main__":
     reporte = Reporte("plantilla_0.xlsx","A",(2,4))
-    celdas_tablas = ['A188','A221','A263']
-    celdas_resumen = ['A302','A303','A305','A306','F77','D302','I302']
+    celdas_tablas = ['A187','A221','A248']
+    # [EmpsAdj,..,bloquesAdj,..,ofertasXbloque,empsXpais,bloquesXempresa]
+    celdas_resumen = ['A333','A334','A336','A337','A340','D334','I334']
 
