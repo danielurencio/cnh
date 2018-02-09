@@ -1,4 +1,4 @@
-var ambiente = 'producción';
+var ambiente = 'producciónn';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -410,12 +410,11 @@ $(document).ready(function() {
             'section': 'PRODUCCION'
         },
         success: function(temas) {
-
             TEMAS = JSON.parse(temas);
 
             d3.json("blueprints.json", function(response) {
 
-response.A.esp.filtros.years[1] = 2018  // <----
+response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 RenderWords(response, "esp", TEMAS);
 
                 $("button#consultar").on("click", function() {
@@ -550,7 +549,7 @@ response.A.esp.filtros.years[1] = 2018  // <----
 
 // ======================= CAMBIO POR SECCIÓN ========================================
 		$("select.filtros_").change(function() {
-		      //console.log(TEMAS); 
+
                       var sel_ = $("select.filtros_").find(":selected").attr("tag");
 		      var temas_seccion = TEMAS.filter(function(d) {
 			return d.seccion == sel_;
@@ -569,6 +568,31 @@ response.A.esp.filtros.years[1] = 2018  // <----
 			});
 
 		    $("select.filtros").find(":selected").trigger("change");
+		    
+		    var tema_seleccionado = $("select.filtros").find(":selected").attr("tag");
+
+		    var temaSeleccionado_ = temas_seccion.filter(function(d) { return d.json_arg == tema_seleccionado; })[0];
+		    var periodicidad = JSON.parse(temaSeleccionado_.periodicidad);
+
+		    d3.select("select#periodicidad").html("")
+
+
+		    var periodicidad_ = [];
+		    for(var k in periodicidad) {
+			var pair = [k,periodicidad[k]];
+			periodicidad_.push(pair);
+		    }
+
+		    d3.select("select#periodicidad").selectAll("options")
+			.data(periodicidad_).enter()
+			.append("option")
+			.attr("tag",function(d) { return d[1]; })
+			.html(function(d) { return d[0]; });
+
+
+//		    console.log(parametros())
+
+
 		});
 // ===================================================================================
 
@@ -623,9 +647,30 @@ response.A.esp.filtros.years[1] = 2018  // <----
                     $("input[type=radio][value=monthly]").click()
                     var sel_ = $("select.filtros").find(":selected").attr("tag");
 
-                    var title = TEMAS.filter(function(d) {
+                    var filtroXcambio_ = TEMAS.filter(function(d) {
                         return d.json_arg == sel_;
-                    })[0].tema;
+                    })//[0].tema;
+
+		    var _periodicidad = JSON.parse(filtroXcambio_[0].periodicidad);
+
+		    d3.select("select#periodicidad").html("")
+
+		    var periodicidad_ = [];
+		    for(var k in _periodicidad) {
+			var pair = [k,_periodicidad[k]];
+			periodicidad_.push(pair);
+		    }
+
+
+		    d3.select("select#periodicidad").selectAll("options")
+			.data(periodicidad_).enter()
+			.append("option")
+			.attr("tag",function(d) { return d[1]; })
+			.html(function(d) { return d[0]; });
+
+
+
+		    var title = filtroXcambio_[0].tema;;
 
                     $("div#mainTitle").html(title);
 
@@ -657,6 +702,27 @@ response.A.esp.filtros.years[1] = 2018  // <----
                     $("select#start_year").html("");
                     $("select#end_year").html("");
 
+
+
+/*
+		    var temaSeleccionado_ = temas_seccion.filter(function(d) { return d.json_arg == tema_seleccionado; })[0];
+		    var periodicidad = JSON.parse(temaSeleccionado_.periodicidad);
+
+		    d3.select("select#periodicidad").html("")
+		    console.log(parametros())
+
+		    var periodicidad_ = [];
+		    for(var k in periodicidad) {
+			var pair = [k,periodicidad[k]];
+			periodicidad_.push(pair);
+		    }
+
+		    d3.select("select#periodicidad").selectAll("options")
+			.data(periodicidad_).enter()
+			.append("option")
+			.attr("tag",function(d) { return d[1]; })
+			.html(function(d) { return d[0]; });
+*/
 
                     d3.select("select#start_year")
                         .selectAll("option").data(year_set).enter()
@@ -775,10 +841,13 @@ response.A.esp.filtros.years[1] = 2018  // <----
 
                 }); // <------- CAMBIO DE TEMA...
 
-                $('input[type=radio][name=periodicidad]').change(function() {
+		var periodo_selector = 'input[type=radio][name=periodicidad]';
+		var periodo_selector = 'select#periodicidad';
+
+                $(periodo_selector).change(function() {
                     var HP = $("div#HP");
                     var _month = $("._month");
-                    if (this.value == 'annually') {
+                    if ($(this).find(":selected").attr('tag') == 'annually') {
                         HP.css("z-index", "1");
                     } else {
                         HP.css("z-index", "-1");
@@ -1687,7 +1756,6 @@ response.A.esp.filtros.years[1] = 2018  // <----
         var months = obj.A[lang].filtros.months;
         var years = obj.A[lang].filtros.years;
         var options = obj.A[lang].filtros.options;
-//console.log(years)
 
 	var secciones = _.uniq(temas,function(d) {
 	  return d.seccion;
@@ -1707,6 +1775,7 @@ response.A.esp.filtros.years[1] = 2018  // <----
 
         var sel_ = $("select.filtros_").find(":selected").attr("tag");
 
+	var temasDeSeccion = temas.filter(function(d) { return d.seccion == sel_; });
 
         d3.select("select.filtros").selectAll("option")
             .data(temas.filter(function(d) { return d.seccion == sel_; })).enter()
@@ -1718,11 +1787,34 @@ response.A.esp.filtros.years[1] = 2018  // <----
                 return d.tema;
             });
 
+
+        var tema_seleccionado = $("select.filtros").find(":selected").attr("tag");
+
+        var temaSeleccionadoAttrs = temasDeSeccion.filter(function(d) { return d.json_arg == tema_seleccionado; })[0];
+	// Que el año inicial no dependa del blueprints.json sino de la respuesta del AJAX:
+	years[0] = temaSeleccionadoAttrs.init_year;
+
         // Colocar cada uno de los títulos en su respectivo lugar.
         for (var k in titles) {
             var selector = "#" + k + "_text";
             $(selector).text(titles[k]);
         }
+
+
+	var periodicidad = JSON.parse(temaSeleccionadoAttrs.periodicidad);
+
+	var periodicidad_ = []
+	for(var k in periodicidad) {
+	  var pair = [k,periodicidad[k]];
+	  periodicidad_.push(pair);
+	}
+
+	d3.select("select#periodicidad").selectAll("option")
+	  .data(periodicidad_).enter()
+	  .append("option")
+	  .attr("tag",function(d) { return d[1]; })
+	  .html(function(d) { return d[0]; });
+	  
 
         // Colocar los nombres de reporte en el apartado de "Temas".
         var temas = options.map(function(d) {
@@ -1968,7 +2060,8 @@ function descargarSerie() {
 
 function parametros() {
     var params = {};
-    params['period'] = $('input[name=periodicidad]:checked').val();
+//    params['period'] = $('input[name=periodicidad]:checked').val();
+    params['period'] = $("select#periodicidad").find(":selected").attr("tag");
 
     if (params["period"] == "monthly") {
         params['start_month'] = $("select#start_month")
