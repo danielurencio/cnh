@@ -6,6 +6,13 @@ from sqlalchemy import create_engine
 from pymongo import MongoClient
 
 
+# UNIDADES DE TRABAJO
+PMT = pd.ExcelFile("PMT.xlsx")
+pmt = PMT.parse("PMT")
+pozo_ut = PMT.parse("POZO_UT")
+sanciones = PMT.parse("Sanciones")
+
+# POZOS COMPROMETIDOS
 pozos_comp = pd.read_csv("https://rondasmexico.gob.mx/wp-content/uploads/2017/12/cr_pozos_b.csv",encoding='latin1',skipfooter=4,engine="python")
 pozos_comp = pozos_comp[['Contrato','Pozos comprometidos']]#.dropna()
 pozos_comp.set_index('Contrato',inplace=True)
@@ -127,5 +134,5 @@ IDS_LICITANTE_ADJ_MISSING = [['R1L2-1',27],['R1L3-1',24],['R1L3-12',17],['R1L3-1
 for i in IDS_LICITANTE_ADJ_MISSING:
   merge.loc[i[0],'ID_LICITANTE_ADJ'] = i[1]
 
-merge.to_sql('datos_licitaciones_bloques',engine_raw,if_exists='append')
+#merge.to_sql('datos_licitaciones_bloques',engine_raw,if_exists='append')
 print("Todo bien.")

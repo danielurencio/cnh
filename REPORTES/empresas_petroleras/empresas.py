@@ -1,3 +1,4 @@
+from __future__ import division
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
@@ -6,12 +7,13 @@ from collections import Counter
 
 #query = 'SELECT DISTINCT ID_LICITANTE,ID_EMPRESA,EMPRESA FROM LICITACIONES_BLOQUES_OFERTAS WHERE ID_LICITANTE != 0 AND ID_LICITANTE_ADJ = ID_LICITANTE'
 query = 'SELECT DISTINCT ID_LICITANTE,ID_EMPRESA,EMPRESA FROM LICITACIONES_BLOQUES_OFERTAS WHERE ID_LICITANTE != 0'
-
+query_ofertas = 'SELECT * FROM LICITACIONES_BLOQUES_OFERTAS'
 
 query_matrices = 'SELECT ID_MATRIZ,PAIS FROM DATOS_LICITACIONES_MATRICES'
 
 engine = create_engine('oracle://cmde_valid:valid17@172.16.120.3:1521/cnih')
 df = pd.read_sql(query,engine)
+df_ofertas = pd.read_sql(query_ofertas,engine)
 
 engine_raw = create_engine('oracle://cmde_raw:raw17@172.16.120.3:1521/cnih')
 matrices = pd.read_sql(query_matrices,engine_raw)
@@ -68,3 +70,41 @@ for i in lista_empresas:
 
 siempreEnConsorcio.sort()
 
+
+def bloquesXtipo(tipo,ronda=[],soloBloques=False):
+  if len(ronda) > 0:
+    df = df_ofertas[ (df_ofertas["id_empresa"].isin(tipo)) & (df_ofertas['ronda'] == ronda[0]) & (df_ofertas['licitacion'] == ronda[1]) ]
+  else:
+    df = df_ofertas[df_ofertas["id_empresa"].isin(tipo)].drop_duplicates()
+
+  df = df[df["id_licitante"] == df["id_licitante_adj"]][['empresa','id_bloque']].drop_duplicates()
+  df = df.sort_values('id_bloque').reset_index()[['empresa','id_bloque']]
+  if soloBloques:
+    df = df['id_bloque'].drop_duplicates().tolist()
+  else:
+    df = df.groupby("empresa").count()
+    df.rename(columns={ 'id_bloque':'bloques_adj' },inplace=True)
+  return df
+
+
+
+def ofertasXtipo(tipo,ronda=[]):
+  if len(ronda) > 0:
+    df = df_ofertas[ (df_ofertas["id_empresa"].isin(tipo)) & (df_ofertas['ronda'] == ronda[0]) & (df_ofertas['licitacion'] == ronda[1]) & (df_ofertas["validez"] == 'VALIDA') ]
+  else:
+    df = df_ofertas[(df_ofertas["id_empresa"].isin(tipo)) & (df_ofertas["validez"] == 'VALIDA')]
+
+  df = df.drop_duplicates()[['empresa','id_bloque']].drop_duplicates()
+  df = df.groupby('empresa').count()
+  df.rename(columns={ 'id_bloque':'ofertas' },inplace=True)
+  return df
+
+
+def tablaEfectividad(tipo):
+  df = ofertasXtipo(tipo).join(bloquesXtipo(tipo)).replace(np.nan,0)
+  df["efec"] = (df["bloques_adj"] / df["ofertas"]) * 100
+  return df
+
+
+def Bloques():
+  print 1
