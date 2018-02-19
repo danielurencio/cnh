@@ -10,6 +10,7 @@ query = 'SELECT * FROM DATOS_LICITACIONES_OFERTAS'
 ofertas = pd.read_sql(query,engine_raw)
 ofertas.columns = ofertas.columns.str.upper()
 ofertas.ID_BLOQUE = ofertas.ID_BLOQUE.map(lambda x:unicode(x.decode('latin1')))
+#ofertas.to_csv("ofertas_respaldo.csv",encoding="latin1")
 ofertas.set_index('ID_BLOQUE',inplace=True)
 
 ids_bien = pd.read_csv('archivos/IDS_BLOQUES.csv',encoding='latin1')

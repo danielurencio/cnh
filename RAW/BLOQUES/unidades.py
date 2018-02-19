@@ -9,6 +9,7 @@ engine = create_engine(conn)
 query = 'SELECT * FROM DATOS_LICITACIONES_BLOQUES'
 
 df = pd.read_sql(query,engine)
+#df.to_csv("respaldo_bloques.csv",encoding="latin1")
 df.columns = df.columns.str.upper()
 df.set_index('ID_BLOQUE',inplace=True)
 
@@ -26,6 +27,6 @@ pozo_ut = ids_bloques(pozo_ut)[['ID_BLOQUE','POZO_UT']].set_index('ID_BLOQUE')
 df = df.join(pmt).join(pozo_ut)
 df.rename(columns={ 'UT':'PMT' }, inplace=True)
 
-df.to_sql('datos_licitaciones_bloques_copia',engine,if_exists='append')
+#df.to_sql('datos_licitaciones_bloques_copia',engine,if_exists='append')
 print 'Todo bien.'
 
