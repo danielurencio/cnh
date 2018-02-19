@@ -1,4 +1,4 @@
-var ambiente = 'producciónn';
+﻿var ambiente = 'producciónn';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -404,7 +404,7 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////
 
     $.ajax({
-        url: HOSTNAME + "/cubos_temas.py",
+        url: HOSTNAME + "/cubos_temas_des.py",
         dataType: 'json',
         data: {
             'section': 'PRODUCCION'
@@ -495,7 +495,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 		      cambio_ = false;
                         
                         $.ajax({
-                            url: HOSTNAME + "/cubos_produccion.py",
+                            url: HOSTNAME + "/cubos_cuadros.py",
                             type: "post",
                             datatype: "json",
                             data: params,
@@ -804,7 +804,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                     var params = parametros();
 //if(!cambio_) {
                     $.ajax({
-                        url: HOSTNAME + "/cubos_produccion.py",
+                        url: HOSTNAME + "/cubos_cuadros.py",
                         type: "post",
                         datatype: "json",
                         data: params,
@@ -911,7 +911,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 _parametros_ = parametros();
 
                 $.ajax({
-                    url: HOSTNAME + "/cubos_produccion.py",
+                    url: HOSTNAME + "/cubos_cuadros.py",
                     type: "post",
                     datatype: "json",
                     data: params,
@@ -1209,7 +1209,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                     }
 
                     $.ajax({
-                        url: HOSTNAME + "/cubos_produccion.py",
+                        url: HOSTNAME + "/cubos_cuadros.py",
                         dataType: 'json',
                         data: params,
                         success: function(tabla_respuesta) {
@@ -1430,7 +1430,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 			    + params.subtitle + "']")[0];
 
                         $.ajax({
-                            url: HOSTNAME + "/cubos_produccion.py",
+                            url: HOSTNAME + "/cubos_cuadros.py",
                             dataType: 'json',
                             data: params,
                             success: function(tabla_respuesta) {
