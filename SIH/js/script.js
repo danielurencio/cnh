@@ -21,7 +21,7 @@ var FILE_NAME;
 
 $(document).ready(function() {
 
-  $("#datepicker_start").datepicker({inline:true, dateFormat:'yy-mm-dd' });
+  $("#datepicker_start").datepicker({inline:true, dateFormat:'yy-mm-dd'});
   $("#datepicker_end").datepicker({inline:true, dateFormat:'yy-mm-dd'});
 
 
@@ -685,6 +685,9 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                         return d.json_arg == sel_;
                     })//[0].tema;
 
+
+console.log(filtroXcambio_);
+
 		    var _periodicidad = JSON.parse(filtroXcambio_[0].periodicidad);
 
 		    d3.select("select#periodicidad").html("")
@@ -729,7 +732,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                     })[0].init_year;
 
 
-                    var current_year = Number(new Date().getFullYear());
+                    var current_year = filtroXcambio_[0].end_year ? +filtroXcambio_[0].end_year : Number(new Date().getFullYear());
                     var year_set = [];
 
                     for (var i = init_year; i <= current_year; i++) {
