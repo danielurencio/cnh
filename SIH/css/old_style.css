@@ -112,7 +112,7 @@ div#tabla {
   text-align:center;
 }
 
-table {
+table:not(.ui-datepicker-calendar) {
   border-collapse: collapse;
   border:0;
   text-align:center;
@@ -164,7 +164,7 @@ tbody.hide>tr:nth-child(2)>td:first-child {
 }
 
 
-/*---------------------REGLAS PARA CHECKBOX Y GRÃFICA--------------------*/
+/*---------------------REGLAS PARA CHECKBOX Y GRÁFICA--------------------*/
 .hide>tr>td:nth-child(2), .hide>tr>th:nth-child(2) {
  position:absolute;
 /* margin-left:-55px;*/
@@ -186,10 +186,10 @@ tbody.hide>tr:nth-child(2)>td:first-child {
  margin-bottom:2px;
  border-right:1px solid lightGray;
 }
-/*---------------------REGLAS PARA CHECKBOX Y GRÃFICA--------------------*/
+/*---------------------REGLAS PARA CHECKBOX Y GRÁFICA--------------------*/
 
 
-.hide td:nth-child(n+2),.hide th:nth-child(n+2) {
+td:nth-child(n+2):not(. ),th:nth-child(n+2) {
  font-size:11px;
  min-width:75px;
  width:75px;
@@ -241,7 +241,7 @@ label:hover {
 /* background:var(--temas-fondo);*/
 }
 
-/*peticiÃ³n Mendoza*/
+/*petición Mendoza*/
 #dist>td:first-child {
  /*background:var(--temas-fondo); /*IMPORTANTE*/
 }
@@ -613,9 +613,4 @@ div.chart_expandible>button:hover {
 
 .highcharts-credits:hover {
   cursor:auto;
-}
-
-input.datepicker {
-  border-radius:5px;
-  border:1px solid gray;
 }
