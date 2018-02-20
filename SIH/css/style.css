@@ -618,4 +618,5 @@ div.chart_expandible>button:hover {
 input.datepicker {
   border-radius:5px;
   border:1px solid gray;
+  text-align:center;
 }

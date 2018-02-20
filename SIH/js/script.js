@@ -21,8 +21,8 @@ var FILE_NAME;
 
 $(document).ready(function() {
 
-  $("#datepicker_start").datepicker({inline:true});
-  $("#datepicker_end").datepicker({inline:true});
+  $("#datepicker_start").datepicker({inline:true, dateFormat:'yy-mm-dd' });
+  $("#datepicker_end").datepicker({inline:true, dateFormat:'yy-mm-dd'});
 
 
   $(document).keypress(
@@ -464,9 +464,25 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
                     _parametros_ = parametros();
 
-                    var fecha_VALIDA_1 = +_parametros_['start_year'] <= +_parametros_['end_year']
-                    var fecha_VALIDA_2 = +_parametros_['start_year'] == +_parametros_['end_year'] &&
+		    var fecha_VALIDA_1, fecha_VALIDA_2;
+
+		    if(_parametros_["period"] != "daily") {
+                      fecha_VALIDA_1 = +_parametros_['start_year'] <= +_parametros_['end_year']
+                      fecha_VALIDA_2 = +_parametros_['start_year'] == +_parametros_['end_year'] &&
                         +_parametros_['end_month'] < +_parametros_['start_month'];
+		    } else {
+		      var d_cond_1 = +_parametros_["start_year"] < +_parametros_["end_year"];
+		      var d_cond_2 = +_parametros_["start_year"] == +_parametros_["end_year"] &&
+			  +_parametros_["end_month"] > +_parametros_["start_month"]
+		      var d_cond_3 = +_parametros_["start_year"] == +_parametros_["end_year"] &&
+			  +_parametros_["end_month"] == +_parametros_["start_month"] &&
+			  +_parametros_["start_day"] <= +_parametros_["end_day"];
+
+		      fecha_VALIDA_1 = d_cond_1 || d_cond_2 || d_cond_3;
+		      console.log(d_cond_1,d_cond_2,d_cond_3); 
+		    }
+
+//		    var fecha_VALIDA_3 = +_parametros_['period'] == 'daily' ? fecha_VALIDA_1 && 1  : false;
 
                     if (fecha_VALIDA_1 && !fecha_VALIDA_2) {
                         boton_consulta
@@ -548,6 +564,20 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
     			$("div#divDefense").remove();
 		        $("div#optionsDefense").remove();
                     }
+
+/*
+		    if (_parametros_['period'] == 'daily' ) {
+			var date_start = $('#datepicker_start').val();
+			var date_end = $('#datepicker_start').val();
+
+			if( !date_start || !date_end ) {
+			  alert("Seleccione una fecha válida.");
+    			  $("div#divDefense").remove();
+		          $("div#optionsDefense").remove();
+
+			}
+		    }
+*/
                 });
 
 
@@ -870,7 +900,8 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
 
                 var boton_consulta = $("button#consultar");
-                var selectors_ = ["select#start_year", "select#end_year", "select#start_month", "select#end_month", "select#periodicidad"];
+                var selectors_ = ["select#start_year", "select#end_year", "select#start_month", "select#end_month", "select#periodicidad", "#datepicker_start", "#datepicker_end"];
+
 
                 for (var j in selectors_) {
                     $(selectors_[j]).change(function() {
@@ -2085,14 +2116,41 @@ function parametros() {
         params['start_month'] = $("select#start_month")
 					.find(":selected").text();
         params['end_month'] = $("select#end_month").find(":selected").text();
+        params['start_year'] = $("select#start_year").find(":selected").text();
+        params['end_year'] = $("select#end_year").find(":selected").text();
+
+    } else if(params["period"] == 'daily') {
+	var date_start = $('#datepicker_start').val();
+	var date_end = $('#datepicker_end').val();
+
+	if(date_start) {
+	  params['start_year'] = date_start.split("-")[0];
+	  params['start_month'] = date_start.split("-")[1];
+	  params['start_day'] = date_start.split("-")[2];
+	} else {
+	  params['start_year'] = null;
+	  params['start_month'] = undefined;
+	  params['start_day'] = undefined;
+	}
+
+	if(date_end) {
+	  params['end_year'] = date_end.split("-")[0];
+	  params['end_month'] = date_end.split("-")[1];
+	  params['end_day'] = date_end.split("-")[2];
+	} else {
+	  params['start_year'] = undefined;
+	  params['start_month'] = undefined;
+	  params['start_day'] = undefined;
+	}
+
     } else {
         params['start_month'] = '01';
         params['end_month'] = '12';
+        params['start_year'] = $("select#start_year").find(":selected").text();
+        params['end_year'] = $("select#end_year").find(":selected").text();
     }
 
     params['topic'] = $("select.filtros").find(":selected").attr("tag");
-    params['start_year'] = $("select#start_year").find(":selected").text();
-    params['end_year'] = $("select#end_year").find(":selected").text();
 
     params['title'] = '';
     params['subtitle'] = '';
