@@ -44,15 +44,14 @@ div.cell {
 
 .a, .b, .c, .d { height:100%; }
 
-.a { width:55%; }
-.b { width:15%; }
+.a { width:45%; }
+.b { width:25%; }
 .c { width:15%; }
 .d { width:15%; }
 
 
-div#info_circle:hover {
-  cursor:pointer;
-  color:red;
+span#info_circle:hover {
+  cursor:pointer;  
 }
 
 .i_fechas {
@@ -340,7 +339,7 @@ button.filtros {
  border:green;
 }
 
-#grapher,#espere {
+#grapher,#espere,#mapaSeries {
   width:100%;
   height:100%;
   position:fixed;
@@ -348,7 +347,7 @@ button.filtros {
   z-index:51;
 }
 
-#espere { height:calc(100% - 95px); top:95px; }
+#espere, #mapaSeries { height:calc(100% - 95px); top:95px; }
 
 #grapher>div#chart {
  background:white;
@@ -385,6 +384,16 @@ div#espere>div.espere {
  border-radius:5px;
 }
 
+div#mapaSeries>div.espere {
+ background:white;
+ width:30%;
+ height:85%;
+ position:absolute;
+ left:35%;
+ top:7.5%;
+ border-radius:5px;
+}
+
 .container {
     display: table;
     height: 100%;
@@ -399,6 +408,15 @@ div#espere>div.espere {
     display: table-cell;
     vertical-align: middle;
 }
+
+.helper_mapaSeries {
+    #position: absolute;
+    #top: 0.1vmax;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+
 .content {
     #position: relative;
     #top: -50%;
@@ -409,10 +427,28 @@ div#espere>div.espere {
     font-size:15px;
 }
 
+.content_mapaSeries {
+    #position: relative;
+    #top: -1vmax;
+    margin: 0 auto;
+    width: auto;
+    font-weight:800;
+    font-size:15px;
+    padding-left:calc(25% - 2vmax);
+}
+
 .close_chart {
  position:absolute;
  top:calc(10% - 15px);
  right:calc(10% - 15px);
+ z-index:1;
+ opacity:0.8;
+}
+
+.close_mapaSeries {
+ position:absolute;
+ top:calc(7.5% - 15px);
+ right:calc(35% - 15px);
  z-index:1;
  opacity:0.8;
 }
@@ -425,7 +461,7 @@ button.datos_grapher {
  z-index:1;
 }
 
-.close_chart:hover {
+.close_chart:hover, .close_mapaSeries:hover {
  opacity:1;
  cursor:pointer;
 }

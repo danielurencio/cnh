@@ -422,6 +422,8 @@ $(document).ready(function() {
 response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 RenderWords(response, "esp", TEMAS);
 
+		mapaDeSeries(TEMAS);
+
                 $("button#consultar").on("click", function() {
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -608,8 +610,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
 		    var temaSeleccionado_ = temas_seccion.filter(function(d) { return d.json_arg == tema_seleccionado; })[0];
 		    var periodicidad = JSON.parse(temaSeleccionado_.periodicidad);
-		    console.log(periodicidad);
-
 /*
 		    d3.select("select#periodicidad").html("")
 
@@ -3399,3 +3399,48 @@ function periodForm(periodicidad) {
 	}
 /*------ ^^ Habilitar modo de seleccionar periodicidad según lo que esté seleccionado ^^ ---------*/
 }
+
+
+function mapaDeSeries(TEMAS) {
+  $("span#info_circle").hover(function(){
+    $(this).css("color", "rgb(120,255,255)");
+    }, function(){
+    $(this).css("color", "rgb(13,180,190)");
+  });
+
+  $('span#info_circle').click(function() {
+    $("#mapaSeries").css("visibility","visible");
+  });
+
+  $('.close_mapaSeries').on("click", function() {
+    $("#mapaSeries").css("visibility","hidden");
+  });
+
+  console.log(TEMAS)
+  var secciones = _.uniq(TEMAS.map(function(d) { return d.seccion; }));
+
+  d3.select('#indice').append("div")
+      .style('position','relative')
+      .style('top','1.5vmax')
+	.selectAll('li').data(secciones).enter()
+	.append('li')
+	.style('padding-bottom','0.2vmax')
+	.style('font-size','1vmax')
+	.style('font-weight','600')
+	.html(function(d) { return d; })
+    .each(function(li) {
+	var temas = TEMAS.filter(function(d) { return d.seccion == li; })
+			  .map(function(d) { return d.tema; });
+
+	d3.select(this).append("ul")
+	 .selectAll('li').data(temas).enter()
+	 .append('li')
+	 .style('font-size','0.7vmax')
+	 .style('font-weight','300')
+	 .html(function(d) {
+	    return d;
+	 });
+    });
+ 
+}
+
