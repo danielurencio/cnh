@@ -3421,7 +3421,7 @@ function mapaDeSeries(TEMAS) {
 
   d3.select('#indice').append("div")
       .style('position','relative')
-      .style('top','1.5vmax')
+      .style('top','20%')
 	.selectAll('li').data(secciones).enter()
 	.append('li')
 	.style('padding-bottom','0.2vmax')
@@ -3435,7 +3435,7 @@ function mapaDeSeries(TEMAS) {
 	d3.select(this).append("ul")
 	 .selectAll('li').data(temas).enter()
 	 .append('li')
-	 .style('font-size','0.7vmax')
+	 .style('font-size','0.9vmax')
 	 .style('font-weight','300')
 	 .html(function(d) {
 	    return d;

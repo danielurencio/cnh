@@ -386,11 +386,11 @@ div#espere>div.espere {
 
 div#mapaSeries>div.espere {
  background:white;
- width:30%;
- height:85%;
+ width:70%;
+ height:80%;
  position:absolute;
- left:35%;
- top:7.5%;
+ left:15%;
+ top:10%;
  border-radius:5px;
 }
 
@@ -411,7 +411,7 @@ div#mapaSeries>div.espere {
 
 .helper_mapaSeries {
     #position: absolute;
-    #top: 0.1vmax;
+    #top: 0%;
     display: table-cell;
     vertical-align: middle;
 }
@@ -419,7 +419,7 @@ div#mapaSeries>div.espere {
 
 .content {
     #position: relative;
-    #top: -50%;
+    #top: -0%;
     margin: 0 auto;
     width: 200px;
     text-align:center;
@@ -429,7 +429,7 @@ div#mapaSeries>div.espere {
 
 .content_mapaSeries {
     #position: relative;
-    #top: -1vmax;
+    #top: -50%;
     margin: 0 auto;
     width: auto;
     font-weight:800;
@@ -447,8 +447,8 @@ div#mapaSeries>div.espere {
 
 .close_mapaSeries {
  position:absolute;
- top:calc(7.5% - 15px);
- right:calc(35% - 15px);
+ top:calc(9.5% - 15px);
+ right:calc(13% - 15px);
  z-index:1;
  opacity:0.8;
 }
