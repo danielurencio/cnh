@@ -3357,8 +3357,11 @@ function periodForm(periodicidad) {
 
 /*-----------------Activar y desactivar periodicidades según el caso----------------------------------*/
 	if(periodicidad) {
+		   var values = [];
+		   for( var k in periodicidad) { values.push(periodicidad[k]) }
 		   var _existen = $('input[type=radio][name=periodicidad]').filter(function() {
-			return Object.values(periodicidad).includes(this.value)
+//			return Object.values(periodicidad).includes(this.value)
+			return values.includes(this.value);
 		   });
 
 		   _existen[0].checked = true;
@@ -3370,7 +3373,8 @@ function periodForm(periodicidad) {
 
 
 		   $('input[type=radio][name=periodicidad]').filter(function() {
-			return !Object.values(periodicidad).includes(this.value)
+//			return !Object.values(periodicidad).includes(this.value)
+			return !values.includes(this.value);
 		   }).each(function() {
 			this.disabled = true;
 			$("div#" + this.value).css("color","gray");
@@ -3416,7 +3420,6 @@ function mapaDeSeries(TEMAS) {
     $("#mapaSeries").css("visibility","hidden");
   });
 
-  console.log(TEMAS)
   var secciones = _.uniq(TEMAS.map(function(d) { return d.seccion; }));
 
   d3.select('#indice').append("div")
