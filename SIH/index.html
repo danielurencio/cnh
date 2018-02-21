@@ -37,7 +37,7 @@
 
 <!-- ################################# FILTROS ################### (start) -->
 
-<div id="filtros" style="width:100%;padding-top:0%;height:90px;position:fixed;background:rgb(25%,25%,25%);color:white;border-bottom-style:solid;border-bottom-width:1px;z-index:50;">
+<div id="filtros" style="width:100%;padding-top:0%;height:95px;position:fixed;background:rgb(25%,25%,25%);color:white;z-index:50;">
 
 <div style='width:100%; background:rgba(0,0,0,0.2);height:2%;'></div>
 
@@ -47,22 +47,29 @@
    <div class='cell a' style='padding-left:20px;'>
 <!--    <div class='titulo_cont'>&nbsp;</div> -->
     <div style='width:100%;height:7px;'></div>
-    <div id='tema_options' style='text-align:center;'>
+    <div id='tema_options' style='text-align:center;width:100%;'>
 
-     <div class='cell' style='width:25%;'>
-      <div class='titulo_cont'>Sección</div>
-      <form>
-       <select class="filtros_" style="width:99%;">
-       </select>
-      </form>
+
+     <div class='cell' style='width:10%;'>
+       <div style='width:100%;'>
+        <div class='titulo_cont'>Mapa de series</div>
+        <div class='titulo_cont' id='info_circle' style='font-size:36px;font-weight:700;position:relative;top:-6px;color:rgb(13,180,190);'>&#9432;</div> 
+       </div>
      </div>
 
+
      <div class='cell' style='width:25%;'>
-      <div class='titulo_cont'>Tema</div>
-      <form>
-       <select class="filtros" style="width:99%;">
-       </select>
-      </form>
+       <div style='width:100%;'>
+        <div class='titulo_cont'>Sección</div>
+        <select class="filtros_" style="width:100%;"></select>
+       </div>
+     </div>
+
+     <div class='cell' style='width:25%'>
+      <div style="width:100%;">
+       <div class='titulo_cont'>Tema</div>
+       <select class="filtros" style="width:100%;"></select>
+      </div>
      </div>
 
     </div>
@@ -71,31 +78,35 @@
 
    <div class='cell c'>
     <div class='titulo_cont'>Periodicidad</div>
-    <div style="width:100%; display:table; height:40px">
+    <div style="width:100%; display:table; height:40px; position:relative;top:-5px;">
      <div style='display:table-row;'>
 
-
+<!--
 <select id='periodicidad' style='width:90%'>
 </select>
+-->
 
 
-<!--
       <div class='cell i_fechas' style='text-align:right;'>
        <form action>
 
         <div>
-	 <input type='radio' name='periodicidad' value='monthly' checked></input>
+	 <input type='radio' name='periodicidad' value='annually' checked></input>
         </div>
         <div>
-	 <input type='radio' name='periodicidad' value='annually'></input>
+	 <input type='radio' name='periodicidad' value='monthly'></input>
+        </div>
+        <div>
+	<input type='radio' name='periodicidad' value='daily'></input>
         </div>
        </form>
       </div>
+
       <div class='cell i_fechas'>
-	<div>Mensual</div>
-	<div>Anual</div>
+	<div id='annually'>Anual</div>
+	<div id='monthly'>Mensual</div>
+	<div id='daily'>Diario</div>
       </div>
--->
 
      </div>
    </div>
@@ -141,8 +152,9 @@
 	 </div>
 	</div>
       </div>
+
       <div class='cell i_fechas' style='position:relative;'>
-	<div id='HP' style='width:46%;height:calc(100% - 0px);position:absolute;z-index:-1;background-color:rgb(25%,25%,25%);opacity:1;border-radius:0px;'>
+	<div id='HP' style='width:46%;height:calc(100% - 0px);position:absolute;z-index:1;background-color:rgb(25%,25%,25%);opacity:1;border-radius:0px;'>
         </div>
 	  <form>
 	    <select class='_month' id='start_month' style="width:45%;"></select>
@@ -169,7 +181,7 @@
 
 <!-- ################################# FILTROS ##################### (end)-->
 
-  <div id='mainTitle' style='width:100%;text-align:center;top:100px;z-index:3;position:fixed;font-weight:800;font-size:24px;color:rgba(0,0,0,0.7)'>
+  <div id='mainTitle' style='width:100%;text-align:center;top:105px;z-index:3;position:fixed;font-weight:800;font-size:24px;color:rgba(0,0,0,0.7)'>
  </div>
 
 

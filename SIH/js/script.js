@@ -19,6 +19,7 @@ var threshold = 500000;
 var noHayTabla = false;
 var FILE_NAME;
 
+
 $(document).ready(function() {
 
   $("#datepicker_start").datepicker({inline:true, dateFormat:'yy-mm-dd'});
@@ -607,7 +608,9 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
 		    var temaSeleccionado_ = temas_seccion.filter(function(d) { return d.json_arg == tema_seleccionado; })[0];
 		    var periodicidad = JSON.parse(temaSeleccionado_.periodicidad);
+		    console.log(periodicidad);
 
+/*
 		    d3.select("select#periodicidad").html("")
 
 
@@ -622,10 +625,10 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 			.append("option")
 			.attr("tag",function(d) { return d[1]; })
 			.html(function(d) { return d[0]; });
-
+*/
 
 /*------ vv Habilitar modo de seleccionar periodicidad según lo que esté seleccionado vv ---------*/
-		    periodForm();
+		    periodForm(periodicidad);
 /*------ ^^ Habilitar modo de seleccionar periodicidad según lo que esté seleccionado ^^ ---------*/
 		});
 // ===================================================================================
@@ -686,7 +689,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                     })//[0].tema;
 
 
-console.log(filtroXcambio_);
 
 		    var _periodicidad = JSON.parse(filtroXcambio_[0].periodicidad);
 
@@ -707,7 +709,7 @@ console.log(filtroXcambio_);
 
 
 /*------ vv Habilitar modo de seleccionar periodicidad según lo que esté seleccionado vv ---------*/
-		    periodForm();
+		    periodForm(_periodicidad);
 /*------ ^^ Habilitar modo de seleccionar periodicidad según lo que esté seleccionado ^^ ---------*/
 
 		    var title = filtroXcambio_[0].tema;;
@@ -881,8 +883,8 @@ console.log(filtroXcambio_);
 
                 }); // <------- CAMBIO DE TEMA...
 
-//		var periodo_selector = 'input[type=radio][name=periodicidad]';
-		var periodo_selector = 'select#periodicidad';
+		var periodo_selector = 'input[type=radio][name=periodicidad]';
+//		var periodo_selector = 'select#periodicidad';
 
                 $(periodo_selector).change(function() {
 /*
@@ -903,7 +905,7 @@ console.log(filtroXcambio_);
 
 
                 var boton_consulta = $("button#consultar");
-                var selectors_ = ["select#start_year", "select#end_year", "select#start_month", "select#end_month", "select#periodicidad", "#datepicker_start", "#datepicker_end"];
+                var selectors_ = ["select#start_year", "select#end_year", "select#start_month", "select#end_month", "input[type=radio][name=periodicidad]"/*"select#periodicidad"*/, "#datepicker_start", "#datepicker_end"];
 
 
                 for (var j in selectors_) {
@@ -1864,7 +1866,7 @@ console.log(filtroXcambio_);
 
 
 /*------ vv Habilitar modo de seleccionar periodicidad según lo que esté seleccionado vv ---------*/
-	periodForm();
+	periodForm(periodicidad);
 /*------ ^^ Habilitar modo de seleccionar periodicidad según lo que esté seleccionado ^^ ---------*/
 
 
@@ -2112,8 +2114,8 @@ function descargarSerie() {
 
 function parametros() {
     var params = {};
-//    params['period'] = $('input[name=periodicidad]:checked').val();
-    params['period'] = $("select#periodicidad").find(":selected").attr("tag");
+    params['period'] = $('input[name=periodicidad]:checked').val();
+//    params['period'] = $("select#periodicidad").find(":selected").attr("tag");
 
     if (params["period"] == "monthly") {
         params['start_month'] = $("select#start_month")
@@ -3351,10 +3353,36 @@ function checkIfEmpty(data) {
 };
 
 
-function periodForm() {
+function periodForm(periodicidad) {
+
+/*-----------------Activar y desactivar periodicidades según el caso----------------------------------*/
+	if(periodicidad) {
+		   var _existen = $('input[type=radio][name=periodicidad]').filter(function() {
+			return Object.values(periodicidad).includes(this.value)
+		   });
+
+		   _existen[0].checked = true;
+
+		   _existen.each(function() {
+			this.disabled = false;
+			$("div#" + this.value).css("color","white");
+		   });
+
+
+		   $('input[type=radio][name=periodicidad]').filter(function() {
+			return !Object.values(periodicidad).includes(this.value)
+		   }).each(function() {
+			this.disabled = true;
+			$("div#" + this.value).css("color","gray");
+		   });
+	}
+
+/*-----------------Activar y desactivar periodicidades según el caso----------------------------------*/
 /*------ vv Habilitar modo de seleccionar periodicidad según lo que esté seleccionado vv ---------*/
         var HP = $("div#HP");
-	var _selected_period_ = $("select#periodicidad").find(":selected").attr("tag");
+//	var _selected_period_ = $("select#periodicidad").find(":selected").attr("tag");
+	var _selected_period_ = $('input[name=periodicidad]:checked').val();
+
 	var dateForm = $("div#dateForm");
 
 	if (_selected_period_ == 'annually') {
