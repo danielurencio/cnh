@@ -3357,21 +3357,31 @@ function periodForm(periodicidad) {
 
 /*-----------------Activar y desactivar periodicidades según el caso----------------------------------*/
 	if(periodicidad) {
+
 		   var values = [];
 		   for( var k in periodicidad) { values.push(periodicidad[k]) }
+/*
 		   var _existen = $('input[type=radio][name=periodicidad]').filter(function() {
 //			return Object.values(periodicidad).includes(this.value)
 			return values.includes(this.value);
 		   });
+*/
+
+		   var _items = document.querySelectorAll('input[type=radio][name=periodicidad]');
+		   _items = Array.prototype.slice.call(_items);
+
+		   var _existen = _items.filter(function(d) {
+			return values.some(function(e) { return e == d.value; });
+		   });
 
 		   _existen[0].checked = true;
 
-		   _existen.each(function() {
-			this.disabled = false;
-			$("div#" + this.value).css("color","white");
+		   _existen.forEach(function(d) {
+			d.disabled = false;
+			$("div#" + d.value).css("color","white");
 		   });
 
-
+/*
 		   $('input[type=radio][name=periodicidad]').filter(function() {
 //			return !Object.values(periodicidad).includes(this.value)
 			return !values.includes(this.value);
@@ -3379,6 +3389,17 @@ function periodForm(periodicidad) {
 			this.disabled = true;
 			$("div#" + this.value).css("color","gray");
 		   });
+*/
+
+		   var no_existen = _items.filter(function(d) {
+			return !values.some(function(e) { return e == d.value; });
+		   });
+
+		   no_existen.forEach(function(d) {
+			d.disabled = true;
+			$("div#" + d.value).css("color","gray");
+		   });
+		   
 	}
 
 /*-----------------Activar y desactivar periodicidades según el caso----------------------------------*/
