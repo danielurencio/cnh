@@ -22,6 +22,13 @@ var FILE_NAME;
 
 $(document).ready(function() {
 
+  var worker = new Worker('js/worker.js');
+
+		    worker.onmessage = function(e) {
+		      var _data = JSON.parse(e.data)
+		      filtrarSeries(null,_data);
+		    };
+
   $("#datepicker_start").datepicker({inline:true, dateFormat:'yy-mm-dd'});
   $("#datepicker_end").datepicker({inline:true, dateFormat:'yy-mm-dd'});
 
@@ -80,17 +87,17 @@ $(document).ready(function() {
 
 
     function filtrarSeries(data, data_buscar) {
+
         var str_;
 
         function regexCheck(patt) {
             return patt.test(str_);
         };
 
-        var color = _azul_
-        var color_ = _azul_ //getComputedStyle(document.body)
-        //	.getPropertyValue('--temas-fondo');
+        var color = _azul_;
+        var color_ = _azul_;
 
-        var data_ = JSON.parse(JSON.stringify(data));
+//        var data_ = JSON.parse(JSON.stringify(data));
         var parser = new DOMParser();
         var arr = [];
 
@@ -120,6 +127,7 @@ $(document).ready(function() {
         }
 //       cosas();
        function cosas(data_buscar_) {
+/*
         for (var i in data_) {
             for (var j in data_[i]) {
                 if (typeof(data_[i][j]) == 'object') {
@@ -137,7 +145,7 @@ $(document).ready(function() {
                 }
             }
         };
-
+*/
         var data_buscar_ = data_buscar_.map(function(d) {
             return d.join(" > ");
         });
@@ -485,15 +493,10 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 		      console.log(d_cond_1,d_cond_2,d_cond_3); 
 		    }
 
-//		    var fecha_VALIDA_3 = +_parametros_['period'] == 'daily' ? fecha_VALIDA_1 && 1  : false;
 
                     if (fecha_VALIDA_1 && !fecha_VALIDA_2) {
                         boton_consulta
 			    .attr("class","consulta_normal")
-//                            .css("background-color", "rgb(221,221,221)")
-//                            .css("border", "2px outset rgb(221,221,221)")
-//                            .css("color", "black")
-//                            .css("border-radius", "0px")
                             .css("font-weight", "600");
 
                         $("div#espere").css("visibility", "visible");
@@ -512,10 +515,18 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
 
                         var params = parametros();
-//console.log(params)
+
 /*------------------AJAX con botón de consultar-------------------------------*/    
 	    if(cambio_) {
 		      cambio_ = false;
+
+/*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
+
+		      var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
+		      worker.postMessage(worker_tools);
+
+/*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
+
                         
                         $.ajax({
                             url: HOSTNAME + "/cubos_cuadros.py",
@@ -523,10 +534,13 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             datatype: "json",
                             data: params,
                             success: function(data) {
-//console.log(params,data)
+
 			      var ifEmpty = checkIfEmpty(data);
 /*=================Chechar si las tablas están vacías========================*/
 			      if(!ifEmpty) {
+                                ajaxFunction(data, Cubos, filtrarSeries, params_especiales, null);
+
+/*
 				$.ajax({
 				  url:HOSTNAME + "/cubos_buscar.py",
 				  type:"post",
@@ -535,15 +549,18 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 				  success: function(data_buscar) {
 				    data_buscar = JSON.parse(data_buscar);
 				    var data_buscar;
-                                    ajaxFunction(data, Cubos, filtrarSeries,
-						params_especiales, data_buscar);
+                                    ajaxFunction(data, Cubos, filtrarSeries,     //|
+						params_especiales, data_buscar); //| ¡"AjaxFunction" & "FiltrarSeries" van juntas!
+
+//				    filtrarSeries(data,data_buscar);		 //|
 
 				  }			      
 				});
-
+*/
 			      } else {
-				data_buscar = null;
-				ajaxFunction(data,Cubos,filtrarSeries,params_especiales, data_buscar);
+				data_buscar = null;						       //|
+				ajaxFunction(data,Cubos,filtrarSeries,params_especiales, data_buscar); //| ¡"AjaxFunction" & "FiltrarSeries" van juntas!
+				filtrarSeries(data,data_buscar);				       //|
 			      }
 /*=================Chechar si las tablas están vacías========================*/
 
@@ -822,10 +839,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
                     boton_consulta
 			.attr("class","consulta_normal")
-//                        .css("background-color", "rgb(221,221,221)")
-//                        .css("border", "2px outset rgb(221,221,221)")
-//                        .css("color", "black")
-//                        .css("border-radius", "0px")
                         .css("font-weight", "600");
 
                     $("div#espere").css("visibility", "visible");
@@ -844,6 +857,15 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 /////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
 //////////////////////////////////////////////////////////////////////////////
                     var params = parametros();
+
+/*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
+
+		    var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
+		    worker.postMessage(worker_tools);
+
+/*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
+
+
 //if(!cambio_) {
                     $.ajax({
                         url: HOSTNAME + "/cubos_cuadros.py",
@@ -852,9 +874,12 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                         data: params,
                         success: function(data) {
 			  var ifEmpty = checkIfEmpty(data);
-/*=================Chechar si las tablas están vacías========================*/
+/*=================Checar si las tablas están vacías========================*/
 			  if(!ifEmpty) {
+                            ajaxFunction(data, Cubos, filtrarSeries, null, null); //| ¡"AjaxFunction" & "FiltrarSeries"
+                            leyendaNotas(TEMAS, params);
 
+/*
                             $.ajax({
                                 url: HOSTNAME + "/cubos_buscar.py",
                                 type: "post",
@@ -862,21 +887,25 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                                 data: params,
                                 success: function(data_buscar) {
                             	    data_buscar = JSON.parse(data_buscar);
-                                    ajaxFunction(data, Cubos, filtrarSeries, null, data_buscar);
+//				    console.log(data_buscar)
+                                    ajaxFunction(data, Cubos, filtrarSeries, null, data_buscar); //| ¡"AjaxFunction" & "FiltrarSeries"
+//				    filtrarSeries(data,data_buscar);				 //|      van juntas!
                                     leyendaNotas(TEMAS, params);
+
 //				    cambio_ = false;
                                 }
                             });
+*/
 
 			  } else {
-				//console.log("qué está pasando");
 			    data_buscar = null;
-			    ajaxFunction(data,Cubos,filtrarSeries,null,data_buscar);
+			    ajaxFunction(data,Cubos,filtrarSeries,null,data_buscar); //| ¡"AjaxFunction" & "FiltrarSeries"
+//			    filtrarSeries(data,data_buscar);			     //|        van juntas!
 			    leyendaNotas(TEMAS,params)
 			  }
-/*=================Chechar si las tablas están vacías========================*/
+/*=================Checar si las tablas están vacías========================*/
                         }
-                    })
+                    });
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////// AJAX - CONSULTA AL CAMBIAR DE TEMA - /////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -887,16 +916,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 //		var periodo_selector = 'select#periodicidad';
 
                 $(periodo_selector).change(function() {
-/*
-                    var HP = $("div#HP");
-                    var _month = $("._month");
-                    if ($(this).find(":selected").attr('tag') == 'annually') {
-                        HP.css("z-index", "1");
-                    } else {
-                        HP.css("z-index", "-1");
-                    }
-                    var newParams = parametros();
-*/
 
 /*------ vv Habilitar modo de seleccionar periodicidad según lo que esté seleccionado vv ---------*/
 		    periodForm();
@@ -958,30 +977,46 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 var params = parametros();
                 _parametros_ = parametros();
 
+
+/*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
+
+		      var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
+		      worker.postMessage(worker_tools);
+
+/*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
+
                 $.ajax({
                     url: HOSTNAME + "/cubos_cuadros.py",
-                    type: "post",
+                    type: "get",
                     datatype: "json",
                     data: params,
                     success: function(data) {
 			var ifEmpty = checkIfEmpty(data);
+                        ajaxFunction(data, Cubos, filtrarSeries, null, null); //| ¡"AjaxFunction" & "filtrarSeries"
+                        leyendaNotas(TEMAS, params);
+			cambio_ = false;
+/*	
                         $.ajax({
                             url: HOSTNAME + "/cubos_buscar.py",
-                            type: "post",
+                            type: "get",
                             datatype: "json",
                             data: params,
                             success: function(data_buscar) {
+		console.log("AQUÍ!!!")
                         	data_buscar = JSON.parse(data_buscar);
-                                ajaxFunction(data, Cubos, filtrarSeries, null, data_buscar);
+                                ajaxFunction(data, Cubos, filtrarSeries, null, data_buscar); //| ¡"AjaxFunction" & "filtrarSeries"
+				//filtrarSeries(data,data_buscar);			     //|    van juntas!
                                 leyendaNotas(TEMAS, params);
 				cambio_ = false;
                             }
 
                         });
-
+*/
                     }
 
                 });
+
+
 
                 var sel_ = $("select.filtros").find(":selected").attr("tag");
 
@@ -2211,8 +2246,8 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
 
     }
 
-    filtrarSeries(data, data_buscar);
-    var consulta_display = $(consulta).css("display");
+    //filtrarSeries(data, data_buscar);
+//    var consulta_display = $(consulta).css("display");
 
     if (!noHayTabla && !special_params) {
         $("div#espere").css("visibility", "hidden");
