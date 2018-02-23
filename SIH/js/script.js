@@ -164,7 +164,7 @@ $(document).ready(function() {
 
 	  return str;//d.join(" > ");
         });
-
+console.log(data_buscar)
         d3.select("input#filtroSerie").on("input", function(d) {
 
 	  if(!data_BUSCAR) { // <-- Si no está corriendo 'cubos_buscar.py' ..
@@ -188,7 +188,7 @@ $(document).ready(function() {
                     str_ = d;
                     return patts.every(regexCheck);
                 });
-
+console.log(matches)
                 matches = matches.map(function(d) {
                     return d.replace(/€/g, " <span id='aquo'>&rsaquo;</span> ");
                 });
