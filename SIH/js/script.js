@@ -417,7 +417,7 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////
 
     $.ajax({
-        url: HOSTNAME + "/cubos_temas_des.py",
+        url: HOSTNAME + "/cubos_temas.py",
         dataType: 'json',
         data: {
             'section': 'PRODUCCION'
