@@ -434,7 +434,7 @@ div#mapaSeries>div.espere {
     width: auto;
     font-weight:800;
     font-size:15px;
-    padding-left:calc(25% - 2vmax);
+    padding-left:calc(25% - 2vw);
 }
 
 .close_chart {
