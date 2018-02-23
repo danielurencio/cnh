@@ -164,7 +164,7 @@ $(document).ready(function() {
 
 	  return str;//d.join(" > ");
         });
-console.log(data_buscar)
+console.log(data_buscar_)
         d3.select("input#filtroSerie").on("input", function(d) {
 
 	  if(!data_BUSCAR) { // <-- Si no está corriendo 'cubos_buscar.py' ..
