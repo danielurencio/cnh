@@ -146,6 +146,7 @@ $(document).ready(function() {
             }
         };
 */
+var data_buscar_ = JSON.parse(data_buscar_)
 console.log(data_buscar_)
         var data_buscar_ = data_buscar_.map(function(d) {
             return d.join(" > ");
