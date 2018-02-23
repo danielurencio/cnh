@@ -1,4 +1,4 @@
-﻿var ambiente = 'producción';
+﻿var ambiente = 'producciónn';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -3491,7 +3491,7 @@ function mapaDeSeries(TEMAS) {
 	.selectAll('li').data(secciones).enter()
 	.append('li')
 	.style('padding-bottom','0.2vw')
-	.style('font-size','1vw')
+	.style('font-size','2vmin')//'1vw')
 	.style('font-weight','600')
 	.html(function(d) { return d; })
     .each(function(li) {
@@ -3501,7 +3501,7 @@ function mapaDeSeries(TEMAS) {
 	d3.select(this).append("ul")
 	 .selectAll('li').data(temas).enter()
 	 .append('li')
-	 .style('font-size','0.9vw')
+	 .style('font-size','1.5vmin')//'0.9vw')
 	 .style('font-weight','300')
 	 .html(function(d) {
 	    return d;
