@@ -3469,6 +3469,8 @@ function periodForm(periodicidad) {
 
 
 function mapaDeSeries(TEMAS) {
+  console.log(TEMAS);
+
   $("span#info_circle").hover(function(){
     $(this).css("color", "rgb(120,255,255)");
     }, function(){
@@ -3490,6 +3492,7 @@ function mapaDeSeries(TEMAS) {
       .style('top','20%')
 	.selectAll('li').data(secciones).enter()
 	.append('li')
+	.attr("tag",function(d) { return d; })
 	.style('padding-bottom','0.2vw')
 	.style('font-size','2vmin')//'1vw')
 	.style('font-weight','600')
@@ -3501,10 +3504,26 @@ function mapaDeSeries(TEMAS) {
 	d3.select(this).append("ul")
 	 .selectAll('li').data(temas).enter()
 	 .append('li')
+	 .attr("tag",function(d) { return d; })
 	 .style('font-size','1.5vmin')//'0.9vw')
 	 .style('font-weight','300')
+	 .attr('class','liMapa')
 	 .html(function(d) {
 	    return d;
+	 }).on('click',function(d) {
+	    $('div#mapaSeries').css('visibility','hidden');
+
+	    var thisNode = $(this).text();
+	    var parentNode = this.parentNode.parentNode.getAttribute('tag');
+
+	    $('select.filtros_ option[tag="'+ parentNode +'"]')
+		.prop('selected',true)
+		.trigger("change");
+
+	    $('select.filtros option').filter(function() { return this.innerText == thisNode; })
+		.prop('selected',true).trigger("change")
+
+
 	 });
     });
  
