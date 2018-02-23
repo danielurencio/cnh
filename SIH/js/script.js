@@ -146,12 +146,12 @@ $(document).ready(function() {
             }
         };
 */
-/*
+console.log(data_buscar_)
         var data_buscar_ = data_buscar_.map(function(d) {
             return d.join(" > ");
         });
-*/
-	
+
+/*	
         var data_buscar_ = _.map(data_buscar_,function(d) {
 	  var str = '';
 	  for(var i in d) {
@@ -164,7 +164,8 @@ $(document).ready(function() {
 
 	  return str;//d.join(" > ");
         });
-console.log(data_buscar_)
+*/
+
         d3.select("input#filtroSerie").on("input", function(d) {
 
 	  if(!data_BUSCAR) { // <-- Si no está corriendo 'cubos_buscar.py' ..
