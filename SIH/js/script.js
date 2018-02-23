@@ -1,4 +1,4 @@
-﻿var ambiente = 'producción';
+﻿var ambiente = 'producciónn';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -420,7 +420,7 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////
 
     $.ajax({
-        url: HOSTNAME + "/cubos_temas.py",
+        url: HOSTNAME + "/cubos_temas_des.py",
         dataType: 'json',
         data: {
             'section': 'PRODUCCION'
@@ -1043,8 +1043,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
                 d3.selectAll("button#selection").on("click", function() {
                     var series = obtener_series();
-                    //console.log("algo..");
-                    //console.log(series);
 
                     if (series && series.length == 0) {
                         alert("Seleccione alguna serie.");
@@ -2320,6 +2318,7 @@ function PrincipalCheckBox() {
 
     d3.selectAll("button#selection").on("click", function() {
         var series = obtener_series();
+
         if (series && series.length == 0) {
             alert("Seleccione alguna serie.");
         } else {
@@ -2522,10 +2521,9 @@ var cached_sum = []
 					+ tema + "," + serie__;
                     chunk.push(_cont_);
                 }
-//console.log(tema)
 
 
-                var subtema = ss.subtema;
+                var subtema = ss.subtema.replace(/,/g,';');
                 if (subtema != "") chunk.push("          " + subtema
 						+ "," + serie_);
             });
@@ -2558,6 +2556,8 @@ var cached_sum = []
 			 .replace(/Í/g,'I')
 			 .replace(/Ó/g,'O')
 			 .replace(/Ú/g,'U');
+
+    
 
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveOrOpenBlob(csvFile, file_name + ".csv");
