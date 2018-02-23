@@ -162,6 +162,12 @@ tbody.hide>tbody.hide {
  width:360px; /*nombres largos*/
  position:absolute;
  left:0;
+/*
+ max-width:360px;
+ text-overflow:ellipsis;
+ overflow:hidden;
+ white-space: nowrap;
+*/
 }
 
 .scroll_id_header>th:first-child {

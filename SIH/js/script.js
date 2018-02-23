@@ -3412,7 +3412,11 @@ function periodForm(periodicidad) {
 			return values.some(function(e) { return e == d.value; });
 		   });
 
-		   _existen[0].checked = true;
+		   if(_existen.some(function(d) { return d.value == 'monthly'; })) {
+		     _existen.filter(function(d) { return d.value == 'monthly'; })[0].checked = true;
+		   } else {
+		     _existen[0].checked = true;
+		   }
 
 		   _existen.forEach(function(d) {
 			d.disabled = false;
