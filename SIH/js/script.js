@@ -151,7 +151,19 @@ $(document).ready(function() {
             return d.join(" > ");
         });
 */
-        var data_buscar_ = _.map(data_buscar_,function(d) { return d.join(">"); });
+	
+        var data_buscar_ = _.map(data_buscar_,function(d) {
+	  var str = '';
+	  for(var i in d) {
+	    if( i < d.length - 1 ) {
+		str += d[i] + " > ";
+	    } else {
+		str += d[i]
+	    }
+	  }
+
+	  return str;//d.join(" > ");
+        });
 
         d3.select("input#filtroSerie").on("input", function(d) {
 
