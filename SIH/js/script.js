@@ -1,4 +1,4 @@
-﻿var ambiente = 'producciónn';
+﻿var ambiente = 'producción';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -125,7 +125,7 @@ $(document).ready(function() {
 
 
         }
-//       cosas();
+
        function cosas(data_buscar_) {
 /*
         for (var i in data_) {
@@ -146,27 +146,12 @@ $(document).ready(function() {
             }
         };
 */
-
+	// Fix necesario para que el filtro funcione con IE y Chrome.
 	if(typeof(data_buscar) == 'string') var data_buscar_ = JSON.parse(data_buscar_);
 
         var data_buscar_ = data_buscar_.map(function(d) {
             return d.join(" > ");
         });
-
-/*	
-        var data_buscar_ = _.map(data_buscar_,function(d) {
-	  var str = '';
-	  for(var i in d) {
-	    if( i < d.length - 1 ) {
-		str += d[i] + " > ";
-	    } else {
-		str += d[i]
-	    }
-	  }
-
-	  return str;//d.join(" > ");
-        });
-*/
 
         d3.select("input#filtroSerie").on("input", function(d) {
 
@@ -3431,7 +3416,7 @@ function periodForm(periodicidad) {
 
 		   _existen.forEach(function(d) {
 			d.disabled = false;
-			$("div#" + d.value).css("color","white");
+			$("div#" + d.value).css("color","rgb(25%,25%,25%)");
 		   });
 
 /*
