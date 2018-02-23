@@ -1,4 +1,4 @@
-﻿var ambiente = 'producciónn';
+﻿var ambiente = 'producción';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -3491,7 +3491,7 @@ function mapaDeSeries(TEMAS) {
 	.selectAll('li').data(secciones).enter()
 	.append('li')
 	.style('padding-bottom','0.2vw')
-	.style('font-size','1vmax')
+	.style('font-size','1vw')
 	.style('font-weight','600')
 	.html(function(d) { return d; })
     .each(function(li) {
