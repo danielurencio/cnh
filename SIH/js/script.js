@@ -146,10 +146,12 @@ $(document).ready(function() {
             }
         };
 */
-console.log(data_buscar_)
+/*
         var data_buscar_ = data_buscar_.map(function(d) {
             return d.join(" > ");
         });
+*/
+        var data_buscar_ = _.map(data_buscar_,function(d) { return d.join(">"); });
 
         d3.select("input#filtroSerie").on("input", function(d) {
 
