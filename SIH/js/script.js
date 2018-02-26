@@ -1,4 +1,4 @@
-﻿var ambiente = 'producción';
+﻿var ambiente = 'producciónn';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -25,8 +25,8 @@ $(document).ready(function() {
   var worker = new Worker('js/worker.js');
 
   worker.onmessage = function(e) {
-    var dd = JSON.parse(e.data);
-    filtrarSeries(null,dd);
+//    var dd = JSON.parse(e.data);
+    filtrarSeries(null,JSON.parse(e.data));
   };
 /*
 		    worker.onmessage = function(e) {
