@@ -1428,7 +1428,7 @@ console.log(selection.style('display'));
                         docTable = discriminateRows(docTable);
                         d3.select(tbody_hide.parentNode.parentNode)
                             .style("display", "block");
-
+console.log(docTable);
    //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         if (caso_especial && current_TXT) {
 
@@ -1470,7 +1470,7 @@ console.log(selection.style('display'));
                             };
 
                             val = tds[c].parentNode;
-console.log([_docTable]);
+console.log(_docTable);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
                             $(_docTable.querySelectorAll("tbody"))
