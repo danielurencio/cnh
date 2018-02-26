@@ -1462,12 +1462,12 @@ console.log(tds[c].textContent);
                                 tdFromList = tds[c].textContent
 				  .replace(/\s/g, "").toUpperCase();
                                 condTD = tdFromList == referenceTd;
-
+console.log(tdFromList,c)
                                 if (condTD) {
                                     break;
                                 }
                             };
-
+console.log($(tds[c]))
                             val = $(tds[c]).parent()[0];
 console.log(val)
 
