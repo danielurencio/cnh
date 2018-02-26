@@ -24,11 +24,16 @@ $(document).ready(function() {
 
   var worker = new Worker('js/worker.js');
 
+  worker.onmessage = function(e) {
+    var dd = JSON.parse(e.data);
+    filtrarSeries(null,dd);
+  };
+/*
 		    worker.onmessage = function(e) {
 		      var data_ = JSON.parse(e.data);
 		      filtrarSeries(null,data_);
 		    };
-
+*/
   $("#datepicker_start").datepicker({inline:true, dateFormat:'yy-mm-dd'});
   $("#datepicker_end").datepicker({inline:true, dateFormat:'yy-mm-dd'});
 
