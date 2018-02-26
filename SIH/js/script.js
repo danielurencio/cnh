@@ -1,4 +1,4 @@
-﻿var ambiente = 'producciónn';
+﻿var ambiente = 'producción';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -420,7 +420,7 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////
 
     $.ajax({
-        url: HOSTNAME + "/cubos_temas_des.py",
+        url: HOSTNAME + "/cubos_temas.py",
         dataType: 'json',
         data: {
             'section': 'PRODUCCION'
