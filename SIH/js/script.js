@@ -1458,6 +1458,7 @@ console.log(tds)
                             var condTD;
 
                             for (c; c < tds.length; c++) {
+console.log(tds[c].textContent);
                                 tdFromList = tds[c].textContent
 				  .replace(/\s/g, "").toUpperCase();
                                 condTD = tdFromList == referenceTd;
