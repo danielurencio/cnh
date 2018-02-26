@@ -1437,8 +1437,6 @@ console.log(docTable);
                                 .parseFromString(docTable.outerHTML,
 								"text/html")
                                 .body.querySelector("table");
-console.log(docTable.outerHTML);
-console.log(docTable.outerHTML.length);
 
                             var tds = Array.prototype
                                 .slice.call(_docTable
@@ -1472,14 +1470,12 @@ console.log(docTable.outerHTML.length);
                             };
 
                             val = tds[c].parentNode;
+console.log(prevTD);
 console.log(prevTD.parentNode);
-console.log(_docTable);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
-console.log(_docTable);
                             $(_docTable.querySelectorAll("tbody"))
 				.append(prevTD.parentNode);
-console.log(_docTable);
                             $(_docTable.querySelector("#dist_").parentNode)
                                 .css("display", "none");
                             $(_docTable.querySelectorAll("#dist"))
