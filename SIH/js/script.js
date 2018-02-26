@@ -257,7 +257,6 @@ $(document).ready(function() {
                         })
                         .on("click", function() {
                             var txt = this.textContent.split(" > ");
-                            //console.log(caso_especial)
                             caso_especial ? siFiltro = true : siFiltro = false;
                             caso_especial ? current_TXT = txt : current_TXT = null;
                             irAserie(txt);
@@ -1250,7 +1249,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 span.html(minus + "&ensp;");
             }
 
-console.log(selection.style('display'));
 
 /*-- Esto checa si está abierta la tabla para que, al cerrarla, no se vuelva a hacer un POST --*/
             var performAjax = $(this).next().css("display");
@@ -1428,7 +1426,7 @@ console.log(selection.style('display'));
                         docTable = discriminateRows(docTable);
                         d3.select(tbody_hide.parentNode.parentNode)
                             .style("display", "block");
-console.log(docTable);
+
    //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         if (caso_especial && current_TXT) {
 
@@ -1470,13 +1468,15 @@ console.log(docTable);
                             };
 
                             val = tds[c].parentNode;
-
+console.log(val)
 
                             $(_docTable.querySelectorAll("tbody")).html("");
                             $(_docTable.querySelectorAll("tbody"))
 				.append($(prevTD).parent()[0]);
+console.log(_docTable);
                             $($(_docTable.querySelector("#dist_")).parent()[0])
                                 .css("display", "none");
+console.log(_docTable);
                             $(_docTable.querySelectorAll("#dist"))
 				.css("display", "none");
                             $(_docTable.querySelectorAll("tbody"))
