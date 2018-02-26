@@ -1467,7 +1467,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                                 }
                             };
 
-                            val = tds[c].parentNode;
+                            val = $(tds[c]).parent()[0];
 console.log(val)
 
                             $(_docTable.querySelectorAll("tbody")).html("");
