@@ -11,7 +11,7 @@ self.addEventListener('message', function(e) {
   var xhr = new XMLHttpRequest();
   var url = e.data.url;
 
-  xhr.open("GET", url+"?"+params, true);
+  xhr.open("POST", url+"?"+params, true);
   xhr.responseType = 'json'
 
   xhr.onreadystatechange = function() {

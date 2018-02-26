@@ -1232,6 +1232,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
             var span = d3.select($(this).find("span.s")[0]);
             var selection = d3.select("[tag='" + tag + "'].hide")
             var selection = d3.select($(this).next()[0])
+
             if (selection.style("display") == 'block'
 		&& this.nodeName == "TBODY") {
                 selection
@@ -1242,6 +1243,8 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 selection.style("display", "block");
                 span.html(minus + "&ensp;");
             }
+
+console.log(selection.style('display'));
 
 /*-- Esto checa si está abierta la tabla para que, al cerrarla, no se vuelva a hacer un POST --*/
             var performAjax = $(this).next().css("display");
@@ -2127,6 +2130,8 @@ function descargarSerie() {
     csv = csv.replace(/Í/g, "I");
     csv = csv.replace(/Ó/g, "O");
     csv = csv.replace(/Ú/g, "U");
+
+    csv = csv.replace(/&LEQ;/g,"<=");
 
     var csvFile = new Blob(["\ufeff", csv], {
         'type': 'text/csv'
@@ -3469,7 +3474,6 @@ function periodForm(periodicidad) {
 
 
 function mapaDeSeries(TEMAS) {
-  console.log(TEMAS);
 
   $("span#info_circle").hover(function(){
     $(this).css("color", "rgb(120,255,255)");
@@ -3516,16 +3520,40 @@ function mapaDeSeries(TEMAS) {
 	    var thisNode = $(this).text();
 	    var parentNode = this.parentNode.parentNode.getAttribute('tag');
 
-	    $('select.filtros_ option[tag="'+ parentNode +'"]')
-		.prop('selected',true)
-		.trigger("change");
+	    var sel_parentNode = $('select.filtros_').find(':selected').attr('tag');
+	    var sel_thisNode = $('select.filtros').find(':selected').attr('tag');
+	 
 
-	    $('select.filtros option').filter(function() { return this.innerText == thisNode; })
+	    if(sel_parentNode == parentNode) {
+	      $('select.filtros option').filter(function() { return this.innerText == thisNode; })
+		.prop('selected',true).trigger("change",function() { console.log("aa"); })
+
+	    } else if(sel_parentNode != parentNode && sel_thisNode != thisNode) {
+
+
+
+/*
+difSecYtem(parentNode,function() {
+	      $('select.filtros option').filter(function() { return this.innerText == thisNode; })
 		.prop('selected',true).trigger("change")
-
+});
+*/
+	    }
 
 	 });
     });
+
+
+  function difSecYtem(parentNode,callback) {
+	      $('select.filtros_ option[tag="'+ parentNode +'"]')
+		.prop('selected',true)
+		.trigger("change");
+
+    window.setTimeout(function() {
+		callback();
+
+    },100);
+  };
  
-}
+};
 
