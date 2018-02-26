@@ -1440,9 +1440,8 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
 
-tds = $(tds)
-console.log(tds)
-console.log(current_TXT)
+			    tds = $(tds);
+
                             var val;
 
                             var prevTD = tds.filter(function(d) {
@@ -1452,7 +1451,6 @@ console.log(current_TXT)
 		                                        .toUpperCase();
                             })[0];
 
-console.log([prevTD])
                             var c = tds.index(prevTD) + 0;
                             var tdFromList;
                             var referenceTd = current_TXT[3]
@@ -1461,26 +1459,28 @@ console.log([prevTD])
                             var condTD;
 
                             for (c; c < tds.length; c++) {
-console.log(tds[c].textContent);
                                 tdFromList = tds[c].textContent
 				  .replace(/\s/g, "").toUpperCase();
                                 condTD = tdFromList == referenceTd;
-console.log(tdFromList,c)
+
                                 if (condTD) {
                                     break;
                                 }
                             };
-console.log($(tds[c]).parent())
-                            val = $(tds[c]).parent()[0];
+
+
+val = $(tds.map(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd) return d; })[0]).parent()[0];
+
+console.log(tds)
+console.log([referenceTd])
+//                            val = $(tds[c]).parent()[0];
 console.log(val)
 
                             $(_docTable.querySelectorAll("tbody")).html("");
                             $(_docTable.querySelectorAll("tbody"))
 				.append($(prevTD).parent()[0]);
-console.log(_docTable);
                             $($(_docTable.querySelector("#dist_")).parent()[0])
                                 .css("display", "none");
-console.log(_docTable);
                             $(_docTable.querySelectorAll("#dist"))
 				.css("display", "none");
                             $(_docTable.querySelectorAll("tbody"))
