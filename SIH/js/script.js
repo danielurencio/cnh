@@ -1439,18 +1439,21 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             var tds = Array.prototype
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
+
+tds = $(tds)
 console.log(tds)
+console.log(current_TXT)
                             var val;
 
                             var prevTD = tds.filter(function(d) {
-                                return d.textContent.replace(/\s/g, "")
+                                return this.textContent.replace(/\s/g, "")
                                     .toUpperCase() == current_TXT[2]
 							.replace(/\s/g, "")
 		                                        .toUpperCase();
                             })[0];
 
-
-                            var c = tds.indexOf(prevTD) + 0;
+console.log([prevTD])
+                            var c = tds.index(prevTD) + 0;
                             var tdFromList;
                             var referenceTd = current_TXT[3]
 						.replace(/\s/g, "")
@@ -1467,7 +1470,7 @@ console.log(tdFromList,c)
                                     break;
                                 }
                             };
-console.log($(tds[c]))
+console.log($(tds[c]).parent())
                             val = $(tds[c]).parent()[0];
 console.log(val)
 
