@@ -1472,11 +1472,14 @@ console.log(docTable.outerHTML.length);
                             };
 
                             val = tds[c].parentNode;
+console.log(prevTD.parentNode);
 console.log(_docTable);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
+console.log(_docTable);
                             $(_docTable.querySelectorAll("tbody"))
 				.append(prevTD.parentNode);
+console.log(_docTable);
                             $(_docTable.querySelector("#dist_").parentNode)
                                 .css("display", "none");
                             $(_docTable.querySelectorAll("#dist"))
