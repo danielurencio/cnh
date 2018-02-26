@@ -1438,6 +1438,8 @@ console.log(docTable);
 								"text/html")
                                 .body.querySelector("table");
 console.log(docTable.outerHTML);
+console.log(docTable.outerHTML.length);
+
                             var tds = Array.prototype
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
