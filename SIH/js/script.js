@@ -1470,12 +1470,13 @@ console.log(docTable);
                             };
 
                             val = tds[c].parentNode;
-console.log(prevTD);
+
+console.log([prevTD]);
 console.log(prevTD.parentNode);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
                             $(_docTable.querySelectorAll("tbody"))
-				.append(prevTD.parentNode);
+				.append($(prevTD).parent()[0]);
                             $(_docTable.querySelector("#dist_").parentNode)
                                 .css("display", "none");
                             $(_docTable.querySelectorAll("#dist"))
