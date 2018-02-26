@@ -1471,13 +1471,11 @@ console.log(docTable);
 
                             val = tds[c].parentNode;
 
-console.log([prevTD]);
-console.log(prevTD.parentNode);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
                             $(_docTable.querySelectorAll("tbody"))
 				.append($(prevTD).parent()[0]);
-                            $(_docTable.querySelector("#dist_").parentNode)
+                            $($(_docTable.querySelector("#dist_")).parent()[0])
                                 .css("display", "none");
                             $(_docTable.querySelectorAll("#dist"))
 				.css("display", "none");
