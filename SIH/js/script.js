@@ -1470,7 +1470,7 @@ console.log(selection.style('display'));
                             };
 
                             val = tds[c].parentNode;
-
+console.log([_docTable]);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
                             $(_docTable.querySelectorAll("tbody"))
