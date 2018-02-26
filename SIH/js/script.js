@@ -1435,12 +1435,12 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                                 .parseFromString(docTable.outerHTML,
 								"text/html")
                                 .body.querySelector("table");
-
-                            var tds = Array.prototype
+                            var tds__ = Array.prototype
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
 
-			    tds = $(tds);
+console.log($(_docTable))
+var tds = $(_docTable).find("tr>td:first-child")
 
                             var val;
 
@@ -1459,7 +1459,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             var condTD;
 
                             for (c; c < tds.length; c++) {
-                                tdFromList = tds[c].textContent
+                                tdFromList = tds__[c].textContent
 				  .replace(/\s/g, "").toUpperCase();
                                 condTD = tdFromList == referenceTd;
 
@@ -1468,9 +1468,9 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                                 }
                             };
 
-
-val = $(tds.map(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd) return d; })[0]).parent()[0];
-
+val = $(tds[c]).parent()[0]
+//val = $(tds.filter(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd) return d; }))//.parent()[0];
+//val = val[c].parent()[0]
 console.log(tds)
 console.log([referenceTd])
 //                            val = $(tds[c]).parent()[0];
