@@ -1437,7 +1437,7 @@ console.log(docTable);
                                 .parseFromString(docTable.outerHTML,
 								"text/html")
                                 .body.querySelector("table");
-
+console.log(docTable.outerHTML);
                             var tds = Array.prototype
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
