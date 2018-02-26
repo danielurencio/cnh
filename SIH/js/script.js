@@ -24,10 +24,11 @@ $(document).ready(function() {
 
   var worker = new Worker('js/worker.js');
 
-  worker.onmessage = function(e) {
-//    var dd = JSON.parse(e.data);
+  worker.addEventListener('message',function(e) {
     filtrarSeries(null,JSON.parse(e.data));
-  };
+  },false);
+
+
 /*
 		    worker.onmessage = function(e) {
 		      var data_ = JSON.parse(e.data);
