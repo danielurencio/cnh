@@ -1439,7 +1439,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             var tds = Array.prototype
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
-
+console.log(tds)
                             var val;
 
                             var prevTD = tds.filter(function(d) {
