@@ -25,8 +25,8 @@ $(document).ready(function() {
   var worker = new Worker('js/worker.js');
 
 		    worker.onmessage = function(e) {
-		      var _data = JSON.parse(e.data)
-		      filtrarSeries(null,_data);
+		      var data_ = JSON.parse(e.data);
+		      filtrarSeries(null,data_);
 		    };
 
   $("#datepicker_start").datepicker({inline:true, dateFormat:'yy-mm-dd'});
