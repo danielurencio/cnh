@@ -86,8 +86,7 @@ $(document).ready(function() {
         var inx = tablaVisible.index();
         var subtitulo_ = tablaVisible[0].parentNode.children[inx - 1];
         subtitulo_.click();
-        //   $(this).css("display","none");
-        //   subtitulo_.click();
+	  $("input#filtroSerie").prop('disabled',false)
     });
     //////////////Quitar filtro de búsqueda //////////////////////////
 
@@ -103,7 +102,6 @@ $(document).ready(function() {
         var color = _azul_;
         var color_ = _azul_;
 
-//        var data_ = JSON.parse(JSON.stringify(data));
         var parser = new DOMParser();
         var arr = [];
 
@@ -1430,6 +1428,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
    //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         if (caso_especial && current_TXT) {
 
+
                             var newParser = new DOMParser();
                             var _docTable = newParser
                                 .parseFromString(docTable.outerHTML,
@@ -1437,16 +1436,10 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                                 .body.querySelector("table");
 
 
-
-//			    /*Tabla temporal*/ $("body").append( $(_docTable).clone().css('display','none').attr("id","tempDocTable") );
-			    var tablaParafiltrar = $(_docTable).clone().css('display','none').attr("id","tempDocTable")
-
-
                             var tds = Array.prototype
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
 
-//			    var tds = $(docTable).find("tr>td:first-child");
 
 
                             var val,valName;
@@ -1477,19 +1470,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             };
 
 
-//			    var tablaParafiltrar = $('table#tempDocTable>tbody').clone()//.html()
-//			    val = tablaParafiltrar.find('tr').filter(function(i,d) { if(i == c) return d; })[0]
-//val = $($("table#tempDocTable>tbody")[0].innerHTML)
-
-//if(!rows_[c].children.length) {
-//  val = $(rows_[c]).append(tds);
-//  console.log(val);
-//} else {
-//  val = rows_[c];
-//}
-
-//val = $(tds[c]).parent()[0];
-//val = $(tds.map(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd && c == i) return d; })[0]).parent()[0];
 
                             val = $(tds[c]).parent()[0].children;
 			    val = Array.prototype.slice.call(val);
@@ -1504,12 +1484,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
                             $(_docTable.querySelectorAll("tbody"))
 				.append(valName);
-//				.append($(prevTD).parent()[0]);
-//                            $($(_docTable.querySelector("#dist_")).parent()[0])
-//console.log([_docTable])
-//                                .css("display", "none");
-//                            $(_docTable.querySelectorAll("#dist"))
-//				.css("display", "none");
 
                             $(_docTable.querySelectorAll("tbody"))
 				.append(val);
@@ -1517,7 +1491,8 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
                             d3.select(tbody_hide)
                                 .html(_docTable.innerHTML);//<--pega la tabla
-$("#tempDocTable").remove()
+
+			    $("input#filtroSerie").prop('disabled','true')
 
                             current_TXT = null; // <-- IMPORTANTÍSIMO!
                         }
