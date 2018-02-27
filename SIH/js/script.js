@@ -1501,7 +1501,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             d3.select(tbody_hide)
                                 .html(docTable.innerHTML);//<--pega la tabla
 
-			    $("input#filtroSerie").prop('disabled','true');
+//			    $("input#filtroSerie").prop('disabled','true');
 
                         }
 
