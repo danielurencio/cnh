@@ -1273,10 +1273,13 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 /*-------------------------------------------------------------------------*/
 
             if (this.nodeName == "DIV" && $(this).attr("especial") == "1") {
+/*----------------------------------------------Restaurar filtro---------------------------------------------*/
 	        current_TXT_noEspecial = false;
 		$("input#filtroSerie").prop('disabled',false);
-
                 $("div#quitarFiltro").css("display", "none");
+/*----------------------------------------------Restaurar filtro---------------------------------------------*/
+
+
                 //	$("div#espere").css("visibility","visible");
                 var title = this.parentNode.getAttribute("tag");
                 var subtitle = this.getAttribute("tag");
@@ -1355,6 +1358,12 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
             }
 
             if (this.nodeName == "DIV" && $(this).attr("especial") != "1") {
+/*----------------------------------------------Restaurar filtro---------------------------------------------*/
+	        current_TXT_noEspecial = false;
+		$("input#filtroSerie").prop('disabled',false);
+                $("div#quitarFiltro").css("display", "none");
+/*----------------------------------------------Restaurar filtro---------------------------------------------*/
+
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
 	     if($(this).next().css("display") != 'block') {
 
