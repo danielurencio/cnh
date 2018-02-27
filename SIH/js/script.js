@@ -21,6 +21,7 @@ var FILE_NAME;
 
 
 $(document).ready(function() {
+  var current_TXT_noEspecial;
 
   var worker = new Worker('js/worker.js');
 
@@ -87,6 +88,7 @@ $(document).ready(function() {
         var subtitulo_ = tablaVisible[0].parentNode.children[inx - 1];
         subtitulo_.click();
 	  $("input#filtroSerie").prop('disabled',false)
+          document.querySelector("input#filtroSerie").value = "";
     });
     //////////////Quitar filtro de búsqueda //////////////////////////
 
@@ -255,10 +257,15 @@ $(document).ready(function() {
                         })
                         .on("click", function() {
                             var txt = this.textContent.split(" > ");
+			    current_TXT_noEspecial = this.textContent;
                             caso_especial ? siFiltro = true : siFiltro = false;
                             caso_especial ? current_TXT = txt : current_TXT = null;
                             irAserie(txt);
-                            $("div#quitarFiltro").css("display", "block")
+                            $("div#quitarFiltro").css("display", "block");
+			    $("input#filtroSerie").prop("disabled",true);
+//			    $("div#filtroSerieCover").css("z-index",4);
+//			    $("input#filtroSerie").val("    " + this.textContent );
+
                         });
 
                 } else if (matches.length == 0) {
@@ -296,7 +303,9 @@ $(document).ready(function() {
         $("body *>*:not(div#dropDown)").on("click", function() {
             d3.selectAll("div#dropDown>div").remove();
             d3.selectAll("div#dropDown").style("display", "none");
-            document.querySelector("input#filtroSerie").value = "";
+	    if(!$("input#filtroSerie").prop("disabled")) {
+              document.querySelector("input#filtroSerie").value = "";
+	    }
         });
 
       };
@@ -439,7 +448,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 		mapaDeSeries(TEMAS);
 
                 $("button#consultar").on("click", function() {
-
+			current_TXT_noEspecial = false;
 //////////////////////////////////////////////////////////////////////////////////
 /*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
 //////////////////////////////////////////////////////////////////////////////////
@@ -526,6 +535,8 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 	    if(cambio_) {
 		      cambio_ = false;
 
+		      $("input#filtroSerie").prop("disabled",false);
+//                      document.querySelector("input#filtroSerie").value = "";
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
 		      var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
@@ -567,6 +578,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 				data_buscar = null;						       //|
 				ajaxFunction(data,Cubos,filtrarSeries,params_especiales, data_buscar); //| ¡"AjaxFunction" & "FiltrarSeries" van juntas!
 				filtrarSeries(data,data_buscar);				       //|
+
 			      }
 /*=================Chechar si las tablas están vacías========================*/
 
@@ -609,6 +621,9 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
 // ======================= CAMBIO POR SECCIÓN ========================================
 		$("select.filtros_").change(function() {
+		      $("input#filtroSerie").prop("disabled",false);
+                      document.querySelector("input#filtroSerie").value = "";
+		      current_TXT_noEspecial = false;
 
                       var sel_ = $("select.filtros_").find(":selected").attr("tag");
 		      var temas_seccion = TEMAS.filter(function(d) {
@@ -657,6 +672,9 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 // ===================================================================================
 
                 $("select.filtros").change(function() {//<--CAMBIO DE TEMA..
+		      $("input#filtroSerie").prop("disabled",false);
+                      document.querySelector("input#filtroSerie").value = "";
+		      current_TXT_noEspecial = false;
 
 /////////////////////////////////////////////////////////////////////////////
 /*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
@@ -1220,6 +1238,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
         /*Un IF-STATEMENT podría diferenciar entre niveles*/
         $(".labels").on("click", function(d) {
+
             /*------Mostrar lámina de "espere" sólo para caso especial-------*/
             var isOpen = $(this).next().css("display") == "block" ? true : false;
 
@@ -1254,6 +1273,8 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 /*-------------------------------------------------------------------------*/
 
             if (this.nodeName == "DIV" && $(this).attr("especial") == "1") {
+	        current_TXT_noEspecial = false;
+		$("input#filtroSerie").prop('disabled',false);
 
                 $("div#quitarFiltro").css("display", "none");
                 //	$("div#espere").css("visibility","visible");
@@ -1344,7 +1365,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 	     }
 /*--Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
 
-                $("div#quitarFiltro").css("display", "none");
+//                $("div#quitarFiltro").css("display", "none");
 
                 var title = this.parentNode.getAttribute("tag");
                 var subtitle = this.getAttribute("tag");
@@ -1364,7 +1385,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                         'title': title,
                         'subtitle': subtitle
                     };
-                    TableLogistics(this, data);
+                    TableLogistics(this, data);console.log(222);
                 } else {
 			$("div#espere").css("visibility","visible");
 			FILE_NAME = { 'title':title, 'subtitle':subtitle};
@@ -1376,7 +1397,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 ///////////////////////////////////////////////////////////////////////////
 /////////////////^^ EXPANDIR PARA ESCRIBIR EN DOM ^^//////////////////////
 /////////////////////////////////////////////////////////////////////////
-        function TableLogistics(sth, data) {
+        function TableLogistics(sth, data,cliConsultar) {
             $(".overflow").scrollLeft(0);
             $(".scroll_header").scrollLeft(0);
 
@@ -1427,7 +1448,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
    //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         if (caso_especial && current_TXT) {
-
 
                             var newParser = new DOMParser();
                             var _docTable = newParser
@@ -1482,8 +1502,8 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
                             $(_docTable.querySelectorAll("tbody")).html("");
 
-                            $(_docTable.querySelectorAll("tbody"))
-				.append(valName);
+//                            $(_docTable.querySelectorAll("tbody"))
+//				.append(valName);
 
                             $(_docTable.querySelectorAll("tbody"))
 				.append(val);
@@ -1492,12 +1512,16 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             d3.select(tbody_hide)
                                 .html(_docTable.innerHTML);//<--pega la tabla
 
-			    $("input#filtroSerie").prop('disabled','true')
+			    $("input#filtroSerie").val("    " + current_TXT.join(" > "));
+
+			    $("input#filtroSerie").prop('disabled','true');
 
                             current_TXT = null; // <-- IMPORTANTÍSIMO!
                         }
 //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         else {
+			    if(current_TXT_noEspecial) $("input#filtroSerie").val("    " + current_TXT_noEspecial)
+console.log(11111111);
                             d3.select(tbody_hide)
                                 .html(docTable.innerHTML);//<--pega la tabla
 
@@ -2268,8 +2292,6 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
 
     }
 
-    //filtrarSeries(data, data_buscar);
-//    var consulta_display = $(consulta).css("display");
 
     if (!noHayTabla && !special_params) {
         $("div#espere").css("visibility", "hidden");
@@ -2873,7 +2895,7 @@ NOTAS = NOTAS.replace(/<b>|<\/b>/g,"")
             position: {
                 align: "left",
                 x: 50,
-                y: marginCred > 100 ? -70 * offsetCred : -50
+                y: marginCred > 100 ? -80 * offsetCred : -50
             },
             style: {
                 fontSize: '11px',
