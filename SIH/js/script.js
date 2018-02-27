@@ -1441,8 +1441,8 @@ var tempYaa = $("body").append($(_docTable).css("display","none").attr("id","tem
                             var tds__ = Array.prototype
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
-
-//console.log([_docTable])
+console.log([docTable])
+console.log([_docTable])
 var tds = $('table#tempDocTable').find("tr>td:first-child");
 
                             var val;
