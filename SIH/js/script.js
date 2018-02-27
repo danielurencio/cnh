@@ -1438,26 +1438,26 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
 
 
-var tempYaa = $("body").append($(_docTable).clone().attr("id","tempDocTable"));
+			    /*Tabla temporal*/ $("body").append( $(_docTable).clone().css('display','none').attr("id","tempDocTable") );
 
                             var tds = Array.prototype
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
 
-//var tds = $('table#tempDocTable').find("tr>td:first-child");
+			    var tds = $('table#tempDocTable').find("tr>td:first-child");
 
 
                             var val;
 
                             var prevTD = tds.filter(function(d) {
-                                return d.textContent.replace(/\s/g, "")
+                                return this.textContent.replace(/\s/g, "")
                                     .toUpperCase() == current_TXT[2]
 							.replace(/\s/g, "")
 		                                        .toUpperCase();
                             })[0];
 
 
-                            var c = tds.indexOf(prevTD) + 0;
+                            var c = tds.index(prevTD) + 0;
                             var tdFromList;
                             var referenceTd = current_TXT[3]
 						.replace(/\s/g, "")
@@ -1465,7 +1465,6 @@ var tempYaa = $("body").append($(_docTable).clone().attr("id","tempDocTable"));
                             var condTD;
 
                             for (c; c < tds.length; c++) {
-			        console.log(tds[c].textContent);
                                 tdFromList = tds[c].textContent
 				  .replace(/\s/g, "").toUpperCase();
                                 condTD = tdFromList == referenceTd;
@@ -1476,10 +1475,8 @@ var tempYaa = $("body").append($(_docTable).clone().attr("id","tempDocTable"));
                             };
 
 
-console.log(c)
-var rows_ = document.querySelectorAll("table#tempDocTable>tbody");
-var vaa = $('table#tempDocTable>tbody').clone()//.html()
-val = vaa.find('tr').filter(function(i,d) { if(i == c) return d; })[0]
+			    var tablaParafiltrar = $('table#tempDocTable>tbody').clone()//.html()
+			    val = tablaParafiltrar.find('tr').filter(function(i,d) { if(i == c) return d; })[0]
 //val = $($("table#tempDocTable>tbody")[0].innerHTML)
 
 //if(!rows_[c].children.length) {
@@ -1500,7 +1497,7 @@ console.log(val.children);
 
                             $(_docTable.querySelectorAll("tbody"))
 				.append($(prevTD).parent()[0]);
-                            $($(_docTable.querySelector("#dist_")).parent()[0])
+//                            $($(_docTable.querySelector("#dist_")).parent()[0])
 //console.log([_docTable])
 //                                .css("display", "none");
 //                            $(_docTable.querySelectorAll("#dist"))
@@ -1512,7 +1509,7 @@ console.log(val.children);
 
                             d3.select(tbody_hide)
                                 .html(_docTable.innerHTML);//<--pega la tabla
-
+$("#tempDocTable").remove()
 
                             current_TXT = null; // <-- IMPORTANTÍSIMO!
                         }
