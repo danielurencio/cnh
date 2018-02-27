@@ -1473,8 +1473,11 @@ var tds = $('table#tempDocTable').find("tr>td:first-child");
                             };
 
 
+var rows_ = Array.prototype.slice.call(document.querySelectorAll("table#tempDocTable>tbody>tr"));
+console.log(rows_[c]);
 var _val = tds[c].parentNode;
-val = $(tds[c]).parent()[0];
+//val = $(tds[c]).parent()[0];
+val = rows_[c];
 //val = $(tds.map(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd && c == i) return d; })[0]).parent()[0];
 //console.log(val_);
 //val = val[c].parent()[0]
