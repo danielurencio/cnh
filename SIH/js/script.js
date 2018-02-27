@@ -89,6 +89,8 @@ $(document).ready(function() {
         subtitulo_.click();
 	  $("input#filtroSerie").prop('disabled',false)
           document.querySelector("input#filtroSerie").value = "";
+	 $(this).css("display","none")
+	  current_TXT_noEspecial = false;
     });
     //////////////Quitar filtro de búsqueda //////////////////////////
 
@@ -257,7 +259,7 @@ $(document).ready(function() {
                         })
                         .on("click", function() {
                             var txt = this.textContent.split(" > ");
-			    current_TXT_noEspecial = this.textContent;
+			    current_TXT_noEspecial = txt.join(" > ");
                             caso_especial ? siFiltro = true : siFiltro = false;
                             caso_especial ? current_TXT = txt : current_TXT = null;
                             irAserie(txt);
@@ -1238,7 +1240,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
         /*Un IF-STATEMENT podría diferenciar entre niveles*/
         $(".labels").on("click", function(d) {
-
             /*------Mostrar lámina de "espere" sólo para caso especial-------*/
             var isOpen = $(this).next().css("display") == "block" ? true : false;
 
@@ -1359,9 +1360,12 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
             if (this.nodeName == "DIV" && $(this).attr("especial") != "1") {
 /*----------------------------------------------Restaurar filtro---------------------------------------------*/
-	        current_TXT_noEspecial = false;
-		$("input#filtroSerie").prop('disabled',false);
-                $("div#quitarFiltro").css("display", "none");
+//	        current_TXT_noEspecial = false;
+//		$("input#filtroSerie").prop('disabled',false);
+//                $("div#quitarFiltro").css("display", "none");
+//		document.querySelector("input#filtroSerie")
+
+//          document.querySelector("input#filtroSerie").value = "";
 /*----------------------------------------------Restaurar filtro---------------------------------------------*/
 
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -1394,7 +1398,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                         'title': title,
                         'subtitle': subtitle
                     };
-                    TableLogistics(this, data);console.log(222);
+                    TableLogistics(this, data);
                 } else {
 			$("div#espere").css("visibility","visible");
 			FILE_NAME = { 'title':title, 'subtitle':subtitle};
