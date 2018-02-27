@@ -1446,12 +1446,12 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
 
-//			    var tds = $('table#tempDocTable').find("tr>td:first-child");
+			    var tds = $(docTable).find("tr>td:first-child");
 
 
                             var val;
 
-                            var prevTD = $(tds).filter(function(d) {
+                            var prevTD = tds.filter(function(d) {
                                 return this.textContent.replace(/\s/g, "")
                                     .toUpperCase() == current_TXT[2]
 							.replace(/\s/g, "")
@@ -1459,7 +1459,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             })[0];
 
 
-                            var c = $(tds).index(prevTD) + 0;
+                            var c = tds.index(prevTD) + 0;
                             var tdFromList;
                             var referenceTd = current_TXT[3]
 						.replace(/\s/g, "")
