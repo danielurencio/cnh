@@ -1491,9 +1491,12 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 //val = $(tds[c]).parent()[0];
 //val = $(tds.map(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd && c == i) return d; })[0]).parent()[0];
 
-                            val = $(tds[c]).parent()[0];
+                            val = $(tds[c]).parent()[0].children;
+			    val = Array.prototype.slice.call(val);
+			    val = "<tr>" + val.map(function(d) { return d.outerHTML; }).join("") + "</tr>";
+			    val = $(val);
 
-console.log(val.children);
+//console.log(val.children);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
 
