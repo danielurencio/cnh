@@ -1472,14 +1472,17 @@ var tds = $('table#tempDocTable').find("tr>td:first-child");
                                 }
                             };
 
-//val = $(tds[c]).parent()[0]
-val = $(tds.map(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd && c == i) return d; })[0]).parent()[0];
+
+var _val = tds[c].parentNode;
+val = $(tds[c]).parent()[0];
+//val = $(tds.map(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd && c == i) return d; })[0]).parent()[0];
 //console.log(val_);
 //val = val[c].parent()[0]
 //console.log(tds)
 //console.log([referenceTd])
 //                            val = $(tds[c]).parent()[0];
-//console.log(val)
+console.log(val);
+console.log(_val);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
 
