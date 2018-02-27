@@ -1436,6 +1436,8 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 								"text/html")
                                 .body.querySelector("table");
 
+
+console.log(_docTable.outerHTML);
 var tempYaa = $("body").append($(_docTable).attr("id","tempDocTable"));
 
                             var tds__ = Array.prototype
@@ -1453,6 +1455,9 @@ console.log(tds);
 							.replace(/\s/g, "")
 		                                        .toUpperCase();
                             })[0];
+
+console.log([_docTable])
+console.log(c)
 
                             var c = tds.index(prevTD) + 0;
                             var tdFromList;
