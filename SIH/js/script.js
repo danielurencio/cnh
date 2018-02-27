@@ -1451,15 +1451,15 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
                             var val;
 
-                            var prevTD = tds.filter(function(d) {
-                                return d.textContent.replace(/\s/g, "")
+                            var prevTD = $(tds).filter(function(d) {
+                                return this.textContent.replace(/\s/g, "")
                                     .toUpperCase() == current_TXT[2]
 							.replace(/\s/g, "")
 		                                        .toUpperCase();
                             })[0];
 
 
-                            var c = tds.indexOf(prevTD) + 0;
+                            var c = $(tds).index(prevTD) + 0;
                             var tdFromList;
                             var referenceTd = current_TXT[3]
 						.replace(/\s/g, "")
