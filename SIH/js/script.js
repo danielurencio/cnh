@@ -1472,11 +1472,12 @@ var tds = $('table#tempDocTable').find("tr>td:first-child");
                             };
 
 //val = $(tds[c]).parent()[0]
-//val = $(tds.filter(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd) return d; }))//.parent()[0];
+val = $(tds.map(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd && c == i) return d; })[0]).parent()[0];
+console.log(val_);
 //val = val[c].parent()[0]
 console.log(tds)
 console.log([referenceTd])
-                            val = $(tds[c]).parent()[0];
+//                            val = $(tds[c]).parent()[0];
 console.log(val)
 
                             $(_docTable.querySelectorAll("tbody")).html("");
