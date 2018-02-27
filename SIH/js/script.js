@@ -1435,12 +1435,15 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                                 .parseFromString(docTable.outerHTML,
 								"text/html")
                                 .body.querySelector("table");
+
+var tempYaa = $("body").append($(_docTable).css("display","none").attr("id","tempDocTable"));
+
                             var tds__ = Array.prototype
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
 
-console.log($(_docTable))
-var tds = $(_docTable).find("tr>td:first-child")
+console.log([_docTable])
+var tds = $('table#tempDocTable').find("tr>td:first-child");
 
                             var val;
 
@@ -1468,21 +1471,23 @@ var tds = $(_docTable).find("tr>td:first-child")
                                 }
                             };
 
-val = $(tds[c]).parent()[0]
+//val = $(tds[c]).parent()[0]
 //val = $(tds.filter(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd) return d; }))//.parent()[0];
 //val = val[c].parent()[0]
 console.log(tds)
 console.log([referenceTd])
-//                            val = $(tds[c]).parent()[0];
+                            val = $(tds[c]).parent()[0];
 console.log(val)
 
                             $(_docTable.querySelectorAll("tbody")).html("");
+
                             $(_docTable.querySelectorAll("tbody"))
 				.append($(prevTD).parent()[0]);
-                            $($(_docTable.querySelector("#dist_")).parent()[0])
-                                .css("display", "none");
+//                            $($(_docTable.querySelector("#dist_")).parent()[0])
+//                                .css("display", "none");
                             $(_docTable.querySelectorAll("#dist"))
 				.css("display", "none");
+
                             $(_docTable.querySelectorAll("tbody"))
 				.append(val);
 
