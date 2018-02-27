@@ -1437,29 +1437,27 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                                 .body.querySelector("table");
 
 
-console.log(_docTable.outerHTML);
-var tempYaa = $("body").append($(_docTable).attr("id","tempDocTable"));
 
-                            var tds__ = Array.prototype
+var tempYaa = $("body").append($(_docTable).clone().attr("id","tempDocTable"));
+
+                            var tds = Array.prototype
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
 
-var tds = $('table#tempDocTable').find("tr>td:first-child");
-console.log(tds);
+//var tds = $('table#tempDocTable').find("tr>td:first-child");
+
 
                             var val;
 
                             var prevTD = tds.filter(function(d) {
-                                return this.textContent.replace(/\s/g, "")
+                                return d.textContent.replace(/\s/g, "")
                                     .toUpperCase() == current_TXT[2]
 							.replace(/\s/g, "")
 		                                        .toUpperCase();
                             })[0];
 
-console.log([_docTable])
-console.log(c)
 
-                            var c = tds.index(prevTD) + 0;
+                            var c = tds.indexOf(prevTD) + 0;
                             var tdFromList;
                             var referenceTd = current_TXT[3]
 						.replace(/\s/g, "")
@@ -1467,8 +1465,8 @@ console.log(c)
                             var condTD;
 
                             for (c; c < tds.length; c++) {
-			        console.log(tds__[c].textContent);
-                                tdFromList = tds__[c].textContent
+			        console.log(tds[c].textContent);
+                                tdFromList = tds[c].textContent
 				  .replace(/\s/g, "").toUpperCase();
                                 condTD = tdFromList == referenceTd;
 
@@ -1478,32 +1476,35 @@ console.log(c)
                             };
 
 
-var rows_ = Array.prototype.slice.call(document.querySelectorAll("table#tempDocTable>tbody>tr"));
-console.log([rows_[c]]);
+console.log(c)
+var rows_ = document.querySelectorAll("table#tempDocTable>tbody");
+var vaa = $('table#tempDocTable>tbody').clone()//.html()
+val = vaa.find('tr').filter(function(i,d) { if(i == c) return d; })[0]
 //val = $($("table#tempDocTable>tbody")[0].innerHTML)
 
-if(!rows_[c].children.length) {
-  val = $(rows_[c]).append(tds);
-  console.log(val);
-} else {
-  val = rows_[c];
-}
+//if(!rows_[c].children.length) {
+//  val = $(rows_[c]).append(tds);
+//  console.log(val);
+//} else {
+//  val = rows_[c];
+//}
 
 //val = $(tds[c]).parent()[0];
 //val = $(tds.map(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd && c == i) return d; })[0]).parent()[0];
 
 //                            val = $(tds[c]).parent()[0];
-console.log(val);
-//console.log(_val);
+
+console.log(val.children);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
 
                             $(_docTable.querySelectorAll("tbody"))
 				.append($(prevTD).parent()[0]);
-//                            $($(_docTable.querySelector("#dist_")).parent()[0])
+                            $($(_docTable.querySelector("#dist_")).parent()[0])
+//console.log([_docTable])
 //                                .css("display", "none");
-                            $(_docTable.querySelectorAll("#dist"))
-				.css("display", "none");
+//                            $(_docTable.querySelectorAll("#dist"))
+//				.css("display", "none");
 
                             $(_docTable.querySelectorAll("tbody"))
 				.append(val);
