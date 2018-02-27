@@ -1442,7 +1442,7 @@ var tempYaa = $("body").append($(_docTable).css("display","none").attr("id","tem
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
 
-console.log([_docTable])
+//console.log([_docTable])
 var tds = $('table#tempDocTable').find("tr>td:first-child");
 
                             var val;
@@ -1462,6 +1462,7 @@ var tds = $('table#tempDocTable').find("tr>td:first-child");
                             var condTD;
 
                             for (c; c < tds.length; c++) {
+			        console.log(tds__[c].textContent);
                                 tdFromList = tds__[c].textContent
 				  .replace(/\s/g, "").toUpperCase();
                                 condTD = tdFromList == referenceTd;
@@ -1475,10 +1476,10 @@ var tds = $('table#tempDocTable').find("tr>td:first-child");
 val = $(tds.map(function(i,d) {  if(this.textContent.replace(/\s/g,"").toUpperCase() == referenceTd && c == i) return d; })[0]).parent()[0];
 //console.log(val_);
 //val = val[c].parent()[0]
-console.log(tds)
-console.log([referenceTd])
+//console.log(tds)
+//console.log([referenceTd])
 //                            val = $(tds[c]).parent()[0];
-console.log(val)
+//console.log(val)
 
                             $(_docTable.querySelectorAll("tbody")).html("");
 
