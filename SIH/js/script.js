@@ -1446,20 +1446,20 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
 
-			    var tds = $(docTable).find("tr>td:first-child");
+//			    var tds = $(docTable).find("tr>td:first-child");
 
 
-                            var val;
+                            var val,valName;
 
                             var prevTD = tds.filter(function(d) {
-                                return this.textContent.replace(/\s/g, "")
+                                return d.textContent.replace(/\s/g, "")
                                     .toUpperCase() == current_TXT[2]
 							.replace(/\s/g, "")
 		                                        .toUpperCase();
                             })[0];
 
 
-                            var c = tds.index(prevTD) + 0;
+                            var c = tds.indexOf(prevTD) + 0;
                             var tdFromList;
                             var referenceTd = current_TXT[3]
 						.replace(/\s/g, "")
@@ -1496,12 +1496,15 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 			    val = "<tr>" + val.map(function(d) { return d.outerHTML; }).join("") + "</tr>";
 			    val = $(val);
 
-//console.log(val.children);
+			    valName = Array.prototype.slice.call(prevTD.parentNode.children);
+			    valName = "<tr>" + valName.map(function(d) { return d.outerHTML; }).join(""); + "</tr>";
+			    valName = $(valName);
 
                             $(_docTable.querySelectorAll("tbody")).html("");
 
                             $(_docTable.querySelectorAll("tbody"))
-				.append($(prevTD).parent()[0]);
+				.append(valName);
+//				.append($(prevTD).parent()[0]);
 //                            $($(_docTable.querySelector("#dist_")).parent()[0])
 //console.log([_docTable])
 //                                .css("display", "none");
