@@ -18,10 +18,10 @@ var _azul_ = "rgb(13,180,190)";
 var threshold = 500000;
 var noHayTabla = false;
 var FILE_NAME;
+var current_TXT_noEspecial = false;
 
 
 $(document).ready(function() {
-  var current_TXT_noEspecial;
 
   var worker = new Worker('js/worker.js');
 
@@ -259,10 +259,15 @@ $(document).ready(function() {
                             $(matching_child).css("color", "");
 
                         })
-                        .on("click", function() {
+                        .on("click", function() { /// Asignación de current_TXT_
+                      		document.querySelector("input#filtroSerie").value = "";
+
                             var txt = this.textContent.split(" > ");
-//			    console.log(txt);
+			    console.log(this);
 			    current_TXT_noEspecial = txt.join(" > ");
+			   $("input#filtroSerie").attr("tag",txt.join(" > "))
+			    console.log(current_TXT_noEspecial);
+			    if(current_TXT_noEspecial.length < 5) current_TXT_noEspecial = txt.join(" > ");
                             caso_especial ? siFiltro = true : siFiltro = false;
                             caso_especial ? current_TXT = txt : current_TXT = null;
                             irAserie(txt);
@@ -453,7 +458,10 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 		mapaDeSeries(TEMAS);
 
                 $("button#consultar").on("click", function() {
+			$("div#quitarFiltro").css("display","none");
 			current_TXT_noEspecial = false;
+
+                      document.querySelector("input#filtroSerie").value = "";
 //////////////////////////////////////////////////////////////////////////////////
 /*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
 //////////////////////////////////////////////////////////////////////////////////
@@ -541,7 +549,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 		      cambio_ = false;
 
 		      $("input#filtroSerie").prop("disabled",false);
-//                      document.querySelector("input#filtroSerie").value = "";
+                      //document.querySelector("input#filtroSerie").value = "";
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
 		      var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
@@ -1534,7 +1542,14 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                         }
 //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         else {
-			    if(current_TXT_noEspecial) $("input#filtroSerie").val("    " + current_TXT_noEspecial)
+			     console.log(current_TXT_noEspecial)
+			    if(current_TXT_noEspecial) { 
+				console.log("holaaaa");
+				$("input#filtroSerie").val("    " + $("input#filtroSerie").attr("tag"))//current_TXT_noEspecial)
+			    } else {
+				console.log("byee");
+				$("input#filtroSerie").val("")
+			    }
 
                             d3.select(tbody_hide)
                                 .html(docTable.innerHTML);//<--pega la tabla
