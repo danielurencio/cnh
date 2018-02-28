@@ -18,7 +18,7 @@ var _azul_ = "rgb(13,180,190)";
 var threshold = 500000;
 var noHayTabla = false;
 var FILE_NAME;
-var current_TXT_noEspecial = false;
+//var current_TXT_noEspecial = false;
 
 
 $(document).ready(function() {
@@ -92,7 +92,7 @@ $(document).ready(function() {
 	  $("input#filtroSerie").prop('disabled',false)
           document.querySelector("input#filtroSerie").value = "";
 	 $(this).css("display","none")
-	  current_TXT_noEspecial = false;
+//	  current_TXT_noEspecial = false;
     });
     //////////////Quitar filtro de búsqueda //////////////////////////
 
@@ -114,8 +114,9 @@ $(document).ready(function() {
         if(data_buscar) {
 	  cosas(data_buscar);
         } else {
-	  data_BUSCAR = true;
+	//  data_BUSCAR = true;
 	  if(asyncAJAX) { asyncAJAX.abort(); }
+/*
 	  asyncAJAX = $.ajax({
 	    url:HOSTNAME + "/cubos_buscar.py",
             type:"post",
@@ -130,9 +131,10 @@ $(document).ready(function() {
 		  $("div#dropDown>div").remove();
 		  d3.select("input#filtroSerie").dispatch("input");
 		}
-	    }			      
-	  });
+	    }
 
+	  });
+*/
 
         }
 
@@ -260,22 +262,24 @@ $(document).ready(function() {
 
                         })
                         .on("click", function() { /// Asignación de current_TXT_
-                      		document.querySelector("input#filtroSerie").value = "";
+                      	    document.querySelector("input#filtroSerie").value = "";
 
                             var txt = this.textContent.split(" > ");
-			    console.log(this);
-			    current_TXT_noEspecial = txt.join(" > ");
-			   $("input#filtroSerie").attr("tag",txt.join(" > "))
-			    console.log(current_TXT_noEspecial);
-			    if(current_TXT_noEspecial.length < 5) current_TXT_noEspecial = txt.join(" > ");
+//			    console.log(this);
+
                             caso_especial ? siFiltro = true : siFiltro = false;
                             caso_especial ? current_TXT = txt : current_TXT = null;
                             irAserie(txt);
+
                             $("div#quitarFiltro").css("display", "block");
 			    $("input#filtroSerie").prop("disabled",true);
-//			    $("div#filtroSerieCover").css("z-index",4);
-//			    $("input#filtroSerie").val("    " + this.textContent );
 
+//			    current_TXT_noEspecial = txt.join(" > ");
+//			    $("input#filtroSerie").attr("tag",txt.join(" > "))
+//			    console.log(current_TXT_noEspecial);
+//			    if(current_TXT_noEspecial.length < 5) current_TXT_noEspecial = txt.join(" > ");
+//			    console.log(txt.join(" > "));
+			    document.querySelector("input#filtroSerie").value = "    " + txt.join(" > ");
                         });
 
                 } else if (matches.length == 0) {
@@ -459,7 +463,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
                 $("button#consultar").on("click", function() {
 			$("div#quitarFiltro").css("display","none");
-			current_TXT_noEspecial = false;
+			//current_TXT_noEspecial = false;
 
                       document.querySelector("input#filtroSerie").value = "";
 //////////////////////////////////////////////////////////////////////////////////
@@ -636,7 +640,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 		$("select.filtros_").change(function() {
 		      $("input#filtroSerie").prop("disabled",false);
                       document.querySelector("input#filtroSerie").value = "";
-		      current_TXT_noEspecial = false;
+		      //current_TXT_noEspecial = false;
 
                       var sel_ = $("select.filtros_").find(":selected").attr("tag");
 		      var temas_seccion = TEMAS.filter(function(d) {
@@ -687,7 +691,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 $("select.filtros").change(function() {//<--CAMBIO DE TEMA..
 		      $("input#filtroSerie").prop("disabled",false);
                       document.querySelector("input#filtroSerie").value = "";
-		      current_TXT_noEspecial = false;
+		      //current_TXT_noEspecial = false;
 
 /////////////////////////////////////////////////////////////////////////////
 /*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
@@ -1286,7 +1290,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
             if (this.nodeName == "DIV" && $(this).attr("especial") == "1") {
 /*----------------------------------------------Restaurar filtro---------------------------------------------*/
-	        current_TXT_noEspecial = false;
+	        //current_TXT_noEspecial = false;
 		$("input#filtroSerie").prop('disabled',false);
                 $("div#quitarFiltro").css("display", "none");
 /*----------------------------------------------Restaurar filtro---------------------------------------------*/
@@ -1534,7 +1538,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             d3.select(tbody_hide)
                                 .html(_docTable.innerHTML);//<--pega la tabla
 
-			    $("input#filtroSerie").val("    " + current_TXT.join(" > "));
+//			    $("input#filtroSerie").val("    " + current_TXT.join(" > "));
 
 			    $("input#filtroSerie").prop('disabled','true');
 
@@ -1542,19 +1546,16 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                         }
 //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         else {
-			     console.log(current_TXT_noEspecial)
-			    if(current_TXT_noEspecial) { 
-				console.log("holaaaa");
-				$("input#filtroSerie").val("    " + $("input#filtroSerie").attr("tag"))//current_TXT_noEspecial)
-			    } else {
-				console.log("byee");
-				$("input#filtroSerie").val("")
-			    }
+			 //   if(current_TXT_noEspecial) { 
+			//	console.log("holaaaa");
+			//	$("input#filtroSerie").val("    " + $("input#filtroSerie").attr("tag"))//current_TXT_noEspecial)
+			 //   } else {
+			//	console.log("byee");
+			//	$("input#filtroSerie").val("")
+			  //  }
 
                             d3.select(tbody_hide)
                                 .html(docTable.innerHTML);//<--pega la tabla
-
-//			    $("input#filtroSerie").prop('disabled','true');
 
                         }
 
