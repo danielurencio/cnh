@@ -3138,6 +3138,7 @@ function descargarPNG() {
       $(_tspans[_tspans.length-1]).attr("fill","white");
       $(_tspans[_tspans.length-2]).attr("fill","white");
       $(".highcharts-credits a").attr("fill","white");
+console.log("aaaaaa")
     }
 
     var SVG = document.querySelector("svg.highcharts-root")
