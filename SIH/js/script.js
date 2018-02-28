@@ -1,4 +1,4 @@
-﻿var ambiente = 'producción';
+﻿var ambiente = 'producciónn';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -462,10 +462,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 		mapaDeSeries(TEMAS);
 
                 $("button#consultar").on("click", function() {
-			$("div#quitarFiltro").css("display","none");
-			//current_TXT_noEspecial = false;
 
-                      document.querySelector("input#filtroSerie").value = "";
 //////////////////////////////////////////////////////////////////////////////////
 /*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
 //////////////////////////////////////////////////////////////////////////////////
@@ -551,6 +548,9 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 /*------------------AJAX con botón de consultar-------------------------------*/    
 	    if(cambio_) {
 		      cambio_ = false;
+
+		      $("div#quitarFiltro").css("display","none");
+                      document.querySelector("input#filtroSerie").value = "";
 
 		      $("input#filtroSerie").prop("disabled",false);
                       //document.querySelector("input#filtroSerie").value = "";
