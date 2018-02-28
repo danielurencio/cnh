@@ -85,8 +85,10 @@ $(document).ready(function() {
         });
 
         var inx = tablaVisible.index();
-        var subtitulo_ = tablaVisible[0].parentNode.children[inx - 1];
-        subtitulo_.click();
+        if(tablaVisible[0]) {
+          var subtitulo_ = tablaVisible[0].parentNode.children[inx - 1];
+          subtitulo_.click();
+	}
 	  $("input#filtroSerie").prop('disabled',false)
           document.querySelector("input#filtroSerie").value = "";
 	 $(this).css("display","none")
@@ -259,6 +261,7 @@ $(document).ready(function() {
                         })
                         .on("click", function() {
                             var txt = this.textContent.split(" > ");
+//			    console.log(txt);
 			    current_TXT_noEspecial = txt.join(" > ");
                             caso_especial ? siFiltro = true : siFiltro = false;
                             caso_especial ? current_TXT = txt : current_TXT = null;
@@ -1363,9 +1366,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 //	        current_TXT_noEspecial = false;
 //		$("input#filtroSerie").prop('disabled',false);
 //                $("div#quitarFiltro").css("display", "none");
-//		document.querySelector("input#filtroSerie")
-
-//          document.querySelector("input#filtroSerie").value = "";
+//                document.querySelector("input#filtroSerie").value = "";
 /*----------------------------------------------Restaurar filtro---------------------------------------------*/
 
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -2908,10 +2909,10 @@ NOTAS = NOTAS.replace(/<b>|<\/b>/g,"")
             position: {
                 align: "left",
                 x: 50,
-                y: marginCred > 100 ? -80 * offsetCred : -50
+                y: marginCred > 100 ? -75 * offsetCred : -50
             },
             style: {
-                fontSize: '11px',
+                fontSize: '10px',
                 fontWeight: 300,
                 color: "black"
             },
@@ -3132,6 +3133,13 @@ function leyendaNotas(TEMAS, params) {
 
 
 function descargarPNG() {
+    if($(".highcharts-credits a").length) {
+      var _tspans = $(".highcharts-credits>tspan");
+      $(_tspans[_tspans.length-1]).attr("fill","white");
+      $(_tspans[_tspans.length-2]).attr("fill","white");
+      $(".highcharts-credits a").attr("fill","white");
+    }
+
     var SVG = document.querySelector("svg.highcharts-root")
     var svg_w = $(SVG).css("width");
     var svg_h = $(SVG).css("height");
@@ -3186,6 +3194,13 @@ function descargarPNG() {
           a.remove();
       }
     };
+
+   if($(".highcharts-credits a").length) {
+      var _tspans = $(".highcharts-credits>tspan");
+      $(_tspans[_tspans.length-1]).attr("fill","black");
+      $(_tspans[_tspans.length-2]).attr("fill","black");
+      $(".highcharts-credits a").attr("fill","black");
+   }
 
 };
 
