@@ -1,4 +1,4 @@
-﻿var ambiente = 'producción';
+﻿var ambiente = 'producciónn';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -3596,9 +3596,9 @@ function mapaDeSeries(TEMAS) {
 		.selectAll('li').data(dataSets[ix]).enter()
 		.append('li')
 		.attr("tag",function(d) { return d; })
-		.style('padding-bottom','3vmax')
+		.style('padding-bottom','3vw')
 		.style("list-style-type","none")
-		.style('font-size','1.8vmax')//'1vw')
+		.style('font-size','1.8vw')//'1vw')
 		.style('font-weight','600')
 		.html(function(d) { return d; })
 	    .each(function(li) {
@@ -3611,7 +3611,7 @@ function mapaDeSeries(TEMAS) {
 		.selectAll('li').data(temas).enter()
 		.append('li')
 		.attr("tag",function(d) { return d; })
-		   .style('font-size','1.3vmax')//'0.9vw')
+		   .style('font-size','1.3vw')//'0.9vw')
 		   .style('font-weight','300')
 		   .style('color','rgb(13,180,190)')
 		   .style('text-decoration','underline')
