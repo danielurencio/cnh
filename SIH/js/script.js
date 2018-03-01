@@ -1,4 +1,4 @@
-﻿var ambiente = 'producción';
+﻿var ambiente = 'producciónn';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -19,6 +19,7 @@ var threshold = 500000;
 var noHayTabla = false;
 var FILE_NAME;
 //var current_TXT_noEspecial = false;
+var esperaMapaSeries = false; 
 
 
 $(document).ready(function() {
@@ -30,12 +31,6 @@ $(document).ready(function() {
   },false);
 
 
-/*
-		    worker.onmessage = function(e) {
-		      var data_ = JSON.parse(e.data);
-		      filtrarSeries(null,data_);
-		    };
-*/
   $("#datepicker_start").datepicker({inline:true, dateFormat:'yy-mm-dd'});
   $("#datepicker_end").datepicker({inline:true, dateFormat:'yy-mm-dd'});
 
@@ -446,7 +441,7 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////
 
     $.ajax({
-        url: HOSTNAME + "/cubos_temas.py",
+        url: HOSTNAME + "/cubos_temas_des.py",
         dataType: 'json',
         data: {
             'section': 'PRODUCCION'
@@ -2303,9 +2298,9 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
           consulta.click();
 
 	} catch(err) {
-	  console.log(err);
-//	  alert("¡Error, avisar por favor! :(")
+	  console.log(err);	  
 	}
+
     } else {
         consulta = $($("tbody#tabla>tbody.hide")[0]
             .querySelectorAll("div.labels:nth-child(1)"));
@@ -2316,16 +2311,16 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
         caso_especial = false;
 
     } else {
-	//console.log("caso especial");
         caso_especial = true;
         $("tbody.hide>div.labels").attr("especial", "1");
 
     }
 
-
+    // Esconder mensaje de espera.
     if (!noHayTabla && !special_params) {
-        $("div#espere").css("visibility", "hidden");
+        if(!esperaMapaSeries) $("div#espere").css("visibility", "hidden");
     }
+    // Esconder mensaje de espera.
 
     $("div#divDefense").remove();
     $("div#optionsDefense").remove();
@@ -2353,8 +2348,8 @@ function formatoData(data) {
                     data[i][j][key]
                     .replace(/\<tr(\>\n.*)\(/g, '<tr id="dist"$1(')
 
-                data[i][j][key] =
-                    data[i][j][key]
+//                data[i][j][key] =
+//                    data[i][j][key]
                 //	.replace(/\<td(\>.*(?!CNH-M1-EK-BALAM\/2017)(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
                 //	.replace(/\<td(\>.*(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd])(?![2017]))/g,'<td id="dist_"$1')
 
@@ -2363,8 +2358,8 @@ function formatoData(data) {
                     data[i][j][key]
                     .replace(/Categor¡a/g, '')
 
-                data[i][j][key] =
-                    data[i][j][key]
+//                data[i][j][key] =
+//                    data[i][j][key]
                 //	.replace(/\<td(\>.*A-[0-9]{4,})/g,'<td id="dist_"$1')
 
             }
@@ -3573,70 +3568,94 @@ function mapaDeSeries(TEMAS) {
   });
 
   var secciones = _.uniq(TEMAS.map(function(d) { return d.seccion; }));
+  console.log(secciones);
 
-  d3.select('#indice').append("div")
-      .style('position','relative')
-      .style('top','20%')
-	.selectAll('li').data(secciones).enter()
-	.append('li')
-	.attr("tag",function(d) { return d; })
-	.style('padding-bottom','0.2vw')
-	.style('font-size','2vmin')//'1vw')
-	.style('font-weight','600')
-	.html(function(d) { return d; })
-    .each(function(li) {
-	var temas = TEMAS.filter(function(d) { return d.seccion == li; })
-			  .map(function(d) { return d.tema; });
+  var reglas = ["i <= 2", "i > 2"];
 
-	d3.select(this).append("ul")
-	 .selectAll('li').data(temas).enter()
-	 .append('li')
-	 .attr("tag",function(d) { return d; })
-	 .style('font-size','1.5vmin')//'0.9vw')
-	 .style('font-weight','300')
-	 .attr('class','liMapa')
-	 .html(function(d) {
-	    return d;
-	 }).on('click',function(d) {
-	    $('div#mapaSeries').css('visibility','hidden');
+  var dataSets = reglas.map(function(regla) { 
+    return secciones.map(function(tema,i) {
+	  if(eval(regla)) return tema;
+	}).filter(function(tema) { return tema; });
+  });
 
-	    var thisNode = $(this).text();
-	    var parentNode = this.parentNode.parentNode.getAttribute('tag');
+  console.log(dataSets);
 
-	    var sel_parentNode = $('select.filtros_').find(':selected').attr('tag');
-	    var sel_thisNode = $('select.filtros').find(':selected').attr('tag');
-	 
+  for(var ix in dataSets) {
 
-	    if(sel_parentNode == parentNode) {
-	      $('select.filtros option').filter(function() { return this.innerText == thisNode; })
-		.prop('selected',true).trigger("change",function() { console.log("aa"); })
+	  d3.select('#indice_' + String(ix)).append("div")
+	      .style('position','relative')
+	      .style('top','20%')
+//	      .append("ul").style("list-style-type","none")
+		.selectAll('li').data(dataSets[ix]).enter()
+		.append('li')
+		.attr("tag",function(d) { return d; })
+		.style('padding-bottom','3vmax')
+		.style("list-style-type","none")
+		.style('font-size','1.8vmax')//'1vw')
+		.style('font-weight','600')
+		.html(function(d) { return d; })
+	    .each(function(li) {
+	      var temas = TEMAS.filter(function(d) { return d.seccion == li; })
+				  .map(function(d) { return d.tema; });
 
-	    } else if(sel_parentNode != parentNode && sel_thisNode != thisNode) {
+	      d3.select(this)
+		.append("ul").style('list-style-type','none')
+		  .style("padding-left","0px")
+		.selectAll('li').data(temas).enter()
+		.append('li')
+		.attr("tag",function(d) { return d; })
+		   .style('font-size','1.3vmax')//'0.9vw')
+		   .style('font-weight','300')
+		   .style('color','rgb(25%,25%,25%)')
+		   .attr('class','liMapa')
+		 .html(function(d) {
+		    var str = ix == 0 ? d + "&ensp;" : "&ensp;" + d;
+		    return d;
+		 }).on('click',function(d) {
+		    $('div#mapaSeries').css('visibility','hidden');
 
+		    var thisNode = $(this).text();
+		    var parentNode = this.parentNode.parentNode.getAttribute('tag');
 
+		    var sel_parentNode = $('select.filtros_').find(':selected').attr('tag');
+		    var sel_thisNode = $('select.filtros').find(':selected').attr('tag');
 
-/*
-difSecYtem(parentNode,function() {
-	      $('select.filtros option').filter(function() { return this.innerText == thisNode; })
-		.prop('selected',true).trigger("change")
-});
-*/
-	    }
+		    $('select.filtros_ option').bind("customCall", function(e,callback) {
+			$(this).trigger("change");
+			window.setTimeout(callback, 1250);  // ¿Es ésta la mejor manera? ¿Cómo asegurar que sea 'asíncrono'?
+		    });
+		 
 
-	 });
-    });
+		    if(sel_parentNode == parentNode) {
+		      $('select.filtros option').filter(function() { return this.innerText == thisNode; })
+			.prop('selected',true).trigger("change");
 
+		    } else if(sel_parentNode != parentNode) {
 
-  function difSecYtem(parentNode,callback) {
-	      $('select.filtros_ option[tag="'+ parentNode +'"]')
-		.prop('selected',true)
-		.trigger("change");
+		      esperaMapaSeries = true;  // <-- Sirve para controlar la aparición del mensaje de espera.
+						//     La variable de arriba pausa el mecanismo natural del mensaje de espera
+						//     para que parezca que se cambia de tema naturalmente y así el pop-up
+						//     de espera no 'parpadee'.
 
-    window.setTimeout(function() {
-		callback();
+		      $('select.filtros_ option').filter(function() { return this.innerText == parentNode; })
+			.prop('selected',true).trigger("customCall",function() {
 
-    },100);
-  };
- 
+			    esperaMapaSeries = false; // <-- Reestablece el funcionamiento natural del mensaje de espera.
+
+			    $('select.filtros option').filter(function() { return this.innerText == thisNode; })
+				.prop('selected',true).trigger("change");
+
+			});
+
+		    };
+
+		 })
+		.on("mouseover", function() { $(this).css("color","rgb(13,180,190)").css("font-weight","600"); })
+		.on("mouseout", function() { $(this).css("color","rgb(25%,25%,25%)").css("font-weight","300"); });
+
+	    });
+
+  }
+
 };
 

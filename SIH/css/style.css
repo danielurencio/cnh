@@ -406,6 +406,15 @@ div#mapaSeries>div.espere {
     width: 100%;
 }
 
+.container_mapaSeries {
+    display: table;
+    height: 97%;
+    position: absolute;
+    overflow: hidden;
+    width: 97%;
+}
+
+
 .helper {
     #position: absolute;
     #top: 50%;
@@ -435,10 +444,10 @@ div#mapaSeries>div.espere {
     #position: relative;
     #top: -50%;
     margin: 0 auto;
-    width: auto;
+    width: 100%;
     font-weight:800;
     font-size:15px;
-    padding-left:calc(25% - 2vw);
+/*    padding-left:calc(25% - 2vw);*/
 }
 
 .close_chart {
@@ -675,4 +684,5 @@ li.liMapa:hover {
   color:rgb(13,180,190);
   cursor:pointer;
   font-weight:800;
+  text-decoration:underline;
 }
