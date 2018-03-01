@@ -1,4 +1,4 @@
-﻿var ambiente = 'producciónn';
+﻿var ambiente = 'producción';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -3578,19 +3578,25 @@ function mapaDeSeries(TEMAS) {
 	}).filter(function(tema) { return tema; });
   });
 
-  console.log(dataSets);
 
-  for(var ix in dataSets) {
+// Evento personalizado: Se detona el cambio por sección y se acepta una función como argumento
+// para que, posteriormente, se detone el cambio por tema.
+  $('select.filtros_ option').bind("customCall", function(e,callback) {
+	$(this).trigger("change");
+	window.setTimeout(callback, 1250);  // ¿Es ésta la mejor manera? ¿Cómo asegurar que sea 'asíncrono'?
+  });
 
-	  d3.select('#indice_' + String(ix)).append("div")
+
+
+   d3.selectAll('.indice').each(function(d,i) {
+	   var ix = i;
+	   d3.select(this).append("div")
 	      .style('position','relative')
 	      .style('top','20%')
-//	      .append("ul").style("list-style-type","none")
 		.selectAll('li').data(dataSets[ix]).enter()
 		.append('li')
 		.attr("tag",function(d) { return d; })
 		.style('padding-bottom','3vmax')
-//		.style("padding-right","1%")
 		.style("list-style-type","none")
 		.style('font-size','1.8vmax')//'1vw')
 		.style('font-weight','600')
@@ -3613,7 +3619,12 @@ function mapaDeSeries(TEMAS) {
 		 .html(function(d) {
 		    var str = ix == 0 ? d + "&ensp;" : "&ensp;" + d;
 		    return d;
-		 }).on('click',function(d) {
+		 });
+	    });
+
+
+	    d3.selectAll('.liMapa')
+		    .on('click',function(d) {
 		    $('div#mapaSeries').css('visibility','hidden');
 
 		    var thisNode = $(this).text();
@@ -3621,11 +3632,6 @@ function mapaDeSeries(TEMAS) {
 
 		    var sel_parentNode = $('select.filtros_').find(':selected').attr('tag');
 		    var sel_thisNode = $('select.filtros').find(':selected').attr('tag');
-
-		    $('select.filtros_ option').bind("customCall", function(e,callback) {
-			$(this).trigger("change");
-			window.setTimeout(callback, 3250);  // ¿Es ésta la mejor manera? ¿Cómo asegurar que sea 'asíncrono'?
-		    });
 		 
 
 		    if(sel_parentNode == parentNode) {
@@ -3655,9 +3661,7 @@ function mapaDeSeries(TEMAS) {
 		.on("mouseover", function() { $(this).css("font-weight","700"); })
 		.on("mouseout", function() { $(this).css("font-weight","300"); });
 
-	    });
-
-  }
+   });
 
 };
 
