@@ -1,4 +1,4 @@
-﻿var ambiente = 'producción';
+﻿var ambiente = 'producciónn';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -3590,6 +3590,7 @@ function mapaDeSeries(TEMAS) {
 		.append('li')
 		.attr("tag",function(d) { return d; })
 		.style('padding-bottom','3vmax')
+//		.style("padding-right","1%")
 		.style("list-style-type","none")
 		.style('font-size','1.8vmax')//'1vw')
 		.style('font-weight','600')
@@ -3599,14 +3600,15 @@ function mapaDeSeries(TEMAS) {
 				  .map(function(d) { return d.tema; });
 
 	      d3.select(this)
-		.append("ul").style('list-style-type','none')
-		  .style("padding-left","0px")
+		.append("ul")//.style('list-style-type','none')
+		  .style("padding-left","7%")
 		.selectAll('li').data(temas).enter()
 		.append('li')
 		.attr("tag",function(d) { return d; })
 		   .style('font-size','1.3vmax')//'0.9vw')
 		   .style('font-weight','300')
-		   .style('color','rgb(25%,25%,25%)')
+		   .style('color','rgb(13,180,190)')
+		   .style('text-decoration','underline')
 		   .attr('class','liMapa')
 		 .html(function(d) {
 		    var str = ix == 0 ? d + "&ensp;" : "&ensp;" + d;
@@ -3622,7 +3624,7 @@ function mapaDeSeries(TEMAS) {
 
 		    $('select.filtros_ option').bind("customCall", function(e,callback) {
 			$(this).trigger("change");
-			window.setTimeout(callback, 1250);  // ¿Es ésta la mejor manera? ¿Cómo asegurar que sea 'asíncrono'?
+			window.setTimeout(callback, 3250);  // ¿Es ésta la mejor manera? ¿Cómo asegurar que sea 'asíncrono'?
 		    });
 		 
 
@@ -3650,8 +3652,8 @@ function mapaDeSeries(TEMAS) {
 		    };
 
 		 })
-		.on("mouseover", function() { $(this).css("color","rgb(13,180,190)").css("font-weight","600"); })
-		.on("mouseout", function() { $(this).css("color","rgb(25%,25%,25%)").css("font-weight","300"); });
+		.on("mouseover", function() { $(this).css("font-weight","700"); })
+		.on("mouseout", function() { $(this).css("font-weight","300"); });
 
 	    });
 
