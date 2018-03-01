@@ -2755,7 +2755,7 @@ function enableGraphs() {
                     ">tr:nth-child(" + ix + ")";
 
                 var dist = $(s).attr('id');
-                console.log(s, dist);
+
                 var dist_ = $(s)[0].querySelector("td:first-child")
 				   .getAttribute("id");
 
@@ -3006,6 +3006,8 @@ NOTAS = NOTAS.replace(/<b>|<\/b>/g,"")
      var liga_nombre = $("tspan[onclick]").html();
      var liga = $("tspan[onclick]").attr("onclick")
 		.split("=")[1].replace(/"/g,"");
+
+     console.log(liga,liga_nombre)
 
      $("tspan[onclick]").html("<a href='" + liga + "' target='_blank'>"
 					  + liga_nombre + "</a>");
@@ -3568,7 +3570,6 @@ function mapaDeSeries(TEMAS) {
   });
 
   var secciones = _.uniq(TEMAS.map(function(d) { return d.seccion; }));
-  console.log(secciones);
 
   var reglas = ["i <= 2", "i > 2"];
 
@@ -3598,7 +3599,7 @@ function mapaDeSeries(TEMAS) {
 		.attr("tag",function(d) { return d; })
 		.style('padding-bottom','3vw')
 		.style("list-style-type","none")
-		.style('font-size','1.8vw')//'1vw')
+		.style('font-size','1.8vw')
 		.style('font-weight','600')
 		.html(function(d) { return d; })
 	    .each(function(li) {
@@ -3611,7 +3612,7 @@ function mapaDeSeries(TEMAS) {
 		.selectAll('li').data(temas).enter()
 		.append('li')
 		.attr("tag",function(d) { return d; })
-		   .style('font-size','1.3vw')//'0.9vw')
+		   .style('font-size','1.3vw')
 		   .style('font-weight','300')
 		   .style('color','rgb(13,180,190)')
 		   .style('text-decoration','underline')
