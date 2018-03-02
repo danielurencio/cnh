@@ -1,4 +1,4 @@
-﻿var ambiente = 'producciónn';
+﻿var ambiente = 'producción';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -112,48 +112,10 @@ $(document).ready(function() {
         } else {
 	//  data_BUSCAR = true;
 	  if(asyncAJAX) { asyncAJAX.abort(); }
-/*
-	  asyncAJAX = $.ajax({
-	    url:HOSTNAME + "/cubos_buscar.py",
-            type:"post",
-	    datatype:"json",
-            data: parametros(),
-	    success: function(data_buscar_) {
-		data_buscar_ = JSON.parse(data_buscar_);
-                cosas(data_buscar_);
-		data_BUSCAR = false;
-		asyncAJAX = false;
-		if(document.querySelector("div#dropDown>div")) {
-		  $("div#dropDown>div").remove();
-		  d3.select("input#filtroSerie").dispatch("input");
-		}
-	    }
-
-	  });
-*/
 
         }
 
        function cosas(data_buscar_) {
-/*
-        for (var i in data_) {
-            for (var j in data_[i]) {
-                if (typeof(data_[i][j]) == 'object') {
-                    let key = Object.keys(data_[i][j])[0];
-                    data_[i][j][key] = data_[i][j][key].replace(/&....;/g, "");
-                    var tabla = parser.parseFromString(data_[i][j][key], "text/html");
-                    var rows = tabla.querySelectorAll("tr>td:first-child");
-                    rows = Array.prototype.slice.call(rows);
-                    rows = rows.map(function(d) {
-                        return d.textContent;
-                    });
-                    rows.forEach(function(d) {
-                        arr.push([data_[i][0], key, d].join(" > "));
-                    });
-                }
-            }
-        };
-*/
 	// Fix necesario para que el filtro funcione con IE y Chrome.
 	if(typeof(data_buscar) == 'string') var data_buscar_ = JSON.parse(data_buscar_);
 
@@ -261,20 +223,14 @@ $(document).ready(function() {
                       	    document.querySelector("input#filtroSerie").value = "";
 
                             var txt = this.textContent.split(" > ");
-//			    console.log(this);
 
                             caso_especial ? siFiltro = true : siFiltro = false;
                             caso_especial ? current_TXT = txt : current_TXT = null;
                             irAserie(txt);
 
+			   // Agrega el nombre de la selección en el filtro y lo inhabilita.
                             $("div#quitarFiltro").css("display", "block");
 			    $("input#filtroSerie").prop("disabled",true);
-
-//			    current_TXT_noEspecial = txt.join(" > ");
-//			    $("input#filtroSerie").attr("tag",txt.join(" > "))
-//			    console.log(current_TXT_noEspecial);
-//			    if(current_TXT_noEspecial.length < 5) current_TXT_noEspecial = txt.join(" > ");
-//			    console.log(txt.join(" > "));
 			    document.querySelector("input#filtroSerie").value = "    " + txt.join(" > ");
                         });
 
@@ -380,7 +336,6 @@ $(document).ready(function() {
         $(document.querySelectorAll("div.overflow tr")[0]).css("display", "block");
         $(el.parentNode).css("display", "block");
         var pos = el.parentNode.parentNode.parentNode.parentNode.parentNode.offsetTop;
-        //   window.scrollTo(0,pos-30)
 
         $(window).scrollTop(
             $(el).offset().top - 250
@@ -403,16 +358,11 @@ $(document).ready(function() {
                 .querySelectorAll("tr>td:first-child"));
 
         var val;
-        //    var tds = Array.prototype.slice
-        //	.call(document.querySelectorAll("div.overflow td:first-child"));
 
         var prevTD = tds.filter(function(d) {
             return d.textContent.replace(/\s/g, "").toUpperCase() == txt[2].replace(/\s/g, "").toUpperCase();
         })[0];
 
-        //    if(!tds.length) {
-
-        //    } else {
 
         var c = tds.indexOf(prevTD) + 0;
         var tdFromList;
@@ -442,7 +392,7 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////////
 
     $.ajax({
-        url: HOSTNAME + "/cubos_temas_des.py",
+        url: HOSTNAME + "/cubos_temas.py",
         dataType: 'json',
         data: {
             'section': 'PRODUCCION'
@@ -452,7 +402,7 @@ $(document).ready(function() {
 
             d3.json("blueprints.json", function(response) {
 
-response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
+		response.A.esp.filtros.years[1] = new Date().getFullYear();// <-- El año actual para los filtros.
                 RenderWords(response, "esp", TEMAS);
 
 		mapaDeSeries(TEMAS);
@@ -545,11 +495,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 	    if(cambio_) {
 		      cambio_ = false;
 		      $("#quitarFiltro").click();
-//		      $("div#quitarFiltro").css("display","none");
-//                      document.querySelector("input#filtroSerie").value = "";
-
-//		      $("input#filtroSerie").prop("disabled",false);
-                      //document.querySelector("input#filtroSerie").value = "";
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
 		      var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
@@ -570,23 +515,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 			      if(!ifEmpty) {
                                 ajaxFunction(data, Cubos, filtrarSeries, params_especiales, null);
 
-/*
-				$.ajax({
-				  url:HOSTNAME + "/cubos_buscar.py",
-				  type:"post",
-				  datatype:"json",
-				  data:params,
-				  success: function(data_buscar) {
-				    data_buscar = JSON.parse(data_buscar);
-				    var data_buscar;
-                                    ajaxFunction(data, Cubos, filtrarSeries,     //|
-						params_especiales, data_buscar); //| ¡"AjaxFunction" & "FiltrarSeries" van juntas!
-
-//				    filtrarSeries(data,data_buscar);		 //|
-
-				  }			      
-				});
-*/
 			      } else {
 				data_buscar = null;						       //|
 				ajaxFunction(data,Cubos,filtrarSeries,params_especiales, data_buscar); //| ¡"AjaxFunction" & "FiltrarSeries" van juntas!
@@ -616,19 +544,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 		        $("div#optionsDefense").remove();
                     }
 
-/*
-		    if (_parametros_['period'] == 'daily' ) {
-			var date_start = $('#datepicker_start').val();
-			var date_end = $('#datepicker_start').val();
-
-			if( !date_start || !date_end ) {
-			  alert("Seleccione una fecha válida.");
-    			  $("div#divDefense").remove();
-		          $("div#optionsDefense").remove();
-
-			}
-		    }
-*/
                 });
 
 
@@ -636,7 +551,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 		$("select.filtros_").change(function() {
 		      $("input#filtroSerie").prop("disabled",false);
                       document.querySelector("input#filtroSerie").value = "";
-		      //current_TXT_noEspecial = false;
 
                       var sel_ = $("select.filtros_").find(":selected").attr("tag");
 		      var temas_seccion = TEMAS.filter(function(d) {
@@ -661,22 +575,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
 		    var temaSeleccionado_ = temas_seccion.filter(function(d) { return d.json_arg == tema_seleccionado; })[0];
 		    var periodicidad = JSON.parse(temaSeleccionado_.periodicidad);
-/*
-		    d3.select("select#periodicidad").html("")
-
-
-		    var periodicidad_ = [];
-		    for(var k in periodicidad) {
-			var pair = [k,periodicidad[k]];
-			periodicidad_.push(pair);
-		    }
-
-		    d3.select("select#periodicidad").selectAll("options")
-			.data(periodicidad_).enter()
-			.append("option")
-			.attr("tag",function(d) { return d[1]; })
-			.html(function(d) { return d[0]; });
-*/
 
 /*------ vv Habilitar modo de seleccionar periodicidad según lo que esté seleccionado vv ---------*/
 		    periodForm(periodicidad);
@@ -687,7 +585,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 $("select.filtros").change(function() {//<--CAMBIO DE TEMA..
 		      $("input#filtroSerie").prop("disabled",false);
                       document.querySelector("input#filtroSerie").value = "";
-		      //current_TXT_noEspecial = false;
 
 /////////////////////////////////////////////////////////////////////////////
 /*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
@@ -735,13 +632,14 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                     $("div#mainTitle").html("");
                     $("div#metodos").html("");
 /*--------------------Resetear último rango de fecha válido-----------------*/
+
                     $("input[type=radio][value=monthly]").click()
+
                     var sel_ = $("select.filtros").find(":selected").attr("tag");
 
                     var filtroXcambio_ = TEMAS.filter(function(d) {
                         return d.json_arg == sel_;
-                    })//[0].tema;
-
+                    });
 
 
 		    var _periodicidad = JSON.parse(filtroXcambio_[0].periodicidad);
@@ -780,8 +678,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 				.getBoundingClientRect().right / 2;
 
                     var LEFT = (window.innerWidth / 2) - (sizE / 2);
-                    //      $("div#mainTitle").css("left",LEFT + "px");
-
 
                     var init_year = TEMAS.filter(function(d) {
                         return d.json_arg == sel_;
@@ -798,27 +694,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                     $("select#start_year").html("");
                     $("select#end_year").html("");
 
-
-
-/*
-		    var temaSeleccionado_ = temas_seccion.filter(function(d) { return d.json_arg == tema_seleccionado; })[0];
-		    var periodicidad = JSON.parse(temaSeleccionado_.periodicidad);
-
-		    d3.select("select#periodicidad").html("")
-		    console.log(parametros())
-
-		    var periodicidad_ = [];
-		    for(var k in periodicidad) {
-			var pair = [k,periodicidad[k]];
-			periodicidad_.push(pair);
-		    }
-
-		    d3.select("select#periodicidad").selectAll("options")
-			.data(periodicidad_).enter()
-			.append("option")
-			.attr("tag",function(d) { return d[1]; })
-			.html(function(d) { return d[0]; });
-*/
 
                     d3.select("select#start_year")
                         .selectAll("option").data(year_set).enter()
@@ -903,7 +778,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
 
-//if(!cambio_) {
                     $.ajax({
                         url: HOSTNAME + "/cubos_cuadros.py",
                         type: "post",
@@ -916,28 +790,9 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             ajaxFunction(data, Cubos, filtrarSeries, null, null); //| ¡"AjaxFunction" & "FiltrarSeries"
                             leyendaNotas(TEMAS, params);
 
-/*
-                            $.ajax({
-                                url: HOSTNAME + "/cubos_buscar.py",
-                                type: "post",
-                                datatype: "json",
-                                data: params,
-                                success: function(data_buscar) {
-                            	    data_buscar = JSON.parse(data_buscar);
-//				    console.log(data_buscar)
-                                    ajaxFunction(data, Cubos, filtrarSeries, null, data_buscar); //| ¡"AjaxFunction" & "FiltrarSeries"
-//				    filtrarSeries(data,data_buscar);				 //|      van juntas!
-                                    leyendaNotas(TEMAS, params);
-
-//				    cambio_ = false;
-                                }
-                            });
-*/
-
 			  } else {
 			    data_buscar = null;
 			    ajaxFunction(data,Cubos,filtrarSeries,null,data_buscar); //| ¡"AjaxFunction" & "FiltrarSeries"
-//			    filtrarSeries(data,data_buscar);			     //|        van juntas!
 			    leyendaNotas(TEMAS,params)
 			  }
 /*=================Checar si las tablas están vacías========================*/
@@ -950,7 +805,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 }); // <------- CAMBIO DE TEMA...
 
 		var periodo_selector = 'input[type=radio][name=periodicidad]';
-//		var periodo_selector = 'select#periodicidad';
 
                 $(periodo_selector).change(function() {
 
@@ -961,7 +815,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
 
                 var boton_consulta = $("button#consultar");
-                var selectors_ = ["select#start_year", "select#end_year", "select#start_month", "select#end_month", "input[type=radio][name=periodicidad]"/*"select#periodicidad"*/, "#datepicker_start", "#datepicker_end"];
+                var selectors_ = ["select#start_year", "select#end_year", "select#start_month", "select#end_month", "input[type=radio][name=periodicidad]", "#datepicker_start", "#datepicker_end"];
 
 
                 for (var j in selectors_) {
@@ -991,13 +845,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                         } else {
                             boton_consulta
 				.attr("class","consulta_normal")
-
-//                                .css("background-color", "rgb(221,221,221)")
-//                                .css("border", "2px outset rgb(221,221,221)")
-//                                .css("color", "black")
-//                                .css("border-radius", "0px")
                                 .css("font-weight", "600");
-
 
                         }
 
@@ -1029,26 +877,9 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                     data: params,
                     success: function(data) {
 			var ifEmpty = checkIfEmpty(data);
-                        ajaxFunction(data, Cubos, filtrarSeries, null, null); //| ¡"AjaxFunction" & "filtrarSeries"
+                        ajaxFunction(data, Cubos, filtrarSeries, null, null);
                         leyendaNotas(TEMAS, params);
 			cambio_ = false;
-/*	
-                        $.ajax({
-                            url: HOSTNAME + "/cubos_buscar.py",
-                            type: "get",
-                            datatype: "json",
-                            data: params,
-                            success: function(data_buscar) {
-		console.log("AQUÍ!!!")
-                        	data_buscar = JSON.parse(data_buscar);
-                                ajaxFunction(data, Cubos, filtrarSeries, null, data_buscar); //| ¡"AjaxFunction" & "filtrarSeries"
-				//filtrarSeries(data,data_buscar);			     //|    van juntas!
-                                leyendaNotas(TEMAS, params);
-				cambio_ = false;
-                            }
-
-                        });
-*/
                     }
 
                 });
@@ -1064,7 +895,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 $("div#mainTitle").html(title);
                 var sizE = $("div#mainTitle")[0].getBoundingClientRect().right / 2;
                 var LEFT = (window.innerWidth / 2) - (sizE / 2);
-                //      $("div#mainTitle").css("left",LEFT + "px");
 
                 ///////////////////////////////////////////////////////////////////////////////
                 //////////////////// AJAX - tabla default - ///////////////////////////////////
@@ -1136,8 +966,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
             csv.push("");
         }
 
-	//console.log(parent_,current_)
-
         csv = csv.join("\n");
         var csvFile = new Blob(["\ufeff", csv], {
             'type': 'text/csv'
@@ -1166,9 +994,8 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
         $("button#principal").attr("todos", "no");
         data = formatoData(data);
         /////////////////////////////////////////////////////////////////////////////
-        var color = "rgba(13,180,190,0.25)"//"rgba(82,191,144,0.25)"//getComputedStyle(document.body).getPropertyValue('--filasYcols');
+        var color = "rgba(13,180,190,0.25)";
         var temas_fondo = "white"
-        //getComputedStyle(document.body).getPropertyValue('--temas-fondo');
 
         var plus = "&plus;",
             minus = "&ndash;";
@@ -1216,8 +1043,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             "</thead>";
 
                         var contenido_tabla; // <-- Solo pegar en DOM la primera tabla! 
-                        contenido_tabla = "" //j == 0 && i == 1 ? tablas[j][Object.keys(tablas[j])[0]] +
-                        //	  "<br>" : "";
+                        contenido_tabla = "";
                         selection.append("div")
                             .attr("class", "labels")
                             .attr("tag", Object.keys(tablas[j])[0])
@@ -1260,7 +1086,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
             /*------Mostrar lámina de "espere" sólo para caso especial-------*/
 
             SS_ = true;
-            //    $("div#quitarFiltro").css("display","none");
 
             var tag = d3.select(this).attr("tag");
             var span = d3.select($(this).find("span.s")[0]);
@@ -1286,13 +1111,11 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
             if (this.nodeName == "DIV" && $(this).attr("especial") == "1") {
 /*----------------------------------------------Restaurar filtro---------------------------------------------*/
-	        //current_TXT_noEspecial = false;
 		$("input#filtroSerie").prop('disabled',false);
                 $("div#quitarFiltro").css("display", "none");
 /*----------------------------------------------Restaurar filtro---------------------------------------------*/
 
 
-                //	$("div#espere").css("visibility","visible");
                 var title = this.parentNode.getAttribute("tag");
                 var subtitle = this.getAttribute("tag");
 
@@ -1307,7 +1130,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 var algo_ = this;
 /*--- Si no está abierta la tabla hacer POST para obtener la tabla que se va a mostrar ---*/
                 if (performAjax) {
-//                    console.log("dentro de if(performAjax)..");
                     noHayTabla = true;
 
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
@@ -1340,7 +1162,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                         success: function(tabla_respuesta) {
 
                             if (siFiltro) {
-                                //console.log("siFiltro", siFiltro);
                                 tabla_respuesta = formatoData(tabla_respuesta);
                                 TableLogistics(algo_, tabla_respuesta);
                                 siFiltro = false;
@@ -1370,12 +1191,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
             }
 
             if (this.nodeName == "DIV" && $(this).attr("especial") != "1") {
-/*----------------------------------------------Restaurar filtro---------------------------------------------*/
-//	        current_TXT_noEspecial = false;
-//		$("input#filtroSerie").prop('disabled',false);
-//                $("div#quitarFiltro").css("display", "none");
-//                document.querySelector("input#filtroSerie").value = "";
-/*----------------------------------------------Restaurar filtro---------------------------------------------*/
 
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
 	     if($(this).next().css("display") != 'block') {
@@ -1386,8 +1201,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 		$("div#tema_options").append("<div style='width:" + $('div#tema_options').css('width') + ";height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>");
 	     }
 /*--Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
-
-//                $("div#quitarFiltro").css("display", "none");
 
                 var title = this.parentNode.getAttribute("tag");
                 var subtitle = this.getAttribute("tag");
@@ -1402,7 +1215,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 var sizeStr = tabla_resp.length * 2;
 
                 if (sizeStr <= threshold) {
-//		    $("div#espere").css("visibility","visible");
                     params_especiales = {
                         'title': title,
                         'subtitle': subtitle
@@ -1483,7 +1295,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 				.querySelectorAll("tr>td:first-child"));
 
 
-
                             var val,valName;
 
                             var prevTD = tds.filter(function(d) {
@@ -1534,21 +1345,11 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             d3.select(tbody_hide)
                                 .html(_docTable.innerHTML);//<--pega la tabla
 
-//			    $("input#filtroSerie").val("    " + current_TXT.join(" > "));
-
-//			    $("input#filtroSerie").prop('disabled','true');
 
                             current_TXT = null; // <-- IMPORTANTÍSIMO!
                         }
 //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         else {
-			 //   if(current_TXT_noEspecial) { 
-			//	console.log("holaaaa");
-			//	$("input#filtroSerie").val("    " + $("input#filtroSerie").attr("tag"))//current_TXT_noEspecial)
-			 //   } else {
-			//	console.log("byee");
-			//	$("input#filtroSerie").val("")
-			  //  }
 
                             d3.select(tbody_hide)
                                 .html(docTable.innerHTML);//<--pega la tabla
@@ -1560,9 +1361,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                         );
 
                         icons();
-                        // seleccionarCheckboxes();
-                        //enableGraphs();
-                        //corregirRenglones();
                         headerScroll();
                         colcol();
                         callback();
@@ -1573,7 +1371,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                         });
 
                     } else {
-                        //console.log("no hay tabla");
 
                         var params = parametros();
                         params["title"] = params_especiales.title;
@@ -1593,11 +1390,11 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 					.length;
 
                                 if (sizeStr <= threshold) {
-                              tabla_respuesta = formatoData(tabla_respuesta);
+                                    tabla_respuesta = formatoData(tabla_respuesta);
                                     TableLogistics(algo_, tabla_respuesta);
                                 } else {
-		FILE_NAME = { 'title':params.title, 'subtitle':params.subtitle };
-		mensajeExplicativo(params.title,params.subtitle,tabla_respuesta);
+				    FILE_NAME = { 'title':params.title, 'subtitle':params.subtitle };
+				    mensajeExplicativo(params.title,params.subtitle,tabla_respuesta);
                                 }
 
                             }
@@ -1618,27 +1415,21 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             ///// FORZAR TAMAÑOS DE HEADER OCURRENTE CROSS-BROWSER ////////////////////////
                             var cellHide = $("div.overflow>table>tbody.hide>tr:nth-child(2)>td:nth-child(4)")
                             var cellHead = $(".scroll_aid_header>th:nth-child(n+2)");
-                            //  console.log("Tamaño de celda en head:",cellHead.css("width"))
 
-                            var CellOffsetWidth = cellHide[0].offsetWidth //.css("width"); 
-                            var jqueryWidth = "75px"; //cellHide.css("width"); 
+                            var CellOffsetWidth = cellHide[0].offsetWidth;
+                            var jqueryWidth = "75px";
 
-                            //  console.log("Tamaño de celda 'offset':",CellOffsetWidth);
-                            //  console.log("Tamaño de celda 'jQuery':",jqueryWidth);
 
                             cellHead.css("max-width", jqueryWidth)
                             cellHead.css("width", jqueryWidth)
                             cellHead.css("min-width", jqueryWidth)
 
 
-                            //  console.log("Tamaño después de cambio con jQuery:",cellHead.css("width"))
-
                             d3.selectAll(".scroll_aid_header>th:nth-child(n+2)")
                                 .style("max-width", jqueryWidth)
                                 .style("width", jqueryWidth)
                                 .style("min-width", jqueryWidth)
 
-                            //  console.log("Tamaño después de cambio con D3:",cellHead.css("width"))
                             var posHeader = document
                                 .querySelector(".scroll_aid_header>th:nth-child(2)")
                                 .getBoundingClientRect();
@@ -1649,7 +1440,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                             $(".scroll_aid_header>th:first-child").css("min-width", "calc(360px + 55px)");
                             $("div.overflow tr>td").css("border-bottom", "0px solid white");
                             $("div.overflow tr>td").css("border-top", "1px solid lightGray");
-                            //	  $("div.overflow tr>td:first-child").css("min-width","600px")
 
                             if (posHeader.left != posHide.left) {
 
@@ -1724,7 +1514,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
                 }
 
                 // Colorear filas
-                /*petición Mendoza*/
                 $(this.parentNode.children).css("background", color);
 
                 d3.selectAll("tbody[tag='" + grand_parent
@@ -1980,8 +1769,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
             return "<option>" + d.tema + "</option>";
         }).join("");
 
-        //  $("div#tema_options select").text("");
-        //  $("div#tema_options select").append(temas);
 
         // Colocar los meses y los años.
         months = months.map(function(d) {
@@ -1996,7 +1783,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
             return "<option>" + d + "</option>";
         });
 
-	//console.log(years_)
+
 
         var id_dates = ["start", "end"];
         for (var i in id_dates) {
@@ -2030,7 +1817,6 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
         var dateBefore = addMonths(new Date(), -12);
         var dateNow = addMonths(new Date(), -1);
 
-        //console.log(dateBefore,dateNow)
 
         var s_Year = start_year.indexOf(dateBefore[1]);
         var e_Year = start_year.indexOf(dateNow[1]);
@@ -2222,7 +2008,6 @@ function descargarSerie() {
 function parametros() {
     var params = {};
     params['period'] = $('input[name=periodicidad]:checked').val();
-//    params['period'] = $("select#periodicidad").find(":selected").attr("tag");
 
     if (params["period"] == "monthly") {
         params['start_month'] = $("select#start_month")
@@ -2274,13 +2059,11 @@ function parametros() {
 
 function ajaxFunction(data, Cubos, filtrarSeries, special_params,
 							data_buscar) {
-//$("div#espere").css("visibility","visible");
     var consulta;
     var key_ = Object.keys(data[0][1])[0];
     var tableString = data[0][1];
     data = formatoData(data);
     Cubos(data);
-    //try {
 
     if (special_params) {
         if ($("tbody[tag='" + special_params.title + "']")[0]) {
@@ -2294,7 +2077,7 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
         }
 
 	try {
-          var parTAG = consulta.parentNode.getAttribute("tag"); // ¿?
+          var parTAG = consulta.parentNode.getAttribute("tag");
           $("tbody.labels[tag='" + parTAG + "']").click();
           consulta.click();
 
@@ -2349,19 +2132,11 @@ function formatoData(data) {
                     data[i][j][key]
                     .replace(/\<tr(\>\n.*)\(/g, '<tr id="dist"$1(')
 
-//                data[i][j][key] =
-//                    data[i][j][key]
-                //	.replace(/\<td(\>.*(?!CNH-M1-EK-BALAM\/2017)(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd]))/g,'<td id="dist_"$1')
-                //	.replace(/\<td(\>.*(?![CNH]*[\-R0-9]*[\-0-9/0-90-9])(?![AR])[A-Z]{2,}(?![MMpcd])(?![2017]))/g,'<td id="dist_"$1')
 
 
                 data[i][j][key] =
                     data[i][j][key]
                     .replace(/Categor¡a/g, '')
-
-//                data[i][j][key] =
-//                    data[i][j][key]
-                //	.replace(/\<td(\>.*A-[0-9]{4,})/g,'<td id="dist_"$1')
 
             }
         }
@@ -2492,7 +2267,6 @@ function obtener_series() {
 
 
 function descargar_selection(series) {
-    //console.log(series);
     var chunk = [];
 
     var sel_ = $("select.filtros").find(":selected").attr("tag");
@@ -2551,8 +2325,8 @@ function descargar_selection(series) {
             });
 
             var tema = '';
-var buffer = [];
-var cached_sum = []
+	    var buffer = [];
+	    var cached_sum = [];
 
             subfamilia.forEach(function(ss) {
                 var serie_ = ss.serie.join(",").replace(/NaN/g, "");
@@ -2565,7 +2339,6 @@ var cached_sum = []
 		  cached_sum = buff_zeros;
 		}
 
-//		console.log(cached_sum)
 
                 if (tema != ss.tema) {
                     tema = ss.tema;
@@ -2583,10 +2356,10 @@ var cached_sum = []
 		    }
 
 		    arr_sum = arr_sum.map(function(d) { return String(d3.sum(d)); }).join(",");
-		//console.log(ss)
+
 		    var serie__ = ss.subtema.length > 0 ? arr_sum : serie_;
-//		    if(ss.subtema.length > 0) serie_ = arr_sum;
-                    var _cont_ = ss['prevRow'] ? "    " + tema : "     "
+
+                    var _cont_ = ss['prevRow'] ? "    " + tema : "     ";
 					+ tema + "," + serie__;
                     chunk.push(_cont_);
                 }
@@ -2739,7 +2512,6 @@ function enableGraphs() {
         var first_cell = cells[0].innerHTML.replace(/\s&....;/g, "");
         first_cell = first_cell.replace(/&[a-z;\s]*/g, "");
         first_cell = first_cell.replace(/^\s/g, "");
-        //      first_cell = first_cell.replace(/ /g,"");
 
         if (row_.getAttribute('id')) {
             info['tema'] = first_cell;
@@ -2848,19 +2620,16 @@ function grapher(info) {
 
 //============= CREDITS FIX ======================
 
-function creditsFix(NOTAS) {
+    function creditsFix(NOTAS) {
+      return 0;
+    }
 
-
-  return 0;
-}
-
-var credFIX = creditsFix(NOTAS);
+    var credFIX = creditsFix(NOTAS);
 //============= CREDITS FIX ======================
-var marginCred = document.querySelector('div#metodos>div').clientHeight;
-var offsetCred = Math.floor(marginCred / 100);
+    var marginCred = document.querySelector('div#metodos>div').clientHeight;
+    var offsetCred = Math.floor(marginCred / 100);
 
-NOTAS = NOTAS.replace(/<b>|<\/b>/g,"")
-//console.log([NOTAS]);
+    NOTAS = NOTAS.replace(/<b>|<\/b>/g,"");
 
     Highcharts.chart('chart', {
         lang: {
@@ -2994,8 +2763,6 @@ NOTAS = NOTAS.replace(/<b>|<\/b>/g,"")
 
    var fixMathChars = $('.highcharts-credits>tspan').filter(function() { return this.textContent.match(/&/g); });
 
-//console.log($('.highcharts-credits>tspan'));
-
    fixMathChars.each(function() {
      $(this).html(this.textContent);
    });
@@ -3094,8 +2861,7 @@ function headerScroll() {
 
     if (first_th) {
         var cell_Width = first_th.offsetWidth - 1;
-        //      var cell_Width = $(first_th).css("width").split("px")[0];
-        //console.log(cell_Width);
+
         var scroll_id_header = fechas_().replace(/-/g, " ").split(",")
             .map(function(d) {
                 return "<th style='width:" + cell_Width +
@@ -3152,7 +2918,6 @@ function descargarPNG() {
       $(_tspans[_tspans.length-1]).attr("fill","white");
       $(_tspans[_tspans.length-2]).attr("fill","white");
       $(".highcharts-credits a").attr("fill","white");
-console.log("aaaaaa")
     }
 
     var SVG = document.querySelector("svg.highcharts-root")
@@ -3184,7 +2949,6 @@ console.log("aaaaaa")
 	    img.onload = function() {
 		ctx.drawImage(img, 0, 0);
 		domURL.revokeObjectURL(url);
-		//console.log(svg)
 		triggerDownload(canvas.toDataURL(),svg);
 	    };
 
@@ -3195,7 +2959,6 @@ console.log("aaaaaa")
     function triggerDownload(imgURI,svg) {
 
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-	  //console.log(svg)
           window.navigator.msSaveOrOpenBlob(svg, "a.png");
       } else {
           var a = document.createElement('a');
@@ -3203,7 +2966,6 @@ console.log("aaaaaa")
           a.setAttribute('href', imgURI);
           a.setAttribute('target', '_blank');
 	  document.body.appendChild(a);
-	  //console.log(a)
           a.click();
           d3.selectAll(".PNG_").remove();
           a.remove();
@@ -3484,12 +3246,6 @@ function periodForm(periodicidad) {
 
 		   var values = [];
 		   for( var k in periodicidad) { values.push(periodicidad[k]) }
-/*
-		   var _existen = $('input[type=radio][name=periodicidad]').filter(function() {
-//			return Object.values(periodicidad).includes(this.value)
-			return values.includes(this.value);
-		   });
-*/
 
 		   var _items = document.querySelectorAll('input[type=radio][name=periodicidad]');
 		   _items = Array.prototype.slice.call(_items);
@@ -3509,16 +3265,6 @@ function periodForm(periodicidad) {
 			$("div#" + d.value).css("color","rgb(25%,25%,25%)");
 		   });
 
-/*
-		   $('input[type=radio][name=periodicidad]').filter(function() {
-//			return !Object.values(periodicidad).includes(this.value)
-			return !values.includes(this.value);
-		   }).each(function() {
-			this.disabled = true;
-			$("div#" + this.value).css("color","gray");
-		   });
-*/
-
 		   var no_existen = _items.filter(function(d) {
 			return !values.some(function(e) { return e == d.value; });
 		   });
@@ -3533,7 +3279,6 @@ function periodForm(periodicidad) {
 /*-----------------Activar y desactivar periodicidades según el caso----------------------------------*/
 /*------ vv Habilitar modo de seleccionar periodicidad según lo que esté seleccionado vv ---------*/
         var HP = $("div#HP");
-//	var _selected_period_ = $("select#periodicidad").find(":selected").attr("tag");
 	var _selected_period_ = $('input[name=periodicidad]:checked').val();
 
 	var dateForm = $("div#dateForm");
@@ -3608,7 +3353,7 @@ function mapaDeSeries(TEMAS) {
 				  .map(function(d) { return d.tema; });
 
 	      d3.select(this)
-		.append("ul")//.style('list-style-type','none')
+		.append("ul")
 		  .style("padding-left","7%")
 		.selectAll('li').data(temas).enter()
 		.append('li')
@@ -3666,4 +3411,3 @@ function mapaDeSeries(TEMAS) {
    });
 
 };
-
