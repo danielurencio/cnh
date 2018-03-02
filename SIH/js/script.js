@@ -75,6 +75,7 @@ $(document).ready(function() {
 
     //////////////Quitar filtro de búsqueda //////////////////////////
     $("div#quitarFiltro").on("click", function() {
+	current_TXT = false;
         var tablaVisible = $("div.overflow").filter(function() {
             return $(this).css("display") == "block";
         });
@@ -543,11 +544,11 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 /*------------------AJAX con botón de consultar-------------------------------*/    
 	    if(cambio_) {
 		      cambio_ = false;
+		      $("#quitarFiltro").click();
+//		      $("div#quitarFiltro").css("display","none");
+//                      document.querySelector("input#filtroSerie").value = "";
 
-		      $("div#quitarFiltro").css("display","none");
-                      document.querySelector("input#filtroSerie").value = "";
-
-		      $("input#filtroSerie").prop("disabled",false);
+//		      $("input#filtroSerie").prop("disabled",false);
                       //document.querySelector("input#filtroSerie").value = "";
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
@@ -1535,7 +1536,7 @@ response.A.esp.filtros.years[1] = new Date().getFullYear();//2018  // <----
 
 //			    $("input#filtroSerie").val("    " + current_TXT.join(" > "));
 
-			    $("input#filtroSerie").prop('disabled','true');
+//			    $("input#filtroSerie").prop('disabled','true');
 
                             current_TXT = null; // <-- IMPORTANTÍSIMO!
                         }
