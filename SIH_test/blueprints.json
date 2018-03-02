@@ -1,0 +1,60 @@
+{
+ "A": {
+  "maquina": {},
+  "esp": {
+   "filtros": {
+     "titles": {
+	"tema":"Tema:",
+	"b1":"Nivel:",
+	"fecha":"Fecha:",
+	"start":"Inicio:",
+        "end":"Fin:",
+	"tempo":"Periodicidad:",
+	"month":"Mensual",
+	"year":"Anual"
+     },
+     "months": ["01","02","03","04","05","06","07","08","09","10","11","12"],
+     "years":[1960,2018],
+     "options": [
+	{ "tema":"Producción",
+	  "nivel":["Cuenca","Campo"],
+	  "tempo":["Mensual","Anual"]
+        },
+	{ "tema":"Producción1",
+	  "nivel":["Cuenca1","Campo1"],
+	  "tempo":["Mensual","Anual"]
+        }
+     ]
+   }
+  },
+  "eng": {
+   "filtros": {
+     "titles": {
+	"tema":"Topic:",
+	"nivel":"Level:",
+	"fecha":"Date:",
+	"start":"Start:",
+	"end":"End:",
+	"tempo":"Periodicity:",
+	"month":"Monthly",
+	"year":"Yearly"
+     },
+     "months": ["01","02","03","04","05","06","07","08","09","10","11","12"],
+     "years":[1960,2018],
+     "options": [
+	{ "tema":"Production",
+	  "nivel":["Basin","Field"],
+	  "tempo":["Monthly","Yearly"]
+        },
+	{ "tema":"Production1",
+	  "nivel":["Basin1","Field1"],
+	  "tempo":["Monthly","Yearly"]
+        }
+
+
+     ]
+   }
+  }
+
+ }
+}

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>CNIH - Sistema de Información de Hidrocarburos (SIH)</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+  <link rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css">
+  <link rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css">
+  <script src="libs/jquery.min.js"></script>
+  <script src="libs/jquery-ui.min.js"></script>
+  <script src="libs/datepicker-es.js"></script>
+  <script src="libs/d3.v4.min.js"></script>
+  <script src="libs/underscore-min.js"></script>
+  <script src="libs/highcharts.js"></script>
+  <script src="libs/series-label.js"></script>
+  <script src="libs/exporting.js"></script>
+  <script src="libs/canvg/rgbcolor.js"></script> 
+  <script src="libs/canvg/StackBlur.js"></script>
+  <script src="libs/canvg/canvg.js"></script> 
+  <script src="js/script.js"></script>
+  <script src="js/SETUP.js"></script>
+  <script src="js/Cubos.js"></script>
+  <script src="js/utilities.js"></script>
+  <script src="js/filtroBuscador.js"></script>
+ </head>
+ <body>
+
+<div id='espere' style="visibility:visible;">
+ <div class='espere'>
+  <div class='container'>
+   <div class='helper'>
+    <div class='content'>
+     <p>Consultando información</p>
+     <img id='loading' src='img/ss1.png'></img>
+    </div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<div id='mapaSeries' style='visibility:hidden;'>
+ <img class='close_mapaSeries' src='img/close.svg'></img>
+ <div class='espere' style='padding:1%;'>
+
+  <div class='container_mapaSeries'>
+   <div class='helper_mapaSeries'>
+
+    <div style='font-size:2vw;font-weight:700;text-align:center;position:relative;top:5%;'>
+	MAPA DE SERIES
+    </div>
+    <div style='text-align:center;font-size:0.8vw;color:rgb(25%,25%,25%);font-weight:600;'>
+<!--      <img src='img/pointer.svg' width="20px" height="20px"></img> -->
+	Haga clic en alguna serie para consultarla.
+    </div>
+<br>
+    <div class='content_mapaSeries'>
+
+     <div style='display:table;width:100%;'>
+        <div style='display:table-cell;width:50%;text-align:left;'>
+           <ul id='indice_0' class='indice' style='padding-left:20%;margin-right:0vmin;'></ul>
+        </div>
+
+        <div style='display:table-cell;width:50%;text-align:left;'>
+           <ul id='indice_1' class='indice' style='list-style-type:none;padding-left:15%;margin-left:0vmin;'></ul>
+        </div>
+     </div>
+
+    </div>
+   </div>
+  </div>
+
+ </div>
+</div>
+
+<!-- ################################# FILTROS ################### (start) -->
+
+<div id="filtros" style="width:100%;padding-top:0%;height:95px;position:fixed;background:rgb(249,255,255);color:rgb(25%,25%,25%);z-index:50;border-bottom:1px solid rgb(210,210,210)">
+
+<div style='width:100%; background:rgba(0,0,0,0.2);height:2%;'></div>
+
+ <div style="width: 100%; display:table;height:90%;">
+  <div style="display: table-row;height:100%;">
+
+   <div class='cell a' style='padding-left:20px;'>
+<!--    <div class='titulo_cont'>&nbsp;</div> -->
+    <div style='width:100%;height:7px;'></div>
+    <div id='tema_options' style='text-align:center;width:100%;'>
+
+
+     <div class='cell' style='width:10%;visibility:visible;'>
+       <div style='width:100%;'>
+        <div class='titulo_cont'>Mapa de series<br><span id='info_circle' style='font-size:1.5vw;color:rgb(13,180,190);'>&#9432;</span></div>
+       </div>
+     </div>
+
+
+     <div class='cell' style='width:25%;padding-left:20px;'>
+       <div style='width:100%;'>
+        <div class='titulo_cont'>Sección</div>
+        <select class="filtros_" style="width:100%;"></select>
+       </div>
+     </div>
+
+     <div class='cell' style='width:25%'>
+      <div style="width:100%;">
+       <div class='titulo_cont'>Tema</div>
+       <select class="filtros" style="width:100%;"></select>
+      </div>
+     </div>
+
+    </div>
+   </div>
+
+
+   <div class='cell c'>
+    <div class='titulo_cont'>Periodicidad</div>
+    <div style="width:100%; display:table; height:40px; position:relative;top:-5px;">
+     <div style='display:table-row;'>
+
+<!--
+<select id='periodicidad' style='width:90%'>
+</select>
+-->
+
+
+      <div class='cell i_fechas' style='text-align:right;'>
+       <form action>
+        <div>
+	 <input type='radio' name='periodicidad' value='annually' checked></input>
+        </div>
+        <div>
+	 <input type='radio' name='periodicidad' value='monthly'></input>
+        </div>
+        <div>
+	<input type='radio' name='periodicidad' value='daily'></input>
+        </div>
+       </form>
+      </div>
+
+      <div class='cell i_fechas'>
+	<div id='annually'>Anual</div>
+	<div id='monthly'>Mensual</div>
+	<div id='daily'>Diario</div>
+      </div>
+
+     </div>
+   </div>
+  </div>
+
+
+   <div class='cell b'>
+    <div class='titulo_cont'>Fecha</div>
+
+    <div id='dateForm' style='width:inherit;height:45px;position:absolute;z-index:-2;background-color:white;opacity:0;text-align:center;'>
+     <div class='i_fechas' style='text-align:right;'>
+      <div>
+      Inicio:&emsp;
+      </div>
+      <div>
+      Fin:&emsp;
+      </div>
+
+    </div>
+     <div class='i_fechas' style='width:50%;'>
+      <div>
+	<input id='datepicker_start' class='datepicker cell'></input>
+      </div>
+      <div>
+        <input id='datepicker_end' class='datepicker cell'></input>
+      </div>
+     </div>
+    </div>
+
+    <div style="width:100%; display:table; height:45px">
+     <div style='display:table-row;'>
+      <div class='cell i_fechas' style='text-align:right;'>
+	<div style='width:100%;display:table;height:100%'>
+	 <div style='display:table-row;height:100%;'>
+          <div class='cell i_fechas'>
+	   <div>Inicio:</div>
+	   <div>Fin:</div>
+	  </div>
+          <div class='cell i_fechas'>
+	   <form><select id='start_year' style="width:90%;"></select></form>
+	   <form><select id='end_year' style="width:90%;"></select></form>
+	  </div>
+	 </div>
+	</div>
+      </div>
+
+      <div class='cell i_fechas' style='position:relative;'>
+	<div id='HP' style='width:46%;height:calc(100% + 6px);top:-3px;position:absolute;z-index:1;background-color:rgb(249,255,255);opacity:1;border-radius:0px;'>
+        </div>
+	  <form>
+	    <select class='_month' id='start_month' style="width:45%;"></select>
+          </form>
+	  <form>
+	    <select class='_month' id='end_month' style="width:45%;"></select>
+	  </form>
+      </div>
+     </div>
+    </div>
+   </div>
+
+
+  <div class='cell d'>
+   <div style='position:relative;left:calc(50% - 45px);'>
+    <button id='consultar' class='consulta_normal' style="height:30px;width:90px;font-family:'Open Sans';font-size:14px;font-weight:600;top:27px;position:relative;">Consultar</button>
+   </div>
+  </div>
+
+  </div>
+ </div>
+ 
+</div>
+
+<!-- ################################# FILTROS ##################### (end)-->
+
+  <div id='mainTitle' style='width:100%;text-align:center;top:105px;z-index:3;position:fixed;font-weight:800;font-size:24px;color:rgba(0,0,0,0.7)'>
+ </div>
+
+
+	  <div id='scroll_aid' style="text-align:left;width:415px;height:120px;top:90px;left:0px;position:fixed;background:white;padding-top:0px;padding-left:0px;z-index:2;border-top:1px solid black;padding-bottom:0px;">
+   <div style='position:absolute;margin-top:75px;margin-left:365px;width:45px;'>Buscar:</div>
+ <div style='margin-left:30px;width:calc(100% - 30px)'>
+     <button id="selection" style="font-family:'Open Sans';font-size:9px;font-weight:600;margin-top:75px;" class='aid_check'>Descargar selección</button>
+<input class='aid_check' type='checkbox' style='margin-left:40px;'></input><span class='aid_check'>Seleccionar todo</span>
+</div>
+
+  </div>
+  </div>
+
+<!-- ########################### HEADER ###############################(start) -->
+   <div style='position:fixed;height:120px;top:90px;z-index:1;background:white;color:white;overflow-x:hidden;overflow-y:hidden;' class='scroll_header'>
+    <div style='left:415px;position:fixed;width:100%;height:40px;z-index:3;color:black;'>
+
+	<input id="filtroSerie" style='z-index:3;margin-top:75px;width:40%;border:1px solid lightGray;'></input>
+
+   <div id="quitarFiltro" style='font-weight:700;position:fixed;left:calc(40% + 425px);top:166px;color:white;width:100px;text-align:center;background-color:rgb(13,180,190);border-radius:2px;display:none;'>Remover filtro</div>
+
+      <div id="dropDown" style='position:fixed;top:185px;width:40%;left:415px;background:rgba(255,255,255,0.85);z-index:3;max-height:150px;border:1px solid lightGray;display:none;overflow:scroll;overflow-x:hidden;'></div>
+   </div>
+    <div style='height:100%;width:100%;position:absolute;'>
+     <table style='width:100%;height:100%;position:absolute;table-layout:fixed;'>
+      <tbody style='width:100%;height:100%'>
+        <tr class='scroll_aid_header' visible='no' style='margin-top:97px;position:absolute;color:white;width:100%;border-top:none;'></tr>
+      </tbody>
+     </table>
+    </div>
+   </div>
+<!-- ########################### HEADER #################################(end) -->
+
+
+<!-- ################################# TABLA #####################(start) -->
+  <div id="tabla" style="width:100%;padding-top:210px;padding-left:0px;z-index:50;">
+ <table style="height:100%;table-layout:fixed;width:100%;">
+  <tbody id="tabla" style="width:100%">
+  </tbody>
+ </table>
+  </div>
+<!-- ################################# TABLA #####################(end) -->
+ <div style='height:auto;width:100%' id='metodos'></div>
+ <div style='height:50px;'></div>
+
+<!-- ########################### FOOTER #############################(start) -->
+ <div id="footer" style="position:fixed;top:calc(100% - 30px);background:rgba(255,255,255,0.8);height:30px;overflow-x:auto;width:100%;border-top:1px solid gray;">
+<div style="height:100%;width:calc(100% - 480px);margin-left:415px;background:white;overflow-x:scroll;overflow-y:hidden;position:absolute;bottom:10px;" id="footer_">
+   <table style='width:100%;height:100%;position:absolute;table-layout:fixed;'>
+    <tbody style='width:100%;height:100%'>
+      <tr class='scroll_aid_footer' style='margin-top:20px;position:absolute;color:white;width:500px'></tr>
+    </tbody>
+   </table>
+</div>
+ </div>
+<!-- ########################### FOOTER #############################(end) -->
+ <script src="js/scroll.js"></script>
+ </body>
+</html>
