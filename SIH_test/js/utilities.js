@@ -1002,11 +1002,11 @@ function grapher(info) {
      var liga = $("tspan[onclick]").attr("onclick")
 		.split("=")[1].replace(/"/g,"");
 
-     console.log(liga,liga_nombre)
+     console.log([liga,liga_nombre])
 
      $("tspan[onclick]").html("<a href='" + liga + "' target='_blank'>"
 					  + liga_nombre + "</a>");
-     $("tspan[onclick]").attr("onclick",null);
+//     $("tspan[onclick]").attr("onclick",null);
 
    } else {
      console.log("No hay [onclick].");
