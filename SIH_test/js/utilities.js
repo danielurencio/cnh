@@ -1145,7 +1145,8 @@ function leyendaNotas(TEMAS, params) {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 function descargarPNG() {
-    if($(".highcharts-credits a").length) {
+    if($('.highcharts-anchor').length) {
+//    if($(".highcharts-credits a").length) {
       var _tspans = $(".highcharts-credits>tspan");
       $(_tspans[_tspans.length-1]).attr("fill","white");
       $(_tspans[_tspans.length-2]).attr("fill","white");
@@ -1204,7 +1205,8 @@ function descargarPNG() {
       }
     };
 
-   if($(".highcharts-credits a").length) {
+     if($('.highcharts-anchor').length) {
+//   if($(".highcharts-credits a").length) {
       var _tspans = $(".highcharts-credits>tspan");
       $(_tspans[_tspans.length-1]).attr("fill","black");
       $(_tspans[_tspans.length-2]).attr("fill","black");
@@ -1561,6 +1563,11 @@ function mapaDeSeries(TEMAS) {
     $("#mapaSeries").css("visibility","visible");
   });
 
+  $('.mapaSeries_titulo').click(function() {
+    $("#mapaSeries").css("visibility","visible");
+  });
+
+
   $('.close_mapaSeries').on("click", function() {
     $("#mapaSeries").css("visibility","hidden");
   });
@@ -1569,6 +1576,7 @@ function mapaDeSeries(TEMAS) {
 
   var reglas = ["i <= 2", "i > 2"];
 
+  // Esto ayuda a partir los temas en dos para el índice en el mapa de series.
   var dataSets = reglas.map(function(regla) { 
     return secciones.map(function(tema,i) {
 	  if(eval(regla)) return tema;
@@ -1624,7 +1632,7 @@ function mapaDeSeries(TEMAS) {
 		    .on('click',function(d) {
 		    $('div#mapaSeries').css('visibility','hidden');
 
-		    var thisNode = $(this).text();
+		    thisNode = $(this).text();
 		    var parentNode = this.parentNode.parentNode.getAttribute('tag');
 
 		    var sel_parentNode = $('select.filtros_').find(':selected').attr('tag');
@@ -1647,8 +1655,8 @@ function mapaDeSeries(TEMAS) {
 
 			    esperaMapaSeries = false; // <-- Reestablece el funcionamiento natural del mensaje de espera.
 
-			    $('select.filtros option').filter(function() { return this.innerText == thisNode; })
-				.prop('selected',true).trigger("change");
+//			    $('select.filtros option').filter(function() { return this.innerText == thisNode; })
+//				.prop('selected',true).trigger("change");
 
 			});
 

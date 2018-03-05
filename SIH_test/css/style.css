@@ -686,3 +686,7 @@ li.liMapa:hover {
   font-weight:800;
   text-decoration:underline;
 }
+
+.mapaSeries_titulo:hover {
+  cursor:pointer;
+}

@@ -1,4 +1,4 @@
-﻿var ambiente = 'producciónn';
+﻿var ambiente = 'producción';
 var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 var asyncAJAX = false;
 var data_BUSCAR;
@@ -19,7 +19,8 @@ var threshold = 500000;
 var noHayTabla = false;
 var FILE_NAME;
 //var current_TXT_noEspecial = false;
-var esperaMapaSeries = false; 
+var esperaMapaSeries = false;
+var thisNode; 
 
 
 $(document).ready(function() {
@@ -122,7 +123,6 @@ $(document).ready(function() {
 			  +_parametros_["start_day"] <= +_parametros_["end_day"];
 
 		      fecha_VALIDA_1 = d_cond_1 || d_cond_2 || d_cond_3;
-		      console.log(d_cond_1,d_cond_2,d_cond_3); 
 		    }
 
 
@@ -230,7 +230,16 @@ $(document).ready(function() {
 			    return d.tema;
 			});
 
-		    $("select.filtros").find(":selected").trigger("change");
+
+		    if(!esperaMapaSeries) {
+			// Si el cambio de tema se ejecuta manualmente y de modo normal.
+		        $("select.filtros").find(":selected").trigger("change");
+		    } else {
+			// Si el cambio de tema se hace desde el mapa de series.
+			// Esto evita que el AJAX se ejecute más de una vez.
+                        $('select.filtros option').filter(function() { return this.innerText == thisNode; })
+                            .prop('selected',true).trigger("change");
+		    }
 		    
 		    var tema_seleccionado = $("select.filtros").find(":selected").attr("tag");
 
