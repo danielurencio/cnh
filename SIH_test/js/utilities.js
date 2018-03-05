@@ -852,6 +852,10 @@ function grapher(info) {
 
     NOTAS = NOTAS.replace(/<b>|<\/b>/g,"");
 
+    if(navigator.userAgent.match(/.NET/)) {
+	NOTAS = NOTAS.replace(/&leq;/,"<=")
+    }
+
     Highcharts.chart('chart', {
         lang: {
             'img': 'Descargar imagen'
