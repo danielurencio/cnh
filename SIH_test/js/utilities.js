@@ -293,9 +293,10 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
 
     }
 
+
     // Esconder mensaje de espera.
     if (!noHayTabla && !special_params) {
-        if(!esperaMapaSeries) $("div#espere").css("visibility", "hidden");
+        /*if(!esperaMapaSeries)*/ $("div#espere").css("visibility", "hidden");
     }
     // Esconder mensaje de espera.
 
@@ -852,6 +853,7 @@ function grapher(info) {
 
     NOTAS = NOTAS.replace(/<b>|<\/b>/g,"");
 
+    // Los símbolos matemáticos no aparecen en IE (fix adicional).
     if(navigator.userAgent.match(/.NET/)) {
 	NOTAS = NOTAS.replace(/&leq;/g,"<=")
     }
