@@ -998,7 +998,7 @@ function grapher(info) {
    if(document.querySelector("tspan[onclick]")) {
      $(".highcharts-credits").css("cursor","auto");
 
-     var liga_nombre = $("tspan[onclick]").html();
+     var liga_nombre = $("tspan[onclick]").text();
      var liga = $("tspan[onclick]").attr("onclick")
 		.split("=")[1].replace(/"/g,"");
 
