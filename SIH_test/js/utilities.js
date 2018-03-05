@@ -1008,6 +1008,8 @@ function grapher(info) {
 					  + liga_nombre + "</a>");
      $("tspan[onclick]").attr("onclick",null);
 
+   } else {
+     console.log("No hay [onclick].");
    }
 
     ////////////////////// AGREGAR TABLA PARA DESCARGA /////////////////////////
