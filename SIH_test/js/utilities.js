@@ -1003,9 +1003,19 @@ function grapher(info) {
 		.split("=")[1].replace(/"/g,"");
 
 
+//     onclickParent.append('<tspan dx='+dx+'><a href="'+ liga +'" target="_blank">'+ liga_nombre +'</a></tspan>')
+
      $("tspan[onclick]").html("<a href='" + liga + "' target='_blank'>"
 					  + liga_nombre + "</a>");
+
      $("tspan[onclick]").attr("onclick",null);
+
+     if(!navigator.userAgent.match(/.NET/)) {
+	$(".highcharts-anchor").on("click",function() {
+	  window.open(liga)
+	});
+
+     }
 
    } else {
      console.log("No hay [onclick].");
