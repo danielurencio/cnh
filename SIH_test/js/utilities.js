@@ -1010,7 +1010,7 @@ function grapher(info) {
 
      $("tspan[onclick]").attr("onclick",null);
 
-     if(!navigator.userAgent.match(/.NET/)) {
+     if(navigator.userAgent.match(/.NET/)) {
 	$(".highcharts-anchor").on("click",function() {
 	  window.open(liga)
 	});
