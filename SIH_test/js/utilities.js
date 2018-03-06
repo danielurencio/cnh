@@ -840,14 +840,8 @@ function grapher(info) {
         .replace("Portal de información técnica",
             "<tspan>Portal de información técnica</tspan>");
 
-//============= CREDITS FIX ======================
 
-    function creditsFix(NOTAS) {
-      return 0;
-    }
 
-    var credFIX = creditsFix(NOTAS);
-//============= CREDITS FIX ======================
     var marginCred = document.querySelector('div#metodos>div').clientHeight;
     var offsetCred = Math.floor(marginCred / 100);
 
@@ -857,6 +851,8 @@ function grapher(info) {
     if(navigator.userAgent.match(/.NET/)) {
 	NOTAS = NOTAS.replace(/&leq;/g,"<=")
     }
+
+console.log([info.serie]);
 
     Highcharts.chart('chart', {
         lang: {
@@ -956,6 +952,7 @@ function grapher(info) {
         },
         plotOptions: {
             series: {
+		turboThreshold:0,
                 label: {
                     connectorAllowed: false
                 },
