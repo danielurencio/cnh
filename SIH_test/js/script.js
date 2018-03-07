@@ -1,76 +1,76 @@
-﻿var ambiente = 'producción';
-var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
-var asyncAJAX = false;
-var data_BUSCAR;
-var cambio_ = false;
-var current_TXT;
-var siFiltro = false;
-var TEMAS;
-var NOTAS;
-var noOfRows;
-var ScrollHeader;
-var SS_ = true;
-var _parametros_;
-var params_especiales = null;
-var caso_especial = false;
-var init_year;
-var _azul_ = "rgb(13,180,190)";
-var threshold = 500000;
-var noHayTabla = false;
-var FILE_NAME;
-//var current_TXT_noEspecial = false;
-var esperaMapaSeries = false;
-var thisNode; 
+﻿	var ambiente = 'producciónn';
+	var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
+	var asyncAJAX = false;
+	var data_BUSCAR;
+	var cambio_ = false;
+	var current_TXT;
+	var siFiltro = false;
+	var TEMAS;
+	var NOTAS;
+	var noOfRows;
+	var ScrollHeader;
+	var SS_ = true;
+	var _parametros_;
+	var params_especiales = null;
+	var caso_especial = false;
+	var init_year;
+	var _azul_ = "rgb(13,180,190)";
+	var threshold = 500000;
+	var noHayTabla = false;
+	var FILE_NAME;
+	//var current_TXT_noEspecial = false;
+	var esperaMapaSeries = false;
+	var thisNode; 
 
 
-$(document).ready(function() {
-/////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////  --- SETUP ---- ///////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
+	$(document).ready(function() {
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////  --- SETUP ---- ///////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////
 
-  var worker = new Worker('js/worker.js');
+	  var web_worker = new Worker('js/worker.js');
 
-  worker.addEventListener('message',function(e) {
-    filtrarSeries(null,JSON.parse(e.data));
-  },false);
+	  web_worker.addEventListener('message',function(e) {
+	    filtrarSeries(null,JSON.parse(e.data));
+	  },false);
 
-  SETUP();
+	  SETUP();
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////  --- SETUP ---- ///////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////  --- SETUP ---- ///////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    /////////////////////////////////////////////////////////////////////////////
-    //                          |                                              //
-    // Todo ocurre aquí.------- V                                              //
-    //                                                                         //
-    /////////////////////////////////////////////////////////////////////////////
+	    /////////////////////////////////////////////////////////////////////////////
+	    //                          |                                              //
+	    // Todo ocurre aquí.------- V                                              //
+	    //                                                                         //
+	    /////////////////////////////////////////////////////////////////////////////
 
-    $.ajax({
-        url: HOSTNAME + "/cubos_temas_des.py",
-        dataType: 'json',
-        data: {
-            'section': 'PRODUCCION'
-        },
-        success: function(temas) {
-            TEMAS = JSON.parse(temas);
+	    $.ajax({
+		url: HOSTNAME + "/cubos_temas_des.py",
+		dataType: 'json',
+		data: {
+		    'section': 'PRODUCCION'
+		},
+		success: function(temas) {
+		    TEMAS = JSON.parse(temas);
 
-            d3.json("blueprints.json", function(response) {
+		    d3.json("blueprints.json", function(response) {
 
-		response.A.esp.filtros.years[1] = new Date().getFullYear();// <-- El año actual para los filtros.
-                RenderWords(response, "esp", TEMAS);
+			response.A.esp.filtros.years[1] = new Date().getFullYear();// <-- El año actual para los filtros.
+			RenderWords(response, "esp", TEMAS);
 
-		mapaDeSeries(TEMAS);
+			mapaDeSeries(TEMAS);
 
-                $("button#consultar").on("click", function() {
+	 	  $("button#consultar").on("click", function() {
 
-//////////////////////////////////////////////////////////////////////////////////
-/*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
-//////////////////////////////////////////////////////////////////////////////////
-			d3.select("#loading").style("height","60px");
+	//////////////////////////////////////////////////////////////////////////////////
+	/*Si el usuario quiere cambiar de tema, la lámina de espera se tiene que resetear*/
+	//////////////////////////////////////////////////////////////////////////////////
+				d3.select("#loading").style("height","60px");
 
-			d3.select("div.espere")
+				d3.select("div.espere")
 			.style("width","30%")
 			.style("height","30%");
 
@@ -140,11 +140,6 @@ $(document).ready(function() {
                         /*    Está sección esconde el header ocurrente cuando uno cambia de tema  */
 
                         var tag = $(this).find(":selected").attr("tag");
-/*
-	if(cambio_) {
-                        $("tbody#tabla").html("");
-        }
-*/
                         var loading_text = "<div style='font-weight:800;position:absolute;top:50%;left:calc(50% - 75.7px);" +
 						"'class='wait'><span>Cargando información ...</span></div>";
 
@@ -155,11 +150,11 @@ $(document).ready(function() {
 	    if(cambio_) {
                       $("tbody#tabla").html("");
 		      cambio_ = false;
-		      $("#quitarFiltro").click();
+//		      $("#quitarFiltro").click();
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
 		      var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
-		      worker.postMessage(worker_tools);
+		      web_worker.postMessage(worker_tools);
 
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
@@ -177,9 +172,8 @@ $(document).ready(function() {
                                 ajaxFunction(data, Cubos, filtrarSeries, params_especiales, null);
 
 			      } else {
-				data_buscar = null;						       //|
-				ajaxFunction(data,Cubos,filtrarSeries,params_especiales, data_buscar); //| ¡"AjaxFunction" & "FiltrarSeries" van juntas!
-				filtrarSeries(data,data_buscar);				       //|
+				ajaxFunction(data,Cubos,filtrarSeries,params_especiales, null); //|
+				filtrarSeries(data,data_buscar);				       //| <-- Habilitar buscador.
 
 			      }
 /*=================Chechar si las tablas están vacías========================*/
@@ -188,7 +182,6 @@ $(document).ready(function() {
                         });
 
 	    } else {
-
 	     $("div#espere").css("visibility","hidden");
 	     $("div#divDefense").remove();
 	     $("div#optionsDefense").remove();
@@ -445,7 +438,7 @@ $(document).ready(function() {
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
 		    var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
-		    worker.postMessage(worker_tools);
+		    web_worker.postMessage(worker_tools);
 
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
@@ -538,7 +531,7 @@ $(document).ready(function() {
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
 		      var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
-		      worker.postMessage(worker_tools);
+		      web_worker.postMessage(worker_tools);
 
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 

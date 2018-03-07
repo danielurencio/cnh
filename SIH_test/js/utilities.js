@@ -256,7 +256,9 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
     var key_ = Object.keys(data[0][1])[0];
     var tableString = data[0][1];
     data = formatoData(data);
+    console.log(data);
     Cubos(data);
+
 
     if (special_params) {
         if ($("tbody[tag='" + special_params.title + "']")[0]) {
@@ -293,10 +295,13 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
 
     }
 
-
     // Esconder mensaje de espera.
     if (!noHayTabla && !special_params) {
         /*if(!esperaMapaSeries)*/ $("div#espere").css("visibility", "hidden");
+    }
+
+    if(!noHayTabla && special_params && key_ == 'Sin resultados') {
+        $('div#espere').css("visibility","hidden");
     }
     // Esconder mensaje de espera.
 

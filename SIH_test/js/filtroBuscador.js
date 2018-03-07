@@ -236,6 +236,7 @@
     };
 
     function mostrar(el) {
+
         SS_ = false;
         d3.selectAll("div.overflow tr").style("display", "none");
         $(document.querySelectorAll("div.overflow tr")[0]).css("display", "block");
@@ -251,12 +252,17 @@
     ////////////////////////////////////////////////////////////////////////
     ///////// Búsqueda de celda específica a través del filtro...
     ////////////////////////////////////////////////////////////////////////
-    function selected_TD(txt) {
-        var titulo = txt[0];
-        var subtitulo = txt[1];
-        var subtitulo_label = $("tbody.hide[tag='" + titulo + "']>div.labels[tag='" +
-            subtitulo + "']");
-        var subtitulo_overflow = subtitulo_label.next();
+    function selected_TD(txt,fake_table) {
+	// 'fake_table' debe de ser un elemento jQuery!
+        if(!fake_table) {
+          var titulo = txt[0];
+          var subtitulo = txt[1];
+          var subtitulo_label = $("tbody.hide[tag='" + titulo + "']>div.labels[tag='" +
+              subtitulo + "']");
+          var subtitulo_overflow = subtitulo_label.next();
+        } else {
+          var subtitulo_overflow = $(fake_table);
+        }
 
         var tds = Array.prototype
             .slice.call(subtitulo_overflow[0]
