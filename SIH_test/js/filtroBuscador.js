@@ -275,12 +275,13 @@
         })[0];
 
 
-        var c = tds.indexOf(prevTD) + 0;
+        var c = tds.indexOf(prevTD) + 1; // <-- Más uno!
         var tdFromList;
         var referenceTd = txt[3].replace(/\s/g, "").toUpperCase();
         var condTD;
 
         for (c; c < tds.length; c++) {
+	    if($(tds[c]).attr("id")) alert("¡OJO! TE pasaste de pozo, estamos en:" + $(tds[c]).text())
             tdFromList = tds[c].textContent.replace(/\s/g, "").toUpperCase();
             condTD = tdFromList == referenceTd;
 
@@ -291,6 +292,5 @@
 
         val = [tds[c]];
 
-        //    }
         return val;
     }

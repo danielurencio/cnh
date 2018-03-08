@@ -46,6 +46,7 @@ function SETUP() {
 
     //----------------    Quitar filtro de búsqueda -------------------------//
     $("div#quitarFiltro").on("click", function() {
+        params_especiales = null;
 	current_TXT = false;
         var tablaVisible = $("div.overflow").filter(function() {
             return $(this).css("display") == "block";

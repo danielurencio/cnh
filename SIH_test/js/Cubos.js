@@ -111,6 +111,7 @@ function Cubos(data, tag) {
                 selection
                     .style("display", "none");
                 span.html(plus + "&ensp;");
+
             } else if (selection.style("display") != "block"
 			&& this.nodeName == "TBODY") {
                 selection.style("display", "block");
@@ -132,11 +133,14 @@ function Cubos(data, tag) {
 
                 var title = this.parentNode.getAttribute("tag");
                 var subtitle = this.getAttribute("tag");
-
-                params_especiales = {
+//		if($(this).next().css("display") != 'block') {
+                  params_especiales = {
                     'title': title,
                     'subtitle': subtitle
-                };
+                  };
+//		} else {
+//		  params_especiales = null;
+//		}
 
                 var params = parametros();
                 params["title"] = title;
@@ -178,11 +182,11 @@ function Cubos(data, tag) {
                         success: function(tabla_respuesta) {
 
                             if (siFiltro) {
+
                                 tabla_respuesta = formatoData(tabla_respuesta);
                                 TableLogistics(algo_, tabla_respuesta);
                                 siFiltro = false;
                             } else {
-
                                 var sizeStr = JSON
 						.stringify([tabla_respuesta])
 						.length;
@@ -191,8 +195,8 @@ function Cubos(data, tag) {
                                     tabla_respuesta = formatoData(tabla_respuesta);
                                     TableLogistics(algo_, tabla_respuesta);
                                 } else {
-				FILE_NAME = { 'title':title, 'subtitle':subtitle };
-				mensajeExplicativo(title,subtitle,tabla_respuesta);
+				    FILE_NAME = { 'title':title, 'subtitle':subtitle };
+				    mensajeExplicativo(title,subtitle,tabla_respuesta);
                                 }
 
                             } // <-- no es verdad 'siFiltro'.. 
@@ -233,17 +237,33 @@ function Cubos(data, tag) {
                 var sizeStr = tabla_resp.length * 2;
 
                 if (sizeStr <= threshold) {
-                    params_especiales = {
+
+		    if(($(this).next().css("display")) != "block") {
+
+                      params_especiales = {
                         'title': title,
                         'subtitle': subtitle
-                    };
+                      };
+
+		    } else {
+			params_especiales = null;
+		        if($('#filtroSerie').val()) {
+			  $('#quitarFiltro').css("display","none");
+			  $('#filtroSerie').prop('disabled',false);
+			  $('#filtroSerie').val('')
+			}
+
+		    }
+
                     TableLogistics(this, data);
+
                 } else {
 			$("div#espere").css("visibility","visible");
 			FILE_NAME = { 'title':title, 'subtitle':subtitle};
 			mensajeExplicativo(null,null,tabla_resp);
                 }
             }
+
 
         });
 ///////////////////////////////////////////////////////////////////////////
@@ -301,13 +321,12 @@ function Cubos(data, tag) {
    //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         if (caso_especial && current_TXT) {
 
-                            var newParser = new DOMParser();
-                            var _docTable = newParser
+                            var _docTable = parser
                                 .parseFromString(docTable.outerHTML,
 								"text/html")
                                 .body.querySelector("table");
 
-
+/*
                             var tds = Array.prototype
                                 .slice.call(_docTable
 				.querySelectorAll("tr>td:first-child"));
@@ -339,22 +358,22 @@ function Cubos(data, tag) {
                                     break;
                                 }
                             };
-
-
-
-                            val = $(tds[c]).parent()[0].children;
+*/
+			   var _td_ = selected_TD(current_TXT,docTable);
+			   val = $(_td_).parent()[0].children;
+//                            val = $(tds[c]).parent()[0].children;
 			    val = Array.prototype.slice.call(val);
 			    val = "<tr>" + val.map(function(d) { return d.outerHTML; }).join("") + "</tr>";
 			    val = $(val);
 
-			    valName = Array.prototype.slice.call(prevTD.parentNode.children);
-			    valName = "<tr>" + valName.map(function(d) { return d.outerHTML; }).join(""); + "</tr>";
-			    valName = $(valName).css("display","none");
+//			    valName = Array.prototype.slice.call(prevTD.parentNode.children);
+//			    valName = "<tr>" + valName.map(function(d) { return d.outerHTML; }).join(""); + "</tr>";
+//			    valName = $(valName).css("display","none");
 
                             $(_docTable.querySelectorAll("tbody")).html("");
 
-                            $(_docTable.querySelectorAll("tbody"))
-				.append(valName);
+//                            $(_docTable.querySelectorAll("tbody"))
+//				.append(valName);
 
                             $(_docTable.querySelectorAll("tbody"))
 				.append(val);
@@ -403,12 +422,15 @@ function Cubos(data, tag) {
                             data: params,
                             success: function(tabla_respuesta) {
 
+				var textoEnFiltro = $("#filtroSerie").val();
+				if(textoEnFiltro) tabla_respuesta = filtroHandler(textoEnFiltro,formatoData(tabla_respuesta));
+
                                 var sizeStr = JSON
 					.stringify([tabla_respuesta])
 					.length;
 
                                 if (sizeStr <= threshold) {
-                                    tabla_respuesta = formatoData(tabla_respuesta);
+                                    if(!textoEnFiltro) tabla_respuesta = formatoData(tabla_respuesta);
                                     TableLogistics(algo_, tabla_respuesta);
                                 } else {
 				    FILE_NAME = { 'title':params.title, 'subtitle':params.subtitle };

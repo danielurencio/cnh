@@ -256,7 +256,12 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
     var key_ = Object.keys(data[0][1])[0];
     var tableString = data[0][1];
     data = formatoData(data);
-    console.log(data);
+/*--------------------- Checar si existen filtros ----------------*/
+    var textoEnFiltro = $("#filtroSerie").val()
+    if(textoEnFiltro) {
+      filtroHandler(textoEnFiltro,data);
+    }
+/*--------------------- Checar si existen filtros ----------------*/
     Cubos(data);
 
 
@@ -1829,4 +1834,86 @@ function RenderWords(obj, lang, temas) {
         document.getElementById("start_month").selectedIndex = s_Month;
         document.getElementById("end_month").selectedIndex = e_Month;
 
+};
+
+/////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+function filtroHandler(txt,data) {
+      // Convertir a un array el texto que se encuentra en el filtro-buscador.
+      var textoEnFiltro = txt.replace(/^\s*/,'').split(' > ');
+      // La variable 'fetched_table' es un elemento filtrado según la primera palabra del texto en el filtro-buscador.
+      var fetched_label = data.filter(function(d) { return d[0] == textoEnFiltro[0]; })[0];
+      var fetchedLabelIndex = data.indexOf(fetched_label);
+
+      var fake_table,filteredObject,parsedHTML,parsedTable,second_tableIndex,HeadRow,filtered_row,returnTable;
+
+      if(fetched_label.length > 2) {
+	// Filtrar el objecto que contiene el texto HTML del elemento filtrado almacenado en fetced_table.
+	filteredObject = fetched_label.filter(function(d) { return typeof(d) == 'object' && Object.keys(d)[0] == textoEnFiltro[1]; })[0];
+	// Del objeto filtrado obtener su texto, su posición en el array y parsear como element HTML.
+	filteredObjectText = filteredObject[textoEnFiltro[1]];
+	filteredObjectIndex = data[fetchedLabelIndex].indexOf(filteredObject);
+
+        if(filteredObjectText) {
+          parsedHTML = new DOMParser().parseFromString(filteredObjectText,'text/html');
+          parsedTable = parsedHTML.querySelector("table");
+
+	  HeadRow = parsedTable.querySelector("tr").outerHTML;
+/*
+	  filtered_row = $(selected_TD(textoEnFiltro,parsedTable)).parent()[0].children;
+	  filtered_row = Array.prototype.slice.call(filtered_row)
+	  filtered_row = "<tr>" + filtered_row.map(function(d) { return d.outerHTML; }).join("") + "</tr>";
+*/
+	  filtered_row = childrenCompatibility(selected_TD(textoEnFiltro,parsedTable));
+console.log(nameGasNoil(selected_TD(textoEnFiltro,parsedTable)));
+          data[fetchedLabelIndex][filteredObjectIndex][textoEnFiltro[1]] = '<table><tbody>' + HeadRow + filtered_row + '</tbody></table>';
+        }
+
+      } else {
+        filteredObject = fetched_label[1][textoEnFiltro[1]];
+        parsedHTML = new DOMParser().parseFromString(filteredObject,'text/html');
+        parsedTable = parsedHTML.querySelector("table");
+	console.log([parsedTable],textoEnFiltro);
+      }
+
+      return data;
+
+};
+
+/////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+
+function childrenCompatibility(arr_TD) {
+// Esta función ayuda a resolver problemas de compatibilidad con IE.
+  var row;
+  row = $(arr_TD).parent()[0].children;
+  row = Array.prototype.slice.call(row);
+  row = "<tr>" + row.map(function(d) { return d.outerHTML; }).join("") + "</tr>";
+  return row;
+}
+
+/////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+
+function nameGasNoil(arr_TD) {
+  var arr_prev = [], arr_next = [];
+
+  var row = $(arr_TD).parent();
+  while(row.attr("id")) {
+    arr_prev.push(row);
+    row = row.prev();
+  };
+  arr_prev.push(arr_prev[arr_prev.length - 1].prev());
+  arr_prev.reverse();
+
+  var row = $(arr_TD).parent();
+  while(row.attr("id")) {
+   arr_next.push(row);
+   row = row.next(); 
+  }
+
+  return [arr_prev,arr_next];
 };
