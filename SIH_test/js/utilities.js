@@ -1647,7 +1647,7 @@ function mapaDeSeries(TEMAS) {
 		 .html(function(d) {
 		    var str = ix == 0 ? d + "&ensp;" : "&ensp;" + d;
 		    return d;
-		 });
+		 })
 	    });
 
 
@@ -1857,15 +1857,8 @@ function filtroHandler(txt,data) {
         if(filteredObjectText) {
           parsedHTML = new DOMParser().parseFromString(filteredObjectText,'text/html');
           parsedTable = parsedHTML.querySelector("table");
-
+console.log(parsedHTML)
 	  HeadRow = parsedTable.querySelector("tr").outerHTML;
-/*
-	  filtered_row = $(selected_TD(textoEnFiltro,parsedTable)).parent()[0].children;
-	  filtered_row = Array.prototype.slice.call(filtered_row)
-	  filtered_row = "<tr>" + filtered_row.map(function(d) { return d.outerHTML; }).join("") + "</tr>";
-*/
-//	  filtered_row = childrenCompatibility(selected_TD(textoEnFiltro,parsedTable));
-console.log(nameGasNoil(selected_TD(textoEnFiltro,parsedTable)));
           filtered_row = nameGasNoil(selected_TD(textoEnFiltro,parsedTable));
           data[fetchedLabelIndex][filteredObjectIndex][textoEnFiltro[1]] = '<table><tbody>' + HeadRow + filtered_row + '</tbody></table>';
         }
@@ -1885,15 +1878,14 @@ console.log(nameGasNoil(selected_TD(textoEnFiltro,parsedTable)));
 ////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 
-function childrenCompatibility(arr_TD,i) {
+function childrenCompatibility(arr_TD) {
 // Esta función ayuda a resolver problemas de compatibilidad con IE.
   var row;
-//  row = $(arr_TD).parent()[0].children;
-  console.log(i);
   row = $(arr_TD).children();
   row = Array.prototype.slice.call(row);
-  row = "<tr>" + row.map(function(d) {
-    return d.outerHTML;   // <-- Agregar condicional: si i == 0 entonces agregar 'id=dist_' al primer td (de la primera columna)
+  row = "<tr>" + row.map(function(d,i) {
+    var td = d;
+    return td.outerHTML;
   }).join("") + "</tr>";
   return row;
 }
@@ -1907,6 +1899,7 @@ function nameGasNoil(arr_TD) {
 
   var row = $(arr_TD).parent();
   while(row.attr("id")) {
+    console.log(row);
     arr_prev.push(row);
     row = row.prev();
   };
@@ -1920,7 +1913,6 @@ function nameGasNoil(arr_TD) {
   }
 
   var findings = [arr_prev,arr_next];
-//console.log(findings);
   findings = findings.map(function(d) {
     return d.map(function(d,i) {
 /*
@@ -1928,12 +1920,15 @@ function nameGasNoil(arr_TD) {
 		.replace(/\n/g,'')
 		.replace(/>\s*</g,'><');
 */
-	return childrenCompatibility(d[0],i);
+	return childrenCompatibility(d[0]);
     })
   });
 
   findings = _.flatten(findings);
   findings = _.uniq(findings).join('');
-
+  findings = $(findings);
+  findings[0].querySelector('td:first-child').setAttribute('id','dist_');
+  findings = Array.prototype.slice.call(findings).map(function(d) { return d.outerHTML; });
+  findings = findings.join("");
   return findings;
 };

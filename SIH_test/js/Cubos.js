@@ -182,7 +182,8 @@ function Cubos(data, tag) {
                         success: function(tabla_respuesta) {
 
                             if (siFiltro) {
-
+console.log(tabla_respuesta);
+//				tabla_respuesta = filtroHandler($('#filtroSerie').val(),formatoData(tabla_respuesta));
                                 tabla_respuesta = formatoData(tabla_respuesta);
                                 TableLogistics(algo_, tabla_respuesta);
                                 siFiltro = false;
@@ -298,15 +299,15 @@ function Cubos(data, tag) {
 
                     if (tableData[0]) {
                         tableData = tableData[0][Tag];
-
                         tableData = formatoData(tableData);
-
                         var parser = new DOMParser();
                         var docTable = parser
 					.parseFromString(tableData,
 								"text/html");
                         docTable = docTable.querySelector("table");
+
                         $(docTable).css("table-layout", "fixed");
+
 
                         d3.selectAll("div>label>span.s")
 					.html(plus + "&ensp;");
@@ -315,6 +316,15 @@ function Cubos(data, tag) {
                         d3.selectAll("div.overflow>table>tbody").html("")
 
                         docTable = discriminateRows(docTable);
+
+
+			// Estas líneas son importantes para que funcione 'nameGasNoil(_td_)'!
+			$(docTable).find("tr").each(function(i,d) {
+			    if(!$(d).find('td:first-child').attr("id")) $(d).attr("id","dist")
+			})
+			// Estas líneas son importantes para que funcione 'nameGasNoil(_td_)'!
+
+
                         d3.select(tbody_hide.parentNode.parentNode)
                             .style("display", "block");
 
@@ -359,12 +369,14 @@ function Cubos(data, tag) {
                                 }
                             };
 */
-			   var _td_ = selected_TD(current_TXT,docTable);
-			   val = $(_td_).parent()[0].children;
-//                            val = $(tds[c]).parent()[0].children;
+			    var _td_ = selected_TD(current_TXT,docTable);
+
+			    val = $(_td_).parent()[0].children;
 			    val = Array.prototype.slice.call(val);
 			    val = "<tr>" + val.map(function(d) { return d.outerHTML; }).join("") + "</tr>";
 			    val = $(val);
+
+			    val = $(nameGasNoil(_td_));
 
 //			    valName = Array.prototype.slice.call(prevTD.parentNode.children);
 //			    valName = "<tr>" + valName.map(function(d) { return d.outerHTML; }).join(""); + "</tr>";
@@ -423,14 +435,18 @@ function Cubos(data, tag) {
                             success: function(tabla_respuesta) {
 
 				var textoEnFiltro = $("#filtroSerie").val();
-				if(textoEnFiltro) tabla_respuesta = filtroHandler(textoEnFiltro,formatoData(tabla_respuesta));
+				if(textoEnFiltro) { 
+					tabla_respuesta = filtroHandler(textoEnFiltro,formatoData(tabla_respuesta));
+				} else {
+					tabla_respuesta = formatoData(tabla_respuesta);
+				}
 
                                 var sizeStr = JSON
 					.stringify([tabla_respuesta])
 					.length;
 
                                 if (sizeStr <= threshold) {
-                                    if(!textoEnFiltro) tabla_respuesta = formatoData(tabla_respuesta);
+//                                    if(!textoEnFiltro) tabla_respuesta = formatoData(tabla_respuesta);
                                     TableLogistics(algo_, tabla_respuesta);
                                 } else {
 				    FILE_NAME = { 'title':params.title, 'subtitle':params.subtitle };
