@@ -862,7 +862,6 @@ function grapher(info) {
 	NOTAS = NOTAS.replace(/&leq;/g,"<=")
     }
 
-console.log([info.serie]);
 
     Highcharts.chart('chart', {
         lang: {
@@ -1865,8 +1864,9 @@ function filtroHandler(txt,data) {
 	  filtered_row = Array.prototype.slice.call(filtered_row)
 	  filtered_row = "<tr>" + filtered_row.map(function(d) { return d.outerHTML; }).join("") + "</tr>";
 */
-	  filtered_row = childrenCompatibility(selected_TD(textoEnFiltro,parsedTable));
+//	  filtered_row = childrenCompatibility(selected_TD(textoEnFiltro,parsedTable));
 console.log(nameGasNoil(selected_TD(textoEnFiltro,parsedTable)));
+          filtered_row = nameGasNoil(selected_TD(textoEnFiltro,parsedTable));
           data[fetchedLabelIndex][filteredObjectIndex][textoEnFiltro[1]] = '<table><tbody>' + HeadRow + filtered_row + '</tbody></table>';
         }
 
@@ -1885,12 +1885,16 @@ console.log(nameGasNoil(selected_TD(textoEnFiltro,parsedTable)));
 ////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 
-function childrenCompatibility(arr_TD) {
+function childrenCompatibility(arr_TD,i) {
 // Esta función ayuda a resolver problemas de compatibilidad con IE.
   var row;
-  row = $(arr_TD).parent()[0].children;
+//  row = $(arr_TD).parent()[0].children;
+  console.log(i);
+  row = $(arr_TD).children();
   row = Array.prototype.slice.call(row);
-  row = "<tr>" + row.map(function(d) { return d.outerHTML; }).join("") + "</tr>";
+  row = "<tr>" + row.map(function(d) {
+    return d.outerHTML;   // <-- Agregar condicional: si i == 0 entonces agregar 'id=dist_' al primer td (de la primera columna)
+  }).join("") + "</tr>";
   return row;
 }
 
@@ -1915,5 +1919,21 @@ function nameGasNoil(arr_TD) {
    row = row.next(); 
   }
 
-  return [arr_prev,arr_next];
+  var findings = [arr_prev,arr_next];
+//console.log(findings);
+  findings = findings.map(function(d) {
+    return d.map(function(d,i) {
+/*
+	return d[0].outerHTML
+		.replace(/\n/g,'')
+		.replace(/>\s*</g,'><');
+*/
+	return childrenCompatibility(d[0],i);
+    })
+  });
+
+  findings = _.flatten(findings);
+  findings = _.uniq(findings).join('');
+
+  return findings;
 };
