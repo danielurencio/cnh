@@ -1638,6 +1638,7 @@ function mapaDeSeries(TEMAS) {
 		  .style("padding-left","7%")
 		.selectAll('li').data(temas).enter()
 		.append('li')
+		.attr("class","wIcon")
 		.attr("tag",function(d) { return d; })
 		   .style('font-size','1.3vw')
 		   .style('font-weight','300')
