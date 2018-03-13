@@ -1575,7 +1575,7 @@ function periodForm(periodicidad) {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 function mapaDeSeries(TEMAS) {
-console.log(TEMAS);
+
   $("span#info_circle").hover(function(){
     $(this).css("color", "rgb(120,255,255)");
     }, function(){
@@ -1648,7 +1648,7 @@ console.log(TEMAS);
 		 .html(function(d) {
 		    var download = TEMAS.filter(function(e) { return e.tema == d; })[0].downloadable;
 		    var img = download ? '<a href="'+ download +'">'+
-					  '<img id="downloadable" style="height:auto;max-width:100%"; src="img/download.svg"></img>'+
+					  '<img id="downloadable" style="height:auto;max-width:100%;" src="img/download.svg"></img>'+
 					 '</a>' : '';
 
 		    var str = '<div style="display:table;">'+
