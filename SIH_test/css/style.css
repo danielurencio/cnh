@@ -683,7 +683,7 @@ input.datepicker {
   text-align:center;
 }
 
-li.liMapa:hover {
+.liMapa:hover {
   color:rgb(13,180,190);
   cursor:pointer;
   font-weight:800;

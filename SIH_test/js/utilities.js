@@ -1575,7 +1575,7 @@ function periodForm(periodicidad) {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 function mapaDeSeries(TEMAS) {
-
+console.log(TEMAS);
   $("span#info_circle").hover(function(){
     $(this).css("color", "rgb(120,255,255)");
     }, function(){
@@ -1635,19 +1635,35 @@ function mapaDeSeries(TEMAS) {
 
 	      d3.select(this)
 		.append("ul")
-		  .style("padding-left","7%")
+		  .style("padding-left","0%")
+		
 		.selectAll('li').data(temas).enter()
-		.append('li')
-		.attr("class","wIcon")
-		.attr("tag",function(d) { return d; })
+		.append('div')
+//		.attr("tag",function(d) { return d; })
 		   .style('font-size','1.3vw')
 		   .style('font-weight','300')
 		   .style('color','rgb(13,180,190)')
-		   .style('text-decoration','underline')
-		   .attr('class','liMapa')
+		   .style('width','100%')
+//		   .style('text-decoration','underline')
 		 .html(function(d) {
-		    var str = ix == 0 ? d + "&ensp;" : "&ensp;" + d;
-		    return d;
+		    var download = TEMAS.filter(function(e) { return e.tema == d; })[0].downloadable;
+		    var img = download ? '<a href="'+ download +'">'+
+					  '<img id="downloadable" style="height:auto;max-width:100%"; src="img/download.svg"></img>'+
+					 '</a>' : '';
+
+		    var str = '<div style="display:table;">'+
+				'<div style="display:table-row;width:100%;">'+
+				  '<div style="display:table-cell;width:5%;padding-right:2%;">'
+					+ img +
+				  '</div>'+
+				  '<div class="liMapa" style="display:table-cell;width:95%;" tag="'+ d +'">'+
+				    '<span>&SmallCircle;&ensp;</span>'
+					+ d +
+				  '</div>'+
+			        '</div>'+
+			      '</div>';
+
+		    return str;
 		 })
 	    });
 
@@ -1656,14 +1672,15 @@ function mapaDeSeries(TEMAS) {
 		    .on('click',function(d) {
 		    $('div#mapaSeries').css('visibility','hidden');
 
-		    thisNode = $(this).text();
-		    var parentNode = this.parentNode.parentNode.getAttribute('tag');
+		    thisNode = this.innerHTML.split(">")[2];
+		    var parentNode = this.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute('tag');
 
 		    var sel_parentNode = $('select.filtros_').find(':selected').attr('tag');
 		    var sel_thisNode = $('select.filtros').find(':selected').attr('tag');
-		 
+
 
 		    if(sel_parentNode == parentNode) {
+
 		      $('select.filtros option').filter(function() { return this.innerText == thisNode; })
 			.prop('selected',true).trigger("change");
 
@@ -1858,7 +1875,7 @@ function filtroHandler(txt,data) {
         if(filteredObjectText) {
           parsedHTML = new DOMParser().parseFromString(filteredObjectText,'text/html');
           parsedTable = parsedHTML.querySelector("table");
-console.log(parsedHTML)
+
 	  HeadRow = parsedTable.querySelector("tr").outerHTML;
           filtered_row = nameGasNoil(selected_TD(textoEnFiltro,parsedTable));
           data[fetchedLabelIndex][filteredObjectIndex][textoEnFiltro[1]] = '<table><tbody>' + HeadRow + filtered_row + '</tbody></table>';

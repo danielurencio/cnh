@@ -126,6 +126,8 @@ function Cubos(data, tag) {
 
             if (this.nodeName == "DIV" && $(this).attr("especial") == "1") {
 /*----------------------------------------------Restaurar filtro---------------------------------------------*/
+		//if($('#quitarFiltro').css("display") == "block") $("#quitarFiltro").click();
+		current_TXT = false;
 		$("input#filtroSerie").prop('disabled',false);
                 $("div#quitarFiltro").css("display", "none");
 /*----------------------------------------------Restaurar filtro---------------------------------------------*/
@@ -182,7 +184,6 @@ function Cubos(data, tag) {
                         success: function(tabla_respuesta) {
 
                             if (siFiltro) {
-console.log(tabla_respuesta);
 //				tabla_respuesta = filtroHandler($('#filtroSerie').val(),formatoData(tabla_respuesta));
                                 tabla_respuesta = formatoData(tabla_respuesta);
                                 TableLogistics(algo_, tabla_respuesta);
@@ -318,18 +319,19 @@ console.log(tabla_respuesta);
                         docTable = discriminateRows(docTable);
 
 
+			if(caso_especial) {
 			// Estas líneas son importantes para que funcione 'nameGasNoil(_td_)'!
-			$(docTable).find("tr").each(function(i,d) {
+			  $(docTable).find("tr").each(function(i,d) {
 			    if(!$(d).find('td:first-child').attr("id")) $(d).attr("id","dist")
-			})
+			  })
 			// Estas líneas son importantes para que funcione 'nameGasNoil(_td_)'!
-
+			}
 
                         d3.select(tbody_hide.parentNode.parentNode)
                             .style("display", "block");
 
    //--------------FILTRO PARA CASO ESPECIAL-----------------------
-                        if (caso_especial && current_TXT) {
+                        if (caso_especial && $('#filtroSerie').val()) { //current_TXT ) {
 
                             var _docTable = parser
                                 .parseFromString(docTable.outerHTML,
@@ -369,7 +371,8 @@ console.log(tabla_respuesta);
                                 }
                             };
 */
-			    var _td_ = selected_TD(current_TXT,docTable);
+			    var textoEnFiltro_ = $('#filtroSerie').val().replace(/^\s*/,'').split(" > ")
+			    var _td_ = selected_TD(textoEnFiltro_/*current_TXT*/,docTable);
 
 			    val = $(_td_).parent()[0].children;
 			    val = Array.prototype.slice.call(val);
