@@ -1,4 +1,4 @@
-﻿	var ambiente = 'producciónn';
+﻿	var ambiente = 'producción';
 	var HOSTNAME = ambiente == 'producción' ? '' : 'http://172.16.24.57';
 	var asyncAJAX = false;
 	var data_BUSCAR;

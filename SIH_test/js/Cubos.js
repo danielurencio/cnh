@@ -184,11 +184,16 @@ function Cubos(data, tag) {
                         success: function(tabla_respuesta) {
 
                             if (siFiltro) {
-//				tabla_respuesta = filtroHandler($('#filtroSerie').val(),formatoData(tabla_respuesta));
+				var textoEnFiltro = $('#filtroSerie').val()
+				if(textoEnFiltro) {
+				  console.log("aquí?")
+				  tabla_respuesta = filtroHandler(textoEnFiltro,formatoData(tabla_respuesta));
+				}
                                 tabla_respuesta = formatoData(tabla_respuesta);
                                 TableLogistics(algo_, tabla_respuesta);
                                 siFiltro = false;
                             } else {
+				console.log("aquí'");
                                 var sizeStr = JSON
 						.stringify([tabla_respuesta])
 						.length;
@@ -214,6 +219,22 @@ function Cubos(data, tag) {
 
             if (this.nodeName == "DIV" && $(this).attr("especial") != "1") {
 
+	// Esto sirve para quitar el filtro al seleccionar otra tabla, si es que el filtro existe.
+                var title = this.parentNode.getAttribute("tag");
+                var subtitle = this.getAttribute("tag");
+		var contenidoEnFiltro = $('#filtroSerie').val();
+
+		if(contenidoEnFiltro) {
+		  contenidoEnFiltro = contenidoEnFiltro.replace(/^\s*/,'').split(' > ');
+		  if(contenidoEnFiltro[0] != title || contenidoEnFiltro[0] == title && contenidoEnFiltro[1] != subtitle) {
+			current_TXT = false;
+			$("input#filtroSerie").prop('disabled',false);
+	                $("div#quitarFiltro").css("display", "none");
+		  }
+		}
+	// Esto sirve para quitar el filtro al seleccionar otra tabla, si es que el filtro existe.
+
+
 /*---Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
 	     if($(this).next().css("display") != 'block') {
 
@@ -225,9 +246,6 @@ function Cubos(data, tag) {
 			";height:22px;background-color:transparent;position:relative;bottom:22px;' id='optionsDefense'></div>");
 	     }
 /*--Deshabilitar temporalmente el botón de Consultar para no repetir AJAX---*/
-
-                var title = this.parentNode.getAttribute("tag");
-                var subtitle = this.getAttribute("tag");
 
                 var tabla_resp = data.filter(function(d) {
                     return d[0] == title;
@@ -330,8 +348,10 @@ function Cubos(data, tag) {
                         d3.select(tbody_hide.parentNode.parentNode)
                             .style("display", "block");
 
+			var contenidoEnFiltro = $('#filtroSerie').val();
+
    //--------------FILTRO PARA CASO ESPECIAL-----------------------
-                        if (caso_especial && $('#filtroSerie').val()) { //current_TXT ) {
+                        if (caso_especial && contenidoEnFiltro) { //current_TXT ) {
 
                             var _docTable = parser
                                 .parseFromString(docTable.outerHTML,
@@ -371,8 +391,10 @@ function Cubos(data, tag) {
                                 }
                             };
 */
-			    var textoEnFiltro_ = $('#filtroSerie').val().replace(/^\s*/,'').split(" > ")
-			    var _td_ = selected_TD(textoEnFiltro_/*current_TXT*/,docTable);
+//			    var textoEnFiltro_ = $('#filtroSerie').val().replace(/^\s*/,'').split(" > ")
+//			    var _td_ = selected_TD(textoEnFiltro_/*current_TXT*/,docTable);
+/*
+			    var headRow = docTable.querySelector("tr").outerHTML;
 
 			    val = $(_td_).parent()[0].children;
 			    val = Array.prototype.slice.call(val);
@@ -381,30 +403,27 @@ function Cubos(data, tag) {
 
 			    val = $(nameGasNoil(_td_));
 
-//			    valName = Array.prototype.slice.call(prevTD.parentNode.children);
-//			    valName = "<tr>" + valName.map(function(d) { return d.outerHTML; }).join(""); + "</tr>";
-//			    valName = $(valName).css("display","none");
-
                             $(_docTable.querySelectorAll("tbody")).html("");
-
-//                            $(_docTable.querySelectorAll("tbody"))
-//				.append(valName);
 
                             $(_docTable.querySelectorAll("tbody"))
 				.append(val);
-
-
+*/
                             d3.select(tbody_hide)
-                                .html(_docTable.innerHTML);//<--pega la tabla
+                                .html(/*_*/docTable.innerHTML);//<--pega la tabla
 
 
-                            current_TXT = null; // <-- IMPORTANTÍSIMO!
+                            current_TXT = null; // <-- Checar relevancia.
                         }
 //--------------FILTRO PARA CASO ESPECIAL-----------------------
                         else {
-
                             d3.select(tbody_hide)
                                 .html(docTable.innerHTML);//<--pega la tabla
+
+			    if(contenidoEnFiltro)  {
+				var txtFiltro = contenidoEnFiltro.replace(/^\s*/,'').split(' > ');
+				var filtroEl = selected_TD(txtFiltro)[0];
+				mostrar(filtroEl);
+			    }
 
                         }
 

@@ -198,13 +198,14 @@
         var subtitulo_label = $("tbody.hide[tag='" + titulo + "']>div.labels[tag='" +
             subtitulo + "']");
         var subtitulo_overflow = subtitulo_label.next();
-console.log("Ir A serie")
+
 
         if (subtitulo_overflow.css("display") == "none") {
             /* Función anónima que (a) hace click en la tabla solicitada y, de manera
             'asíncrona', (b) obtiene la celda buscada para (c) alimentarla en una
             función que desplazará el viewport hasta encontrar la celda... */
             (function() {
+
                 subtitulo_label.click(); // <-- (a)
                 window.setTimeout(function() { /*------------------Async--*/
 
@@ -213,6 +214,7 @@ console.log("Ir A serie")
                         if (el_) {
                             mostrar(el_[0]);
                         } else {
+
                             var sleep_ = setInterval(function() {
                                 el_ = selected_TD(txt);
                                 if (el_) {
@@ -249,7 +251,6 @@ console.log("Ir A serie")
 	      console.log([docTable,content]);
 	      $(docTable).html(content)
 	    } else {
-	console.log(txt,[txt]);
               mostrar(el_);
 	    }
 

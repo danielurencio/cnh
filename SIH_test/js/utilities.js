@@ -258,9 +258,11 @@ function ajaxFunction(data, Cubos, filtrarSeries, special_params,
     data = formatoData(data);
 /*--------------------- Checar si existen filtros ----------------*/
     var textoEnFiltro = $("#filtroSerie").val()
-    if(textoEnFiltro) {
-      filtroHandler(textoEnFiltro,data);
+
+    if(textoEnFiltro && caso_especial) {
+      data = filtroHandler(textoEnFiltro,data);
     }
+
 /*--------------------- Checar si existen filtros ----------------*/
     Cubos(data);
 
