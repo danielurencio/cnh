@@ -88,6 +88,7 @@ window.onresize = function() {
         console.log(err);
     }
 /*-------Mostrar y ocultar el scroller-x bajo demanda---------------------*/
+  resizeMapaDeSeries();
 }
 
 
@@ -1711,6 +1712,7 @@ function mapaDeSeries(TEMAS) {
 
    });
 
+   resizeMapaDeSeries();
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -1952,3 +1954,52 @@ function nameGasNoil(arr_TD) {
   findings = findings.join("");
   return findings;
 };
+
+
+/////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+
+function resizeMapaDeSeries() {
+
+  var liMapas = $('.liMapa');
+  var indices = $('.indice>div>li');
+  var liMapaBottoms = Array.prototype.slice.call(document.querySelectorAll('.liMapa') )
+			.map(function(d) { return d.getBoundingClientRect().bottom; });
+
+  var containerBottom = $('#mapaSeries>.espere')[0].getBoundingClientRect().bottom;
+  var containerPadding = +$('#mapaSeries>.espere').css('padding').split('px')[0] + 10;
+
+  var cond = liMapaBottoms.some(function(d) { return d >= (containerBottom - containerPadding); });
+
+  if(!cond) { 
+    liMapas.css('font-size','1.3vw');
+    indices.css('padding-bottom','3vw');
+    indices.css('font-size','1.8vw');
+
+  }
+
+  while(cond) {
+    var font =  +liMapas.css('font-size').split('px')[0];
+    var indicePad = +indices.css('padding-bottom').split('px')[0];
+    var indiceFont = +indices.css('font-size').split('px')[0];
+
+    font -= 0.3;
+    indicePad -= 2;
+    indiceFont -= 0.5;
+
+    liMapas.css('font-size',String(font) + "px");
+    indices.css('padding-bottom',String(indicePad) + "px");
+    indices.css('font-size',String(indiceFont) + "px");
+
+    liMapaBottoms = Array.prototype.slice.call(document.querySelectorAll('.liMapa') )
+			.map(function(d) { return d.getBoundingClientRect().bottom; });
+
+    containerBottom = $('#mapaSeries>.espere')[0].getBoundingClientRect().bottom;
+
+    cond = liMapaBottoms.some(function(d) { return d >= containerBottom; });
+
+  }
+
+//  resizeMapaDeSeries();
+}

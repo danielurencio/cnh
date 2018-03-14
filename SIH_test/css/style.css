@@ -424,6 +424,7 @@ div#mapaSeries>div.espere {
 }
 
 .helper_mapaSeries {
+    overflow:auto;
     #position: absolute;
     #top: 0%;
     display: table-cell;
