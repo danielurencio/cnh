@@ -62,6 +62,7 @@
 			RenderWords(response, "esp", TEMAS);
 
 			mapaDeSeries(TEMAS);
+			resizeMapaDeSeries();
 
 	 	  $("button#consultar").on("click", function() {
 
