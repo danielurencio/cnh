@@ -203,18 +203,6 @@
 //	var docTable = el_.parentNode.parentNode;
 //	var specialType = docTable.querySelectorAll('td#dist_').length;
 
-function filterSpecialType(docTable,el_) {
-
-	      $(docTable).find("tr:not(first-child)").each(function(i,d) {
-                if(!$(d).find('td:first-child').attr("id")) $(d).attr("id","d")
-              });
-
-	      var datesRow = "<tr>" + $(docTable).find('tr:first-child').html() + "</tr>";
-	      var content = datesRow + nameGasNoil(el_);
-
-	      $(docTable).html(content)
-};
-
 
         if (subtitulo_overflow.css("display") == "none") {
             /* Función anónima que (a) hace click en la tabla solicitada y, de manera
@@ -232,8 +220,10 @@ function filterSpecialType(docTable,el_) {
 
                         if (el_) {
 			    if(specialType) {
-			console.log([el_])
+	
 			      filterSpecialType(docTable,el_);
+			      enableGraphs();
+
 			    } else {
                               mostrar(el_);
 			    }
@@ -248,6 +238,8 @@ function filterSpecialType(docTable,el_) {
                                     clearInterval(sleep_);
 				    if(specialType) {
 				      filterSpecialType(docTable,el_);
+				      enableGraphs();
+
 				    } else {
                                       mostrar(el_);
 				    }
@@ -272,14 +264,15 @@ function filterSpecialType(docTable,el_) {
 
 	    if(caso_especial  || specialType) {
 		filterSpecialType(docTable,el_);
+		enableGraphs();
 
 	    } else {
-console.log(el_);
+
               mostrar(el_);
 	    }
 
         }
-
+//enableGraphs();
     };
 
     function mostrar(el) {
@@ -341,3 +334,17 @@ console.log(el_);
 
         return val;
     }
+
+
+function filterSpecialType(docTable,el_) {
+
+	      $(docTable).find("tr:not(first-child)").each(function(i,d) {
+                if(!$(d).find('td:first-child').attr("id")) $(d).attr("id","d")
+              });
+
+	      var datesRow = "<tr>" + $(docTable).find('tr:first-child').html() + "</tr>";
+	      var content = datesRow + nameGasNoil(el_);
+
+	      $(docTable).html(content)
+};
+

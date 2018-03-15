@@ -422,7 +422,13 @@ function Cubos(data, tag) {
 			    if(contenidoEnFiltro)  {
 				var txtFiltro = contenidoEnFiltro.replace(/^\s*/,'').split(' > ');
 				var filtroEl = selected_TD(txtFiltro)[0];
-				mostrar(filtroEl);
+				var specialType = filtroEl.parentNode.parentNode.querySelectorAll('td#dist_').length;
+				if(specialType) {
+				  filterSpecialType(filtroEl.parentNode.parentNode,filtroEl);
+				  enableGraphs();
+				} else {
+				  mostrar(filtroEl);
+				}
 			    }
 
                         }
