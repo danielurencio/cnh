@@ -557,12 +557,11 @@ function descargar_selection(series) {
 	    var buffer = [];
 	    var cached_sum = [];
 
-            subfamilia.forEach(function(ss) {
+            subfamilia.forEach(function(ss,i) {
                 var serie_ = ss.serie.join(",").replace(/NaN/g, "");
-
 		var buff_zeros = serie_.split(",").map(function(d) { return 0; });
 		var serie_nums = serie_.split(",").map(function(d) { return Number(d); });
-//console.log(serie_nums)
+
 		buffer.push(serie_nums);
 
 		if(cached_sum.length == 0) {
@@ -587,14 +586,10 @@ function descargar_selection(series) {
 
 		    arr_sum = arr_sum.map(function(d) { return String(d3.sum(d)); }).join(",");
 
-		    var serie__ = ss.subtema.length > 0 ? arr_sum : serie_;
-
+		    var serie__ = ss.subtema.length > 0 ? '' : serie_;
                     var _cont_ = ss['prevRow'] ? "    " + tema : "     " + tema + "," + serie__;
 
 
-//if(ss["prevRow"] == "caso_especial") _cont_ = "    " + tema
-//if(ss["prevRow"] == "caso_normal") 
-//		    var _cont_ = "    " + tema + "," + serie__;
                     chunk.push(_cont_);
                 }
 
