@@ -618,6 +618,12 @@ function descargar_selection(series) {
     chunk = chunk.replace(/Í/g, "I");
     chunk = chunk.replace(/Ó/g, "O");
     chunk = chunk.replace(/Ú/g, "U");
+    chunk = chunk.replace(/<STRONG>/g,'') 
+    chunk = chunk.replace(/<A>/g,'') 
+    chunk = chunk.replace(/<\/STRONG>/g,'')
+    chunk = chunk.replace(/<\/A>/g,'') 
+    chunk = chunk.replace(/>/g,'') 
+    
 
     var csvFile = new Blob(["\ufeff", chunk], {
         'type': 'text/csv'
@@ -633,7 +639,7 @@ function descargar_selection(series) {
 			 .replace(/Ó/g,'O')
 			 .replace(/Ú/g,'U');
 
-    
+
 
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveOrOpenBlob(csvFile, file_name + ".csv");
