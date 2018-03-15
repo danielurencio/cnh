@@ -199,6 +199,22 @@
             subtitulo + "']");
         var subtitulo_overflow = subtitulo_label.next();
 
+//	var el_ = selected_TD(txt)[0];
+//	var docTable = el_.parentNode.parentNode;
+//	var specialType = docTable.querySelectorAll('td#dist_').length;
+
+function filterSpecialType(docTable,el_) {
+
+	      $(docTable).find("tr:not(first-child)").each(function(i,d) {
+                if(!$(d).find('td:first-child').attr("id")) $(d).attr("id","d")
+              });
+
+	      var datesRow = "<tr>" + $(docTable).find('tr:first-child').html() + "</tr>";
+	      var content = datesRow + nameGasNoil(el_);
+
+	      $(docTable).html(content)
+};
+
 
         if (subtitulo_overflow.css("display") == "none") {
             /* Función anónima que (a) hace click en la tabla solicitada y, de manera
@@ -210,16 +226,31 @@
                 window.setTimeout(function() { /*------------------Async--*/
 
                     if (!siFiltro) {
-                        var el_ = selected_TD(txt); // <-- (b)
+                        var el_ = selected_TD(txt)[0]; // <-- (b)
+	var docTable = el_.parentNode.parentNode;
+	var specialType = docTable.querySelectorAll('td#dist_').length;
+
                         if (el_) {
-                            mostrar(el_[0]);
+			    if(specialType) {
+			console.log([el_])
+			      filterSpecialType(docTable,el_);
+			    } else {
+                              mostrar(el_);
+			    }
                         } else {
 
                             var sleep_ = setInterval(function() {
-                                el_ = selected_TD(txt);
+                                el_ = selected_TD(txt)[0];
+	var docTable = el_.parentNode.parentNode;
+	var specialType = docTable.querySelectorAll('td#dist_').length;
+
                                 if (el_) {
                                     clearInterval(sleep_);
-                                    mostrar(el_[0]);
+				    if(specialType) {
+				      filterSpecialType(docTable,el_);
+				    } else {
+                                      mostrar(el_);
+				    }
                                 }
                             }, 500);
                         }
@@ -236,21 +267,14 @@
 	    // Cuando la tabla ya está abierta, en vez de volver a pedir los servicios web,
 	    // se tiene que encontrar la fila de interés y deshacerse de las demás.
             var el_ = selected_TD(txt)[0];
+	    var docTable = el_.parentNode.parentNode;
+	    var specialType = docTable.querySelectorAll('td#dist_').length;
 
-	    if(caso_especial) {
-	      var docTable = el_.parentNode.parentNode;
+	    if(caso_especial  || specialType) {
+		filterSpecialType(docTable,el_);
 
-
-	      $(docTable).find("tr:not(first-child)").each(function(i,d) {
-                if(!$(d).find('td:first-child').attr("id")) $(d).attr("id","d")
-              });
-
-	      var datesRow = "<tr>" + $(docTable).find('tr:first-child').html() + "</tr>";
-	      var content = datesRow + nameGasNoil(el_);
-
-	      console.log([docTable,content]);
-	      $(docTable).html(content)
 	    } else {
+console.log(el_);
               mostrar(el_);
 	    }
 
