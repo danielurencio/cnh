@@ -171,6 +171,13 @@ function descargarSerie() {
     csv = csv.replace(/Ú/g, "U");
 
     csv = csv.replace(/&LEQ;/g,"<=");
+    csv = csv.replace(/<STRONG>/g,"");
+    csv = csv.replace(/<\/STRONG>/g,"");
+    csv = csv.replace(/<\/A>/g,"");
+    csv = csv.replace(/>/g,"");
+    csv = csv.replace(/"/g,'');
+
+
 
     var csvFile = new Blob(["\ufeff", csv], {
         'type': 'text/csv'
@@ -618,6 +625,7 @@ function descargar_selection(series) {
     chunk = chunk.replace(/<\/STRONG>/g,'')
     chunk = chunk.replace(/<\/A>/g,'') 
     chunk = chunk.replace(/>/g,'') 
+    chunk = chunk.replace(/"/g,'') 
     
 
     var csvFile = new Blob(["\ufeff", chunk], {
@@ -1346,6 +1354,11 @@ function worker(data) {
     table = table.replace(/Ú/g, "U")
         .replace(/HTTPS:\/\/PORTAL.CNIH.CNH.GOB.MX\/IICNIH2\/\?LNG=ES_MX/,
             "https://portal.cnih.cnh.gob.mx/iicnih2/?lng=es_mx");
+    table = table.replace(/<STRONG>/g,'');
+    table = table.replace(/<\/STRONG>/g,'');
+    table = table.replace(/<\/A>/g,'');
+    table = table.replace(/">/g,'');
+
 
     var csvFile = new Blob(["\ufeff", table], {
         'type': 'text/csv'
