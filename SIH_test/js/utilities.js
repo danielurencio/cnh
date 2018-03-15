@@ -626,7 +626,7 @@ function descargar_selection(series) {
     chunk = chunk.replace(/<\/A>/g,'') 
     chunk = chunk.replace(/>/g,'') 
     chunk = chunk.replace(/"/g,'') 
-    
+    chunk = chunk.replace(/&LEQ;/g,'<='); 
 
     var csvFile = new Blob(["\ufeff", chunk], {
         'type': 'text/csv'
@@ -1358,7 +1358,7 @@ function worker(data) {
     table = table.replace(/<\/STRONG>/g,'');
     table = table.replace(/<\/A>/g,'');
     table = table.replace(/">/g,'');
-
+    table = table.replace(/&LEQ;/g,'');
 
     var csvFile = new Blob(["\ufeff", table], {
         'type': 'text/csv'
