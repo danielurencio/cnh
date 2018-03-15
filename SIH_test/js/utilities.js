@@ -407,15 +407,20 @@ function obtener_series() {
                 var obj = {};
                 var row = checked[i].parentNode.parentNode;
                 var _ix_ = $(row).index();
-
+//console.log(_ix_);
                 if (_ix_ > 1) {
                     var prevRow = $("div.overflow").filter(function() {
                             return $(this).css("display") == "block";
                         })[0]
 			.querySelectorAll("tr:nth-child(" + _ix_ + ")")[0]
-                        .querySelector("td.graph").innerHTML.length;
+if(prevRow.getAttribute("id")) {
+  prevRow = 0;
+} else {
+                        prevRow = prevRow.querySelector("td.graph").innerHTML.length;
+}
 
                     prevRow = prevRow > 0 ? 0 : 1;
+//		   prevRow = 1;
                     obj['prevRow'] = prevRow;
                 }
 
@@ -480,6 +485,7 @@ function obtener_series() {
                 series.push(obj);
             }
         };
+//	series[0]["prevRow"] = 0
         return series;
     }
 
@@ -491,7 +497,7 @@ function obtener_series() {
 
 function descargar_selection(series) {
     var chunk = [];
-
+//console.log(series);
     var sel_ = $("select.filtros").find(":selected").attr("tag");
 
     var _titulo_ = TEMAS.filter(function(d) {
@@ -556,6 +562,7 @@ function descargar_selection(series) {
 
 		var buff_zeros = serie_.split(",").map(function(d) { return 0; });
 		var serie_nums = serie_.split(",").map(function(d) { return Number(d); });
+//console.log(serie_nums)
 		buffer.push(serie_nums);
 
 		if(cached_sum.length == 0) {
@@ -582,8 +589,12 @@ function descargar_selection(series) {
 
 		    var serie__ = ss.subtema.length > 0 ? arr_sum : serie_;
 
-                    var _cont_ = ss['prevRow'] ? "    " + tema : "     ";
-					+ tema + "," + serie__;
+                    var _cont_ = ss['prevRow'] ? "    " + tema : "     " + tema + "," + serie__;
+
+
+//if(ss["prevRow"] == "caso_especial") _cont_ = "    " + tema
+//if(ss["prevRow"] == "caso_normal") 
+//		    var _cont_ = "    " + tema + "," + serie__;
                     chunk.push(_cont_);
                 }
 
@@ -599,7 +610,7 @@ function descargar_selection(series) {
         chunk.push(",,");
 
     });
-
+//console.log(chunk);
     chunk = chunk.join("\n").toUpperCase();
     chunk = [chunk, "\n\n", NOTAS].join("\n");
     chunk = chunk.replace(/Á/g, "A");
@@ -1027,7 +1038,7 @@ function grapher(info) {
      }
 
    } else {
-     console.log("No hay [onclick].");
+     //console.log("No hay [onclick].");
    }
 
     ////////////////////// AGREGAR TABLA PARA DESCARGA /////////////////////////
@@ -1898,7 +1909,7 @@ function filtroHandler(txt,data) {
         filteredObject = fetched_label[1][textoEnFiltro[1]];
         parsedHTML = new DOMParser().parseFromString(filteredObject,'text/html');
         parsedTable = parsedHTML.querySelector("table");
-	console.log([parsedTable],textoEnFiltro);
+	//console.log([parsedTable],textoEnFiltro);
       }
 
       return data;
@@ -1930,7 +1941,7 @@ function nameGasNoil(arr_TD) {
 
   var row = $(arr_TD).parent();
   while(row.attr("id")) {
-    console.log(row);
+    //console.log(row);
     arr_prev.push(row);
     row = row.prev();
   };

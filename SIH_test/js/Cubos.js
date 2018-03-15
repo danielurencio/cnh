@@ -186,14 +186,14 @@ function Cubos(data, tag) {
                             if (siFiltro) {
 				var textoEnFiltro = $('#filtroSerie').val()
 				if(textoEnFiltro) {
-				  console.log("aquí?")
+				  //console.log("aquí?")
 				  tabla_respuesta = filtroHandler(textoEnFiltro,formatoData(tabla_respuesta));
 				}
                                 tabla_respuesta = formatoData(tabla_respuesta);
                                 TableLogistics(algo_, tabla_respuesta);
                                 siFiltro = false;
                             } else {
-				console.log("aquí'");
+				//console.log("aquí'");
                                 var sizeStr = JSON
 						.stringify([tabla_respuesta])
 						.length;
