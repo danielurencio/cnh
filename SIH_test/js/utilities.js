@@ -175,7 +175,7 @@ function descargarSerie() {
     csv = csv.replace(/<\/STRONG>/g,"");
     csv = csv.replace(/<\/A>/g,"");
     csv = csv.replace(/>/g,"");
-    csv = csv.replace(/"/g,'');
+    csv = csv.replace(/"/g,'').replace(/TARGET=_BLANK/g,"");
 
 
 
@@ -530,7 +530,8 @@ function descargar_selection(series) {
         .replace(/\<br\>/g, "").toUpperCase()
         .replace(/HTTPS:\/\/PORTAL.CNIH.CNH.GOB.MX\/IICNIH2\/\?LNG=ES_MX/,
             "https://portal.cnih.cnh.gob.mx/iicnih2/?lng=es_mx")
-	.replace(/,/g,";");
+	.replace(/,/g,";")
+
 
 
     var fechatest_ = fecha.toLocaleString('es-MX').replace(", ", " - ");
@@ -626,7 +627,8 @@ function descargar_selection(series) {
     chunk = chunk.replace(/<\/A>/g,'') 
     chunk = chunk.replace(/>/g,'') 
     chunk = chunk.replace(/"/g,'') 
-    chunk = chunk.replace(/&LEQ;/g,'<='); 
+    chunk = chunk.replace(/&LEQ;/g,'<=').replace(/TARGET=_BLANK/g,"");
+
 
     var csvFile = new Blob(["\ufeff", chunk], {
         'type': 'text/csv'
