@@ -1,4 +1,9 @@
     function filtrarSeries(data, data_buscar) {
+        data_BUSCAR = false;
+
+	if($('div#dropDown>div')[0]) {
+	  $('div#dropDown>div').remove();
+	}
 
         var str_;
 
@@ -12,10 +17,10 @@
         var parser = new DOMParser();
         var arr = [];
 
+
         if(data_buscar) {
 	  cosas(data_buscar);
         } else {
-	//  data_BUSCAR = true;
 	  if(asyncAJAX) { asyncAJAX.abort(); }
 
         }
@@ -169,6 +174,10 @@
 	  }
 
         });
+
+	if($('#filtroSerie').val()) {
+	  d3.select('input#filtroSerie').dispatch('input');
+	}
 
 
         $("body *>*:not(div#dropDown)").on("click", function() {

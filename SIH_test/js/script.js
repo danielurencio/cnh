@@ -155,6 +155,7 @@
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
 		      var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
+		      data_BUSCAR = true;
 		      web_worker.postMessage(worker_tools);
 
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
@@ -439,6 +440,7 @@
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
 		    var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
+		    data_BUSCAR = true;
 		    web_worker.postMessage(worker_tools);
 
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
@@ -532,6 +534,7 @@
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
 
 		      var worker_tools = { 'params':params,'url':HOSTNAME + '/cubos_buscar.py' };
+		      data_BUSCAR = true;
 		      web_worker.postMessage(worker_tools);
 
 /*-------------------------------Webworker para paralelizar AJAX-----------------------------------------------------*/
