@@ -220,7 +220,7 @@ class Reporte(object):
 
 
 if __name__ == "__main__":
-    reporte = Reporte("plantilla_0.xlsx","A",(2,4))
+    reporte = Reporte("plantilla_0.xlsx","A",(3,1))
     celdas_tablas = ['A187','A221','A248']
     # [EmpsAdj,..,bloquesAdj,..,ofertasXbloque,empsXpais,bloquesXempresa]
     celdas_resumen = ['A333','A334','A336','A337','A340','D334','I334']

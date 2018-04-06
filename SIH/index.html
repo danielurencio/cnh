@@ -19,6 +19,10 @@
   <script src="libs/canvg/StackBlur.js"></script>
   <script src="libs/canvg/canvg.js"></script> 
   <script src="js/script.js"></script>
+  <script src="js/SETUP.js"></script>
+  <script src="js/Cubos.js"></script>
+  <script src="js/utilities.js"></script>
+  <script src="js/filtroBuscador.js"></script>
  </head>
  <body>
 
@@ -43,13 +47,13 @@
    <div class='helper_mapaSeries'>
 
     <div style='font-size:2vw;font-weight:700;text-align:center;position:relative;top:5%;'>
-	MAPA DE SERIES
+	MAPA DE SERIES <span style='color:rgb(13,180,190);'>/</span> DESCARGA MASIVA
     </div>
     <div style='text-align:center;font-size:0.8vw;color:rgb(25%,25%,25%);font-weight:600;'>
 <!--      <img src='img/pointer.svg' width="20px" height="20px"></img> -->
-	Haga clic en alguna serie para consultarla.
+	Haga clic sobre el nombre de alguna serie para consultarla o en el ícono <span><img></img></span>para descargarla.
     </div>
-<br>
+
     <div class='content_mapaSeries'>
 
      <div style='display:table;width:100%;'>
@@ -86,7 +90,7 @@
 
      <div class='cell' style='width:10%;visibility:visible;'>
        <div style='width:100%;'>
-        <div class='titulo_cont'>Mapa de series<br><span id='info_circle' style='font-size:1.5vw;color:rgb(13,180,190);'>&#9432;</span></div>
+        <div class='titulo_cont mapaSeries_titulo' style='font-size:12px;'><span id='InfoTitle'>Mapa de series<br>y descargas</span><br><span id='info_circle' style='font-size:1.5vw;color:rgb(13,180,190);'>&#9432;</span></div>
        </div>
      </div>
 
@@ -148,7 +152,7 @@
    <div class='cell b'>
     <div class='titulo_cont'>Fecha</div>
 
-    <div id='dateForm' style='width:inherit;height:45px;position:absolute;z-index:-2;background-color:white;opacity:0;text-align:center;'>
+    <div id='dateForm' style='width:inherit;height:50px;position:absolute;z-index:-2;background-color:rgb(249,255,255);opacity:0;text-align:center;'>
      <div class='i_fechas' style='text-align:right;'>
       <div>
       Inicio:&emsp;
@@ -217,26 +221,31 @@
  </div>
 
 
-	  <div id='scroll_aid' style="text-align:left;width:415px;height:120px;top:90px;left:0px;position:fixed;background:white;padding-top:0px;padding-left:0px;z-index:2;border-top:1px solid black;padding-bottom:0px;">
-   <div style='position:absolute;margin-top:75px;margin-left:365px;width:45px;'>Buscar:</div>
- <div style='margin-left:30px;width:calc(100% - 30px)'>
-     <button id="selection" style="font-family:'Open Sans';font-size:9px;font-weight:600;margin-top:75px;" class='aid_check'>Descargar selección</button>
-<input class='aid_check' type='checkbox' style='margin-left:40px;'></input><span class='aid_check'>Seleccionar todo</span>
-</div>
+	  <div id='scroll_aid' style="text-align:left;width:415px;height:120px;top:90px;left:0px;position:fixed;background:transparent;padding-top:0px;padding-left:0px;z-index:3;border-top:1px solid black;padding-bottom:0px;">
+     <div style='margin-left:30px;width:calc(100% - 30px)'>
+       <button id="selection" style="font-family:'Open Sans';font-size:9px;font-weight:600;margin-top:95px;" class='aid_check'>Descargar selección</button>
+       <input class='aid_check' type='checkbox' style='margin-left:40px;'></input><span class='aid_check'>Seleccionar todo</span>
+     </div>
+         <!-- <div style='background:red;width:100%;height:20px;position:absolute;top:100px'></div> -->
 
-  </div>
+     </div>
   </div>
 
 <!-- ########################### HEADER ###############################(start) -->
-   <div style='position:fixed;height:120px;top:90px;z-index:1;background:white;color:white;overflow-x:hidden;overflow-y:hidden;' class='scroll_header'>
-    <div style='left:415px;position:fixed;width:100%;height:40px;z-index:3;color:black;'>
-
-	<input id="filtroSerie" style='z-index:3;margin-top:75px;width:40%;border:1px solid lightGray;'></input>
-
-   <div id="quitarFiltro" style='font-weight:700;position:fixed;left:calc(40% + 425px);top:166px;color:white;width:100px;text-align:center;background-color:rgb(13,180,190);border-radius:2px;display:none;'>Remover filtro</div>
-
-      <div id="dropDown" style='position:fixed;top:185px;width:40%;left:415px;background:rgba(255,255,255,0.85);z-index:3;max-height:150px;border:1px solid lightGray;display:none;overflow:scroll;overflow-x:hidden;'></div>
+   <div style='position:fixed;height:95px;top:90px;z-index:7;background:transparent;color:white;overflow-x:hidden;overflow-y:hidden;'>
+      <div style='left:30%;position:fixed;width:100%;height:40px;z-index:3;color:black;'>
+           <div style='position:absolute;margin-top:75px;margin-left:-45px;z-index:-1;'>Buscar:</div>
+           <input id="filtroSerie" style='z-index:3;margin-top:75px;width:40%;border:1px solid lightGray;'></input>
+           <div id="quitarFiltro" style='font-weight:700;position:fixed;left:71%;top:166px;color:white;width:100px;text-align:center;background-color:rgb(13,180,190);border-radius:2px;display:none;'>Remover filtro</div>
+           <div id="dropDown" style='position:fixed;top:185px;width:40%;left:30%;background:rgba(255,255,255,0.85);z-index:3;max-height:150px;border:1px solid lightGray;display:none;overflow:scroll;overflow-x:hidden;'></div>
+      </div>
    </div>
+
+   <div style='position:fixed;height:120px;top:90px;z-index:1;background:white;color:white;overflow-x:hidden;overflow-y:hidden;'></div>
+   <div style='position:fixed;height:120px;top:90px;z-index:2;background:transparent;color:white;overflow-x:hidden;overflow-y:hidden;' class='scroll_header'>
+
+
+
     <div style='height:100%;width:100%;position:absolute;'>
      <table style='width:100%;height:100%;position:absolute;table-layout:fixed;'>
       <tbody style='width:100%;height:100%'>

@@ -420,9 +420,11 @@ div#mapaSeries>div.espere {
     #top: 50%;
     display: table-cell;
     vertical-align: middle;
+    background-color:white;
 }
 
 .helper_mapaSeries {
+    overflow:auto;
     #position: absolute;
     #top: 0%;
     display: table-cell;
@@ -586,6 +588,8 @@ text.highcharts-credits>.highcharts-anchor {
     -webkit-animation:spin 2s linear infinite;
     -moz-animation:spin 2s linear infinite;
     animation:spin 2s linear infinite;
+    width:auto;
+    height:auto;
 }
 
 @-moz-keyframes spin {
@@ -680,9 +684,13 @@ input.datepicker {
   text-align:center;
 }
 
-li.liMapa:hover {
+.liMapa:hover {
   color:rgb(13,180,190);
   cursor:pointer;
   font-weight:800;
   text-decoration:underline;
+}
+
+.mapaSeries_titulo:hover {
+  cursor:pointer;
 }
