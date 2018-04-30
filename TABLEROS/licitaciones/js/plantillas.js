@@ -1613,6 +1613,29 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
 
   var ofertasValidas = _.groupBy(FILTRO6,"ID_BLOQUE");
 
+/////////////////////////////////////////////////////////////////////////////
+/* PROMEDIO DE OFERTAS POR BLOQUE ADJUDICADO (NO OFERTADO)*/
+///////////////////////////////////////////////////////////////////////////
+  var ofertasValidas_ = Object.keys(ofertasValidas).map(function(d) {
+      return ofertasValidas[d];
+  }).map(function(d) {
+      return _.uniq(d,function(k) { return k.ID_LICITANTE_OFERTA; });
+  }).map(function(d) {
+      return d.filter(function(k) { return k.VALIDEZ == 'VALIDA' });
+  });
+
+  ofertasValidas_ = _.flatten(ofertasValidas_);
+
+  var ofertasXbloqueAdj =
+			   ofertasValidas_.length / _.uniq(
+				ofertasValidas_.filter(function(d) {
+				  return d.ID_LICITANTE_ADJ == d.ID_LICITANTE_OFERTA;
+				}),function(k) {
+					return k.ID_BLOQUE;
+				}
+			   ).length;
+
+
   var cuentaOfertas = [];
   for(var k in ofertasValidas) {
     var val = ofertasValidas[k].filter(function(d) {
@@ -1623,11 +1646,15 @@ FILTRO1 = []; FILTRO2 = []; FILTRO3 = []; FILTRO4 = []; FILTRO5 = []; FILTRO6 = 
   };
 
 
-  if(cuentaOfertas.length > 0) { 
-    ofertasValidas = d3.mean(cuentaOfertas).toFixed(1);
+  if(ofertasValidas_.length > 0) { 
+    ofertasValidas = ofertasXbloqueAdj.toFixed(1);
+					//d3.mean(cuentaOfertas).toFixed(1);
   } else {
     ofertasValidas = 0;
   }
+/////////////////////////////////////////////////////////////////////////////
+/* PROMEDIO DE OFERTAS POR BLOQUE ADJUDICADO (NO OFERTADO)*/
+///////////////////////////////////////////////////////////////////////////
 
   pre = [
    { 'key':'Empresas participantes', 'val':empresas_participantes },

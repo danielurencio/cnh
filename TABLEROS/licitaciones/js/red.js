@@ -169,8 +169,9 @@ function RED(width,height) {
   };
 //==============================================================================|
   queue()
-	.defer(d3.csv,'BLOQUES_OFERTAS.csv')
-//	.defer(d3.csv,url_servicio(_ambiente_))
+//	.defer(d3.csv,'https://portal.cnih.cnh.gob.mx/api/licitaciones_data.py')
+//	.defer(d3.csv,'BLOQUES_OFERTAS.csv')
+	.defer(d3.csv,url_servicio(_ambiente_))
     .await(getDATA);
 
   function getDATA(err,bloques_ofertas) {
